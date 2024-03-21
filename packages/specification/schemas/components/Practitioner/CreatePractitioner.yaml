@@ -10,20 +10,13 @@ properties:
     type: array
     description: An array containing the prescriber's professional codes and identifiers.
     items:
-      type: object
-      properties:
-        SDS User Identifier:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
-        DIN number:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/DinNumber
-        GMC number:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/GmcNumber
-        GPhC number:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/GphcNumber
-        HCPC number:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/HcpcNumber
-        NMC number:
-          $ref: ../_fragments/identifiers.yaml#/components/schemas/NmcNumber
+      oneOf:
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/DinNumber
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/GmcNumber
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/GphcNumber
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/HcpcNumber
+        - $ref: ../_fragments/identifiers.yaml#/components/schemas/NmcNumber
   name:
     type: array
     description: The prescriber's name.

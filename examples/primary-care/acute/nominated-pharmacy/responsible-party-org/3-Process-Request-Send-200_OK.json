@@ -60,46 +60,52 @@
         ]
       }
     },
-	{
-		"fullUrl": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
-		"resource": {
-			"resourceType": "PractitionerRole",
-			"organization": {
-				"reference": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f"
-			}
-		}
-	},
-	{
-		"fullUrl": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f",
-		"resource": {
-			"resourceType": "Organization",
-			"id": "28b10eb9-94fe-4779-8517-b476abd6b08f",
-			"identifier":  [
-				{
-					"system": "https://fhir.nhs.uk/Id/ods-organization-code",
-					"value": "RBA"
-				}
-			],
-			"name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
-			"address":  [
-				{
-					"line":  [
-						"MUSGROVE PARK HOSPITAL",
-						"PARKFIELD DRIVE",
-						"TAUNTON"
-					],
-					"postalCode": "TA1 5DA"
-				}
-			],
-			"telecom":  [
-				{
-					"system": "phone",
-					"value": "01823333444",
-					"use": "work"
-				}
-			]
-		}
-	},
+    {
+      "fullUrl": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "organization": {
+          "reference": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f"
+        },
+        "practitioner": {
+          "identifier": {
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "C6095103"
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "28b10eb9-94fe-4779-8517-b476abd6b08f",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          }
+        ],
+        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        "address": [
+          {
+            "line": [
+              "MUSGROVE PARK HOSPITAL",
+              "PARKFIELD DRIVE",
+              "TAUNTON"
+            ],
+            "postalCode": "TA1 5DA"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823333444",
+            "use": "work"
+          }
+        ]
+      }
+    },
     {
       "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
       "resource": {
@@ -113,13 +119,13 @@
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
           },
-		  {
-			"url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-			"valueReference": {
-				"reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
-				"display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
-			}
-		  }
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
+          }
         ],
         "identifier": [
           {
@@ -248,13 +254,13 @@
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
           },
-		  {
-			"url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-			"valueReference": {
-				"reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
-				"display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
-			}
-		  }
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
+          }
         ],
         "identifier": [
           {
@@ -383,13 +389,13 @@
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
           },
-		  {
-			"url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-			"valueReference": {
-				"reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
-				"display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
-			}
-		  }
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
+          }
         ],
         "identifier": [
           {
@@ -518,13 +524,13 @@
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
           },
-		  {
-			"url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
-			"valueReference": {
-				"reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
-				"display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
-			}
-		  }
+          {
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
+          }
         ],
         "identifier": [
           {

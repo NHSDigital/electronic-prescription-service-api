@@ -57,6 +57,12 @@ export function isReference<T extends fhir.Resource>(
   return !!(body as fhir.Reference<T>).reference
 }
 
+export function isIdentifierReference<T extends fhir.Resource>(
+  body: fhir.Reference<T> | fhir.IdentifierReference<T>
+): body is fhir.IdentifierReference<T>{
+  return !!(body as fhir.IdentifierReference<T>).identifier
+}
+
 export function isDoseSimpleQuantity(element: Dose): element is DoseSimpleQuantity {
   return "doseQuantity" in element
 }

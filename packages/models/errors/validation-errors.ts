@@ -205,6 +205,13 @@ export function createMissingQueryParameterIssue(requiredQueryParams: Array<stri
   }
 }
 
+export const invalidResponsiblePractitionerPractitionerReference: fhir.OperationOutcomeIssue = {
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics:
+    "Responsible practitioner must be either a reference to a Practitioner resource or an identifier reference."
+}
+
 export const invalidQueryParameterCombinationIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: fhir.IssueCodes.INVALID,

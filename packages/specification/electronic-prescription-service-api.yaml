@@ -197,10 +197,11 @@ info:
 
     ### System Errors
     #### Prescribing Errors
-    | Error Code | EPS Issue Code            | Description                                     | Endpoints   |
-    |------------|---------------------------|-------------------------------------------------|-------------|
-    | invalid    | *N/A*                     | A generic error occurred.                       | `/$prepare` |
-    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists. | `/$prepare` |
+    | Error Code | EPS Issue Code            | Description                                                                 | Endpoints           |
+    |------------|---------------------------|-----------------------------------------------------------------------------|---------------------|
+    | invalid    | *N/A*                     | A generic error occurred.                                                   | `/$prepare`         |
+    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists.                             | `/$prepare`         |
+    | invalid    | TOO_FEW_VALUES_SUBMITTED  | A mandatory value is missing, or an insufficient number have been provided. | `/$process-message` |
 
     #### Nominated Release Errors
     | Error Code    | EPS Issue Code        | Description                                             | Endpoints        |
@@ -325,7 +326,7 @@ paths:
                   $ref: examples/spec/prepare/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Request-200_OK.json
       responses:
@@ -425,7 +426,7 @@ paths:
                   $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Request-Send-200_OK.json
         description: ""
@@ -526,7 +527,7 @@ paths:
                   $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/cancellations/3-Process-Request-Cancel-200_OK.json
         description: ""

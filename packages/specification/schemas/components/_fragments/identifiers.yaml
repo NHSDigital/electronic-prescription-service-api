@@ -183,3 +183,16 @@ components:
             
             For Wales, this needs to be the ODS code for the NWSSP (RQFZ1).
           enum: [T1450, RQFZ1]
+    GmpNumber:
+      type: object
+      description: The prescriber's GMP number.
+      required: [system, value]
+      properties:
+        system:
+          type: string
+          description: Codesystem URL for the GMP number.
+          enum: [https://fhir.hl7.org.uk/Id/gmp-number]
+        value:
+          type: string
+          description: The GMP number.
+          example: "G1234567"
