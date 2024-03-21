@@ -289,6 +289,7 @@ paths:
 
         This action is done by the prescribing system and API, not the prescriber.
 
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -356,6 +357,11 @@ paths:
                   description: A successful response to a eRD, primary care prepare request.
                   value:
                     $ref: examples/spec/prepare/eRD-primary-example-res.json
+                responsible-party-org:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Response-200_OK.json
         "4XX":
           description: Invalid request.
           content:
@@ -380,6 +386,10 @@ paths:
 
         The `#prescription-order` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
+        
+        The only difference between the prepare requests and create request should be the inclusion of the provenance resource.
+
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -448,6 +458,11 @@ paths:
                   description: A successful response to a eRD, primary care prescription order request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
+                responsible-party-org:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Response-Send-200_OK.json
         "4XX":
           description: |
             An error occurred as follows:
