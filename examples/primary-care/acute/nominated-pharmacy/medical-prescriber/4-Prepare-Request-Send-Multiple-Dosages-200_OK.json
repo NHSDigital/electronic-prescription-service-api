@@ -38,7 +38,6 @@
         "source": {
           "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/A83008"
         },
-
         "focus": [
           {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
@@ -73,15 +72,6 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
           }
         ],
         "identifier": [
@@ -91,7 +81,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -134,14 +124,35 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
         "dosageInstruction": [
           {
+            "sequence": 1,
+            "text": "2 times a day for 10 days",
+            "timing": {
+              "repeat": {
+                "frequency": 2,
+                "period": 1,
+                "periodUnit": "d"
+              }
+            },
+            "route": {
+              "coding": [
+                {
+                  "system": "http://snomed.info/sct",
+                  "code": "26643006",
+                  "display": "Oral"
+                }
+              ]
+            }
+          },
+          {
+            "sequence": 2,
             "text": "2 times a day for 10 days",
             "timing": {
               "repeat": {
@@ -172,10 +183,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 20,
             "unit": "tablet",
@@ -212,15 +221,6 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
           }
         ],
         "identifier": [
@@ -230,7 +230,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -254,7 +254,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -274,9 +273,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -312,10 +311,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 20,
             "unit": "tablet",
@@ -352,15 +349,6 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
           }
         ],
         "identifier": [
@@ -370,7 +358,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -394,7 +382,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -414,9 +401,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -452,10 +439,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 30,
             "unit": "tablet",
@@ -492,15 +477,6 @@
               "code": "0101",
               "display": "Primary Care Prescriber - Medical Prescriber"
             }
-          },
-          {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
           }
         ],
         "identifier": [
@@ -510,7 +486,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -534,7 +510,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -554,9 +529,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -592,10 +567,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 30,
             "unit": "tablet",
@@ -634,8 +607,13 @@
           {
             "use": "usual",
             "family": "TWITCHETT",
-            "given": ["STACEY", "MARISA"],
-            "prefix": ["MS"]
+            "given": [
+              "STACEY",
+              "MARISA"
+            ],
+            "prefix": [
+              "MS"
+            ]
           }
         ],
         "gender": "female",
@@ -643,7 +621,11 @@
         "address": [
           {
             "use": "home",
-            "line": ["10 HEATHFIELD", "COBHAM", "SURREY"],
+            "line": [
+              "10 HEATHFIELD",
+              "COBHAM",
+              "SURREY"
+            ],
             "postalCode": "KT11 2QY"
           }
         ],
@@ -719,8 +701,12 @@
         "name": [
           {
             "family": "BOIN",
-            "given": ["C"],
-            "prefix": ["DR"]
+            "given": [
+              "C"
+            ],
+            "prefix": [
+              "DR"
+            ]
           }
         ]
       }
@@ -758,7 +744,10 @@
           {
             "use": "work",
             "type": "both",
-            "line": ["HALLGARTH SURGERY", "CHEAPSIDE"],
+            "line": [
+              "HALLGARTH SURGERY",
+              "CHEAPSIDE"
+            ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
             "postalCode": "DL4 2HP"

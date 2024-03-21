@@ -1,8 +1,8 @@
 import {
+  getBundleEntriesOfType,
   getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
-  getMedicationRequests,
-  getPractitionerRoles
+  getMedicationRequests
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "../../utils/collections"
@@ -18,7 +18,7 @@ import {
 import {fhir, processingErrors, validationErrors as errors} from "@models"
 import {isRepeatDispensing} from "../translation/request"
 import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMessage} from "./scope-validator"
-import {isReference} from "../../utils/type-guards"
+import {isIdentifierReference, isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 import {PractitionerRole} from "../../../../models/fhir"
 
@@ -86,6 +86,29 @@ function validatePractitionerRoleReferenceField<T extends fhir.Resource>(
   }
 }
 
+function validatePractitionerRolePractitionerField(
+  fieldToValidate: common.Reference<fhir.Practitioner> | common.IdentifierReference<fhir.Practitioner>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
+  fhirPathToField: string,
+  isResponsibleParty: boolean
+) {
+  if (!isResponsibleParty) {
+    return validatePractitionerRoleReferenceField(
+      fieldToValidate, incorrectValueErrors, fhirPathToField
+    )
+  }
+
+  const fieldIsReference = isReference(fieldToValidate)
+  const fieldIsIdentifierReference = isIdentifierReference(fieldToValidate)
+  // Should be reference XOR identity reference
+  const isInvalid = fieldIsReference === fieldIsIdentifierReference
+  if (isInvalid) {
+    incorrectValueErrors.push(
+      errors.invalidResponsiblePractitionerPractitionerReference
+    )
+  }
+}
+
 export function verifyCommonBundle(
   bundle: fhir.Bundle,
   accessTokenSDSUserID: string,
@@ -114,15 +137,29 @@ export function verifyCommonBundle(
     )
   }
 
-  const practitionerRoles = getPractitionerRoles(bundle)
-  practitionerRoles.forEach(practitionerRole =>
+  const responsiblePartyUrls = medicationRequests.map(request => {
+    return getExtensionForUrlOrNull(
+      request.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+      "MedicationRequest.extension"
+    ) as fhir.ReferenceExtension<PractitionerRole>
+  }).filter(isTruthy).map(extension => extension.valueReference.reference)
+
+  const practitionerRoles = getBundleEntriesOfType(bundle, "PractitionerRole")
+  practitionerRoles.forEach(practitionerRole =>{
+    const isResponsibleParty = responsiblePartyUrls.some(
+      responsiblePartyUrl => responsiblePartyUrl === practitionerRole.fullUrl
+    )
+
     validatePractitionerRole(
       bundle,
-      practitionerRole,
+      practitionerRole.resource as fhir.PractitionerRole,
+      isResponsibleParty,
       incorrectValueErrors,
       accessTokenSDSUserID,
       accessTokenSDSRoleID
     )
+  }
   )
 
   return incorrectValueErrors
@@ -131,13 +168,14 @@ export function verifyCommonBundle(
 function validatePractitionerRole(
   bundle: fhir.Bundle,
   practitionerRole: fhir.PractitionerRole,
+  isResponsibleParty: boolean,
   incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string
-): void{
-  if(practitionerRole.practitioner) {
-    validatePractitionerRoleReferenceField(
-      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner"
+): void {
+  if (practitionerRole.practitioner) {
+    validatePractitionerRolePractitionerField(
+      practitionerRole.practitioner, incorrectValueErrors, "practitionerRole.practitioner", isResponsibleParty
     )
   }
   validatePractitionerRoleReferenceField(

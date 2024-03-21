@@ -272,6 +272,13 @@ describe("verifyCommonBundle", () => {
         "Access Token: test_sds_role_id Body: test_sds_role_id."
     )
   })
+
+  test("Should accept a practitionerRole with org-only responsible party", () => {
+    const bundle = clone(TestResources.specification[6].fhirMessageUnsigned)
+
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    expect(validationErrors).toHaveLength(0)
+  })
 })
 
 describe("verifyPrescriptionBundle status check", () => {

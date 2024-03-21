@@ -197,10 +197,11 @@ info:
 
     ### System Errors
     #### Prescribing Errors
-    | Error Code | EPS Issue Code            | Description                                     | Endpoints   |
-    |------------|---------------------------|-------------------------------------------------|-------------|
-    | invalid    | *N/A*                     | A generic error occurred.                       | `/$prepare` |
-    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists. | `/$prepare` |
+    | Error Code | EPS Issue Code            | Description                                                                 | Endpoints           |
+    |------------|---------------------------|-----------------------------------------------------------------------------|---------------------|
+    | invalid    | *N/A*                     | A generic error occurred.                                                   | `/$prepare`         |
+    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists.                             | `/$prepare`         |
+    | invalid    | TOO_FEW_VALUES_SUBMITTED  | A mandatory value is missing, or an insufficient number have been provided. | `/$process-message` |
 
     #### Nominated Release Errors
     | Error Code    | EPS Issue Code        | Description                                             | Endpoints        |
@@ -288,6 +289,7 @@ paths:
 
         This action is done by the prescribing system and API, not the prescriber.
 
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -307,6 +309,11 @@ paths:
                 description: A valid acute, primary care prepare request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Request-200_OK.json
+              acute-multiple-dosages:
+                summary: Acute Multiple Dosages
+                description: A valid acute, primary care prescription order request, with multiple dosage items.
+                value:
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Request-Send-Multiple-Dosages-200_OK.json
               repeat-primary:
                 summary: Repeat
                 description: A Valid repeat, primary care prepare request
@@ -319,7 +326,7 @@ paths:
                   $ref: examples/spec/prepare/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Request-200_OK.json
       responses:
@@ -335,6 +342,11 @@ paths:
                   description: A successful response to an acute, primary care prepare request.
                   value:
                     $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Response-200_OK.json
+                acute-multiple-dosages:
+                  summary: Acute Multiple Dosages
+                  description: A successful response to an acute with multiple dosages, primary care prescription order request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Response-Multiple-Dosages-200_OK.json
                 repeat-primary:
                   summary: Repeat
                   description: A successful response to a repeat, primary care request.
@@ -345,6 +357,11 @@ paths:
                   description: A successful response to a eRD, primary care prepare request.
                   value:
                     $ref: examples/spec/prepare/eRD-primary-example-res.json
+                responsible-party-org:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Response-200_OK.json
         "4XX":
           description: Invalid request.
           content:
@@ -369,6 +386,10 @@ paths:
 
         The `#prescription-order` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
+        
+        The only difference between the prepare requests and create request should be the inclusion of the provenance resource.
+
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -405,7 +426,7 @@ paths:
                   $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Request-Send-200_OK.json
         description: ""
@@ -437,6 +458,11 @@ paths:
                   description: A successful response to a eRD, primary care prescription order request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
+                responsible-party-org:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Response-Send-200_OK.json
         "4XX":
           description: |
             An error occurred as follows:
@@ -501,7 +527,7 @@ paths:
                   $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/cancellations/3-Process-Request-Cancel-200_OK.json
         description: ""

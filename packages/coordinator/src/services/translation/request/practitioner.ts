@@ -18,6 +18,7 @@ import {hl7V3, fhir, processingErrors as errors} from "@models"
 import moment from "moment"
 import {convertIsoDateTimeStringToHl7V3DateTime, convertMomentToHl7V3DateTime} from "../common/dateTime"
 import {getJobRoleCodeOrName} from "./job-role-code"
+import {isReference} from "../../../utils/type-guards"
 
 export function convertAuthor(
   bundle: fhir.Bundle,
@@ -50,10 +51,7 @@ function setSignatureTimeAndText(author: hl7V3.PrescriptionAuthor, requesterSign
 
 export function convertResponsibleParty(
   bundle: fhir.Bundle,
-  medicationRequest: fhir.MedicationRequest,
-  convertPractitionerRoleFn = convertPractitionerRole,
-  convertAgentPersonPersonFn = convertAgentPersonPerson,
-  getAgentPersonPersonIdFn = getAgentPersonPersonIdForResponsibleParty
+  medicationRequest: fhir.MedicationRequest
 ): hl7V3.PrescriptionResponsibleParty {
   const responsibleParty = new hl7V3.PrescriptionResponsibleParty()
 
@@ -67,36 +65,68 @@ export function convertResponsibleParty(
     ? responsiblePartyExtension.valueReference
     : medicationRequest.requester
 
-  const responsiblePartyPractitionerRole = resolveReference(bundle, responsiblePartyReference)
-  responsibleParty.AgentPerson = convertPractitionerRoleFn(
+  const resolvedPractitionerRole = resolveReference(bundle, responsiblePartyReference)
+  const responsiblePartyPractitionerRole
+    = hydrateOrgOnlyResponsibleParty(bundle, resolvedPractitionerRole)
+
+  responsibleParty.AgentPerson = convertPractitionerRole(
     bundle,
     responsiblePartyPractitionerRole,
-    convertAgentPersonPersonFn,
-    getAgentPersonPersonIdFn
+    getAgentPersonPersonIdForResponsibleParty
   )
 
   return responsibleParty
 }
 
+/**
+ * In the case of an org only responsible party, the org reference is used to resolve the organization's name
+ * and populate the practitioner name.
+ */
+function hydrateOrgOnlyResponsibleParty(
+  bundle: fhir.Bundle,
+  practitionerRole: fhir.PractitionerRole
+): fhir.PractitionerRole {
+  const orgIsReference = practitionerRole.organization && isReference(practitionerRole.organization)
+  const practitionerIsReference = isReference(practitionerRole.practitioner)
+  const isOrgOnlyResponsibleParty = orgIsReference && !practitionerIsReference
+  if (!isOrgOnlyResponsibleParty) {
+    return practitionerRole
+  }
+
+  const organizationReference = practitionerRole.organization as fhir.Reference<fhir.Organization>
+  const organization = resolveReference(bundle, organizationReference)
+  const organizationName = organization.name
+
+  const practitionerIdentifier = practitionerRole.practitioner as fhir.IdentifierReference<fhir.Practitioner>
+  const newPractitioner: fhir.IdentifierReference<fhir.Practitioner> = {
+    identifier: practitionerIdentifier.identifier,
+    display: organizationName
+  }
+
+  return {
+    ...practitionerRole,
+    practitioner: newPractitioner
+  }
+}
+
 export function convertPractitionerRole(
   bundle: fhir.Bundle,
   practitionerRole: fhir.PractitionerRole,
-  convertAgentPersonPersonFn = convertAgentPersonPerson,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
-
   let practitioner: fhir.Practitioner
   if(practitionerRole.practitioner)
     practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
+  const organization = resolveOrganization(bundle, practitionerRole)
+
+  const telecom = getAgentPersonTelecom(practitionerRole, practitioner, organization)
   const agentPerson = createAgentPerson(
     practitionerRole,
     practitioner,
-    convertAgentPersonPersonFn,
+    telecom,
     getAgentPersonPersonIdFn
   )
-
-  const organization = resolveOrganization(bundle, practitionerRole)
 
   let healthcareService: fhir.HealthcareService
   if (practitionerRole.healthcareService) {
@@ -115,7 +145,7 @@ export function convertPractitionerRole(
 function createAgentPerson(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
-  convertAgentPersonPersonFn = convertAgentPersonPerson,
+  telecom: Array<hl7V3.Telecom>,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
@@ -134,31 +164,67 @@ function createAgentPerson(
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
 
-  if(practitioner)
-    agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom, practitioner.telecom)
-  else if(practitionerRole.telecom)
-    agentPerson.telecom = getAgentPersonTelecom(practitionerRole.telecom)
+  agentPerson.telecom = telecom
 
   if(practitioner) {
     agentPerson.agentPerson =
-      convertAgentPersonPersonFn(
-        practitionerRole,
-        practitioner,
-        getAgentPersonPersonIdFn)
+    convertAgentPersonPerson(
+      practitionerRole,
+      practitioner,
+      getAgentPersonPersonIdFn)
   }
 
   return agentPerson
 }
 
 export function getAgentPersonTelecom(
-  practitionerRoleContactPoints: Array<fhir.ContactPoint>,
-  practitionerContactPoints?: Array<fhir.ContactPoint>
-): Array<hl7V3.Telecom> {
-  if (practitionerRoleContactPoints !== undefined) {
-    return practitionerRoleContactPoints.map(telecom => convertTelecom(telecom, "PractitionerRole.telecom"))
-  } else if (practitionerContactPoints !== undefined) {
-    return practitionerContactPoints.map(telecom => convertTelecom(telecom, "Practitioner.telecom"))
+  practitionerRole: fhir.PractitionerRole,
+  practitioner: fhir.Practitioner,
+  organization: fhir.Organization
+) : Array<hl7V3.Telecom> {
+  const primaryTelecomSource: AgentPersonTelecomSource = {
+    contactPoints: practitionerRole?.telecom,
+    fhirPath: "PractitionerRole.telecom"
   }
+
+  const practitionerIsResourceReference = isReference(practitionerRole?.practitioner)
+  const secondaryTelecomSource: AgentPersonTelecomSource = practitionerIsResourceReference ?
+    {
+      contactPoints: practitioner?.telecom,
+      fhirPath: "Practitioner.telecom"
+    } :
+    {
+      contactPoints: organization?.telecom,
+      fhirPath: "Organization.telecom"
+    }
+
+  return sourceAgentPersonTelecom(primaryTelecomSource, secondaryTelecomSource)
+}
+
+export interface AgentPersonTelecomSource{
+  contactPoints: Array<fhir.ContactPoint>,
+  fhirPath: string
+}
+export function sourceAgentPersonTelecom(
+  practitionerRoleContactPoints: AgentPersonTelecomSource,
+  secondaryContactPoints?: AgentPersonTelecomSource
+): Array<hl7V3.Telecom> {
+  if (practitionerRoleContactPoints?.contactPoints !== undefined) {
+    return practitionerRoleContactPoints?.contactPoints.map(
+      telecom => convertTelecom(telecom, practitionerRoleContactPoints.fhirPath)
+    )
+  }
+
+  if (secondaryContactPoints?.contactPoints !== undefined){
+    return secondaryContactPoints?.contactPoints?.map(
+      telecom => convertTelecom(telecom, secondaryContactPoints.fhirPath)
+    )
+  }
+
+  throw new errors.TooFewValuesError(
+    "ResponsiblePractitioner must have at least one telecom.",
+    practitionerRoleContactPoints.fhirPath
+  )
 }
 
 function convertAgentPersonPerson(

@@ -196,6 +196,10 @@ const examplePrescriptions: Array<ExamplePrescriptionPath> = [
   [
     "consecutive and concurrent dosage instructions",
     "secondary-care/homecare/acute/nominated-pharmacy/consecutive-and-concurrent-dosage-instructions"
+  ],
+  [
+    "org-only responsible party",
+    "primary-care/acute/nominated-pharmacy/responsible-party-org/separate-telecom"
   ]
 ]
 
