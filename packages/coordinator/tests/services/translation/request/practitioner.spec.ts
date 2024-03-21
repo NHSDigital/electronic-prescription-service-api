@@ -1,6 +1,6 @@
 import {
   sourceAgentPersonTelecom,
-  setAgentPersonTelecom,
+  getAgentPersonTelecom,
   getAgentPersonPersonIdForAuthor,
   getAgentPersonPersonIdForResponsibleParty,
   convertAuthor,
@@ -84,7 +84,7 @@ describe("getAgentPersonTelecom", () => {
   })
 })
 
-describe("setAgentPersonTelecom", () => {
+describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
     {
       system: "phone",
@@ -189,15 +189,15 @@ describe("setAgentPersonTelecom", () => {
     test("if practitionerRole has telecom it is used", () => {
       const practitionerRole = examplePractitionerRoleWithTelecom(true, PractitionerType.RESOURCE_REFERENCE, false)
       const practitioner = examplePractitioner(false)
-      const output = setAgentPersonTelecom(new hl7V3.AgentPerson(), practitionerRole, practitioner, undefined)
-      expect(output.telecom).toEqual(roleTelecomExpected)
+      const output = getAgentPersonTelecom(practitionerRole, practitioner, undefined)
+      expect(output).toEqual(roleTelecomExpected)
     })
 
     test("if practitionerRole has no telecom and practitioner has telecom then practitioner telecom is used", () => {
       const practitionerRole = examplePractitionerRoleWithTelecom(false, PractitionerType.RESOURCE_REFERENCE, false)
       const practitioner = examplePractitioner(true)
-      const output = setAgentPersonTelecom(new hl7V3.AgentPerson(), practitionerRole, practitioner, undefined)
-      expect(output.telecom).toEqual(practitionerTelecomExpected)
+      const output = getAgentPersonTelecom(practitionerRole, practitioner, undefined)
+      expect(output).toEqual(practitionerTelecomExpected)
     })
   })
 
@@ -205,15 +205,15 @@ describe("setAgentPersonTelecom", () => {
     test("if practitionerRole has telecom it is used", () => {
       const practitionerRole = examplePractitionerRoleWithTelecom(true, PractitionerType.IDENTIFIER_REFERENCE, true)
       const organization = exampleOrganization(false)
-      const output = setAgentPersonTelecom(new hl7V3.AgentPerson(), practitionerRole, undefined, organization)
-      expect(output.telecom).toEqual(roleTelecomExpected)
+      const output = getAgentPersonTelecom(practitionerRole, undefined, organization)
+      expect(output).toEqual(roleTelecomExpected)
     })
 
     test("if practitionerRole has no telecom and organization has telecom then organization telecom is used", () => {
       const practitionerRole = examplePractitionerRoleWithTelecom(false, PractitionerType.IDENTIFIER_REFERENCE, true)
       const organization = exampleOrganization(true)
-      const output = setAgentPersonTelecom(new hl7V3.AgentPerson(), practitionerRole, undefined, organization)
-      expect(output.telecom).toEqual(organizationTelecomExpected)
+      const output = getAgentPersonTelecom(practitionerRole, undefined, organization)
+      expect(output).toEqual(organizationTelecomExpected)
     })
   })
 
@@ -223,7 +223,7 @@ describe("setAgentPersonTelecom", () => {
     const organization = exampleOrganization(false)
 
     expect(() => {
-      setAgentPersonTelecom(new hl7V3.AgentPerson(), practitionerRole, practitioner, organization)
+      getAgentPersonTelecom(practitionerRole, practitioner, organization)
     }).toThrow()
   })
 })

@@ -118,14 +118,15 @@ export function convertPractitionerRole(
   if(practitionerRole.practitioner)
     practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
-  const organization = resolveOrganization(bundle, practitionerRole)
-
   const agentPerson = createAgentPerson(
     practitionerRole,
     practitioner,
-    organization,
     getAgentPersonPersonIdFn
   )
+
+  const organization = resolveOrganization(bundle, practitionerRole)
+
+  agentPerson.telecom = getAgentPersonTelecom(practitionerRole, practitioner, organization)
 
   let healthcareService: fhir.HealthcareService
   if (practitionerRole.healthcareService) {
@@ -144,10 +145,9 @@ export function convertPractitionerRole(
 function createAgentPerson(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
-  organization: fhir.Organization,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
-  let agentPerson = new hl7V3.AgentPerson()
+  const agentPerson = new hl7V3.AgentPerson()
 
   if(practitionerRole.identifier) {
     const sdsRoleProfileIdentifier = getIdentifierValueForSystem(
@@ -163,8 +163,6 @@ function createAgentPerson(
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
 
-  agentPerson = setAgentPersonTelecom(agentPerson, practitionerRole, practitioner, organization)
-
   if(practitioner) {
     agentPerson.agentPerson =
     convertAgentPersonPerson(
@@ -176,12 +174,11 @@ function createAgentPerson(
   return agentPerson
 }
 
-export function setAgentPersonTelecom(
-  agentPerson: hl7V3.AgentPerson,
+export function getAgentPersonTelecom(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
   organization: fhir.Organization
-) : hl7V3.AgentPerson {
+) : Array<hl7V3.Telecom> {
   const primaryTelecomSource: AgentPersonTelecomSource = {
     contactPoints: practitionerRole?.telecom,
     fhirPath: "PractitionerRole.telecom"
@@ -198,8 +195,7 @@ export function setAgentPersonTelecom(
       fhirPath: "Organization.telecom"
     }
 
-  agentPerson.telecom = sourceAgentPersonTelecom(primaryTelecomSource, secondaryTelecomSource)
-  return agentPerson
+  return sourceAgentPersonTelecom(primaryTelecomSource, secondaryTelecomSource)
 }
 
 export interface AgentPersonTelecomSource{
