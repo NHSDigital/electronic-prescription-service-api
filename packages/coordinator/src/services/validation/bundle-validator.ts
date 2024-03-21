@@ -295,9 +295,9 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
       return dosageInstruction[0].text
     }
 
-    if (dosageInstruction.some(dosage => !dosage.sequence)) {
-      allErrors.push(errors.createMissingDosageSequenceInstructions())
-    }
+    // if (dosageInstruction.some(dosage => !dosage.sequence)) {
+    //   allErrors.push(errors.createMissingDosageSequenceInstructions())
+    // }
   })
 
   return allErrors

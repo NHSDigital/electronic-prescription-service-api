@@ -329,6 +329,15 @@ export class SpineResponseHandler<T> {
             "FAILURE_TO_PROCESS_MESSAGE",
             code._attributes.displayName
           ))
+      case "10000":
+        return fhir.createOperationOutcomeIssue(
+          fhir.IssueCodes.NOT_FOUND,
+          "error",
+          fhir.createCodeableConcept(
+            "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+            "MISSING_DOSAGE_SEQUENCE",
+            "The request contains multiple dosage instruction lines but no corresponding dosage sequence number."
+          ))
       default:
         return fhir.createOperationOutcomeIssue(
           fhir.IssueCodes.INVALID,
