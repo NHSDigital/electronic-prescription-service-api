@@ -118,15 +118,15 @@ export function convertPractitionerRole(
   if(practitionerRole.practitioner)
     practitioner = resolvePractitioner(bundle, practitionerRole.practitioner)
 
+  const organization = resolveOrganization(bundle, practitionerRole)
+
+  const telecom = getAgentPersonTelecom(practitionerRole, practitioner, organization)
   const agentPerson = createAgentPerson(
     practitionerRole,
     practitioner,
+    telecom,
     getAgentPersonPersonIdFn
   )
-
-  const organization = resolveOrganization(bundle, practitionerRole)
-
-  agentPerson.telecom = getAgentPersonTelecom(practitionerRole, practitioner, organization)
 
   let healthcareService: fhir.HealthcareService
   if (practitionerRole.healthcareService) {
@@ -145,6 +145,7 @@ export function convertPractitionerRole(
 function createAgentPerson(
   practitionerRole: fhir.PractitionerRole,
   practitioner: fhir.Practitioner,
+  telecom: Array<hl7V3.Telecom>,
   getAgentPersonPersonIdFn = getAgentPersonPersonIdForAuthor
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
@@ -162,6 +163,8 @@ function createAgentPerson(
     const sdsJobRoleCode = getJobRoleCodeOrName(practitionerRole)
     agentPerson.code = new hl7V3.SdsJobRoleCode(sdsJobRoleCode.code)
   }
+
+  agentPerson.telecom = telecom
 
   if(practitioner) {
     agentPerson.agentPerson =
