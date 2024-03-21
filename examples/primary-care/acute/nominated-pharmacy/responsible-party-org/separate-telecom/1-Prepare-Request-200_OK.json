@@ -72,7 +72,14 @@
             "system": "https://fhir.hl7.org.uk/Id/gmc-number",
             "value": "C6095103"
           }
-        }
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823333555",
+            "use": "work"
+          }
+        ]
       }
     },
     {

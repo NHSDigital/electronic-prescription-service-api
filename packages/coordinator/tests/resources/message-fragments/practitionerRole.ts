@@ -135,10 +135,51 @@ const pharmacistPractitionerRole: fhir.PractitionerRole = {
   ]
 }
 
+const responsiblePartyPractitionerRole: fhir.PractitionerRole = {
+  resourceType: "PractitionerRole",
+  id: "563d10c7-6331-4930-a80a-83a9195396ce",
+  practitioner: {
+    reference: "urn:uuid:dd586f2d-6bf0-4fa3-b7a7-ffabb0bc1bf0"
+  },
+  organization: {
+    reference: "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+  },
+  telecom: [{
+    system: "phone",
+    value: "01234567890",
+    use: "work"
+  }]
+}
+
+const responsiblePartyNoTelecomPractitionerRole: fhir.PractitionerRole = (() => {
+  const role = {...responsiblePartyPractitionerRole}
+  delete role.telecom
+  return role
+})()
+
+const responsiblePartyOrgOnlyPractitionerRole: fhir.PractitionerRole = (() => {
+  const role = {...responsiblePartyPractitionerRole}
+  role.practitioner = {identifier: {
+    system: "https://fhir.hl7.org.uk/Id/gmc-number",
+    value: "6095103"
+  }}
+  return role
+})()
+
+const responsiblePartyOrgOnlyNoTelecomPractitionerRole: fhir.PractitionerRole = (() => {
+  const role = {...responsiblePartyOrgOnlyPractitionerRole}
+  delete role.telecom
+  return role
+})()
+
 const practitionerRoles = new Map<string, fhir.PractitionerRole>([
   ["doctor", doctorPractitionerRole],
   ["nurse", nursePractitionerRole],
-  ["pharmacist", pharmacistPractitionerRole]
+  ["pharmacist", pharmacistPractitionerRole],
+  ["responsibleParty", responsiblePartyPractitionerRole],
+  ["responsiblePartyNoTelecom", responsiblePartyNoTelecomPractitionerRole],
+  ["responsiblePartyOrgOnly", responsiblePartyOrgOnlyPractitionerRole],
+  ["responsiblePartyOrgOnlyNoTelecom", responsiblePartyOrgOnlyNoTelecomPractitionerRole]
 ])
 
 export default practitionerRoles
