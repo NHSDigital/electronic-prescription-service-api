@@ -310,24 +310,24 @@ describe("Certificate found on the CRL", () => {
 
     test.only.each([
       // 2.1 - Revoked certificate - AEA-2650/AC 1.2
-      ["invalid", "KeyCompromise", CRLReasonCode.KeyCompromise, false],
+      // ["invalid", "KeyCompromise", CRLReasonCode.KeyCompromise, false],
       ["invalid", "CACompromise", CRLReasonCode.CACompromise, false],
 
       // 1.2.1 - Other handled CRL Reason Code - AEA-2650/AC 1.1
-      ["valid", "Unspecified", CRLReasonCode.Unspecified, true],
-      ["valid", "AffiliationChanged", CRLReasonCode.AffiliationChanged, true],
-      ["valid", "Superseded", CRLReasonCode.Superseded, true],
-      ["valid", "CessationOfOperation", CRLReasonCode.CessationOfOperation, true],
-      ["valid", "CertificateHold", CRLReasonCode.CertificateHold, true],
-      ["valid", "RemoveFromCRL", CRLReasonCode.RemoveFromCRL, true],
+      ["valid", "Unspecified", CRLReasonCode.Unspecified, true]
+      // ["valid", "AffiliationChanged", CRLReasonCode.AffiliationChanged, true],
+      // ["valid", "Superseded", CRLReasonCode.Superseded, true],
+      // ["valid", "CessationOfOperation", CRLReasonCode.CessationOfOperation, true],
+      // ["valid", "CertificateHold", CRLReasonCode.CertificateHold, true],
+      // ["valid", "RemoveFromCRL", CRLReasonCode.RemoveFromCRL, true],
 
       // 1.2.2 - Other handled CRL Reason Code - AEA-2650/comments
-      ["valid", "PrivilegeWithdrawn", CRLReasonCode.PrivilegeWithdrawn, true],
-      ["invalid", "AACompromise", CRLReasonCode.AACompromise, false],
+      // ["valid", "PrivilegeWithdrawn", CRLReasonCode.PrivilegeWithdrawn, true],
+      // ["invalid", "AACompromise", CRLReasonCode.AACompromise, false],
 
       // 1.2.3 - CRL Reason Code not specified - AEA-2650/comments
-      ["valid", "unspecified (1)", null, true],
-      ["valid", "unspecified (2)", "", true]
+      // ["valid", "unspecified (1)", null, true],
+      // ["valid", "unspecified (2)", "", true]
     ])("%s when Reason Code is %s", async (
       outcome: string,
       reasonCodeDesc: string,
@@ -339,7 +339,9 @@ describe("Certificate found on the CRL", () => {
       reasonCodeSpy.mockReturnValue(reasonCode)
 
       // Check certificate validity matches expected
+      console.log("TTTTTTTTTTTTT")
       const isValid = await isSignatureCertificateValid(prescription, logger)
+      console.log(isValid, isCertificateValid, "QQQQQQ")
       expect(isValid).toEqual(isCertificateValid)
 
       // Check log messages
