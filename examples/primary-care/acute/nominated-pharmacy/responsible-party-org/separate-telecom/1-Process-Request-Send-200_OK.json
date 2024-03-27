@@ -38,7 +38,6 @@
         "source": {
           "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/A83008"
         },
-
         "focus": [
           {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
@@ -62,6 +61,59 @@
       }
     },
     {
+      "fullUrl": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+      "resource": {
+        "resourceType": "PractitionerRole",
+        "organization": {
+          "reference": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f"
+        },
+        "practitioner": {
+          "identifier": {
+            "system": "https://fhir.hl7.org.uk/Id/gmc-number",
+            "value": "C6095103"
+          }
+        },
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823333555",
+            "use": "work"
+          }
+        ]
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:28b10eb9-94fe-4779-8517-b476abd6b08f",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "28b10eb9-94fe-4779-8517-b476abd6b08f",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "RBA"
+          }
+        ],
+        "name": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST",
+        "address": [
+          {
+            "line": [
+              "MUSGROVE PARK HOSPITAL",
+              "PARKFIELD DRIVE",
+              "TAUNTON"
+            ],
+            "postalCode": "TA1 5DA"
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "01823333444",
+            "use": "work"
+          }
+        ]
+      }
+    },
+    {
       "fullUrl": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6",
       "resource": {
         "resourceType": "MedicationRequest",
@@ -75,13 +127,11 @@
             }
           },
           {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
           }
         ],
         "identifier": [
@@ -91,7 +141,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -134,9 +184,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -172,10 +222,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 20,
             "unit": "tablet",
@@ -214,13 +262,11 @@
             }
           },
           {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
           }
         ],
         "identifier": [
@@ -230,7 +276,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -254,7 +300,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -274,9 +319,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -312,10 +357,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 20,
             "unit": "tablet",
@@ -354,13 +397,11 @@
             }
           },
           {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
           }
         ],
         "identifier": [
@@ -370,7 +411,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -394,7 +435,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -414,9 +454,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -452,10 +492,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 30,
             "unit": "tablet",
@@ -494,13 +532,11 @@
             }
           },
           {
-            "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
-            "extension": [
-              {
-                "url": "authorisationExpiryDate",
-                "valueDateTime": "2023-04-07"
-              }
-            ]
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+            "valueReference": {
+              "reference": "urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466",
+              "display": "TAUNTON AND SOMERSET NHS FOUNDATION TRUST"
+            }
           }
         ],
         "identifier": [
@@ -510,7 +546,7 @@
           }
         ],
         "status": "active",
-        "intent": "original-order",
+        "intent": "order",
         "category": [
           {
             "coding": [
@@ -534,7 +570,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -554,9 +589,9 @@
         "courseOfTherapyType": {
           "coding": [
             {
-              "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-course-of-therapy",
-              "code": "continuous-repeat-dispensing",
-              "display": "Continuous long term (repeat dispensing)"
+              "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy",
+              "code": "acute",
+              "display": "Short course (acute) therapy"
             }
           ]
         },
@@ -592,10 +627,8 @@
             }
           ],
           "validityPeriod": {
-            "start": "2022-10-21",
-            "end": "2022-11-21"
+            "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 6,
           "quantity": {
             "value": 30,
             "unit": "tablet",
@@ -634,8 +667,13 @@
           {
             "use": "usual",
             "family": "TWITCHETT",
-            "given": ["STACEY", "MARISA"],
-            "prefix": ["MS"]
+            "given": [
+              "STACEY",
+              "MARISA"
+            ],
+            "prefix": [
+              "MS"
+            ]
           }
         ],
         "gender": "female",
@@ -643,7 +681,11 @@
         "address": [
           {
             "use": "home",
-            "line": ["10 HEATHFIELD", "COBHAM", "SURREY"],
+            "line": [
+              "10 HEATHFIELD",
+              "COBHAM",
+              "SURREY"
+            ],
             "postalCode": "KT11 2QY"
           }
         ],
@@ -719,8 +761,12 @@
         "name": [
           {
             "family": "BOIN",
-            "given": ["C"],
-            "prefix": ["DR"]
+            "given": [
+              "C"
+            ],
+            "prefix": [
+              "DR"
+            ]
           }
         ]
       }
@@ -758,7 +804,10 @@
           {
             "use": "work",
             "type": "both",
-            "line": ["HALLGARTH SURGERY", "CHEAPSIDE"],
+            "line": [
+              "HALLGARTH SURGERY",
+              "CHEAPSIDE"
+            ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
             "postalCode": "DL4 2HP"
@@ -771,6 +820,41 @@
           },
           "display": "NHS COUNTY DURHAM CCG"
         }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:28828c55-8fa7-42d7-916f-fcf076e0c10e",
+      "resource": {
+        "resourceType": "Provenance",
+        "id": "28828c55-8fa7-42d7-916f-fcf076e0c10e",
+        "target": [
+          {
+            "reference": "urn:uuid:0cb82cfa-76c8-4fb2-a08e-bf0e326e5487"
+          }
+        ],
+        "recorded": "2022-10-21T13:47:00+00:00",
+        "agent": [
+          {
+            "who": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            }
+          }
+        ],
+        "signature": [
+          {
+            "type": [
+              {
+                "system": "urn:iso-astm:E1762-95:2013",
+                "code": "1.2.840.10065.1.12.1.1"
+              }
+            ],
+            "when": "2022-10-21T13:47:00+00:00",
+            "who": {
+              "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
+            },
+            "data": "PFNpZ25hdHVyZSB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC8wOS94bWxkc2lnIyI+CiAgICAgICAgICAgIDxTaWduZWRJbmZvPjxDYW5vbmljYWxpemF0aW9uTWV0aG9kIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIj48L0Nhbm9uaWNhbGl6YXRpb25NZXRob2Q+PFNpZ25hdHVyZU1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNyc2Etc2hhMSI+PC9TaWduYXR1cmVNZXRob2Q+PFJlZmVyZW5jZT48VHJhbnNmb3Jtcz48VHJhbnNmb3JtIEFsZ29yaXRobT0iaHR0cDovL3d3dy53My5vcmcvMjAwMS8xMC94bWwtZXhjLWMxNG4jIj48L1RyYW5zZm9ybT48L1RyYW5zZm9ybXM+PERpZ2VzdE1ldGhvZCBBbGdvcml0aG09Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvMDkveG1sZHNpZyNzaGExIj48L0RpZ2VzdE1ldGhvZD48RGlnZXN0VmFsdWU+WTg5YWNmSC90VkVtSXI2aVlrRVJrWWMxbG1jPTwvRGlnZXN0VmFsdWU+PC9SZWZlcmVuY2U+PC9TaWduZWRJbmZvPgogICAgICAgICAgICA8U2lnbmF0dXJlVmFsdWU+PC9TaWduYXR1cmVWYWx1ZT4KICAgICAgICAgICAgPEtleUluZm8+PFg1MDlEYXRhPjxYNTA5Q2VydGlmaWNhdGU+PC9YNTA5Q2VydGlmaWNhdGU+PC9YNTA5RGF0YT48L0tleUluZm8+CiAgICAgICAgICA8L1NpZ25hdHVyZT4="
+          }
+        ]
       }
     }
   ]

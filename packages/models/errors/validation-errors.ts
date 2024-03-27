@@ -205,6 +205,13 @@ export function createMissingQueryParameterIssue(requiredQueryParams: Array<stri
   }
 }
 
+export const invalidResponsiblePractitionerPractitionerReference: fhir.OperationOutcomeIssue = {
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  diagnostics:
+    "Responsible practitioner must be either a reference to a Practitioner resource or an identifier reference."
+}
+
 export const invalidQueryParameterCombinationIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: fhir.IssueCodes.INVALID,
@@ -256,5 +263,36 @@ export function createMissingEndorsementCode(): fhir.OperationOutcomeIssue {
     severity: "error",
     code: fhir.IssueCodes.INVALID,
     diagnostics: "The claim is missing the required endorsement code."
+  }
+}
+
+export function createMissingReimbursementAuthority(): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    diagnostics: "The dispense notification is missing the reimbursement authority and it should be provided."
+  }
+}
+
+export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    diagnostics: "The dispense notification is missing the ODS code " +
+    "for reimbursement authority and it should be provided."
+  }
+}
+
+export function createMissingDosageSequenceInstructions(): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    details: {
+      coding: [{
+        code: "MISSING_VALUE",
+        display: "The request contains multiple dosage instruction " +
+        "lines but no corresponding dosage sequence number."
+      }]
+    }
   }
 }

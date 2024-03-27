@@ -1,7 +1,12 @@
 type: object
 required:
 - organization
-description: Role-specific details of the author or responsible party of a prescription.
+- practitioner
+description: |
+  Role-specific details of the author or responsible party of a prescription.
+  If for a responsible party, at least one of the practitionerRole, referenced practitioner,
+  or referenced organization must have a telecom field. Note that PractitionerRole level
+  NHS BSA spurious code will take priority over supplier practitioner identifier, if present.
 properties:
   resourceType:
     type: string
@@ -11,20 +16,32 @@ properties:
     type: array
     description: An array containing role-specific identifiers for the prescriber
     items:
-      type: object
-      properties:
-        SDS Role Profile ID:
-          $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
-        NHS BSA Spurious Code:
-          $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
+      oneOf:
+        - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/SdsRoleProfileId
+        - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsBsaSpuriousCode
   practitioner:
-    type: object
-    description: A reference to a Practitioner resource for a given prescriber or dispenser.
-    properties:
-      reference:
-        type: string
-        description: A FHIR reference object.
-        example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
+    oneOf:
+      - type: object
+        description: |
+          A reference to a Practitioner resource for a given prescriber or dispenser.
+        properties:
+          reference:
+            type: string
+            description: A FHIR reference object.
+            example: urn:uuid:a8c85454-f8cb-498d-9629-78e2cb5fa47a
+      - type: object
+        description: |
+          An identifier if part of an organization-only responsible practitioner.
+        properties:
+          identifier:
+            oneOf:
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/DinNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GmcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GmpNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NmcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GphcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/HcpcNumber
+              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
   organization:
     type: object
     description: | 

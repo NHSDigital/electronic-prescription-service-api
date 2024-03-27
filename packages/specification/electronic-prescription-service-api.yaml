@@ -70,14 +70,14 @@ info:
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
 
     ### Prescribing
-    The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is in [in production, beta](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
+    The API supports prescribers in primary and secondary care settings. This means prescriptions are sent from a GP or NHS hospital to a pharmacy. For these workflows, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
     * it is available in integration and production
     * we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     ### Dispensing
     This API supports a community pharmacy dispensing workflow.
 
-    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is in [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning:
+    In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
     - it is available for testing in the integration environment, but not for production use
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
@@ -168,37 +168,40 @@ info:
 
     ## Errors
     ### Verification errors
-    | HTTP Status | Error Code    | Example Diagnostic                                                                                                                                                               | Description                                                                                     | Endpoints                                                             |
-    |-------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
-    | 400         | value         | Incorrect FHIR resource type. Expected Bundle.                                                                                                                                   | Body's `resourceType` not the expected value.                                                   | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
-    | 400         | value         | MessageHeader.eventCoding.code must be one of: prescription-order, prescription-order-update, dispense-notification.                                                             | MessageHeader's `eventCoding.code` is not supported.                                            | `/$prepare`                                                           |
-    | 400         | value         | MedicationRequest.intent must be order, original-order or instance-order.                                                                                                        | Bundle contains a plan or reflex. Only order, original-order and instance-order are supported.  | `/$prepare`, `/$process-message`                                      |
-    | 400         | value         | Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received ["1f8cb914-feb0-4ef8-b676-bf2dfa5ac47d", "8b676178-768c-445a-98a9-bea45931fcd8"]. | A MedicationRequest field that should be consistent has multiple unique values across requests. | `/$prepare`, `/$process-message`                                      |
-    | 400         | value         | Bundle resource Practitioner.identifier expected exactly one professional code from GMC/NMC/GPhC/HCPC/professional-code.                                                         | Practitioner contains a gmp-number identifier, which is invalid.                                | `/$prepare`                                                           |
-    | 400         | value         | Expected all MedicationRequests to have a different value for identifier.                                                                                                        | MedicationRequests contains a duplicate identifier.                                             | `/$prepare`                                                           |
-    | 400         | value         | Task.status must be one of: 'in-progress', 'rejected'                                                                                                                            | Specified field must be one of the listed values.                                               | `/Task`                                                               |
-    | 400         | value         | Task.code is required when Task.status is 'in-progress'.                                                                                                                         | Specified field is missing.                                                                     | `/Task`                                                               |
-    | 400         | value         | Task.reasonCode must have a system of 'https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason' and a value from that system.                                      | Specified field is missing a required system.                                                   | `/Task`                                                               |
-    | 400         | value         | The Bundle must contain exactly one MedicationRequest if MessageHeader.eventCoding.code is 'prescription-order-update'.                                                          | The requested operation can only be performed on a single medication request.                   | `/$process-message`                                                   |
-    | 400         | value         | Expected MedicationRequest to have a value for statusReason.                                                                                                                     | Specified field is missing.                                                                     | `/$process-message`                                                   |
-    | 400         | not-supported | Prescribing functionality is disabled.                                                                                                                                           | Requested operation is not enabled/supported.                                                   | `/$prepare`, `/Claim`, `/Task/$release`, `/Task`                      |
-    | 400         | structure     | MedicationRequest cannot contain both medicationReference and medicationCodeableConcept fields.                                                                                  | MedicationRequest contains both `medicationReference` and `medicationCodeableConcept` fields.   | `/$prepare`, `/$process-message`                                      |
-    | 400         | invalid       | practitionerRole.practitioner populated incorrectly. Please populate with Reference to resource within Bundle.                                                                   | The specified field should be a reference but is not.                                           | `/$prepare`, `/$process-message`                                      |
-    | 400         | invalid       | Parameters.parameter("agent").resource.practitioner populated incorrectly. Please populate with Identifier and Display.                                                          | The specified field should not be a reference but is.                                           | `/Claim`, `/Task/$release`, `/Task`                                   |
-    | 400         | invalid       | Unexpected field of practitionerRole.healthcareService.                                                                                                                          | Specified field is provided when it should not have been.                                       | `/$prepare`, `/$process-message`                                      |
-    | 400         | invalid       | Required field organization.partOf is missing.                                                                                                                                   | Specified field is not provided when it should have been.                                       | `/$prepare`, `/$process-message`                                      |
-    | 400         | invalid       | Required parameter owner is missing.                                                                                                                                             | Specified parameter is not provided when it should have been.                                   | `/Task/$release`                                                      |
-    | 400         | invalid       | The claim is missing the required endorsement code.                                                                                                                              | The necessary endorsement code is not included in the claim request.                            | `/Claim`                                                              |
-    | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.           | `/$prepare`, `/Claim`, `/Task/$release`, `/Task`                      |
-    | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                     | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
-    | 403         | forbidden     | Dispensing functionality can only be accessed using the user-restricted access mode.                                                                                             | The requested function requires user-restricted access mode.                                    | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
+    | HTTP Status | Error Code    | Example Diagnostic                                                                                                                                                               | Description                                                                                                    | Endpoints                                                             |
+    |-------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
+    | 400         | value         | Incorrect FHIR resource type. Expected Bundle.                                                                                                                                   | Body's `resourceType` not the expected value.                                                                  | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
+    | 400         | value         | MessageHeader.eventCoding.code must be one of: prescription-order, prescription-order-update, dispense-notification.                                                             | MessageHeader's `eventCoding.code` is not supported.                                                           | `/$prepare`                                                           |
+    | 400         | value         | MedicationRequest.intent must be order, original-order or instance-order.                                                                                                        | Bundle contains a plan or reflex. Only order, original-order and instance-order are supported.                 | `/$prepare`, `/$process-message`                                      |
+    | 400         | value         | Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received ["1f8cb914-feb0-4ef8-b676-bf2dfa5ac47d", "8b676178-768c-445a-98a9-bea45931fcd8"]. | A MedicationRequest field that should be consistent has multiple unique values across requests.                | `/$prepare`, `/$process-message`                                      |
+    | 400         | value         | Bundle resource Practitioner.identifier expected exactly one professional code from GMC/NMC/GPhC/HCPC/professional-code.                                                         | Practitioner contains a gmp-number identifier, which is invalid.                                               | `/$prepare`                                                           |
+    | 400         | value         | Expected all MedicationRequests to have a different value for identifier.                                                                                                        | MedicationRequests contains a duplicate identifier.                                                            | `/$prepare`                                                           |
+    | 400         | value         | Task.status must be one of: 'in-progress', 'rejected'                                                                                                                            | Specified field must be one of the listed values.                                                              | `/Task`                                                               |
+    | 400         | value         | Task.code is required when Task.status is 'in-progress'.                                                                                                                         | Specified field is missing.                                                                                    | `/Task`                                                               |
+    | 400         | value         | Task.reasonCode must have a system of 'https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason' and a value from that system.                                      | Specified field is missing a required system.                                                                  | `/Task`                                                               |
+    | 400         | value         | The Bundle must contain exactly one MedicationRequest if MessageHeader.eventCoding.code is 'prescription-order-update'.                                                          | The requested operation can only be performed on a single medication request.                                  | `/$process-message`                                                   |
+    | 400         | value         | Expected MedicationRequest to have a value for statusReason.                                                                                                                     | Specified field is missing.                                                                                    | `/$process-message`                                                   |
+    | 400         | not-supported | Prescribing functionality is disabled.                                                                                                                                           | Requested operation is not enabled/supported.                                                                  | `/$prepare`, `/Claim`, `/Task/$release`, `/Task`                      |
+    | 400         | structure     | MedicationRequest cannot contain both medicationReference and medicationCodeableConcept fields.                                                                                  | MedicationRequest contains both `medicationReference` and `medicationCodeableConcept` fields.                  | `/$prepare`, `/$process-message`                                      |
+    | 400         | invalid       | practitionerRole.practitioner populated incorrectly. Please populate with Reference to resource within Bundle.                                                                   | The specified field should be a reference but is not.                                                          | `/$prepare`, `/$process-message`                                      |
+    | 400         | invalid       | Parameters.parameter("agent").resource.practitioner populated incorrectly. Please populate with Identifier and Display.                                                          | The specified field should not be a reference but is.                                                          | `/Claim`, `/Task/$release`, `/Task`                                   |
+    | 400         | invalid       | Unexpected field of practitionerRole.healthcareService.                                                                                                                          | Specified field is provided when it should not have been.                                                      | `/$prepare`, `/$process-message`                                      |
+    | 400         | invalid       | Required field organization.partOf is missing.                                                                                                                                   | Specified field is not provided when it should have been.                                                      | `/$prepare`, `/$process-message`                                      |
+    | 400         | invalid       | Required parameter owner is missing.                                                                                                                                             | Specified parameter is not provided when it should have been.                                                  | `/Task/$release`                                                      |
+    | 400         | invalid       | The claim is missing the required endorsement code.                                                                                                                              | The necessary endorsement code is not included in the claim request.                                           | `/Claim`                                                              |
+    | 400         | invalid       | The dispense notification is missing the reimbursement authority and it should be provided.                                                                                      | The necessary extension containing the reimbursement authority is missing and it should be provided.           | `/$process-message`, `#dispense-notification`                         |
+    | 400         | invalid       | The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.                                                                     | The necessary ODS code is not included in the dispense notification and it should be provided.                 | `/$process-message`, `#dispense-notification`                         |
+    | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.                          | `/$prepare`, `/Claim`, `/Task/$release`, `/Task`                      |
+    | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                                    | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
+    | 403         | forbidden     | Dispensing functionality can only be accessed using the user-restricted access mode.                                                                                             | The requested function requires user-restricted access mode.                                                   | `/$prepare`, `/$process-message`, `/Claim`, `/Task/$release`, `/Task` |
 
     ### System Errors
     #### Prescribing Errors
-    | Error Code | EPS Issue Code            | Description                                     | Endpoints   |
-    |------------|---------------------------|-------------------------------------------------|-------------|
-    | invalid    | *N/A*                     | A generic error occurred.                       | `/$prepare` |
-    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists. | `/$prepare` |
+    | Error Code | EPS Issue Code            | Description                                                                 | Endpoints           |
+    |------------|---------------------------|-----------------------------------------------------------------------------|---------------------|
+    | invalid    | *N/A*                     | A generic error occurred.                                                   | `/$prepare`         |
+    | duplicate  | DUPLICATE_PRESCRIPTION_ID | A prescription with the same ID already exists.                             | `/$prepare`         |
+    | invalid    | TOO_FEW_VALUES_SUBMITTED  | A mandatory value is missing, or an insufficient number have been provided. | `/$process-message` |
 
     #### Nominated Release Errors
     | Error Code    | EPS Issue Code        | Description                                             | Endpoints        |
@@ -286,6 +289,7 @@ paths:
 
         This action is done by the prescribing system and API, not the prescriber.
 
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -305,6 +309,11 @@ paths:
                 description: A valid acute, primary care prepare request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Request-200_OK.json
+              acute-multiple-dosages:
+                summary: Acute Multiple Dosages
+                description: A valid acute, primary care prescription order request, with multiple dosage items.
+                value:
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Request-Send-Multiple-Dosages-200_OK.json
               repeat-primary:
                 summary: Repeat
                 description: A Valid repeat, primary care prepare request
@@ -317,7 +326,7 @@ paths:
                   $ref: examples/spec/prepare/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Request-200_OK.json
       responses:
@@ -333,6 +342,11 @@ paths:
                   description: A successful response to an acute, primary care prepare request.
                   value:
                     $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Prepare-Response-200_OK.json
+                acute-multiple-dosages:
+                  summary: Acute Multiple Dosages
+                  description: A successful response to an acute with multiple dosages, primary care prescription order request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Response-Multiple-Dosages-200_OK.json
                 repeat-primary:
                   summary: Repeat
                   description: A successful response to a repeat, primary care request.
@@ -343,6 +357,11 @@ paths:
                   description: A successful response to a eRD, primary care prepare request.
                   value:
                     $ref: examples/spec/prepare/eRD-primary-example-res.json
+                responsible-party-org:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Response-200_OK.json
         "4XX":
           description: Invalid request.
           content:
@@ -367,6 +386,10 @@ paths:
 
         The `#prescription-order` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
+        
+        The only difference between the prepare requests and create request should be the inclusion of the provenance resource.
+
+        To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
       tags:
         - prescribing
       parameters:
@@ -386,6 +409,11 @@ paths:
                 description: A valid acute, primary care prescription order request.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Request-Send-200_OK.json
+              acute-multiple-dosages:
+                summary: Acute Multiple Dosages
+                description: A valid acute, primary care prescription order request, with multiple dosage items.
+                value:
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/3-Process-Request-Multiple-DosageInstructions-Send_200_OK.json
               repeat-primary:
                 summary: Repeat
                 description: A valid repeat, primary care prescription order request.
@@ -398,7 +426,7 @@ paths:
                   $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Request-Send-200_OK.json
         description: ""
@@ -415,6 +443,11 @@ paths:
                   description: A successful response to an acute, primary care prescription order request.
                   value:
                     $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/1-Process-Response-Send-200_OK.json
+                acute-multiple-dosages:
+                  summary: Acute Multiple Dosages
+                  description: A successful response to an acute with multiple dosages, primary care prescription order request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/3-Process-Response-Multiple-DosageInstructions-Send_200_OK.json
                 repeat-primary:
                   summary: Repeat
                   description: A successful response to a repeat, primary care prescription order request.
@@ -425,16 +458,21 @@ paths:
                   description: A successful response to a eRD, primary care prescription order request.
                   value:
                     $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-res.json
+                responsible-party-org:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare request.
+                  value:
+                    $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Response-Send-200_OK.json
         "4XX":
           description: |
             An error occurred as follows:
 
             | HTTP status | Error code                 | Description                                                                                                                 |
             |-------------|----------------------------|-----------------------------------------------------------------------------------------------------------------------------|
-            | 400         | MISSING_DIGITAL_SIGNATURE  | Digital signature not found.                                                                                                |
             | 400         | DUPLICATE_PRESCRIPTION_ID  | Duplicate prescription ID exists.                                                                                           |
             | 400         | FAILURE_TO_PROCESS_MESSAGE | Unable to process message for example where the prescription ID has an invalid checksum or an invalid NHS number is passed. |
-
+            | 400         | MISSING_DIGITAL_SIGNATURE  | Digital signature not found.                                                                                                |
+            | 400         | MISSING_VALUE              | The request contains multiple dosage instruction lines but no corresponding dosage sequence number.                         |
           content:
             application/fhir+json:
               schema:
@@ -489,7 +527,7 @@ paths:
                   $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
               responsible-party-org:
                 summary: Responsible practitioner org 
-                description: a Valid example with an organisation as the responsible practitioner, primary care prepare request.
+                description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/cancellations/3-Process-Request-Cancel-200_OK.json
         description: ""

@@ -18,7 +18,7 @@
     "@types/hapi__cookie": "^12.0.5",
     "@types/hapi__inert": "^5.2.10",
     "@types/hapi__yar": "^10.1.6",
-    "@types/jsonwebtoken": "^9.0.5",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/uuid": "^9.0.8"
   },
   "engines": {
@@ -28,18 +28,18 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@hapi/cookie": "^12.0.1",
-    "@hapi/hapi": "^21.3.3",
+    "@hapi/hapi": "^21.3.7",
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
-    "@hapi/yar": "^11.0.1",
-    "axios": "^1.6.7",
+    "@hapi/yar": "^11.0.2",
+    "axios": "^1.6.8",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
     "handlebars": "^4.7.7",
     "hapi-pino": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pino": "^8.18.0",
-    "pino-pretty": "^10.3.1",
+    "pino": "^8.19.0",
+    "pino-pretty": "^11.0.0",
     "uuid": "^9.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.19.3/xlsx-0.19.3.tgz"
   }

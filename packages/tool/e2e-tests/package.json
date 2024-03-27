@@ -17,13 +17,13 @@
     "license": "ISC",
     "devDependencies": {
         "@types/fhir": "^0.0.41",
-        "@types/lodash": "^4.14.202",
-        "@types/selenium-webdriver": "^4.1.21",
+        "@types/lodash": "^4.17.0",
+        "@types/selenium-webdriver": "^4.1.22",
         "@types/uuid": "^9.0.8",
-        "chromedriver": "^121.0.0",
-        "geckodriver": "^4.3.2",
+        "chromedriver": "^123.0.0",
+        "geckodriver": "^4.3.3",
         "lodash": "^4.17.21",
-        "selenium-webdriver": "^4.17.0",
+        "selenium-webdriver": "^4.18.1",
         "uuid": "^9.0.1"
     }
 }
