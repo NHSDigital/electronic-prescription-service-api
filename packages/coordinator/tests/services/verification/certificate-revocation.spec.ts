@@ -1,7 +1,6 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
-// import {Certificate} from "pkijs"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
 import {X509Certificate, X509Crl} from "@peculiar/x509"
@@ -26,38 +25,17 @@ import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 const logger = pino()
 const mock = new MockAdapter(axios)
 
-// Test certs and CRL
-const crl = TestCertificates.revocationList
-const keyCompromisedCert = crl.revokedCertificates[0]
-// const cACompromisedCert = crl.revokedCertificates[1]
-const ceasedOperationCert = crl.revokedCertificates[2]
-
 //new CRL and certs to be subbed in
-const newCrl = TestCertificates.newRevocationList
-const newKeyCompromisedCert = newCrl.entries[0]
-const newCACompromisedCert = newCrl.entries[1]
-const newCeasedOperationCert = newCrl.entries[2]
+const Crl = TestCertificates.newRevocationList
+const KeyCompromisedCert = Crl.entries[0]
+const CACompromisedCert = Crl.entries[1]
+const CeasedOperationCert = Crl.entries[2]
 
 // Test prescriptions
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
-// const getAllMockCertificates = (): Array<Certificate> => {
-//   const mockCertificateCategories: MockCertificates = {
-//     ...TestCertificates.revokedCertificates,
-//     ...TestCertificates.validCertificates
-//   }
-
-//   const certificates: Array<Certificate> = []
-//   for (const category in mockCertificateCategories) {
-//     const cert = mockCertificateCategories[category]
-//     certificates.push(cert)
-//   }
-
-//   return certificates
-// }
-
-const newGetAllMockCertificates = ():Array<X509Certificate>=> {
+const getAllMockCertificates = ():Array<X509Certificate>=> {
   const mockCertificateCategories: NewMockCertificates = {
     ...TestCertificates.newRevokedCertificates,
     ...TestCertificates.newValidCertificates
@@ -171,38 +149,19 @@ afterEach(() => {
 
 describe("Sanity check mock data", () => {
   test("CRL contains 4 revoked certs", async () => {
-    // const list: CertificateRevocationList = TestCertificates.revocationList
     const newList: X509Crl = TestCertificates.newRevocationList
-    // console.log(newList, 'new lkist here $$$$')
+    expect(newList.entries.length).toEqual(4)
 
-    expect(newList.entries.length).toBeGreaterThanOrEqual(4)
-    const revocationReasons = newList.entries.map((cert) => utils.newGetRevokedCertReasonCode(cert))
+    const revocationReasons = newList.entries.map((cert) => utils.getRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
     expect(revocationReasons).toContain(CRLReasonCode.Superseded)
-    // expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
 
-    // const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
-    // expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
-    // expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
-    // expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
-    // expect(revocationReasons).toContain(CRLReasonCode.Superseded)
   })
 
   test("Certificates have a CRL Distribution Point URL", () => {
-    // const certs = getAllMockCertificates()
-    // certs.forEach((cert: Certificate) => {
-    //   const certString = cert.toString()
-    //   const x509Cert = new X509(certString)
-    //   const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
-
-    //   expect(distributionPointURIs.length).toBe(1)
-    //   for (const url of distributionPointURIs) {
-    //     expect(url).toBe("http://example.com/eps.crl")
-    //   }
-    // })
-    const certs = newGetAllMockCertificates()
+    const certs = getAllMockCertificates()
     certs.forEach((cert: X509Certificate) => {
       const certString = cert.toString()
       const x509Cert = new X509(certString)
@@ -230,29 +189,16 @@ describe("Sanity check mock data", () => {
   })
 
   describe("Mock certs revocation reasons match", () => {
-    // test("KeyCompromise", () => {
-    //   const revReason = utils.getRevokedCertReasonCode(keyCompromisedCert)
-    //   expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
-    // })
     test("NEWKeyCompromise", () => {
-      const revReason = utils.newGetRevokedCertReasonCode(newKeyCompromisedCert)
+      const revReason = utils.getRevokedCertReasonCode(KeyCompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
     })
-
-    // test("CACompromise", () => {
-    //   const revReason = utils.getRevokedCertReasonCode(cACompromisedCert)
-    //   expect(revReason).toEqual(CRLReasonCode.CACompromise)
-    // })
     test("new CACompromise", () => {
-      const revReason = utils.newGetRevokedCertReasonCode(newCACompromisedCert)
+      const revReason = utils.getRevokedCertReasonCode(CACompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.CACompromise)
     })
-    // test("CessationOfOperation", () => {
-    //   const revReason = utils.getRevokedCertReasonCode(ceasedOperationCert)
-    //   expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
-    // })
     test("new CACompromise", () => {
-      const revReason = utils.newGetRevokedCertReasonCode(newCeasedOperationCert)
+      const revReason = utils.getRevokedCertReasonCode(CeasedOperationCert)
       expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
     })
   })
@@ -283,7 +229,7 @@ describe("Certificate found on the CRL", () => {
 
   beforeEach(() => {
     // Ensure the function returns a serial that is in our mock CRL
-    const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
+    const revokedCertSerial = utils.getRevokedCertSerialNumber(KeyCompromisedCert)
     serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
     serialNumberSpy.mockReturnValue(revokedCertSerial)
   })
@@ -297,7 +243,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed before revocation is", () => {
     beforeEach(() => {
       // Ensure signing date is before cert revocation
-      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate = new Date(CeasedOperationCert.revocationDate)
       prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
 
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
@@ -308,26 +254,26 @@ describe("Certificate found on the CRL", () => {
       signedDateSpy.mockRestore()
     })
 
-    test.only.each([
+    test.each([
       // 2.1 - Revoked certificate - AEA-2650/AC 1.2
-      // ["invalid", "KeyCompromise", CRLReasonCode.KeyCompromise, false],
+      ["invalid", "KeyCompromise", CRLReasonCode.KeyCompromise, false],
       ["invalid", "CACompromise", CRLReasonCode.CACompromise, false],
 
       // 1.2.1 - Other handled CRL Reason Code - AEA-2650/AC 1.1
-      ["valid", "Unspecified", CRLReasonCode.Unspecified, true]
-      // ["valid", "AffiliationChanged", CRLReasonCode.AffiliationChanged, true],
-      // ["valid", "Superseded", CRLReasonCode.Superseded, true],
-      // ["valid", "CessationOfOperation", CRLReasonCode.CessationOfOperation, true],
-      // ["valid", "CertificateHold", CRLReasonCode.CertificateHold, true],
-      // ["valid", "RemoveFromCRL", CRLReasonCode.RemoveFromCRL, true],
+      ["valid", "Unspecified", CRLReasonCode.Unspecified, true],
+      ["valid", "AffiliationChanged", CRLReasonCode.AffiliationChanged, true],
+      ["valid", "Superseded", CRLReasonCode.Superseded, true],
+      ["valid", "CessationOfOperation", CRLReasonCode.CessationOfOperation, true],
+      ["valid", "CertificateHold", CRLReasonCode.CertificateHold, true],
+      ["valid", "RemoveFromCRL", CRLReasonCode.RemoveFromCRL, true],
 
       // 1.2.2 - Other handled CRL Reason Code - AEA-2650/comments
-      // ["valid", "PrivilegeWithdrawn", CRLReasonCode.PrivilegeWithdrawn, true],
-      // ["invalid", "AACompromise", CRLReasonCode.AACompromise, false],
+      ["valid", "PrivilegeWithdrawn", CRLReasonCode.PrivilegeWithdrawn, true],
+      ["invalid", "AACompromise", CRLReasonCode.AACompromise, false],
 
       // 1.2.3 - CRL Reason Code not specified - AEA-2650/comments
-      // ["valid", "unspecified (1)", null, true],
-      // ["valid", "unspecified (2)", "", true]
+      ["valid", "unspecified (1)", null, true],
+      ["valid", "unspecified (2)", "", true]
     ])("%s when Reason Code is %s", async (
       outcome: string,
       reasonCodeDesc: string,
@@ -339,9 +285,7 @@ describe("Certificate found on the CRL", () => {
       reasonCodeSpy.mockReturnValue(reasonCode)
 
       // Check certificate validity matches expected
-      console.log("TTTTTTTTTTTTT")
       const isValid = await isSignatureCertificateValid(prescription, logger)
-      console.log(isValid, isCertificateValid, "QQQQQQ")
       expect(isValid).toEqual(isCertificateValid)
 
       // Check log messages
@@ -355,7 +299,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed after revocation is always invalid", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
-      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate = new Date(CeasedOperationCert.revocationDate)
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })

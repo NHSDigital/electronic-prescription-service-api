@@ -4,10 +4,6 @@
 
 import path from "path"
 import * as fs from "fs"
-import {fromBER} from "asn1js"
-import * as asn1js from "asn1js"
-import {X509} from "jsrsasign"
-import {Certificate, CertificateRevocationList} from "pkijs"
 import {X509Crl, X509Certificate} from "@peculiar/x509"
 // import {Asn1Ob} from "pvtsutils"
 
@@ -23,14 +19,6 @@ const getBERFromPEM = (contents: string, delimiter: RegExp): ArrayBufferLike => 
   const b64 = contents.replace(delimiter, "")
   const der = Buffer.from(b64, "base64")
   return new Uint8Array(der).buffer
-}
-
-// Source https://gist.github.com/adisbladis/c84e533e591b1737fedd26658021fef2
-const decodeCertificate = (contents: string) => {
-  const ber = getBERFromPEM(contents, REGEX_CERTIFICATE)
-  const asn1 = asn1js.fromBER(ber)
-  // conevrtFunc(contents)
-  return new Certificate({schema: asn1.result})
 }
 
 const getBufferFromPem = (contents: string): Buffer => {
@@ -54,46 +42,16 @@ const decodeValidCertificate = (contents: string) => {
   return new X509Certificate(ber)
 }
 
-const decodeCrl = (contents: string) => {
-  const ber = getBERFromPEM(contents, REGEX_X509_CRL)
-  const asn1 = fromBER(ber)
-  return new CertificateRevocationList({schema: asn1.result})
-}
-
 const newDecodeCrl = (contents: string) => {
   const ber = getBERFromPEM(contents, REGEX_X509_CRL)
   return new X509Crl(ber)
 }
 
-export const convertCertToX509Cert = (cert: Certificate): X509 => {
-  const certString = cert.toString()
-  return new X509(certString)
-}
-
-type MockCertificates = { [key: string]: Certificate }
 type NewMockCertificates = {[key: string]: X509Certificate}
-
-const validCertificates: MockCertificates = {
-  certificate: decodeCertificate(
-    readFile("certs/validSmartcard.pem")
-  )
-}
 
 const newValidCertificates = {
   certificate: decodeValidCertificate(
     readFile("certs/validSmartcard.pem")
-  )
-}
-
-const revokedCertificates: MockCertificates = {
-  cessationOfOperation: decodeCertificate(
-    readFile("certs/cessationOfOperation.pem")
-  ),
-  keyCompromise: decodeCertificate(
-    readFile("certs/keyCompromise.pem")
-  ),
-  cACompromise: decodeCertificate(
-    readFile("certs/cACompromise.pem")
   )
 }
 
@@ -120,16 +78,12 @@ const staticCaCerts: StaticMockCerts = {
 
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
-const revocationList: CertificateRevocationList = decodeCrl(encodedRevocationList)
 const newRevocationList: X509Crl = newDecodeCrl(encodedRevocationList)
 
-export type {MockCertificates, NewMockCertificates}
+export type {NewMockCertificates}
 export {
   berRevocationList,
-  revocationList,
-  revokedCertificates,
   staticCaCerts,
-  validCertificates,
   newRevocationList,
   newRevokedCertificates,
   newValidCertificates
