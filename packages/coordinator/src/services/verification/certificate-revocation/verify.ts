@@ -10,10 +10,10 @@ import {
   getX509DistributionPointsURI,
   getX509IssuerId,
   getX509SerialNumber,
-  newGetRevocationList,
-  newGetRevokedCertReasonCode,
-  newGetRevokedCertSerialNumber,
-  newWasPrescriptionSignedAfterRevocation
+  getRevocationList,
+  getRevokedCertReasonCode,
+  getRevokedCertSerialNumber,
+  wasPrescriptionSignedAfterRevocation
 } from "./utils"
 import {X509Certificate, X509CrlEntry} from "@peculiar/x509"
 
@@ -45,11 +45,11 @@ const newIsCertificateRevoked = (
   prescriptionSignedDate: Date,
   logger: pino.Logger
 ): boolean => {
-  const certSerialNumber = newGetRevokedCertSerialNumber(cert)
-  const signedAfterRevocation = newWasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
+  const certSerialNumber = getRevokedCertSerialNumber(cert)
+  const signedAfterRevocation = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
 
-  const reasonCode = newGetRevokedCertReasonCode(cert)
+  const reasonCode = getRevokedCertReasonCode(cert)
   if (!reasonCode) {
     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
     return signedAfterRevocation
@@ -75,45 +75,6 @@ const newIsCertificateRevoked = (
       return signedAfterRevocation
   }
 }
-
-// const isCertificateRevoked = (
-//   cert: X509CrlEntry | X509Certificate,
-//   prescriptionSignedDate: Date,
-//   logger: pino.Logger
-// ): boolean => {
-//   const certSerialNumber = newGetRevokedCertSerialNumber(cert)
-//   const signedAfterRevocation = newWasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
-//   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
-
-//   console.log(cert, '****')
-
-//   const reasonCode = newGetRevokedCertReasonCode(cert)
-//   if (!reasonCode) {
-//     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
-//     return signedAfterRevocation
-//   }
-
-//   switch (reasonCode) {
-//     case CRLReasonCode.Unspecified:
-//     case CRLReasonCode.AffiliationChanged:
-//     case CRLReasonCode.Superseded:
-//     case CRLReasonCode.CessationOfOperation:
-//     case CRLReasonCode.CertificateHold:
-//     case CRLReasonCode.RemoveFromCRL:
-//       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
-//       return signedAfterRevocation
-
-//     case CRLReasonCode.KeyCompromise:
-//     case CRLReasonCode.CACompromise:
-//     case CRLReasonCode.AACompromise:
-//       logger.warn(`${errorMsgPrefix} with Reason Code ${reasonCode}`)
-//       return true
-
-//     default:
-//       if (signedAfterRevocation) logger.warn(`${errorMsgPrefix} with unhandled Reason Code ${reasonCode}`)
-//       return signedAfterRevocation
-//   }
-// }
 
 type CertData = {
   certificate: X509,
@@ -217,7 +178,7 @@ const checkForRevocation = async (
       "http://" + CRL_DISTRIBUTION_DOMAIN,
       "https://" + CRL_DISTRIBUTION_PROXY)
     // const crl = await getRevocationList(proxiedDistributionPointURI, logger)
-    const newCrl = await newGetRevocationList(proxiedDistributionPointURI, logger)
+    const newCrl = await getRevocationList(proxiedDistributionPointURI, logger)
     // console.log(newCrl, "newcrl in verify")
     if (!newCrl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
@@ -226,7 +187,7 @@ const checkForRevocation = async (
 
     if(newCrl.entries){
       for (const revokedCertificate of newCrl.entries){
-        const revokedCertificateSerialNumber = newGetRevokedCertSerialNumber(revokedCertificate)
+        const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
         const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
         if(foundMatchingCertificate){
           return newCheckCertificateValidity(

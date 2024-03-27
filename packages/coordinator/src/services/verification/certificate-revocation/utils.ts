@@ -9,7 +9,7 @@ import {X509CrlEntry, X509Crl, X509Certificate} from "@peculiar/x509"
 // const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
-const newGetRevokedCertSerialNumber = (cert: X509CrlEntry | X509Certificate) => {
+const getRevokedCertSerialNumber = (cert: X509CrlEntry | X509Certificate) => {
   const certHexValue = cert.serialNumber
   return certHexValue.toLocaleLowerCase()
 }
@@ -32,7 +32,7 @@ const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescrip
 
 type CertType = X509CrlEntry | X509Certificate;
 
-const newWasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: CertType): boolean => {
+const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: CertType): boolean => {
   if(cert instanceof X509CrlEntry) {
     const certificateRevocationDate = cert.revocationDate
     return prescriptionSignedDate >= certificateRevocationDate
@@ -40,7 +40,7 @@ const newWasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, c
   return false
 }
 
-const newGetRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<X509Crl> => {
+const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<X509Crl> => {
   try {
     const resp = await axios(crlFileUrl, {
       method: "GET",
@@ -57,7 +57,7 @@ const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string
   return parentPrescription.id._attributes.root
 }
 
-const newGetRevokedCertReasonCode = (cert: X509CrlEntry | X509Certificate): number => {
+const getRevokedCertReasonCode = (cert: X509CrlEntry | X509Certificate): number => {
   if(cert instanceof X509CrlEntry) {
     return cert.reason
   }
@@ -93,8 +93,8 @@ export {
   getX509DistributionPointsURI,
   getX509IssuerId,
   getX509SerialNumber,
-  newGetRevokedCertReasonCode,
-  newGetRevokedCertSerialNumber,
-  newWasPrescriptionSignedAfterRevocation,
-  newGetRevocationList
+  getRevokedCertReasonCode,
+  getRevokedCertSerialNumber,
+  wasPrescriptionSignedAfterRevocation,
+  getRevocationList
 }
