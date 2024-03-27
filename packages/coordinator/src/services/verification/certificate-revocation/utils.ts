@@ -1,23 +1,15 @@
-import {fromBER} from "asn1js"
 import axios from "axios"
 import {X509} from "jsrsasign"
 import pino from "pino"
-import {CertificateRevocationList, RevokedCertificate} from "pkijs"
-import {bufferToHexCodes} from "pvutils"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
-import {X509CrlEntry, X509Crl} from "@peculiar/x509"
+import {X509CrlEntry, X509Crl, X509Certificate} from "@peculiar/x509"
 
-const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
+// const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
-const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
-  const certHexValue = cert.userCertificate.valueBlock.valueHexView
-  return bufferToHexCodes(certHexValue).toLocaleLowerCase()
-}
-
-const newGetRevokedCertSerialNumber = (cert: X509CrlEntry) => {
+const newGetRevokedCertSerialNumber = (cert: X509CrlEntry | X509Certificate) => {
   const certHexValue = cert.serialNumber
   return certHexValue.toLocaleLowerCase()
 }
@@ -38,31 +30,14 @@ const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescrip
   }
 }
 
-const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: RevokedCertificate): boolean => {
-  const certificateRevocationDate = new Date(cert.revocationDate.value)
-  return prescriptionSignedDate >= certificateRevocationDate
-}
+type CertType = X509CrlEntry | X509Certificate;
 
-const newWasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: X509CrlEntry): boolean => {
-  const certificateRevocationDate = cert.revocationDate
-  console.log(certificateRevocationDate)
-  return prescriptionSignedDate >= certificateRevocationDate
-}
-
-const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<CertificateRevocationList> => {
-  try {
-    const resp = await axios(crlFileUrl, {
-      method: "GET",
-      responseType: "arraybuffer",
-      // Manually set timeout to avoid waiting indefinitely, which would make the original request fail as well
-      timeout: CRL_REQUEST_TIMEOUT_IN_MS
-    })
-    const asn1crl = fromBER(resp.data)
-
-    return new CertificateRevocationList({schema: asn1crl.result})
-  } catch(e) {
-    logger.error(`Unable to fetch CRL from ${crlFileUrl}: ${e}`)
+const newWasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: CertType): boolean => {
+  if(cert instanceof X509CrlEntry) {
+    const certificateRevocationDate = cert.revocationDate
+    return prescriptionSignedDate >= certificateRevocationDate
   }
+  return false
 }
 
 const newGetRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<X509Crl> => {
@@ -82,15 +57,11 @@ const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string
   return parentPrescription.id._attributes.root
 }
 
-const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
-  const crlExtension = cert.crlEntryExtensions?.extensions.find(ext => ext.extnID === CRL_REASON_CODE_EXTENSION)
-  return crlExtension ? parseInt(crlExtension.parsedValue.valueBlock) : null
-}
-
-const newGetRevokedCertReasonCode = (cert: X509CrlEntry): number => {
-  const crlExtension = cert.extensions.find(extension => extension.type === CRL_REASON_CODE_EXTENSION)
-
-  return crlExtension? cert.reason : null
+const newGetRevokedCertReasonCode = (cert: X509CrlEntry | X509Certificate): number => {
+  if(cert instanceof X509CrlEntry) {
+    return cert.reason
+  }
+  return null
 }
 
 /**
@@ -118,14 +89,10 @@ export {
   getCertificateTextFromPrescription,
   getPrescriptionId,
   getPrescriptionSignatureDate,
-  getRevocationList,
-  getRevokedCertReasonCode,
-  getRevokedCertSerialNumber,
   getSubCaCerts,
   getX509DistributionPointsURI,
   getX509IssuerId,
   getX509SerialNumber,
-  wasPrescriptionSignedAfterRevocation,
   newGetRevokedCertReasonCode,
   newGetRevokedCertSerialNumber,
   newWasPrescriptionSignedAfterRevocation,
