@@ -6,7 +6,6 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
 import {X509CrlEntry, X509Crl, X509Certificate} from "@peculiar/x509"
 
-// const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
 const getRevokedCertSerialNumber = (cert: X509CrlEntry | X509Certificate) => {
@@ -57,11 +56,8 @@ const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string
   return parentPrescription.id._attributes.root
 }
 
-const getRevokedCertReasonCode = (cert: X509CrlEntry | X509Certificate): number => {
-  if(cert instanceof X509CrlEntry) {
-    return cert.reason
-  }
-  return null
+const getRevokedCertReasonCode = (cert: X509CrlEntry): number => {
+  return cert.reason
 }
 
 /**

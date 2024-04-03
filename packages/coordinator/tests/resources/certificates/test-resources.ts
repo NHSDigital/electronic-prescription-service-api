@@ -5,7 +5,6 @@
 import path from "path"
 import * as fs from "fs"
 import {X509Crl, X509Certificate} from "@peculiar/x509"
-// import {Asn1Ob} from "pvtsutils"
 
 const REGEX_CERTIFICATE = /(-----(BEGIN|END) CERTIFICATE-----|[\n\r])/g
 const REGEX_X509_CRL = /(-----(BEGIN|END) X509 CRL-----|[\n\r])/g

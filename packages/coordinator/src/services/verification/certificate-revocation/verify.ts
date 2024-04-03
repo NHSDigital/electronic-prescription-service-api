@@ -40,7 +40,7 @@ const CRL_DISTRIBUTION_PROXY = process.env.CRL_DISTRIBUTION_PROXY
  * @returns true if the certificate is considered revoked, false otherwise
  */
 
-const newIsCertificateRevoked = (
+const isCertificateRevoked = (
   cert: X509CrlEntry | X509Certificate,
   prescriptionSignedDate: Date,
   logger: pino.Logger
@@ -49,7 +49,12 @@ const newIsCertificateRevoked = (
   const signedAfterRevocation = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
 
-  const reasonCode = getRevokedCertReasonCode(cert)
+  let reasonCode = null
+
+  if(cert instanceof X509CrlEntry) {
+    reasonCode = getRevokedCertReasonCode(cert)
+  }
+
   if (!reasonCode) {
     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
     return signedAfterRevocation
@@ -214,7 +219,7 @@ const newCheckCertificateValidity = (
   prescriptionSignedDate: Date,
   prescriptionId: string,
   logger: pino.Logger): boolean => {
-  const isValid = !newIsCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
+  const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
 
   if (isValid) {
     let msg = `Certificate with serial ${serialNumber} found on CRL, but `
