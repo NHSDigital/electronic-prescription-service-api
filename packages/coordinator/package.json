@@ -23,6 +23,8 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
+    "@peculiar/x509": "^1.9.7",
+    "@types/xsd-schema-validator": "^0.5.7",
     "@hapi/hapi": "^21.3.7",
     "@xmldom/xmldom": "^0.8.10",
     "asn1js": "^3.0.5",
@@ -37,7 +39,6 @@
     "moment": "^2.30.1",
     "mustache": "^4.0.1",
     "pino": "^8.19.0",
-    "pvutils": "^1.1.3",
     "uuid": "^9.0.1",
     "xml-c14n": "^0.0.6",
     "xml-js": "^1.6.11",
