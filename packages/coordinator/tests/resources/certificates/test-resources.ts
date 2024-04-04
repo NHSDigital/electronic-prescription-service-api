@@ -31,7 +31,7 @@ const getBufferFromPem = (contents: string): Buffer => {
   return Buffer.from(base64Clean, "base64")
 }
 
-const newDecodeCertificate = (contents: string) => {
+const decodeCertificate = (contents: string) => {
   const der = getBufferFromPem(contents)
   return new X509Certificate(der)
 }
@@ -41,27 +41,27 @@ const decodeValidCertificate = (contents: string) => {
   return new X509Certificate(ber)
 }
 
-const newDecodeCrl = (contents: string) => {
+const decodeCrl = (contents: string) => {
   const ber = getBERFromPEM(contents, REGEX_X509_CRL)
   return new X509Crl(ber)
 }
 
-type NewMockCertificates = {[key: string]: X509Certificate}
+type MockCertificates = {[key: string]: X509Certificate}
 
-const newValidCertificates = {
+const validCertificates = {
   certificate: decodeValidCertificate(
     readFile("certs/validSmartcard.pem")
   )
 }
 
-const newRevokedCertificates: NewMockCertificates = {
-  cessationOfOperation: newDecodeCertificate(
+const revokedCertificates: MockCertificates = {
+  cessationOfOperation: decodeCertificate(
     readFile("certs/cessationOfOperation.pem")
   ),
-  keyCompromise: newDecodeCertificate(
+  keyCompromise: decodeCertificate(
     readFile("certs/keyCompromise.pem")
   ),
-  cACompromise: newDecodeCertificate(
+  cACompromise: decodeCertificate(
     readFile("certs/cACompromise.pem")
   )
 }
@@ -77,13 +77,13 @@ const staticCaCerts: StaticMockCerts = {
 
 const encodedRevocationList = readFile("crl/ca.crl")
 const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
-const newRevocationList: X509Crl = newDecodeCrl(encodedRevocationList)
+const revocationList: X509Crl = decodeCrl(encodedRevocationList)
 
-export type {NewMockCertificates}
+export type {MockCertificates}
 export {
   berRevocationList,
   staticCaCerts,
-  newRevocationList,
-  newRevokedCertificates,
-  newValidCertificates
+  revocationList,
+  revokedCertificates,
+  validCertificates
 }

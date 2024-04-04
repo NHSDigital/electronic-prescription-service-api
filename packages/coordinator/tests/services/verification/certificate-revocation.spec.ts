@@ -19,14 +19,14 @@ import {
   parseCertificateFromPrescription
 } from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
-import {NewMockCertificates} from "../../resources/certificates/test-resources"
+import {MockCertificates} from "../../resources/certificates/test-resources"
 import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 
 const logger = pino()
 const mock = new MockAdapter(axios)
 
 //new CRL and certs to be subbed in
-const Crl = TestCertificates.newRevocationList
+const Crl = TestCertificates.revocationList
 const KeyCompromisedCert = Crl.entries[0]
 const CACompromisedCert = Crl.entries[1]
 const CeasedOperationCert = Crl.entries[2]
@@ -36,9 +36,9 @@ const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignatu
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
 const getAllMockCertificates = ():Array<X509Certificate>=> {
-  const mockCertificateCategories: NewMockCertificates = {
-    ...TestCertificates.newRevokedCertificates,
-    ...TestCertificates.newValidCertificates
+  const mockCertificateCategories: MockCertificates = {
+    ...TestCertificates.revokedCertificates,
+    ...TestCertificates.validCertificates
   }
   const certificates: Array<X509Certificate> = []
   for (const category in mockCertificateCategories) {
@@ -149,7 +149,7 @@ afterEach(() => {
 
 describe("Sanity check mock data", () => {
   test("CRL contains 4 revoked certs", async () => {
-    const newList: X509Crl = TestCertificates.newRevocationList
+    const newList: X509Crl = TestCertificates.revocationList
     expect(newList.entries.length).toEqual(4)
 
     const revocationReasons = newList.entries.map((cert) => utils.getRevokedCertReasonCode(cert))
