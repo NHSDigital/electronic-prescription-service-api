@@ -50,7 +50,6 @@ const isCertificateRevoked = (
   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
 
   let reasonCode = null
-
   if(cert instanceof X509CrlEntry) {
     reasonCode = getRevokedCertReasonCode(cert)
   }
