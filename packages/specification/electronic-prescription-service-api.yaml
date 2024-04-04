@@ -313,7 +313,7 @@ paths:
                 summary: Acute Multiple Dosages
                 description: A valid acute, primary care prescription order request, with multiple dosage items.
                 value:
-                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Request-Send-Multiple-Dosages-200_OK.json
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Request-Multiple-Dosages-200_OK.json
               repeat-primary:
                 summary: Repeat
                 description: A Valid repeat, primary care prepare request
