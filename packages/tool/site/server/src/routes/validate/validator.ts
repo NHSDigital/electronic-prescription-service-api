@@ -1,11 +1,11 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession} from "../../services/session"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {FhirResource} from "fhir/r4"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/validate",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const validateRequest = request.payload as FhirResource

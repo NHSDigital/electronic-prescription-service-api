@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   getSessionValueOrDefault,
   setSessionValue,
@@ -20,7 +20,7 @@ export interface MedicationRequest extends fhir.MedicationRequest{
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/dispense/dispense",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const dispenseNotificationRequest = request.payload as fhir.Bundle
@@ -77,7 +77,7 @@ export default [
     }
   },
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/dispenseNotifications/{prescriptionId}",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = request.params.prescriptionId

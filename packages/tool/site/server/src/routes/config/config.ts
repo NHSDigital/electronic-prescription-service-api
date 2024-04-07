@@ -1,8 +1,8 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {setSessionValue} from "../../services/session"
 
 export default {
-  method: "POST",
+  method: "POST" as RouteDefMethods,
   path: "/config",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const payload = request.payload as {

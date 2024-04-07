@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   appendToSessionValue,
   getApigeeAccessTokenFromSession,
@@ -41,7 +41,7 @@ function generateProvenance(prepare: SuccessfulPrepareData, signatureResponse: S
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/api/prescribe/send",
     options: {
       auth: false

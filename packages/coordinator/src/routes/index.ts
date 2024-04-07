@@ -13,13 +13,13 @@ import claimRoutes from "./dispense/claim"
 import {taskTrackerRoutes} from "./tracker"
 import {isProd} from "../utils/environment"
 
-const ptlRoutes = [
+const ptlRoutes: Array<ServerRoute> = [
   ...convertPrescriptionRoutes,
   ...validatorRoutes,
   ...doseToTextRoutes
 ]
 
-const mainRoutes = [
+const mainRoutes: Array<ServerRoute> = [
   ...preparePrescriptionRoutes,
   ...processPrescriptionRoutes,
   ...releaseRoutes,
@@ -30,7 +30,7 @@ const mainRoutes = [
   ...metadataRoutes
 ]
 
-const healthcheckRoutes = [
+const healthcheckRoutes: Array<ServerRoute> = [
   ...statusRoutes
 ]
 

@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   appendToSessionValue,
   getSessionValue,
@@ -12,7 +12,7 @@ import {getEpsClient} from "../../services/communication/eps-client"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/dispense/withdraw",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const withdrawRequest = request.payload as Task

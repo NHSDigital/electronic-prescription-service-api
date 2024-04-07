@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   appendToSessionValueWithoutDuplication,
   getApigeeAccessTokenFromSession,
@@ -11,7 +11,7 @@ import {getEpsClient} from "../../services/communication/eps-client"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/dispense/claim",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const payload = request.payload as {prescriptionId: string, claim: Claim}
@@ -39,7 +39,7 @@ export default [
     }
   },
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/claim/{prescriptionId}",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = request.params.prescriptionId

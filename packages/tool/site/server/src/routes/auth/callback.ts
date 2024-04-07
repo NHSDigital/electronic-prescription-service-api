@@ -1,4 +1,4 @@
-import Hapi, {Request} from "@hapi/hapi"
+import Hapi, {Request, RouteDefMethods} from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {URLSearchParams} from "url"
 import {createCombinedAuthSession, createSandboxAuthSession, createSeparateAuthSession} from "../../services/session"
@@ -15,7 +15,7 @@ import {
 } from "../../oauthUtils"
 
 export default {
-  method: "GET",
+  method: "GET" as RouteDefMethods,
   path: "/callback",
   options: {
     auth: false

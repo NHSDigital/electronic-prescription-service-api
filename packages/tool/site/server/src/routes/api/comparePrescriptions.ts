@@ -1,9 +1,9 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getSessionValue, getSessionValueOrDefault, setSessionValue} from "../../services/session"
 
 export default [
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/api/compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const comparePrescriptions = getSessionValueOrDefault("compare_prescriptions", request, {
@@ -16,7 +16,7 @@ export default [
     }
   },
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/api/compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const comparePrescriptionsRequest = request.payload as {name: string, id: string}
@@ -48,7 +48,7 @@ export default [
     }
   },
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/api/reset-compare-prescriptions",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       setSessionValue("compare_prescriptions", {prescription1:"", prescription2:""}, request)
@@ -56,7 +56,7 @@ export default [
     }
   },
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/api/remove-compare-prescription",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionToRemove = request.payload as {name: string, id: string}

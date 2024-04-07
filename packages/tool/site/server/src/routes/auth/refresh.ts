@@ -1,11 +1,11 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {CONFIG} from "../../config"
 import {refreshToken} from "../../oauthUtils"
 import {getSessionValue, setSessionValue} from "../../services/session"
 import {getUtcEpochSeconds} from "../util"
 
 export default {
-  method: "POST",
+  method: "POST" as RouteDefMethods,
   path: "/auth/refresh",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const oauthData = getSessionValue("oauth_data", request)

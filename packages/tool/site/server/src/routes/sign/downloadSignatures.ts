@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
 import {
   getPrBranchUrl,
@@ -14,7 +14,7 @@ import {getSessionPrescriptionIdsArray} from "../util"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/sign/download-signatures",
     options: {
       auth: false

@@ -1,6 +1,6 @@
 import * as translator from "../services/translation/request"
 import {spineClient} from "../services/communication/spine-client"
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   BASE_PATH,
   ContentTypes,
@@ -20,7 +20,7 @@ export default [
       Send a signed message on to SPINE.
     */
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$process-message`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const bundle = getPayload(request) as fhir.Bundle
