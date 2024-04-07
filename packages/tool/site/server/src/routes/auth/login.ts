@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {clearSession, setSessionValue} from "../../services/session"
 import {createOAuthState, getRegisteredCallbackUrl} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
@@ -34,7 +34,7 @@ function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: str
 }
 
 export default {
-  method: "POST",
+  method: "POST" as RouteDefMethods,
   path: "/login",
   options: {
     auth: false

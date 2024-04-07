@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getMedicationRequests} from "../../common/getResources"
 import {getSessionValueOrDefault, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
@@ -7,7 +7,7 @@ import {PrescriptionId} from "../util"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/prescribe/edit",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prepareBundles = Array.from(request.payload as Array<fhir.Bundle>)

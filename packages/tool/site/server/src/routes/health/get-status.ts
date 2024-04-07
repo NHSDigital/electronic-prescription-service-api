@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods, RouteOptions} from "@hapi/hapi"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {CONFIG} from "../../config"
 import {getSigningClient} from "../../services/communication/signing-client"
@@ -29,11 +29,11 @@ function createStatusResponse(
 
 export default [
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/_status",
     options: {
       auth: false
-    },
+    } as RouteOptions,
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(200, {
         // todo
@@ -41,11 +41,11 @@ export default [
     }
   },
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/_healthcheck",
     options: {
       auth: false
-    },
+    } as RouteOptions,
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const epsClient = getEpsClient("", request)
       const signingClient = getSigningClient(request, "")

@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods, RouteOptions} from "@hapi/hapi"
 import routes from "./routes"
 import HapiPino from "hapi-pino"
 import Vision from "@hapi/vision"
@@ -207,7 +207,7 @@ function addViewRoutes(server: Hapi.Server) {
 
   function addView(path: string, skipAuth?: boolean): Hapi.ServerRoute {
     const viewRoute = {
-      method: "GET",
+      method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
       handler: {
         view: {
@@ -225,7 +225,7 @@ function addViewRoutes(server: Hapi.Server) {
         ...viewRoute,
         options: {
           auth: false
-        }
+        } as RouteOptions
       }
     }
 

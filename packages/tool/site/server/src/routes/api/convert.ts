@@ -1,11 +1,11 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import * as fhir from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession} from "../../services/session"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/api/convert",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const resource = request.payload as fhir.FhirResource

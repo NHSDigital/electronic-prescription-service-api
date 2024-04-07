@@ -1,11 +1,11 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession, removeFromSessionValue} from "../../services/session"
 import {Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/dispense/return",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const releaseRequest = request.payload as Task

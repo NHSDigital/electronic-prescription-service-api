@@ -1,9 +1,9 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {clearSession} from "../../services/session"
 import {CONFIG} from "../../config"
 
 export default {
-  method: "GET",
+  method: "GET" as RouteDefMethods,
   path: "/logout",
   options: {
     auth: false
