@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
@@ -30,7 +30,7 @@ function createStatusResponse(
 
 export default [
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(200, {
@@ -40,7 +40,7 @@ export default [
     }
   },
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(500, {
@@ -49,7 +49,7 @@ export default [
     }
   },
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/_validatormetrics/{path*}",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       try {

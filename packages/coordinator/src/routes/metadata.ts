@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import * as fs from "fs"
 import path from "path"
 import pino from "pino"
@@ -147,7 +147,7 @@ function createCapabilityStatement(manifest: Manifest) {
 }
 
 export default [{
-  method: "GET",
+  method: "GET" as RouteDefMethods,
   path: "/metadata",
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const manifest = JSON.parse(readManifestFile(request.logger))

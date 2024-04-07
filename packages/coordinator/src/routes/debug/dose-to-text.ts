@@ -8,13 +8,14 @@ import {fhir, validationErrors as errors} from "@models"
 import {stringifyDosages} from "../../services/translation/request/dosage"
 import {getMedicationDispenses, getMedicationRequests} from "../../services/translation/common/getResourcesOfType"
 import {isBundle, isMedicationDispense, isMedicationRequest} from "../../utils/type-guards"
+import {RouteDefMethods} from "@hapi/hapi"
 
 export default [
   /*
     Convert a FHIR dosage instruction to plain text.
   */
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$dose-to-text`,
     handler: externalValidator(async (request, responseToolkit) => {
       const payload = getPayload(request) as fhir.Resource
