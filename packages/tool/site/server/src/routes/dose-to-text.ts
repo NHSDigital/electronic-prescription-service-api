@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession} from "../services/session"
 import {getEpsClient} from "../services/communication/eps-client"
 import * as fhir from "fhir/r4"
@@ -10,7 +10,7 @@ export interface DosageTranslation {
 export type DosageTranslationArray = Array<DosageTranslation>
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/dose-to-text",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const doseToTextRequest = request.payload as fhir.FhirResource

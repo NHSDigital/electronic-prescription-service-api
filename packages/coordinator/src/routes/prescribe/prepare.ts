@@ -1,5 +1,5 @@
 import * as translator from "../../services/translation/request"
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   BASE_PATH,
   ContentTypes,
@@ -18,7 +18,7 @@ export default [
       Convert a FHIR prescription into the HL7 V3 signature fragments to be signed by the prescriber.
     */
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$prepare`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const bundle = getPayload(request) as fhir.Bundle

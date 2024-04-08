@@ -23,25 +23,26 @@ import sendPrescriptions from "./api/send"
 import doseToTextRoutes from "./dose-to-text"
 import {isSandbox} from "../services/environment"
 import {CONFIG} from "../config"
+import {ServerRoute} from "@hapi/hapi"
 
-const authRoutes = [
+const authRoutes: Array<ServerRoute> = [
   loginRoute,
   oauthCallbackRoute,
   refreshRoute,
   logoutRoute
 ]
 
-const apiRoutes = [
+const apiRoutes: Array<ServerRoute> = [
   ...comparePrescriptions,
   ...convertRoutes,
   ...sendPrescriptions
 ]
 
-const stateRoutes = [
+const stateRoutes: Array<ServerRoute> = [
   ...sessionRoutes
 ]
 
-const prescribingRoutes = [
+const prescribingRoutes: Array<ServerRoute> = [
   ...editRoutes,
   ...resetRoutes,
   ...signRoutes,
@@ -49,11 +50,11 @@ const prescribingRoutes = [
   ...cancelRoutes
 ]
 
-const validateRoutes = [
+const validateRoutes: Array<ServerRoute> = [
   ...validatorRoutes
 ]
 
-const dispensingRoutes = [
+const dispensingRoutes: Array<ServerRoute> = [
   ...releaseRoutes,
   ...returnRoutes,
   ...dispenseRoutes,
@@ -61,15 +62,15 @@ const dispensingRoutes = [
   ...withdrawRoutes
 ]
 
-const trackerRoutes = [
+const trackerRoutes: Array<ServerRoute> = [
   ...searchRoutes
 ]
 
-const healthcheckRoutes = [
+const healthcheckRoutes: Array<ServerRoute> = [
   ...statusRoutes
 ]
 
-const routes = isSandbox(CONFIG.environment)
+const routes: Array<ServerRoute> = isSandbox(CONFIG.environment)
   ? [
     ...healthcheckRoutes,
     ...doseToTextRoutes,

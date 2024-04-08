@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {fhir} from "@models"
 import {BASE_PATH, ContentTypes} from "../util"
 import {getStatusCode} from "../../utils/status-code"
@@ -73,7 +73,7 @@ export const queryParamDefinitions: Array<QueryParamDefinition> = [
 /* The NHS111 Tracker */
 
 export default [{
-  method: "GET",
+  method: "GET" as RouteDefMethods,
   path: `${BASE_PATH}/Task`,
   handler: async (
     request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit

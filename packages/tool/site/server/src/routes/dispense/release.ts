@@ -1,4 +1,4 @@
-import Hapi from "@hapi/hapi"
+import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {
   getSessionValue,
   setSessionValue,
@@ -24,7 +24,7 @@ interface DispenserDetails {
 
 export default [
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: "/dispense/release",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const releaseRequest = request.payload as Parameters
@@ -75,7 +75,7 @@ export default [
     }
   },
   {
-    method: "GET",
+    method: "GET" as RouteDefMethods,
     path: "/dispense/release/{prescriptionId}",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const prescriptionId = request.params.prescriptionId

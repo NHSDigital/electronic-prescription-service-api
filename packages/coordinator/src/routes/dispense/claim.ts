@@ -14,13 +14,14 @@ import {spineClient} from "../../services/communication/spine-client"
 import {getScope, getSdsRoleProfileId, getSdsUserUniqueId} from "../../utils/headers"
 import {getStatusCode} from "../../utils/status-code"
 import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
+import {RouteDefMethods} from "@hapi/hapi"
 
 export default [
   /*
     Send a claim to SPINE
   */
   {
-    method: "POST",
+    method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Claim`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
