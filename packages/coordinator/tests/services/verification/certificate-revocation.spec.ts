@@ -1,9 +1,9 @@
 import axios from "axios"
 import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
-import {Certificate, CertificateRevocationList} from "pkijs"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
+import {X509Certificate, X509Crl} from "@peculiar/x509"
 
 process.env.CRL_DISTRIBUTION_DOMAIN = "crl.nhs.uk"
 process.env.CRL_DISTRIBUTION_PROXY = "egress.ptl.api.platform.nhs.uk:700"
@@ -25,23 +25,23 @@ import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 const logger = pino()
 const mock = new MockAdapter(axios)
 
-// Test certs and CRL
+// Test CRL and certs to be subbed in
 const crl = TestCertificates.revocationList
-const keyCompromisedCert = crl.revokedCertificates[0]
-const cACompromisedCert = crl.revokedCertificates[1]
-const ceasedOperationCert = crl.revokedCertificates[2]
+const keyCompromisedCert = crl.entries[0]
+const cACompromisedCert = crl.entries[1]
+const ceasedOperationCert = crl.entries[2]
 
 // Test prescriptions
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
-const getAllMockCertificates = (): Array<Certificate> => {
+const getAllMockCertificates = (): Array<X509Certificate> => {
   const mockCertificateCategories: MockCertificates = {
     ...TestCertificates.revokedCertificates,
     ...TestCertificates.validCertificates
   }
 
-  const certificates: Array<Certificate> = []
+  const certificates: Array<X509Certificate> = []
   for (const category in mockCertificateCategories) {
     const cert = mockCertificateCategories[category]
     certificates.push(cert)
@@ -149,10 +149,10 @@ afterEach(() => {
 
 describe("Sanity check mock data", () => {
   test("CRL contains 4 revoked certs", async () => {
-    const list: CertificateRevocationList = TestCertificates.revocationList
-    expect(list.revokedCertificates.length).toBeGreaterThanOrEqual(4)
+    const list: X509Crl = TestCertificates.revocationList
+    expect(list.entries.length).toEqual(4)
 
-    const revocationReasons = list.revokedCertificates.map((cert) => utils.getRevokedCertReasonCode(cert))
+    const revocationReasons = list.entries.map((cert) => utils.getRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
@@ -161,7 +161,7 @@ describe("Sanity check mock data", () => {
 
   test("Certificates have a CRL Distribution Point URL", () => {
     const certs = getAllMockCertificates()
-    certs.forEach((cert: Certificate) => {
+    certs.forEach((cert: X509Certificate) => {
       const certString = cert.toString()
       const x509Cert = new X509(certString)
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
@@ -245,7 +245,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed before revocation is", () => {
     beforeEach(() => {
       // Ensure signing date is before cert revocation
-      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
 
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
@@ -301,7 +301,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed after revocation is always invalid", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
-      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate.value)
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })

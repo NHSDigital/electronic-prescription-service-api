@@ -1,19 +1,16 @@
-import {fromBER} from "asn1js"
 import axios from "axios"
 import {X509} from "jsrsasign"
 import pino from "pino"
-import {CertificateRevocationList, RevokedCertificate} from "pkijs"
-import {bufferToHexCodes} from "pvutils"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
+import {X509CrlEntry, X509Crl} from "@peculiar/x509"
 
-const CRL_REASON_CODE_EXTENSION = "2.5.29.21"
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
-const getRevokedCertSerialNumber = (cert: RevokedCertificate): string => {
-  const certHexValue = cert.userCertificate.valueBlock.valueHexView
-  return bufferToHexCodes(certHexValue).toLocaleLowerCase()
+const getRevokedCertSerialNumber = (cert: X509CrlEntry) => {
+  const certHexValue = cert.serialNumber
+  return certHexValue.toLocaleLowerCase()
 }
 
 const getPrescriptionSignatureDate = (parentPrescription: hl7V3.ParentPrescription): Date => {
@@ -32,12 +29,12 @@ const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescrip
   }
 }
 
-const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: RevokedCertificate): boolean => {
-  const certificateRevocationDate = new Date(cert.revocationDate.value)
+const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: X509CrlEntry): boolean => {
+  const certificateRevocationDate = cert.revocationDate
   return prescriptionSignedDate >= certificateRevocationDate
 }
 
-const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<CertificateRevocationList> => {
+const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<X509Crl> => {
   try {
     const resp = await axios(crlFileUrl, {
       method: "GET",
@@ -45,8 +42,7 @@ const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promi
       // Manually set timeout to avoid waiting indefinitely, which would make the original request fail as well
       timeout: CRL_REQUEST_TIMEOUT_IN_MS
     })
-    const asn1crl = fromBER(resp.data)
-    return new CertificateRevocationList({schema: asn1crl.result})
+    return new X509Crl(resp.data)
   } catch(e) {
     logger.error(`Unable to fetch CRL from ${crlFileUrl}: ${e}`)
   }
@@ -56,9 +52,8 @@ const getPrescriptionId = (parentPrescription: hl7V3.ParentPrescription): string
   return parentPrescription.id._attributes.root
 }
 
-const getRevokedCertReasonCode = (cert: RevokedCertificate): number => {
-  const crlExtension = cert.crlEntryExtensions?.extensions.find(ext => ext.extnID === CRL_REASON_CODE_EXTENSION)
-  return crlExtension ? parseInt(crlExtension.parsedValue.valueBlock) : null
+const getRevokedCertReasonCode = (cert: X509CrlEntry): number => {
+  return cert.reason
 }
 
 /**
