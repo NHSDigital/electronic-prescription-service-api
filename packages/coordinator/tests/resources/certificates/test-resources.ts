@@ -48,7 +48,7 @@ const decodeCrl = (contents: string) => {
 
 type MockCertificates = {[key: string]: X509Certificate}
 
-const validCertificates = {
+const validCertificates: MockCertificates = {
   certificate: decodeValidCertificate(
     readFile("certs/validSmartcard.pem")
   )
@@ -82,8 +82,8 @@ const revocationList: X509Crl = decodeCrl(encodedRevocationList)
 export type {MockCertificates}
 export {
   berRevocationList,
-  staticCaCerts,
   revocationList,
   revokedCertificates,
+  staticCaCerts,
   validCertificates
 }

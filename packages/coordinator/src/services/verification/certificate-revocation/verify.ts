@@ -178,20 +178,18 @@ const checkForRevocation = async (
     const proxiedDistributionPointURI = distributionPointURI.replace(
       "http://" + CRL_DISTRIBUTION_DOMAIN,
       "https://" + CRL_DISTRIBUTION_PROXY)
-    // const crl = await getRevocationList(proxiedDistributionPointURI, logger)
-    const newCrl = await getRevocationList(proxiedDistributionPointURI, logger)
-    // console.log(newCrl, "newcrl in verify")
-    if (!newCrl) {
+    const crl = await getRevocationList(proxiedDistributionPointURI, logger)
+    if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)
       return true
     }
 
-    if(newCrl.entries){
-      for (const revokedCertificate of newCrl.entries){
+    if(crl.entries){
+      for (const revokedCertificate of crl.entries){
         const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
         const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
         if(foundMatchingCertificate){
-          return newCheckCertificateValidity(
+          return checkCertificateValidity(
             revokedCertificate,
             serialNumber,
             prescriptionSignedDate,
@@ -209,12 +207,13 @@ const checkForRevocation = async (
   return true
 }
 
-const newCheckCertificateValidity = (
+const checkCertificateValidity = (
   revokedCertificate: X509CrlEntry,
   serialNumber: string,
   prescriptionSignedDate: Date,
   prescriptionId: string,
-  logger: pino.Logger): boolean => {
+  logger: pino.Logger
+): boolean => {
   const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
 
   if (isValid) {
