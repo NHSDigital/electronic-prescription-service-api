@@ -49,8 +49,7 @@ const isCertificateRevoked = (
   const signedAfterRevocation = wasPrescriptionSignedAfterRevocation(prescriptionSignedDate, cert)
   const errorMsgPrefix = `Certificate with serial '${certSerialNumber}' found on CRL`
 
-  let reasonCode = getRevokedCertReasonCode(cert)
-
+  const reasonCode = getRevokedCertReasonCode(cert)
   if (!reasonCode) {
     logger.error(`Cannot extract Reason Code from CRL for certificate with serial ${certSerialNumber}`)
     return signedAfterRevocation
@@ -198,6 +197,7 @@ const checkForRevocation = async (
             logger
           )
         }
+
       }
     }else{
       logger.info(`No revokedCertificates found on CRL at ${distributionPointURI}`)

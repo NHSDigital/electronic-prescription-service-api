@@ -35,11 +35,12 @@ const ceasedOperationCert = crl.entries[2]
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
 // const prescriptionWithoutCrl = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
 
-const getAllMockCertificates = ():Array<X509Certificate>=> {
+const getAllMockCertificates = (): Array<X509Certificate> => {
   const mockCertificateCategories: MockCertificates = {
     ...TestCertificates.revokedCertificates,
     ...TestCertificates.validCertificates
   }
+
   const certificates: Array<X509Certificate> = []
   for (const category in mockCertificateCategories) {
     const cert = mockCertificateCategories[category]
@@ -117,7 +118,7 @@ let loggerInfo: jest.SpyInstance
 let loggerWarn: jest.SpyInstance
 let loggerError: jest.SpyInstance
 
-// Log message pattern
+// Log message patterns
 const MSG_VALID_CERT = /Valid signature found for prescription (.*) signed by cert (.*)/
 // eslint-disable-next-line max-len
 const MSG_VALID_CERT_ON_CRL = /Certificate with serial (.*) found on CRL, but prescription (.*) was signed before its revocation/
@@ -156,7 +157,6 @@ describe("Sanity check mock data", () => {
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
     expect(revocationReasons).toContain(CRLReasonCode.Superseded)
-
   })
 
   test("Certificates have a CRL Distribution Point URL", () => {
@@ -165,6 +165,7 @@ describe("Sanity check mock data", () => {
       const certString = cert.toString()
       const x509Cert = new X509(certString)
       const distributionPointURIs = x509Cert.getExtCRLDistributionPointsURI()
+
       expect(distributionPointURIs.length).toBe(1)
       for (const url of distributionPointURIs) {
         expect(url).toBe("http://example.com/eps.crl")
