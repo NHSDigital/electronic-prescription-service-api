@@ -4,11 +4,11 @@ import pino from "pino"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
 import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
-import {X509CrlEntry, X509Crl, X509Certificate} from "@peculiar/x509"
+import {X509CrlEntry, X509Crl} from "@peculiar/x509"
 
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
 
-const getRevokedCertSerialNumber = (cert: X509CrlEntry | X509Certificate) => {
+const getRevokedCertSerialNumber = (cert: X509CrlEntry) => {
   const certHexValue = cert.serialNumber
   return certHexValue.toLocaleLowerCase()
 }
@@ -29,14 +29,9 @@ const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescrip
   }
 }
 
-type CertType = X509CrlEntry | X509Certificate;
-
-const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: CertType): boolean => {
-  if(cert instanceof X509CrlEntry) {
-    const certificateRevocationDate = cert.revocationDate
-    return prescriptionSignedDate >= certificateRevocationDate
-  }
-  return false
+const wasPrescriptionSignedAfterRevocation = (prescriptionSignedDate: Date, cert: X509CrlEntry): boolean => {
+  const certificateRevocationDate = cert.revocationDate
+  return prescriptionSignedDate >= certificateRevocationDate
 }
 
 const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promise<X509Crl> => {
