@@ -245,7 +245,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed before revocation is", () => {
     beforeEach(() => {
       // Ensure signing date is before cert revocation
-      prescriptionSignedDate = ceasedOperationCert.revocationDate
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
 
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
@@ -301,7 +301,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed after revocation is always invalid", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
-      prescriptionSignedDate = ceasedOperationCert.revocationDate
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })
