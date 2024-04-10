@@ -25,11 +25,11 @@ import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
 const logger = pino()
 const mock = new MockAdapter(axios)
 
-//new CRL and certs to be subbed in
-const Crl = TestCertificates.revocationList
-const KeyCompromisedCert = Crl.entries[0]
-const CACompromisedCert = Crl.entries[1]
-const CeasedOperationCert = Crl.entries[2]
+// Test CRL and certs to be subbed in
+const crl = TestCertificates.revocationList
+const keyCompromisedCert = crl.entries[0]
+const cACompromisedCert = crl.entries[1]
+const ceasedOperationCert = crl.entries[2]
 
 // Test prescriptions
 const prescriptionWithCrl = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
@@ -117,7 +117,7 @@ let loggerInfo: jest.SpyInstance
 let loggerWarn: jest.SpyInstance
 let loggerError: jest.SpyInstance
 
-// Log message patternCRLReasonCodefinds
+// Log message pattern
 const MSG_VALID_CERT = /Valid signature found for prescription (.*) signed by cert (.*)/
 // eslint-disable-next-line max-len
 const MSG_VALID_CERT_ON_CRL = /Certificate with serial (.*) found on CRL, but prescription (.*) was signed before its revocation/
@@ -127,7 +127,6 @@ const MSG_INVALID_CERT_ON_CRL_NO_REASON_CODE = /Cannot extract Reason Code from 
 
 const expectLogMessages = (reasonCode: CRLReasonCode, isCertificateValid: boolean) => {
   if (reasonCode && isCertificateValid) {
-    console.log(reasonCode, isCertificateValid)
     expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT_ON_CRL))
   } else if (reasonCode && !isCertificateValid) {
     expect(loggerWarn).toHaveBeenCalledWith(expect.stringMatching(MSG_INVALID_CERT_ON_CRL))
@@ -149,10 +148,10 @@ afterEach(() => {
 
 describe("Sanity check mock data", () => {
   test("CRL contains 4 revoked certs", async () => {
-    const newList: X509Crl = TestCertificates.revocationList
-    expect(newList.entries.length).toEqual(4)
+    const list: X509Crl = TestCertificates.revocationList
+    expect(list.entries.length).toEqual(4)
 
-    const revocationReasons = newList.entries.map((cert) => utils.getRevokedCertReasonCode(cert))
+    const revocationReasons = list.entries.map((cert) => utils.getRevokedCertReasonCode(cert))
     expect(revocationReasons).toContain(CRLReasonCode.CACompromise)
     expect(revocationReasons).toContain(CRLReasonCode.KeyCompromise)
     expect(revocationReasons).toContain(CRLReasonCode.CessationOfOperation)
@@ -189,16 +188,18 @@ describe("Sanity check mock data", () => {
   })
 
   describe("Mock certs revocation reasons match", () => {
-    test("NEWKeyCompromise", () => {
-      const revReason = utils.getRevokedCertReasonCode(KeyCompromisedCert)
+    test("KeyCompromise", () => {
+      const revReason = utils.getRevokedCertReasonCode(keyCompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.KeyCompromise)
     })
-    test("new CACompromise", () => {
-      const revReason = utils.getRevokedCertReasonCode(CACompromisedCert)
+
+    test("CACompromise", () => {
+      const revReason = utils.getRevokedCertReasonCode(cACompromisedCert)
       expect(revReason).toEqual(CRLReasonCode.CACompromise)
     })
-    test("new CACompromise", () => {
-      const revReason = utils.getRevokedCertReasonCode(CeasedOperationCert)
+
+    test("CessationOfOperation", () => {
+      const revReason = utils.getRevokedCertReasonCode(ceasedOperationCert)
       expect(revReason).toEqual(CRLReasonCode.CessationOfOperation)
     })
   })
@@ -229,7 +230,7 @@ describe("Certificate found on the CRL", () => {
 
   beforeEach(() => {
     // Ensure the function returns a serial that is in our mock CRL
-    const revokedCertSerial = utils.getRevokedCertSerialNumber(KeyCompromisedCert)
+    const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
     serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
     serialNumberSpy.mockReturnValue(revokedCertSerial)
   })
@@ -243,7 +244,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed before revocation is", () => {
     beforeEach(() => {
       // Ensure signing date is before cert revocation
-      prescriptionSignedDate = new Date(CeasedOperationCert.revocationDate)
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
 
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
@@ -299,7 +300,7 @@ describe("Certificate found on the CRL", () => {
   describe("prescription signed after revocation is always invalid", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
-      prescriptionSignedDate = new Date(CeasedOperationCert.revocationDate)
+      prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })
