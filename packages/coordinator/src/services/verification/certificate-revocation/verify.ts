@@ -6,13 +6,13 @@ import {
   getCertificateFromPrescription,
   getPrescriptionId,
   getPrescriptionSignatureDate,
+  getRevocationList,
+  getRevokedCertReasonCode,
+  getRevokedCertSerialNumber,
   getSubCaCerts,
   getX509DistributionPointsURI,
   getX509IssuerId,
   getX509SerialNumber,
-  getRevocationList,
-  getRevokedCertReasonCode,
-  getRevokedCertSerialNumber,
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
 import {X509CrlEntry} from "@peculiar/x509"
@@ -185,10 +185,11 @@ const checkForRevocation = async (
     }
 
     if(crl.entries){
-      for (const revokedCertificate of crl.entries){
+      for (const revokedCertificate of crl.entries) {
         const revokedCertificateSerialNumber = getRevokedCertSerialNumber(revokedCertificate)
+
         const foundMatchingCertificate = serialNumber === revokedCertificateSerialNumber
-        if(foundMatchingCertificate){
+        if (foundMatchingCertificate) {
           return checkCertificateValidity(
             revokedCertificate,
             serialNumber,
@@ -198,7 +199,7 @@ const checkForRevocation = async (
           )
         }
       }
-    } else {
+    }else{
       logger.info(`No revokedCertificates found on CRL at ${distributionPointURI}`)
     }
   }
@@ -207,13 +208,13 @@ const checkForRevocation = async (
   return true
 }
 
-const checkCertificateValidity = (
+function checkCertificateValidity(
   revokedCertificate: X509CrlEntry,
   serialNumber: string,
   prescriptionSignedDate: Date,
   prescriptionId: string,
   logger: pino.Logger
-): boolean => {
+) {
   const isValid = !isCertificateRevoked(revokedCertificate, prescriptionSignedDate, logger)
 
   if (isValid) {

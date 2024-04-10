@@ -39,6 +39,7 @@ const getRevocationList = async (crlFileUrl: string, logger: pino.Logger): Promi
     const resp = await axios(crlFileUrl, {
       method: "GET",
       responseType: "arraybuffer",
+      // Manually set timeout to avoid waiting indefinitely, which would make the original request fail as well
       timeout: CRL_REQUEST_TIMEOUT_IN_MS
     })
     return new X509Crl(resp.data)
@@ -80,12 +81,12 @@ export {
   getCertificateTextFromPrescription,
   getPrescriptionId,
   getPrescriptionSignatureDate,
+  getRevocationList,
+  getRevokedCertReasonCode,
+  getRevokedCertSerialNumber,
   getSubCaCerts,
   getX509DistributionPointsURI,
   getX509IssuerId,
   getX509SerialNumber,
-  getRevokedCertReasonCode,
-  getRevokedCertSerialNumber,
-  wasPrescriptionSignedAfterRevocation,
-  getRevocationList
+  wasPrescriptionSignedAfterRevocation
 }
