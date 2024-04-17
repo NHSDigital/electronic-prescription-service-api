@@ -186,8 +186,8 @@
                         "valueInteger": 5
                       },
                       {
-                        "url" : "numberOfRepeatsIssued",
-                        "valueInteger" : 2
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 2
                       }
                     ]
                   }
@@ -348,17 +348,6 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 20,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 20,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
@@ -525,8 +514,8 @@
                         "valueInteger": 5
                       },
                       {
-                        "url" : "numberOfRepeatsIssued",
-                        "valueInteger" : 2
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 2
                       }
                     ]
                   }
@@ -593,7 +582,7 @@
               "validityPeriod": {
                 "start": "2022-10-21"
               },
-			        "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 0,
               "quantity": {
                 "value": 20,
                 "unit": "tablet",
@@ -687,17 +676,6 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 20,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 20,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
@@ -864,8 +842,8 @@
                         "valueInteger": 5
                       },
                       {
-                        "url" : "numberOfRepeatsIssued",
-                        "valueInteger" : 2
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 2
                       }
                     ]
                   }
@@ -932,7 +910,7 @@
               "validityPeriod": {
                 "start": "2022-10-21"
               },
-			        "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 0,
               "quantity": {
                 "value": 30,
                 "unit": "tablet",
@@ -1035,25 +1013,14 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 0,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 0,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-		    "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00",
-		    "dosageInstruction": [
+        "dosageInstruction": [
           {
             "text": "20 tablets. One tablet to be taken two times a day",
             "timing": {
@@ -1232,8 +1199,8 @@
                         "valueInteger": 5
                       },
                       {
-                        "url" : "numberOfRepeatsIssued",
-                        "valueInteger" : 2
+                        "url": "numberOfRepeatsIssued",
+                        "valueInteger": 2
                       }
                     ]
                   }
@@ -1300,7 +1267,7 @@
               "validityPeriod": {
                 "start": "2022-10-21"
               },
-			        "numberOfRepeatsAllowed": 0,
+              "numberOfRepeatsAllowed": 0,
               "quantity": {
                 "value": 30,
                 "unit": "tablet",
@@ -1403,25 +1370,14 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 0,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 0,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-		    "whenPrepared": "2022-11-27T11:45:00+00:00",
+        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00",
-		    "dosageInstruction": [
+        "dosageInstruction": [
           {
             "text": "20 tablets. One tablet to be taken two times a day",
             "timing": {
@@ -1472,7 +1428,7 @@
           {
             "city": "West Yorkshire",
             "use": "work",
-            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+            "line": [ "17 Austhorpe Road", "Crossgates", "Leeds" ],
             "postalCode": "LS15 8BA"
           }
         ],
