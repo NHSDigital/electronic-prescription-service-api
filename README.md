@@ -99,7 +99,7 @@ brew install asdf
 # then follow instructions to update ~/.zshrc and restart terminal
 brew install openssl readline sqlite3 xz zlib tcl-tk     # python dependencies
 
-# INSTALL USEFUL THINGS
+# INSTALL USEFUL THINGS    
 brew install jq
 
 ```
