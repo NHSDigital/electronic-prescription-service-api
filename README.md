@@ -50,7 +50,7 @@ use-agent
 pinentry-mode loopback
 ```
 
-and to your ~/.gnupg/gpg-agent.conf as below:
+and to your ~/.gnupg/gpg-agent.conf as below:  
 
 ```
 allow-loopback-pinentry
