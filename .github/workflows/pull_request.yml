@@ -2,7 +2,7 @@ name: deploy_pr
 
 on:
   pull_request:
-    branches: [main]
+    branches: [master]
 
 env:
   BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
