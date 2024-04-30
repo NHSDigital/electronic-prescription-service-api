@@ -1,0 +1,47 @@
+name: deploy_pr
+
+on:
+  pull_request:
+    branches: [main]
+
+env:
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+
+jobs:
+  get_issue_number:
+    runs-on: ubuntu-latest
+    outputs:
+      issue_number: ${{ steps.get_issue_number.outputs.result }}
+
+    steps:
+      - uses: actions/github-script@v7
+        name: get issue number
+        id: get_issue_number
+        with:
+          script: |
+            if (context.issue.number) {
+              // Return issue number if present
+              return context.issue.number;
+            } else {
+              // Otherwise return issue number from commit
+              return (
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+            }
+          result-encoding: string
+
+  build_api:
+    uses: ./.github/workflows/build_api.yml
+
+  deploy_api_dev:
+    uses: ./.github/workflows/deploy_api.yml
+    needs: [get_issue_number, build_api]
+    with:
+      VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
+      STACK_NAME: eps-fhir-facade-pr-${{ needs.get_issue_number.outputs.issue_number }}
+      AWS_ENVIRONMENT: dev
+      APIGEE_ENVIRONMENT: internal-dev

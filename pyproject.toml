@@ -34,6 +34,7 @@ requests = "^2.31.0"
 boto3 = "^1.34.89"
 argparse = "^1.4.0"
 pre-commit = "^3.5.0"
+proxygen-cli = "^2.1.11"
 
 [tool.poetry.dev-dependencies]
 flake8 = "^5.0.4"

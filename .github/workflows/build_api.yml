@@ -1,0 +1,82 @@
+name: Deploy API
+
+on:
+  workflow_call:
+
+jobs:
+  # Build coordinator and upload as artefact
+  build_coordinator:
+    name: Build Coordinator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Pre-requisites
+        run: |
+          make install-api
+      - name: Build Coordinator
+        run: |
+          make build-coordinator
+      - name: Build Coordinator Docker Image
+        run: |
+          docker image build -t eps-fhir-facade .
+      - name: Save Coordinator Docker Image
+        run: |
+          docker save eps-fhir-facade > eps-fhir-facade.tar
+      - name: Upload Coordinator Docker Image
+        uses: actions/upload-artifact@v2
+        with:
+          name: eps-fhir-facade
+          path: eps-fhir-facade.tar
+
+  # Download and build validator and upload as artefact
+  build_validator:
+    name: Build Validator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Validator
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: 'NHSDigital/validation-service-fhir-r4'
+          file: 'fhir-validator.jar'
+      - name: Download Dockerfile
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: 'NHSDigital/validation-service-fhir-r4'
+          file: 'Dockerfile'
+      - name: Build Validator
+        run: |
+          docker image build -t eps-validator .
+      - name: Save Validator Docker Image
+        run: |
+          docker save eps-validator > eps-validator.tar
+      - name: Upload Validator Docker Image
+        uses: actions/upload-artifact@v2
+        with:
+          name: eps-validator
+          path: eps-validator.tar
+          
+  # Resolve spec and upload as artefact
+  build_spec:
+    name: Build Spec
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install Pre-requisites
+        working-directory: packages/specification
+        run: |
+          make install
+      - name: Build Spec
+        working-directory: packages/specification
+        run: |
+          make build
+      - name: Upload Spec
+        uses: actions/upload-artifact@v2
+        with:
+          name: specification
+          path: packages/specification/dist/electronic-prescription-service-api.json

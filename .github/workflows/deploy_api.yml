@@ -1,0 +1,73 @@
+name: Deploy API
+
+on:
+  workflow_call:
+    inputs:
+      VERSION_NUMBER:
+        required: true
+        type: string
+      STACK_NAME:
+        required: true
+        type: string
+      AWS_ENVIRONMENT:
+        required: true
+        type: string
+      APIGEE_ENVIRONMENT:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout github scripts
+      - name: Checkout local github actions
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+          fetch-depth: 0
+
+      # Setup Proxygen
+      - name: Python install
+        run: make install-python
+
+      - name: Export proxygen path
+        run: |
+          PROXYGEN_PATH=$(poetry run which proxygen)
+          echo "Proxygen location: $PROXYGEN_PATH"
+          echo "PROXYGEN_PATH=${PROXYGEN_PATH}" >> "$GITHUB_ENV"
+
+      # Download artefacts
+      - name: Download Coordinator Image
+        uses: actions/download-artifact@v2
+        with:
+          name: eps-fhir-facade
+          path: eps-fhir-facade.tar
+      - name: Download Validator Image
+        uses: actions/download-artifact@v2
+        with:
+          name: eps-validator
+          path: eps-validator.tar
+      - name: Download Specification
+        uses: actions/download-artifact@v2
+        with:
+          name: specification
+          path: specification.json
+
+      # Load docker images
+      - name: Load Coordinator Image
+        run: docker load -i eps-coordinator.tar
+      - name: Load Validator Image
+        run: docker load -i eps-validator.tar
+
+      # Call deploy_api.sh
+      - name: Deploy API
+        shell: bash
+        working-directory: .github/scripts
+        run: ./deploy_api.sh
+        env:
+          PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}

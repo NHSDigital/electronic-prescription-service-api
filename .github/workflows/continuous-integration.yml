@@ -3,14 +3,12 @@ name: Build
 on:
   push:
     branches: [master]
-  pull_request:
-    # The branches below must be a subset of the branches above
-    branches: [master]
 
 jobs:
-  build:
-    name: build
+  tag_release:
     runs-on: ubuntu-latest
+    outputs:
+      version_tag: ${{steps.output_version_tag.outputs.VERSION_TAG}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -40,8 +38,11 @@ jobs:
       - name: Install python packages
         run: poetry install
 
-      - name: Set SPEC_VERSION env var
-        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
+      - name: Set VERSION_TAG
+        id: output_version_tag
+        run: |
+          VERSION_TAG=$(poetry run python scripts/calculate_version.py)
+          echo "VERSION_TAG=${VERSION_TAG}" >> "$GITHUB_OUTPUT"
 
       - name: Create release (master only)
         id: create-release
@@ -62,3 +63,19 @@ jobs:
             [Release workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
 
             It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }})
+
+  build_api:
+    uses: ./.github/workflows/build_api.yml
+
+  deploy_api_dev:
+    uses: ./.github/workflows/deploy_api.yml
+    needs: [tag_release, build_api]
+    with:
+      VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
+      STACK_NAME: eps-fhir-facade
+      AWS_ENVIRONMENT: dev
+      APIGEE_ENVIRONMENT: internal-dev
+      
+  # deploy_api_qa:
+  #   uses: ./.github/workflows/deploy_api.yml
+  #   with:
