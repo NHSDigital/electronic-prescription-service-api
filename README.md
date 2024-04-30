@@ -192,7 +192,7 @@ This outputs to `build.log` and runs the following targets:
 - `test` Performs quality checks including linting, license checking of dependencies and unit/low level integration tests
 - `release` Pulls all the artifacts for the individual components together and arranges them in a format ready to deploy; used mainly by CI but useful to check the output matches expectations
 
-#### Install targets  
+#### Install targets
 
 - `install` Installs dependencies based on the specified target
 - `install-api` Installs dependencies for the API
