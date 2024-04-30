@@ -41,6 +41,7 @@ jobs:
         run: |
           make build-coordinator
       - name: Build Coordinator Docker Image
+        working-directory: packages/coordinator
         run: |
           docker image build -t eps-fhir-facade .
       - name: Save Coordinator Docker Image
