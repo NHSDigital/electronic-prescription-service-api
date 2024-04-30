@@ -110,6 +110,9 @@ jobs:
           PYTHON_CONFIGURE_OPTS: --enable-shared 
     
       - name: Install Pre-requisites
+        run: |
+          make install-python
+      - name: Install Spec Pre-requisites
         working-directory: packages/specification
         run: |
           make install
