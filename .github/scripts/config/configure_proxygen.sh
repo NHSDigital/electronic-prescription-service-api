@@ -9,6 +9,7 @@ mkdir -p ~/.proxygen/tmp
 # Retrieve proxygen private key from AWS Secrets Manager and save it to a temporary file
 echo "Retrieving proxygen private key..."
 proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:ProxgenPrivateKey'].Value" --output text)
+echo "Retrieving proxygen private key from arn""${proxygen_private_key_arn}""..."
 proxygen_private_key=$(aws secretsmanager get-secret-value --secret-id "${proxygen_private_key_arn}" --query SecretString --output text)
 echo "$proxygen_private_key" > ~/.proxygen/tmp/proxygen_private_key.pem
 
