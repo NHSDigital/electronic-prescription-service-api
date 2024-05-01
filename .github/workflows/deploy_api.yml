@@ -9,9 +9,6 @@ on:
       STACK_NAME:
         required: true
         type: string
-      AWS_ENVIRONMENT:
-        required: true
-        type: string
       APIGEE_ENVIRONMENT:
         required: true
         type: string
@@ -69,5 +66,4 @@ jobs:
           PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           STACK_NAME: ${{ inputs.STACK_NAME }}
-          AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}

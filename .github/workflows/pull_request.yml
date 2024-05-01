@@ -42,6 +42,5 @@ jobs:
     needs: [get_issue_number, build_api]
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
-      STACK_NAME: eps-fhir-facade-pr-${{ needs.get_issue_number.outputs.issue_number }}
-      AWS_ENVIRONMENT: dev
+      STACK_NAME: proxygen-eps-fhir-facade-pr-${{ needs.get_issue_number.outputs.issue_number }}
       APIGEE_ENVIRONMENT: internal-dev

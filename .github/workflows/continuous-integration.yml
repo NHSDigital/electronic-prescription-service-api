@@ -72,8 +72,7 @@ jobs:
     needs: [tag_release, build_api]
     with:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
-      STACK_NAME: eps-fhir-facade
-      AWS_ENVIRONMENT: dev
+      STACK_NAME: proxygen-eps-fhir-facade
       APIGEE_ENVIRONMENT: internal-dev
       
   # deploy_api_qa:
