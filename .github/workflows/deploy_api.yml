@@ -76,7 +76,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: specification.json
-          path: .
+          path: ${{ github.workspace }}/specification.json
 
       # Load docker images
       - name: Load Coordinator Image
