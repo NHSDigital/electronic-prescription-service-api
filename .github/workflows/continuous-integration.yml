@@ -72,6 +72,7 @@ jobs:
     needs: [tag_release, build_api]
     with:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
+      # Deploy with proxygen prefix for parallel deployment. Remove when switching to proxygen
       STACK_NAME: proxygen-eps-fhir-facade
       APIGEE_ENVIRONMENT: internal-dev
       

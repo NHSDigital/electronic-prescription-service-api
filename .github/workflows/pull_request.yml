@@ -42,5 +42,6 @@ jobs:
     needs: [get_issue_number, build_api]
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
-      STACK_NAME: proxygen-eps-fhir-facade-pr-${{ needs.get_issue_number.outputs.issue_number }}
+      # Deploy with proxygen suffix for parallel deployment. Remove when switching to proxygen
+      STACK_NAME: electronic-prescription-service-api-pr-${{ needs.get_issue_number.outputs.issue_number }}-proxygen
       APIGEE_ENVIRONMENT: internal-dev
