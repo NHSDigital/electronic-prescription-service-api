@@ -75,7 +75,7 @@ jobs:
 
       # Load docker images
       - name: Load Coordinator Image
-        run: docker load -i eps-coordinator.tar
+        run: docker load -i eps-fhir-facade.tar
       - name: Load Validator Image
         run: docker load -i eps-validator.tar
 
