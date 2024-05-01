@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-set -e
 
 printf "\n------------------------------------------------------------\n"
 printf "Configuring Proxygen CLI\n"
@@ -13,6 +12,10 @@ proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Nam
 proxygen_private_key=$(aws secretsmanager get-secret-value --secret-id "${proxygen_private_key_arn}" --query SecretString --output text)
 echo "$proxygen_private_key" > ~/.proxygen/tmp/proxygen_private_key.pem
 
+if [ -z "$proxygen_private_key" ]; then
+    echo "Proxygen private key not found"
+    exit 1
+fi
 
 # Create credentials.yaml file
 echo "Creating credentials.yaml..."
