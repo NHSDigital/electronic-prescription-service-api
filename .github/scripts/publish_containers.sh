@@ -9,8 +9,6 @@ printf "Publishing container to ECR with the follow configuration:\n"
 echo "Image name: $image_name"
 echo "Version number: $version_number"
 
-printf "\n------------------------------------------------------------\n"
-
 # Get the login command from ECR and execute it directly
 echo "Logging into ECR..."
 eval "$PROXYGEN_PATH" docker get-login

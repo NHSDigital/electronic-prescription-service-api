@@ -13,8 +13,6 @@ echo "Instance: $instance"
 echo "Version number: $version_number"
 echo "Apigee environment: $apigee_environment"
 
-printf "\n------------------------------------------------------------\n"
-
 # Find and replace the specification version number 
 echo "Updating version number..."
 jq \

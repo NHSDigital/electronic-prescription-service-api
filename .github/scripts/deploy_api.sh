@@ -9,8 +9,6 @@ echo "Specification path: $SPEC_PATH"
 echo "Stack name: $STACK_NAME"
 echo "Apigee environment: $APIGEE_ENVIRONMENT"
 
-printf "\n------------------------------------------------------------\n"
-
 # Get the directory of the script for callouts
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "Script directory: $SCRIPT_DIR"
