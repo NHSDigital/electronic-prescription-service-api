@@ -29,5 +29,5 @@ docker image tag "$image_name" "$image_tag"
 echo "Pushing the image to the remote URL..."
 docker push "$image_tag"
 
-printf "\nDone publishing the container to ECR\n"
-printf "------------------------------------------------------------\n"
+printf "\nDone publishing the container to ECR"
+printf "\n------------------------------------------------------------\n"
