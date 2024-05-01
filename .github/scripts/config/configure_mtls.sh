@@ -17,5 +17,5 @@ echo "Saving client private key and cert to temporary files..."
 echo "$client_private_key" > ~/.proxygen/tmp/client_private_key.pem
 echo "$client_cert" > ~/.proxygen/tmp/client_cert.pem
 
-printf "\nDone fetching Mutual TLS certs\n"
-printf "------------------------------------------------------------\n"
+printf "\nDone fetching Mutual TLS certs"
+printf "\n------------------------------------------------------------\n"

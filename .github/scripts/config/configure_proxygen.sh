@@ -31,5 +31,5 @@ endpoint_url: https://proxygen.prod.api.platform.nhs.uk
 spec_output_format: json
 EOF
 
-printf "\nDone configuring Proxygen CLI\n"
-printf "------------------------------------------------------------\n"
+printf "\nDone configuring Proxygen CLI"
+printf "\n------------------------------------------------------------\n"
