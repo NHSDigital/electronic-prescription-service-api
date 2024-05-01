@@ -78,9 +78,6 @@ jobs:
           name: specification.json
           path: .
 
-      - name: Debug ls
-        run: ls -la
-
       # Load docker images
       - name: Load Coordinator Image
         run: docker load -i eps-fhir-facade.tar
