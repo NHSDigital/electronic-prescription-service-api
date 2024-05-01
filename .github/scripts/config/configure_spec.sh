@@ -4,14 +4,14 @@ instance=$1
 version_number=$2
 apigee_environment=$3
 
-printf "\n\n------------------------------------------------------------\n"
-printf "Configuring the specification file with the following configuration:\n\n"
+printf "\n------------------------------------------------------------\n"
+printf "Configuring the specification file with the following configuration:\n"
 
 echo "Instance: $instance"
 echo "Version number: $version_number"
 echo "Apigee environment: $apigee_environment"
 
-printf "\n\n------------------------------------------------------------\n\n"
+printf "\n------------------------------------------------------------\n"
 
 # Find and replace the specification version number 
 echo "Updating version number..."
@@ -43,5 +43,5 @@ else
     && mv temp.json "specification.json"
 fi
 
-printf "\n\nDone configuring the specification file"
-printf "------------------------------------------------------------\n\n"
+printf "\nDone configuring the specification file\n"
+printf "------------------------------------------------------------\n"

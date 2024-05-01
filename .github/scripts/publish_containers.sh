@@ -3,13 +3,13 @@
 image_name=$1
 version_number=$2
 
-printf "\n\n------------------------------------------------------------\n"
-printf "Publishing container to ECR with the follow configuration:\n\n"
+printf "\n------------------------------------------------------------\n"
+printf "Publishing container to ECR with the follow configuration:\n"
 
 echo "Image name: $image_name"
 echo "Version number: $version_number"
 
-printf "\n\n------------------------------------------------------------\n\n"
+printf "\n------------------------------------------------------------\n"
 
 # Get the login command from ECR and execute it directly
 echo "Logging into ECR..."
@@ -29,5 +29,5 @@ docker image tag "$image_name" "$image_tag"
 echo "Pushing the image to the remote URL..."
 docker push "$image_tag"
 
-printf "\n\nDone publishing the container to ECR"
-printf "------------------------------------------------------------\n\n"
+printf "\nDone publishing the container to ECR\n"
+printf "------------------------------------------------------------\n"

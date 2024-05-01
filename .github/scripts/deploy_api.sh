@@ -1,14 +1,14 @@
 #!/usr/bin/env bash
 
-printf "\n\n------------------------------------------------------------\n"
-printf "Deploying API to Apigee with the following configuration:\n\n"
+printf "\n------------------------------------------------------------\n"
+printf "Deploying API to Apigee with the following configuration:\n"
 
 echo "Proxygen path: $PROXYGEN_PATH"
 echo "Specification version: $VERSION_NUMBER"
 echo "Stack name: $STACK_NAME"
 echo "Apigee environment: $APIGEE_ENVIRONMENT"
 
-printf "\n\n------------------------------------------------------------\n\n"
+printf "\n------------------------------------------------------------\n"
 
 # Get the directory of the script for callouts
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
@@ -45,5 +45,5 @@ echo "Storing MTLS certs as a secret..."
 echo "Deploying the API instance..."
 "$PROXYGEN_PATH" instance deploy --no-confirm "$APIGEE_ENVIRONMENT" "$instance" "specification.json"
 
-printf "\n\nDone deploying the API to Apigee"
-printf "------------------------------------------------------------\n\n"
+printf "\nDone deploying the API to Apigee\n"
+printf "------------------------------------------------------------\n"

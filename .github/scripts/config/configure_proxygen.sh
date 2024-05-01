@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-printf "\n\n------------------------------------------------------------\n"
-printf "Configuring Proxygen CLI\n\n"
+printf "\n------------------------------------------------------------\n"
+printf "Configuring Proxygen CLI\n"
 
 # Create the .proxygen/tmp directory if it doesn't exist
 mkdir -p ~/.proxygen/tmp
@@ -31,5 +31,5 @@ endpoint_url: https://proxygen.prod.api.platform.nhs.uk
 spec_output_format: json
 EOF
 
-printf "\n\nDone configuring Proxygen CLI"
-printf "------------------------------------------------------------\n\n"
+printf "\nDone configuring Proxygen CLI\n"
+printf "------------------------------------------------------------\n"

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-printf "\n\n------------------------------------------------------------\n"
-printf "Fetching Mutual TLS certs\n\n"
+printf "\n------------------------------------------------------------\n"
+printf "Fetching Mutual TLS certs\n"
 
 # Retrieve the client private key and cert from AWS Secrets Manager
 echo "Retrieving client private key and cert arns..."
@@ -17,5 +17,5 @@ echo "Saving client private key and cert to temporary files..."
 echo "$client_private_key" > ~/.proxygen/tmp/client_private_key.pem
 echo "$client_cert" > ~/.proxygen/tmp/client_cert.pem
 
-printf "\n\nDone fetching Mutual TLS certs"
-printf "------------------------------------------------------------\n\n"
+printf "\nDone fetching Mutual TLS certs\n"
+printf "------------------------------------------------------------\n"
