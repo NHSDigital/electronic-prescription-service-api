@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 printf "\n------------------------------------------------------------\n"
 printf "Deploying API to Apigee with the following configuration:\n"
@@ -16,27 +16,27 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 echo "Script directory: $SCRIPT_DIR"
 
 # Determine the proxy instance based on the provided $STACK_NAME
-instance=$(sh "$SCRIPT_DIR"/get_instance.sh "$STACK_NAME")
+instance=$(bash "$SCRIPT_DIR"/get_instance.sh "$STACK_NAME")
 echo "Using instance name: $instance"
 
 # Configure the specification file
 echo "Configuring the specification file..."
-sh "$SCRIPT_DIR"/config/configure_spec.sh \
+bash "$SCRIPT_DIR"/config/configure_spec.sh \
     "$SPEC_PATH" "$instance" "$VERSION_NUMBER" "$APIGEE_ENVIRONMENT"
 
 # Configure Proxygen CLI
 echo "Configuring Proxygen CLI..."
-sh "$SCRIPT_DIR"/config/configure_proxygen.sh
+bash"$SCRIPT_DIR"/config/configure_proxygen.sh
 
 # Deploy the API image to ECR
 echo "Deploying the FHIR Facade image to ECR..."
-sh "$SCRIPT_DIR"/publish_containers.sh "eps-fhir-facade" "$VERSION_NUMBER"
+bash "$SCRIPT_DIR"/publish_containers.sh "eps-fhir-facade" "$VERSION_NUMBER"
 echo "Deploying the EPS Validator image to ECR..."
-sh //publish_containers.sh "eps-validator" "$VERSION_NUMBER"
+bash "$SCRIPT_DIR"/publish_containers.sh "eps-validator" "$VERSION_NUMBER"
 
 # Configure mutual TLS certs
 echo "Configuring mutual TLS certs..."
-sh "$SCRIPT_DIR"/config/configure_mtls.sh
+bash "$SCRIPT_DIR"/config/configure_mtls.sh
 
 # Store the API key secret using Proxygen CLI
 echo "Storing MTLS certs as a secret..."
