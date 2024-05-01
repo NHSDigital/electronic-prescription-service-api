@@ -46,5 +46,5 @@ echo "Storing MTLS certs as a secret..."
 echo "Deploying the API instance..."
 "$PROXYGEN_PATH" instance deploy --no-confirm "$APIGEE_ENVIRONMENT" "$instance" "specification.json"
 
-printf "\nDone deploying the API to Apigee\n"
-printf "------------------------------------------------------------\n"
+printf "\nDone deploying the API to Apigee"
+printf "\n------------------------------------------------------------\n"
