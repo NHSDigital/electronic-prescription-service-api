@@ -11,7 +11,7 @@ echo "Version number: $version_number"
 
 # Get the login command from ECR and execute it directly
 echo "Logging into ECR..."
-eval "$PROXYGEN_PATH" docker get-login
+"$PROXYGEN_PATH" docker get-login
 
 # Get the proxygen docker registry
 echo "Retrieving the proxygen docker registry..."

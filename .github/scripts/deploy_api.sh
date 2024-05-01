@@ -24,7 +24,7 @@ bash "$SCRIPT_DIR"/config/configure_spec.sh \
 
 # Configure Proxygen CLI
 echo "Configuring Proxygen CLI..."
-bash"$SCRIPT_DIR"/config/configure_proxygen.sh
+bash "$SCRIPT_DIR"/config/configure_proxygen.sh
 
 # Deploy the API image to ECR
 echo "Deploying the FHIR Facade image to ECR..."
