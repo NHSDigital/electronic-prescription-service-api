@@ -4,7 +4,7 @@ instance=$1
 version_number=$2
 apigee_environment=$3
 
-printf "\n\n------------------------------------------------------------"
+printf "\n\n------------------------------------------------------------\n"
 printf "Configuring the specification file with the following configuration:\n\n"
 
 echo "Instance: $instance"

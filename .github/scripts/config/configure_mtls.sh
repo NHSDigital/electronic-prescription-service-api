@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printf "\n\n------------------------------------------------------------"
+printf "\n\n------------------------------------------------------------\n"
 printf "Fetching Mutual TLS certs\n\n"
 
 # Retrieve the client private key and cert from AWS Secrets Manager

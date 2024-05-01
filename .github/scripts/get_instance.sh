@@ -2,7 +2,7 @@
 
 stack_name=$1
 
-printf "\n\n------------------------------------------------------------"
+printf "\n\n------------------------------------------------------------\n"
 printf "Determining instance name based on the following stack name:\n\n"
 
 echo "Stack name: $stack_name"

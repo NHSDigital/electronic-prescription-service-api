@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printf "\n\n------------------------------------------------------------"
+printf "\n\n------------------------------------------------------------\n"
 printf "Configuring Proxygen CLI\n\n"
 
 # Create the .proxygen/tmp directory if it doesn't exist

@@ -3,7 +3,7 @@
 image_name=$1
 version_number=$2
 
-printf "\n\n------------------------------------------------------------"
+printf "\n\n------------------------------------------------------------\n"
 printf "Publishing container to ECR with the follow configuration:\n\n"
 
 echo "Image name: $image_name"

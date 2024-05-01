@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-printf "\n\n------------------------------------------------------------"
+printf "\n\n------------------------------------------------------------\n"
 printf "Deploying API to Apigee with the following configuration:\n\n"
 
 echo "Proxygen path: $PROXYGEN_PATH"
