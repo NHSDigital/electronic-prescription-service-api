@@ -92,5 +92,6 @@ jobs:
         env:
           PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          SPEC_PATH: ${{ github.workspace }}/specification.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}

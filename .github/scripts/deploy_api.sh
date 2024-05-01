@@ -5,6 +5,7 @@ printf "Deploying API to Apigee with the following configuration:\n"
 
 echo "Proxygen path: $PROXYGEN_PATH"
 echo "Specification version: $VERSION_NUMBER"
+echo "Specification path: $SPEC_PATH"
 echo "Stack name: $STACK_NAME"
 echo "Apigee environment: $APIGEE_ENVIRONMENT"
 
@@ -21,7 +22,7 @@ echo "Using instance name: $instance"
 # Configure the specification file
 echo "Configuring the specification file..."
 sh "$SCRIPT_DIR"/config/configure_spec.sh \
-    "$instance" "$VERSION_NUMBER" "$APIGEE_ENVIRONMENT"
+    "$SPEC_PATH" "$instance" "$VERSION_NUMBER" "$APIGEE_ENVIRONMENT"
 
 # Configure Proxygen CLI
 echo "Configuring Proxygen CLI..."
