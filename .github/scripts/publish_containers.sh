@@ -17,7 +17,7 @@ eval "$PROXYGEN_PATH" docker get-login
 
 # Get the proxygen docker registry
 echo "Retrieving the proxygen docker registry..."
-proxygen_docker_registry=$(proxygen docker registry)
+proxygen_docker_registry=$("$PROXYGEN_PATH" docker registry)
 
 # Tag the image with the remote URL
 echo "Tagging the image with the remote URL..."
