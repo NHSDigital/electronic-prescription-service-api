@@ -45,5 +45,5 @@ else
     && mv temp.json "$spec_path"
 fi
 
-printf "\nDone configuring the specification file\n"
-printf "------------------------------------------------------------\n"
+printf "\nDone configuring the specification file"
+printf "\n------------------------------------------------------------\n"
