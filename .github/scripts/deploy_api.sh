@@ -3,7 +3,6 @@
 echo "Proxygen path: $PROXYGEN_PATH"
 echo "Specification version: $VERSION_NUMBER"
 echo "Stack name: $STACK_NAME"
-echo "AWS environment: $AWS_ENVIRONMENT"
 echo "Apigee environment: $APIGEE_ENVIRONMENT"
 
 # Determine the proxy instance based on the provided $STACK_NAME
@@ -11,7 +10,7 @@ instance=$(sh ./get_instance.sh "$STACK_NAME")
 
 # Configure the specification file
 sh ./config/configure_spec.sh \
-    "$instance" "$VERSION_NUMBER" "$STACK_NAME" "$AWS_ENVIRONMENT" "$APIGEE_ENVIRONMENT"
+    "$instance" "$VERSION_NUMBER" "$APIGEE_ENVIRONMENT"
 
 # Configure Proxygen CLI
 sh ./config/configure_proxygen.sh
