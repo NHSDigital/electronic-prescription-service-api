@@ -47,7 +47,7 @@ jobs:
         run: |
           docker save eps-fhir-facade > eps-fhir-facade.tar
       - name: Upload Coordinator Docker Image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: eps-fhir-facade
           path: eps-fhir-facade.tar
@@ -74,7 +74,7 @@ jobs:
         run: |
           docker save eps-validator > eps-validator.tar
       - name: Upload Validator Docker Image
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: eps-validator
           path: eps-validator.tar
@@ -120,7 +120,7 @@ jobs:
         run: |
           make build
       - name: Upload Spec
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: specification
           path: packages/specification/dist/electronic-prescription-service-api.json

@@ -55,17 +55,17 @@ jobs:
 
       # Download artefacts
       - name: Download Coordinator Image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: eps-fhir-facade
           path: eps-fhir-facade.tar
       - name: Download Validator Image
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: eps-validator
           path: eps-validator.tar
       - name: Download Specification
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: specification
           path: specification.json
