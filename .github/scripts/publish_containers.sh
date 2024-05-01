@@ -11,7 +11,7 @@ proxygen_docker_registry=$(proxygen docker registry)
 
 # Tag the image with the remote URL
 image_tag="$proxygen_docker_registry/$image_name:$version_number"
-docker iamge tag "$image_name" "$image_tag"
+docker image tag "$image_name" "$image_tag"
 
 # Push the image to the remote URL
 docker push "$image_tag"
