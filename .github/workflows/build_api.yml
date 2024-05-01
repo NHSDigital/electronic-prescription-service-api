@@ -49,7 +49,7 @@ jobs:
       - name: Upload Coordinator Docker Image
         uses: actions/upload-artifact@v4
         with:
-          name: eps-fhir-facade
+          name: eps-fhir-facade.tar
           path: eps-fhir-facade.tar
 
   # Download and build validator and upload as artefact
@@ -76,7 +76,7 @@ jobs:
       - name: Upload Validator Docker Image
         uses: actions/upload-artifact@v4
         with:
-          name: eps-validator
+          name: eps-validator.tar
           path: eps-validator.tar
           
   # Resolve spec and upload as artefact
@@ -122,5 +122,5 @@ jobs:
       - name: Upload Spec
         uses: actions/upload-artifact@v4
         with:
-          name: specification
+          name: specification.json
           path: packages/specification/dist/electronic-prescription-service-api.json
