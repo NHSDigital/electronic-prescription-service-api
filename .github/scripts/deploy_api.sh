@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 printf "\n------------------------------------------------------------\n"
 printf "Deploying API to Apigee with the following configuration:\n"

@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 image_name=$1
 version_number=$2

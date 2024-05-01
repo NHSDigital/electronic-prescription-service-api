@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 spec_path=$1
 instance=$2

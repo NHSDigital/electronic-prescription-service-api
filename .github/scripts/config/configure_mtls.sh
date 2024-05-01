@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 
 printf "\n------------------------------------------------------------\n"
 printf "Fetching Mutual TLS certs\n"
