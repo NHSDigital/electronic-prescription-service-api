@@ -75,6 +75,8 @@ jobs:
       # Deploy with proxygen prefix for parallel deployment. Remove when switching to proxygen
       STACK_NAME: proxygen-eps-fhir-facade
       APIGEE_ENVIRONMENT: internal-dev
+    secrets: 
+      CLOUD_FORMATION_SECRETS_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       
   # deploy_api_qa:
   #   uses: ./.github/workflows/deploy_api.yml

@@ -12,6 +12,9 @@ on:
       APIGEE_ENVIRONMENT:
         required: true
         type: string
+    secrets:
+      CLOUD_FORMATION_SECRETS_ROLE:
+        required: true
 
 jobs:
   deploy:
@@ -84,6 +87,14 @@ jobs:
         run: docker load -i eps-fhir-facade.tar
       - name: Load Validator Image
         run: docker load -i eps-validator.tar
+
+      # Configure AWS credentials for secrets
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.CLOUD_FORMATION_SECRETS_ROLE }}
+          role-session-name: github-actions
 
       # Call deploy_api.sh
       - name: Deploy API

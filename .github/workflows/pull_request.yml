@@ -45,3 +45,5 @@ jobs:
       # Deploy with proxygen suffix for parallel deployment. Remove when switching to proxygen
       STACK_NAME: electronic-prescription-service-api-pr-${{ needs.get_issue_number.outputs.issue_number }}-proxygen
       APIGEE_ENVIRONMENT: internal-dev
+    secrets:
+      CLOUD_FORMATION_SECRETS_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
