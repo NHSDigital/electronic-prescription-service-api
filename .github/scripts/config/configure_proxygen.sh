@@ -21,11 +21,11 @@ fi
 # Create credentials.yaml file
 echo "Creating credentials.yaml..."
 cat <<EOF > ~/.proxygen/credentials.yaml
-client_id: prescription-status-update-api-client
+client_id: electronic-prescription-service-api-client
 key_id: eps-cli-key-1
 private_key_path: tmp/proxygen_private_key.pem
 base_url: https://identity.prod.api.platform.nhs.uk/realms/api-producers
-client_secret: https://nhsdigital.github.io/identity-service-jwks/jwks/paas/prescription-status-update-api.json
+client_secret: https://nhsdigital.github.io/identity-service-jwks/jwks/paas/electronic-prescription-service-api.json
 EOF
 
 # Create settings.yaml file
