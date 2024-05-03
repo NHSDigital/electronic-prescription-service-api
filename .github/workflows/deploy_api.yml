@@ -20,6 +20,8 @@ jobs:
   deploy:
     name: Deploy API
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       # Checkout github scripts
       - name: Checkout local github actions
