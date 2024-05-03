@@ -1,0 +1,111 @@
+name: Deploy API
+
+on:
+  workflow_call:
+    inputs:
+      VERSION_NUMBER:
+        required: true
+        type: string
+      STACK_NAME:
+        required: true
+        type: string
+      APIGEE_ENVIRONMENT:
+        required: true
+        type: string
+    secrets:
+      CLOUD_FORMATION_SECRETS_ROLE:
+        required: true
+
+jobs:
+  deploy:
+    name: Deploy API
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      # Checkout github scripts
+      - name: Checkout local github actions
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+          fetch-depth: 0
+
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared 
+
+      # Setup Proxygen
+      - name: Cache poetry
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            .venv
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Python install
+        run: make install-python
+
+      - name: Export proxygen path
+        run: |
+          PROXYGEN_PATH=$(poetry run which proxygen)
+          echo "Proxygen location: $PROXYGEN_PATH"
+          echo "PROXYGEN_PATH=${PROXYGEN_PATH}" >> "$GITHUB_ENV"
+
+      # Download artefacts
+      - name: Download Coordinator Image
+        uses: actions/download-artifact@v4
+        with:
+          name: eps-fhir-facade.tar
+          path: .
+      - name: Download Validator Image
+        uses: actions/download-artifact@v4
+        with:
+          name: eps-validator.tar
+          path: .
+      - name: Download Specification
+        uses: actions/download-artifact@v4
+        with:
+          name: specification.json
+          path: ${{ github.workspace }}/specification.json
+
+      # Load docker images
+      - name: Load Coordinator Image
+        run: docker load -i eps-fhir-facade.tar
+      - name: Load Validator Image
+        run: docker load -i eps-validator.tar
+
+      # Configure AWS credentials for secrets
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.CLOUD_FORMATION_SECRETS_ROLE }}
+          role-session-name: github-actions
+
+      # Call deploy_api.sh
+      - name: Deploy API
+        shell: bash
+        working-directory: .github/scripts
+        run: ./deploy_api.sh
+        env:
+          PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          SPEC_PATH: ${{ github.workspace }}/specification.json
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}

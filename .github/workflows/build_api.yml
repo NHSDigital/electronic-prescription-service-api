@@ -1,0 +1,135 @@
+name: Deploy API
+
+on:
+  workflow_call:
+
+jobs:
+  # Build coordinator and upload as artefact
+  build_coordinator:
+    name: Build Coordinator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared 
+
+      - name: Install Pre-requisites
+        run: |
+          make install-api
+
+      - name: Build Coordinator
+        run: |
+          make build-coordinator
+      - name: Build Coordinator Docker Image
+        run: |
+          docker image build -t eps-fhir-facade -f packages/coordinator/Dockerfile .
+      - name: Save Coordinator Docker Image
+        run: |
+          docker save eps-fhir-facade > eps-fhir-facade.tar
+      - name: Upload Coordinator Docker Image
+        uses: actions/upload-artifact@v4
+        with:
+          name: eps-fhir-facade.tar
+          path: eps-fhir-facade.tar
+
+  # Download and build validator and upload as artefact
+  build_validator:
+    name: Build Validator
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download Validator
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: 'NHSDigital/validation-service-fhir-r4'
+          file: 'fhir-validator.jar'
+      - name: Download Dockerfile
+        uses: dsaltares/fetch-gh-release-asset@1.1.2
+        with:
+          repo: 'NHSDigital/validation-service-fhir-r4'
+          file: 'Dockerfile'
+      - name: Build Validator
+        run: |
+          docker image build -t eps-validator .
+      - name: Save Validator Docker Image
+        run: |
+          docker save eps-validator > eps-validator.tar
+      - name: Upload Validator Docker Image
+        uses: actions/upload-artifact@v4
+        with:
+          name: eps-validator.tar
+          path: eps-validator.tar
+          
+  # Resolve spec and upload as artefact
+  build_spec:
+    name: Build Spec
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared 
+    
+      - name: Cache poetry
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cache/pypoetry
+            .venv
+          key: poetry-${{ runner.os }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install Pre-requisites
+        run: |
+          make install-python
+      - name: Install Spec Pre-requisites
+        working-directory: packages/specification
+        run: |
+          make install
+
+      - name: Build Spec
+        working-directory: packages/specification
+        run: |
+          make build
+      - name: Upload Spec
+        uses: actions/upload-artifact@v4
+        with:
+          name: specification.json
+          path: packages/specification/dist/electronic-prescription-service-api.json

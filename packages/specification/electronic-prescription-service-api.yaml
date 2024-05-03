@@ -1559,3 +1559,33 @@ components:
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
           $ref: "schemas/components/Location/CreateLocation.yaml"
+
+x-nhsd-apim:
+  temporary: false
+  monitoring: false
+  access:
+  # TODO: Check
+  - title: Application Restricted
+    grants:
+      # TODO: Check
+      app-level0: []
+  target:
+    type: hosted
+    # TODO: Check
+    healthcheck: /_status
+    containers:
+      - name: electronic-prescription-service-api
+        image:
+          # TODO: Check
+          name: eps-fhir-facade
+          tag: 1.0.0
+        primary: true
+      - name: eps-fhir-validator
+        image:
+          # TODO: Check
+          name: eps-fhir-validator
+          tag: 1.0.0
+    url: https://fhir.dev.eps.national.nhs.uk
+    security:
+      type: mtls
+      secret: eps-mtls-1
