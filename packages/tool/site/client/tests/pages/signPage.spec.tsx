@@ -13,6 +13,7 @@ import {redirect} from "../../src/browser/navigation"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
+import {BrowserRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -144,7 +145,7 @@ test("Displays error message if redirect URI not present", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SignPage/>, context)
+  const {container} = renderWithContext(<BrowserRouter><SignPage/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Prescription Summary"))
   return container
 }

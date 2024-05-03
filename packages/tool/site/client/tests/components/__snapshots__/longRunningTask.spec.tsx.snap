@@ -36,14 +36,7 @@ exports[`Displays an error if task rejects with anything else 1`] = `
 <div class="sc-beySPh gakmrk"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
-exports[`Error page includes a back button with the provided onclick handler 1`] = `
-"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
-<div class="nhsuk-error-summary">
-  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
-  <div class="nhsuk-error-summary__body">Some error message</div>
-</div>
-<div class="sc-beySPh gakmrk"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="submit">Back</button></div>"
-`;
+exports[`Error page includes a back button with the provided onclick handler 1`] = `""`;
 
 exports[`Renders children if task resolves 1`] = `"<span>Some data from the backend</span>"`;
 

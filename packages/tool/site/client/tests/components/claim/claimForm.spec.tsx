@@ -8,6 +8,7 @@ import ClaimForm, {ClaimFormValues} from "../../../src/components/claim/claimFor
 import {renderWithContext} from "../../renderWithContext"
 import {AppContextValue} from "../../../src"
 import {internalDev} from "../../../src/services/environment"
+import {BrowserRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -61,11 +62,13 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
 
 test("Clicking Claim button calls the callback with form values", async () => {
   const submit = jest.fn()
-  render(<ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/>)
-
+  await React.act(async () => {
+    render(<BrowserRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/></BrowserRouter>)
+  })
   await enterValuesInAllFields()
-
-  userEvent.click(screen.getByText("Claim"))
+  await React.act(async () => {
+    await userEvent.click(screen.getByText("Claim"))
+  })
   await waitFor(() => expect(submit).toHaveBeenCalled())
 
   expect(submit).toHaveBeenCalledWith({
@@ -93,8 +96,8 @@ test("Prepopulated claim info renders properly", async () => {
 
 async function addEndorsement() {
   const initialEndorsementCount = screen.queryAllByText("Remove Endorsement").length
-  userEvent.click(screen.getByText("Add Endorsement"))
-  await waitFor(() =>
+  await userEvent.click(screen.getByText("Add Endorsement"))
+  await waitFor(async () =>
     expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(initialEndorsementCount + 1)
   )
 }
@@ -109,15 +112,17 @@ async function removeEndorsement() {
 
 async function enterValuesInAllFields() {
   await addEndorsement()
-  userEvent.click(screen.getByLabelText("Patient Paid"))
-  userEvent.selectOptions(screen.getByLabelText("Endorsement 1 Type"), "IP")
-  userEvent.type(screen.getByLabelText("Endorsement 1 Supporting Information"), "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678")
-  userEvent.selectOptions(screen.getByLabelText("Exemption Status"), "0005")
-  userEvent.click(screen.getByLabelText("Evidence Seen"))
+  await React.act(async () => {
+    await userEvent.click(screen.getByLabelText("Patient Paid"))
+    await userEvent.selectOptions(screen.getByLabelText("Endorsement 1 Type"), "IP")
+    await userEvent.type(screen.getByLabelText("Endorsement 1 Supporting Information"), "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678")
+    await userEvent.selectOptions(screen.getByLabelText("Exemption Status"), "0005")
+    await userEvent.click(screen.getByLabelText("Evidence Seen"))
+  })
 }
 
 async function renderClaimForm(initialValues: ClaimFormValues) {
-  const {container} = renderWithContext(<ClaimForm initialValues={initialValues} onSubmit={jest.fn}/>, context)
+  const {container} = renderWithContext(<BrowserRouter><ClaimForm initialValues={initialValues} onSubmit={jest.fn}/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Claim"))
   return container
 }

@@ -127,7 +127,7 @@ exports[`Displays confirmation page if single prescription is sent successfully 
 
 exports[`Exception report button not shown if there are pending prescriptions 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Send Results</label></h1>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button><a class="nhsuk-button" role="button" aria-disabled="false" draggable="false" href="baseUrl/download/exception-report">Download Exception Report</a></div>
+<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button></div>
 <table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
@@ -152,11 +152,11 @@ exports[`Exception report button not shown if there are pending prescriptions 1`
       </td>
     </tr>
     <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">1</td>
+      <td class="nhsuk-table__cell">2</td>
       <td class="nhsuk-table__cell">008070-A99968-41CD9V</td>
-      <td class="nhsuk-table__cell"><svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
-          <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" fill="none" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
-        </svg></td>
+      <td class="nhsuk-table__cell">
+        <div style="margin: 0px; float: left;" class="nhsuk-loader"><span style="width: 34px; height: 34px;" class="nhsuk-loader__spinner nhsuk-loader--small"></span></div>
+      </td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=008070-A99968-41CD9V"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>

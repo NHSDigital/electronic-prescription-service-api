@@ -14,6 +14,7 @@ import {MomentInput} from "moment"
 import {PrescriptionStatus} from "../../src/fhir/reference-data/valueSets"
 import {DateRangeType} from "../../src/components/prescription-tracker/dateRangeField"
 import {internalDev} from "../../src/services/environment"
+import {BrowserRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"
@@ -48,7 +49,7 @@ test("Displays search form", async () => {
 })
 
 test("Form values are populated from query string", async () => {
-  const {container} = renderWithContext(<PrescriptionSearchPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<BrowserRouter><PrescriptionSearchPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   expect(screen.getByLabelText<HTMLInputElement>("Prescription ID").value).toEqual(prescriptionId)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -261,7 +262,7 @@ test("Clicking back from the detail search results returns to the summary search
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<PrescriptionSearchPage/>, context)
+  const {container} = renderWithContext(<BrowserRouter><PrescriptionSearchPage/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   return container
 }

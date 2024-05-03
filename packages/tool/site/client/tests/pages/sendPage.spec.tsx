@@ -8,6 +8,7 @@ import {renderWithContext} from "../renderWithContext"
 import SendPage from "../../src/pages/sendPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
+import {BrowserRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const token = "MzQxMWJmMjUtMDNlMy00N2FiLWEyOGItMGIyYjVlNTg4ZGU3"
@@ -158,7 +159,7 @@ test("Exception report button shown if there are failed prescriptions", async ()
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<SendPage token={token}/>, context)
+  const {container} = renderWithContext(<BrowserRouter><SendPage token={token}/></BrowserRouter>, context)
   await waitFor(() => screen.getByText(/Send Result/))
   return container
 }

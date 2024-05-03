@@ -10,6 +10,7 @@ import {renderWithContext} from "../renderWithContext"
 import DispensePage from "../../src/pages/dispensePage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
+import {BrowserRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -57,7 +58,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
 test("Displays an error if prescription-order not found", async () => {
   mock.onAny(releaseResponseUrl).reply(200, null)
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
+  const {container} = renderWithContext(<BrowserRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -66,7 +67,7 @@ test("Displays an error if prescription-order not found", async () => {
 test("Displays an error on invalid response", async () => {
   mock.onAny(releaseResponseUrl).reply(500, {})
 
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
+  const {container} = renderWithContext(<BrowserRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -109,13 +110,13 @@ test("Displays the amend id when amending a dispense notification", async () => 
   mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
   mock.onAny(dispenseNotificationUrl).reply(200, [])
 
-  renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId="test-id"/>, context)
+  renderWithContext(<BrowserRouter><DispensePage prescriptionId={prescriptionId} amendId="test-id"/></BrowserRouter>, context)
 
   expect(await screen.findByText("Amending Dispense: test-id")).toBeTruthy()
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId} amendId={null}/>, context)
+  const {container} = renderWithContext(<BrowserRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></BrowserRouter>, context)
   await waitFor(() => screen.getByText("Dispense Prescription"))
   return container
 }

@@ -7,6 +7,7 @@ import ViewPrescriptionPage from "../../src/pages/viewPrescriptionPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import {readBundleFromFile} from "../messages"
+import {BrowserRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -33,7 +34,7 @@ describe("View Prescription Page", () => {
           , 1000)
         })
       })
-      renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
+      renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
     })
 
     it("should make a request to the task tracker to get the prescription details", () => {
@@ -62,7 +63,7 @@ describe("View Prescription Page", () => {
         })
       })
 
-      renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
+      renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
     })
 
     it("should make a request to the tracker to get the prescription details", () => {
@@ -82,8 +83,9 @@ describe("View Prescription Page", () => {
     beforeEach(async () => {
       mock.onAny(trackerUrl).reply(500, {})
       mock.onAny(dispenseNotificationUrl).reply(500, {})
-
-      renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
+      await React.act(async () => {
+        renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+      })
     })
 
     it("should display the error", () => {
@@ -95,8 +97,9 @@ describe("View Prescription Page", () => {
     beforeEach(async () => {
       mock.onAny(trackerUrl).reply(200, detailSearchResult)
       mock.onAny(dispenseNotificationUrl).reply(200, [])
-
-      renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
+      await React.act(async () => {
+        renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+      })
     })
 
     it("should display the prescription details information", () => {
@@ -112,8 +115,9 @@ describe("View Prescription Page", () => {
     beforeEach(async () => {
       mock.onAny(trackerUrl).reply(200, detailSearchResult)
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
-
-      renderWithContext(<ViewPrescriptionPage prescriptionId={prescriptionId}/>, context)
+      await React.act(async () => {
+        renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+      })
     })
 
     it("should display the prescription details information", () => {
