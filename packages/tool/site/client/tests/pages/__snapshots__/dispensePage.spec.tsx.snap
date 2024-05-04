@@ -99,57 +99,55 @@ exports[`Displays an error on invalid response 1`] = `
 exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Dispense Prescription</label></h1>
 <form>
-  <div class="nhsuk-form-group">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
-        </div>
+  <fieldset class="nhsuk-fieldset">
+    <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
+      <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+        <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
       </div>
-      <fieldset class="nhsuk-fieldset">
-        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
-        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
-          <div class="nhsuk-summary-list__row">
-            <dt class="nhsuk-summary-list__key">Quantity Requested</dt>
-            <dd class="nhsuk-summary-list__value">63 tablet</dd>
-          </div>
-          <div class="nhsuk-summary-list__row">
-            <dt class="nhsuk-summary-list__key">Prior Status</dt>
-            <dd class="nhsuk-summary-list__value">Item to be dispensed</dd>
-          </div>
-        </dl>
-        <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
-            <option value="0001">Item fully dispensed</option>
-            <option value="0002">Item not dispensed</option>
-            <option value="0003">Item dispensed - partial</option>
-            <option value="0004">Item not dispensed owing</option>
-            <option value="0005">Item cancelled</option>
-            <option value="0006">Expired</option>
-            <option value="0007">Item to be dispensed</option>
-            <option value="0008">Item with dispenser</option>
-          </select></div>
-      </fieldset>
-      <fieldset class="nhsuk-fieldset">
-        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Status</legend>
-        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
-          <div class="nhsuk-summary-list__row">
-            <dt class="nhsuk-summary-list__key">Prior Status</dt>
-            <dd class="nhsuk-summary-list__value">To be Dispensed</dd>
-          </div>
-        </dl>
-        <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
-            <option value="0001">To be Dispensed</option>
-            <option value="0002">With Dispenser</option>
-            <option value="0003">With Dispenser - Active</option>
-            <option value="0004">Expired</option>
-            <option value="0005">Cancelled</option>
-            <option value="0006">Dispensed</option>
-            <option value="0007">Not Dispensed</option>
-          </select></div>
-      </fieldset>
+    </div>
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Quantity Requested</dt>
+          <dd class="nhsuk-summary-list__value">63 tablet</dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Prior Status</dt>
+          <dd class="nhsuk-summary-list__value">Item to be dispensed</dd>
+        </div>
+      </dl>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <option value="0001">Item fully dispensed</option>
+          <option value="0002">Item not dispensed</option>
+          <option value="0003">Item dispensed - partial</option>
+          <option value="0004">Item not dispensed owing</option>
+          <option value="0005">Item cancelled</option>
+          <option value="0006">Expired</option>
+          <option value="0007">Item to be dispensed</option>
+          <option value="0008">Item with dispenser</option>
+        </select></div>
     </fieldset>
-  </div>
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Status</legend>
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Prior Status</dt>
+          <dd class="nhsuk-summary-list__value">To be Dispensed</dd>
+        </div>
+      </dl>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <option value="0001">To be Dispensed</option>
+          <option value="0002">With Dispenser</option>
+          <option value="0003">With Dispenser - Active</option>
+          <option value="0004">Expired</option>
+          <option value="0005">Cancelled</option>
+          <option value="0006">Dispensed</option>
+          <option value="0007">Not Dispensed</option>
+        </select></div>
+    </fieldset>
+  </fieldset>
   <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
