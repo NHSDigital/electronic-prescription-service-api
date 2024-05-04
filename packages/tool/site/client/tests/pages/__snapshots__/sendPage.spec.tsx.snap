@@ -2,7 +2,7 @@
 
 exports[`Displays confirmation page if multiple prescriptions are sent successfully 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Send Results</label></h1>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button></div>
+<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button></div>
 <table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
@@ -82,7 +82,7 @@ exports[`Displays confirmation page if single prescription is sent successfully 
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%7D" download="message">Download</a></div>
+      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%7D" download="message">Download</a></div>
       <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
         <div class="pretty-json-container object-container">
           <div class="object-content">
@@ -97,19 +97,19 @@ exports[`Displays confirmation page if single prescription is sent successfully 
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDLKkx hagNRb">XML Request</pre>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">XML Request</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDLKkx hagNRb">XML Response</pre>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">XML Response</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%7D" download="message">Download</a></div>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%7D" download="message">Download</a></div>
     <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
       <div class="pretty-json-container object-container">
         <div class="object-content">
@@ -122,12 +122,12 @@ exports[`Displays confirmation page if single prescription is sent successfully 
   </div>
 </details>
 </div>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Exception report button not shown if there are pending prescriptions 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Send Results</label></h1>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button><a class="nhsuk-button" role="button" aria-disabled="false" draggable="false" href="baseUrl/download/exception-report">Download Exception Report</a></div>
+<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button><a class="nhsuk-button" role="button" aria-disabled="false" draggable="false" href="baseUrl/download/exception-report">Download Exception Report</a></div>
 <table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
@@ -179,7 +179,7 @@ exports[`Exception report button not shown if there are pending prescriptions 1`
 
 exports[`Exception report button shown if there are failed prescriptions 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Send Results</label></h1>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button><a class="nhsuk-button" role="button" aria-disabled="false" draggable="false" href="baseUrl/download/exception-report">Download Exception Report</a></div>
+<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button" aria-disabled="false" type="submit">Copy Prescription IDs</button><a class="nhsuk-button" role="button" aria-disabled="false" draggable="false" href="baseUrl/download/exception-report">Download Exception Report</a></div>
 <table class="nhsuk-table">
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
