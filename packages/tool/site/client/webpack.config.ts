@@ -21,7 +21,7 @@ const config: Configuration = {
       }
     ]
   },
-  devtool: "eval-source-map",
+  devtool: "source-map",
   plugins: [
     new ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
