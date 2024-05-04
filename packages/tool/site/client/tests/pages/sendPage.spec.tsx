@@ -159,7 +159,10 @@ test("Exception report button shown if there are failed prescriptions", async ()
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<BrowserRouter><SendPage token={token}/></BrowserRouter>, context)
+  let container
+  await React.act(async () => {
+    container = renderWithContext(<BrowserRouter><SendPage token={token}/></BrowserRouter>, context)
+  })
   await waitFor(() => screen.getByText(/Send Result/))
   return container
 }
