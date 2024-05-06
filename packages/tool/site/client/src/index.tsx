@@ -85,57 +85,57 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
                 </PageContainer>}>
               </Route>
 
-              <Route path={`{baseUrl}prescribe/send`} element={
+              <Route path={`${baseUrl}prescribe/send`} element={
                 <PageContainer>
                   <SendPage token={urlParams.get("token")} state={urlParams.get("state")}/>
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}prescribe/cancel`} element={
+              <Route path={`${baseUrl}prescribe/cancel`} element={
                 <PageContainer>
                   <CancelPage prescriptionId={urlParams.get("prescription_id")}/>
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}dispense/release`} element={
+              <Route path={`${baseUrl}dispense/release`} element={
                 <PageContainer>
                   <ReleasePage prescriptionId={urlParams.get("prescription_id")}/>
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}dispense/return`} element={
+              <Route path={`${baseUrl}dispense/return`} element={
                 <PageContainer>
                   <ReturnPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}dispense/withdraw`} element={
+              <Route path={`${baseUrl}dispense/withdraw`} element={
                 <PageContainer>
                   <WithdrawPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}dispense/dispense`} element={
+              <Route path={`${baseUrl}dispense/dispense`} element={
                 <PageContainer>
                   <DispensePage prescriptionId={urlParams.get("prescription_id")} amendId={urlParams.get("amend_id")} />
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}dispense/claim`} element={
+              <Route path={`${baseUrl}dispense/claim`} element={
                 <PageContainer>
                   <ClaimPage prescriptionId={urlParams.get("prescription_id")} amend={!!urlParams.get("amend")}/>
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}search`} element={
+              <Route path={`${baseUrl}search`} element={
                 <PageContainer>
                   <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}view`} element={
+              <Route path={`${baseUrl}view`} element={
                 <PageContainer>
                   <ViewPrescriptionPage prescriptionId={urlParams.get("prescription_id")} />
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}validate`} element={
+              <Route path={`${baseUrl}validate`} element={
                 <PageContainer>
                   <ValidatePage />
                 </PageContainer>}>
               </Route>
-              <Route path={`{baseUrl}compare-prescriptions`} element={
+              <Route path={`${baseUrl}compare-prescriptions`} element={
                 <PageFullWidth>
                   <ComparePage />
                 </PageFullWidth>}>
