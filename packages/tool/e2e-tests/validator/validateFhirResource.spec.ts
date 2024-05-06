@@ -19,9 +19,13 @@ describe("firefox", () => {
 async function validateFhirResourceUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
+  finaliseWebAction(driver, "FINDING LINK FOR Validate a FHIR Resource...")
   await driver.wait(until.elementLocated(By.linkText("Validate a FHIR Resource")), threeTimesDefaultWaitTimeout)
+  finaliseWebAction(driver, "CLICKING THE LINK FOR Validate a FHIR Resource...")
   await driver.findElement(By.linkText("Validate a FHIR Resource")).click()
+  finaliseWebAction(driver, "PASTING THE CLIPBOARD INTO validatePayload...")
   await driver.findElement(By.id("validatePayload")).sendKeys(Key.CONTROL, "v")
+  finaliseWebAction(driver, "CLICKING THE VALIDATE BUTTON...")
   await driver.findElement({xpath: "//*[text() = 'Validate']"}).click()
   finaliseWebAction(driver, "VALIDATING FHIR RESOURCE...")
   await checkApiResult(driver, true)
