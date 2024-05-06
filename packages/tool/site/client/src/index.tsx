@@ -43,9 +43,10 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
         <Page>
           <BrowserRouter>
             <Routes>
-              <Route path={`${baseUrl}/`} element={<PageContainer>
-                <HomePage />
-              </PageContainer>}>
+              <Route path={`${baseUrl}/`} element={
+                <PageContainer>
+                  <HomePage />
+                </PageContainer>}>
 
               </Route>
               <Route path={`${baseUrl}dose-to-text`} element={
