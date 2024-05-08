@@ -1,7 +1,11 @@
 import * as validator from "../../../src/services/validation/bundle-validator"
 import * as TestResources from "../../resources/test-resources"
 import {clone} from "../../resources/test-helpers"
-import {getMedicationRequests, getPractitionerRoles} from "../../../src/services/translation/common/getResourcesOfType"
+import {
+  getMedicationRequests,
+  getOrganizations,
+  getPractitionerRoles
+} from "../../../src/services/translation/common/getResourcesOfType"
 import {
   getExtensionForUrl,
   getExtensionForUrlOrNull,
@@ -182,11 +186,13 @@ describe("verifyCommonBundle", () => {
   let bundle: fhir.Bundle
   let medicationRequests: Array<fhir.MedicationRequest>
   let practitionerRoles: Array<fhir.PractitionerRole>
+  let organizations: Array<fhir.Organization>
 
   beforeEach(() => {
     bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     medicationRequests = getMedicationRequests(bundle)
     practitionerRoles = getPractitionerRoles(bundle)
+    organizations = getOrganizations(bundle)
   })
 
   test("Should accept a prescription-order message where all MedicationRequests have intent order", () => {
@@ -278,6 +284,30 @@ describe("verifyCommonBundle", () => {
 
     const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(0)
+  })
+
+  test("Should reject a telecom with no use", () => {
+    const telecom = {
+      system: "phone",
+      value: "01234567890"
+    }
+    organizations[0].telecom = [telecom]
+
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].diagnostics).toEqual("Required field telecom.use is missing.")
+  })
+
+  test("Should reject a telecom with no value", () => {
+    const telecom = {
+      system: "phone",
+      use: "work"
+    }
+    organizations[0].telecom = [telecom]
+
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    expect(validationErrors).toHaveLength(1)
+    expect(validationErrors[0].diagnostics).toEqual("Required field telecom.value is missing.")
   })
 })
 
