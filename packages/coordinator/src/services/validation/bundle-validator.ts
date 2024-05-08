@@ -117,25 +117,7 @@ export function verifyCommonBundle(
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
   const medicationRequests = getMedicationRequests(bundle)
 
-  const containsPlanOrReflex = medicationRequests.some(
-    medicationRequest => isPlanOrReflex(medicationRequest.intent)
-  )
-  if (containsPlanOrReflex) {
-    incorrectValueErrors.push(
-      errors.createMedicationRequestIncorrectValueIssue(
-        "intent",
-        `${fhir.MedicationRequestIntent.ORDER}, `
-        + `${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or `
-        + `${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
-      )
-    )
-  }
-
-  if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
-    incorrectValueErrors.push(
-      errors.createMedicationFieldIssue("Request")
-    )
-  }
+  validateMedicationRequests(medicationRequests, incorrectValueErrors)
 
   const responsiblePartyUrls = medicationRequests.map(request => {
     return getExtensionForUrlOrNull(
@@ -163,6 +145,31 @@ export function verifyCommonBundle(
   )
 
   return incorrectValueErrors
+}
+
+function validateMedicationRequests(
+  medicationRequests: Array<fhir.MedicationRequest>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>
+) {
+  const containsPlanOrReflex = medicationRequests.some(
+    medicationRequest => isPlanOrReflex(medicationRequest.intent)
+  )
+  if (containsPlanOrReflex) {
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue(
+        "intent",
+        `${fhir.MedicationRequestIntent.ORDER}, `
+        + `${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or `
+        + `${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
+      )
+    )
+  }
+
+  if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
+    incorrectValueErrors.push(
+      errors.createMedicationFieldIssue("Request")
+    )
+  }
 }
 
 function validatePractitionerRole(
