@@ -26,7 +26,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
+      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
       <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
         <div class="pretty-json-container object-container">
           <div class="object-content">
@@ -50,19 +50,19 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDLKkx hagNRb">XML Request</pre>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">XML Request</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDLKkx hagNRb">XML Response</pre>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">XML Response</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
     <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
       <div class="pretty-json-container object-container">
         <div class="object-content">
@@ -84,7 +84,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
   </div>
 </details>
 </div>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Withdraw Page When the user submits the withdraw form successfully with two dispense notifications should match the snapshot 1`] = `
@@ -103,7 +103,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
     <tbody class="nhsuk-table__body">
       <details class="nhsuk-details nhsuk-expander">
         <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Event 1</span></summary>
-        <dl class="nhsuk-summary-list sc-kFCroH jARODO">
+        <dl class="nhsuk-summary-list sc-kFuvnu epzHYR">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">ID</dt>
             <dd class="nhsuk-summary-list__value">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
@@ -135,7 +135,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
                 <td class="nhsuk-table__cell">63 tablet</td>
               </tr>
             </tbody>
-          </table><a class="nhsuk-button sc-irLvIq cnHYGP" role="button" aria-disabled="false" draggable="false" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014">Amend</a>
+          </table><a class="nhsuk-button sc-irTrJD dlnnno" role="button" aria-disabled="false" draggable="false" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014">Amend</a>
         </div>
       </details>
     </tbody>
@@ -161,7 +161,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
+      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
       <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
         <div class="pretty-json-container object-container">
           <div class="object-content">
@@ -185,19 +185,19 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDLKkx hagNRb">XML Request</pre>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">XML Request</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDLKkx hagNRb">XML Response</pre>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">XML Response</pre>
   </div>
 </details>
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button sc-jTQCzO jWYAmd" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTQCzO jWYAmd" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
+    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
     <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
       <div class="pretty-json-container object-container">
         <div class="object-content">
@@ -219,7 +219,7 @@ exports[`Withdraw Page When the user submits the withdraw form successfully with
   </div>
 </details>
 </div>
-<div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Withdraw Page When there are two dispense notifications should match the snapshot 1`] = `
@@ -230,7 +230,7 @@ exports[`Withdraw Page When there are two dispense notifications should match th
     <tbody class="nhsuk-table__body">
       <details class="nhsuk-details nhsuk-expander">
         <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Event 1</span></summary>
-        <dl class="nhsuk-summary-list sc-kFCroH jARODO">
+        <dl class="nhsuk-summary-list sc-kFuvnu epzHYR">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">ID</dt>
             <dd class="nhsuk-summary-list__value">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
@@ -262,12 +262,12 @@ exports[`Withdraw Page When there are two dispense notifications should match th
                 <td class="nhsuk-table__cell">63 tablet</td>
               </tr>
             </tbody>
-          </table><a class="nhsuk-button sc-irLvIq cnHYGP" role="button" aria-disabled="false" draggable="false" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014">Amend</a>
+          </table><a class="nhsuk-button sc-irTrJD dlnnno" role="button" aria-disabled="false" draggable="false" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014">Amend</a>
         </div>
       </details>
       <details class="nhsuk-details nhsuk-expander">
         <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Event 2</span></summary>
-        <dl class="nhsuk-summary-list sc-kFCroH jARODO">
+        <dl class="nhsuk-summary-list sc-kFuvnu epzHYR">
           <div class="nhsuk-summary-list__row">
             <dt class="nhsuk-summary-list__key">ID</dt>
             <dd class="nhsuk-summary-list__value">76d1cc0b-bd64-4fad-a513-4de0f2ae7014</dd>
@@ -299,7 +299,7 @@ exports[`Withdraw Page When there are two dispense notifications should match th
                 <td class="nhsuk-table__cell">63 tablet</td>
               </tr>
             </tbody>
-          </table><a class="nhsuk-button sc-irLvIq cnHYGP" role="button" aria-disabled="false" draggable="false" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014">Amend</a>
+          </table><a class="nhsuk-button sc-irTrJD dlnnno" role="button" aria-disabled="false" draggable="false" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J&amp;amend_id=76d1cc0b-bd64-4fad-a513-4de0f2ae7014">Amend</a>
         </div>
       </details>
     </tbody>
@@ -327,6 +327,6 @@ exports[`Withdraw Page When there are two dispense notifications should match th
       </div>
     </fieldset>
   </div>
-  <div class="sc-dmyCSP dkkyrN"><button class="nhsuk-button" aria-disabled="false" type="submit">Withdraw</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button" aria-disabled="false" type="submit">Withdraw</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
