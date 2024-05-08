@@ -138,3 +138,19 @@ export function getContainedOrganizationViaReference<R extends fhir.Resource>(
     isOrganization
   )
 }
+
+export function getTelecoms(bundle: fhir.Bundle): Array<fhir.ContactPoint> {
+  type ResourceToValidate = fhir.Organization | fhir.Practitioner | fhir.PractitionerRole;
+  const get_telecom = (resource: ResourceToValidate) => resource.telecom ?? []
+
+  const organizations = getOrganizations(bundle)
+  const org_telecoms = organizations.flatMap(get_telecom)
+
+  const practitioners = getPractitioners(bundle)
+  const prac_telecoms = practitioners.flatMap(get_telecom)
+
+  const practitionerRoles = getPractitionerRoles(bundle)
+  const prac_role_telecoms = practitionerRoles.flatMap(get_telecom)
+
+  return org_telecoms.concat(prac_telecoms).concat(prac_role_telecoms)
+}
