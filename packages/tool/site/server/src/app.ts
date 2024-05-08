@@ -211,7 +211,7 @@ function addViewRoutes(server: Hapi.Server) {
     const viewRoute = {
       method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
-      handler: (request, h) => {
+      handler: (request: any, h: any) => {
         const test = h
         let viewPath = `${path}`
         if (prRedirect) {
