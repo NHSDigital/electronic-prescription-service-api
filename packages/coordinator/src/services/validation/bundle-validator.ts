@@ -2,7 +2,8 @@ import {
   getBundleEntriesOfType,
   getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
-  getMedicationRequests
+  getMedicationRequests,
+  getTelecoms
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "../../utils/collections"
@@ -118,6 +119,8 @@ export function verifyCommonBundle(
   const medicationRequests = getMedicationRequests(bundle)
 
   validateMedicationRequests(medicationRequests, incorrectValueErrors)
+
+  validateTelecoms(bundle, incorrectValueErrors)
 
   const responsiblePartyUrls = medicationRequests.map(request => {
     return getExtensionForUrlOrNull(
@@ -534,5 +537,20 @@ function checkPrimaryCarePrescriptionResources(
 
   if (!organization.partOf) {
     return errors.missingRequiredField("organization.partOf")
+  }
+}
+
+function validateTelecoms(bundle: fhir.Bundle, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
+  const telecoms = getTelecoms(bundle)
+
+  telecoms.forEach(telecom => validateTelecom(telecom, incorrectValueErrors))
+}
+
+function validateTelecom(telecom: fhir.ContactPoint, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
+  if(!telecom.value){
+    incorrectValueErrors.push(errors.missingRequiredField("telecom.value"))
+  }
+  if(!telecom.use){
+    incorrectValueErrors.push(errors.missingRequiredField("telecom.use"))
   }
 }
