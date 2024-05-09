@@ -211,7 +211,7 @@ function addViewRoutes(server: Hapi.Server) {
     const viewRoute = {
       method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
-      handler: (request: any, h: any) => {
+      handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
         const test = h
         let viewPath = `${path}`
         if (prRedirect) {
@@ -219,7 +219,8 @@ function addViewRoutes(server: Hapi.Server) {
           const state = parseOAuthState(parsedRequest.state as string, request.logger)
           if (prRedirectRequired(state.prNumber)) {
             if (prRedirectEnabled()) {
-              viewPath = `/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
+              viewPath = `https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
+              return h.redirect(viewPath)
             }
           }
         }
@@ -227,16 +228,21 @@ function addViewRoutes(server: Hapi.Server) {
         console.log(`this is the viewPath: ${viewPath}`)
         console.log(`what is h: ${typeof test}`)
 
-        return {
-          view: {
-            template: "index",
-            path: viewPath,
-            context: {
-              baseUrl: CONFIG.baseUrl,
-              environment: CONFIG.environment
-            }
-          }
-        }
+        return h.view("index", {
+          baseUrl: CONFIG.baseUrl,
+          environment: CONFIG.environment
+        })
+
+        // return {
+        //   view: {
+        //     template: "index",
+        //     path: viewPath,
+        //     context: {
+        //       baseUrl: CONFIG.baseUrl,
+        //       environment: CONFIG.environment
+        //     }
+        //   }
+        // }
       }
     }
 
