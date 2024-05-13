@@ -1,5 +1,5 @@
 import {
-  PathedTelecom,
+  PathedResource,
   getBundleEntriesOfType,
   getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
@@ -544,12 +544,12 @@ function checkPrimaryCarePrescriptionResources(
 function validateTelecoms(bundle: fhir.Bundle, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
   const telecoms = getPathedTelecoms(bundle)
 
-  const validateTelecom = (telecom: PathedTelecom) => {
-    if(!telecom.value){
-      incorrectValueErrors.push(errors.missingRequiredField(`${telecom.path}.value`))
+  const validateTelecom = (resource: PathedResource<fhir.ContactPoint>) => {
+    if(!resource.resource.value){
+      incorrectValueErrors.push(errors.missingRequiredField(`${resource.path}.value`))
     }
-    if(!telecom.use){
-      incorrectValueErrors.push(errors.missingRequiredField(`${telecom.path}.use`))
+    if(!resource.resource.use){
+      incorrectValueErrors.push(errors.missingRequiredField(`${resource.path}.use`))
     }
   }
 
