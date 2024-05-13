@@ -64,6 +64,7 @@ This will ensure that your VSCode bash terminal prompts you for your GPG key pas
 
 You can cache the gpg key passphrase by following instructions at https://superuser.com/questions/624343/keep-gnupg-credentials-cached-for-entire-user-session
 
+
 <details>
 <summary>Manual Setup</summary>
 
