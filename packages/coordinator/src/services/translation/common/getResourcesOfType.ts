@@ -8,6 +8,25 @@ export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle,
     .filter(resource => resource.resourceType === resourceType) as Array<T>
 }
 
+export interface Pathed {
+  path: string
+}
+export function getPathedResourcesOfType<T extends fhir.Resource & Pathed>(
+  bundle: fhir.Bundle,
+  resourceType: string,
+): Array<T> {
+  const root_path = "bundle.entry"
+
+  return bundle.entry
+    .map((entry, index) => {
+      return {
+        path: `${root_path}[${index}].resource`,
+        ...entry.resource
+      }
+    })
+    .filter((resource) => resource.resourceType === resourceType) as Array<T>
+}
+
 export function getBundleEntriesOfType(
   bundle: fhir.Bundle,
   resourceType: string
@@ -139,18 +158,27 @@ export function getContainedOrganizationViaReference<R extends fhir.Resource>(
   )
 }
 
-export function getTelecoms(bundle: fhir.Bundle): Array<fhir.ContactPoint> {
+export type PathedTelecom = fhir.ContactPoint & Pathed;
+export function getPathedTelecoms(
+  bundle: fhir.Bundle,
+): Array<PathedTelecom> {
   type ResourceToValidate = fhir.Organization | fhir.Practitioner | fhir.PractitionerRole;
-  const get_telecom = (resource: ResourceToValidate) => resource.telecom ?? []
 
-  const organizations = getOrganizations(bundle)
-  const org_telecoms = organizations.flatMap(get_telecom)
+  const get_telecom = (resource: ResourceToValidate & Pathed) => {
+    return (resource.telecom ?? []).map((telecom, index) => {
+      return {
+        path: `${resource.path}.telecom[${index}]`,
+        ...telecom
+      }
+    })
+  }
 
-  const practitioners = getPractitioners(bundle)
-  const prac_telecoms = practitioners.flatMap(get_telecom)
+  const organizations = getPathedResourcesOfType(bundle, "Organization")
+  const practitioners = getPathedResourcesOfType(bundle, "Practitioner")
+  const practitionerRoles = getPathedResourcesOfType(bundle, "PractitionerRole")
 
-  const practitionerRoles = getPractitionerRoles(bundle)
-  const prac_role_telecoms = practitionerRoles.flatMap(get_telecom)
-
-  return org_telecoms.concat(prac_telecoms).concat(prac_role_telecoms)
+  return organizations
+    .concat(practitioners)
+    .concat(practitionerRoles)
+    .flatMap(get_telecom)
 }

@@ -1,9 +1,10 @@
 import {
+  PathedTelecom,
   getBundleEntriesOfType,
   getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
   getMedicationRequests,
-  getTelecoms
+  getPathedTelecoms
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "../../utils/collections"
@@ -541,16 +542,16 @@ function checkPrimaryCarePrescriptionResources(
 }
 
 function validateTelecoms(bundle: fhir.Bundle, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
-  const telecoms = getTelecoms(bundle)
+  const telecoms = getPathedTelecoms(bundle)
 
-  telecoms.forEach(telecom => validateTelecom(telecom, incorrectValueErrors))
-}
+  const validateTelecom = (telecom: PathedTelecom) => {
+    if(!telecom.value){
+      incorrectValueErrors.push(errors.missingRequiredField(`${telecom.path}.value`))
+    }
+    if(!telecom.use){
+      incorrectValueErrors.push(errors.missingRequiredField(`${telecom.path}.use`))
+    }
+  }
 
-function validateTelecom(telecom: fhir.ContactPoint, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
-  if(!telecom.value){
-    incorrectValueErrors.push(errors.missingRequiredField("telecom.value"))
-  }
-  if(!telecom.use){
-    incorrectValueErrors.push(errors.missingRequiredField("telecom.use"))
-  }
+  telecoms.forEach(validateTelecom)
 }
