@@ -295,7 +295,9 @@ describe("verifyCommonBundle", () => {
 
     const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
-    expect(validationErrors[0].diagnostics).toEqual("Required field telecom.use is missing.")
+    expect(validationErrors[0].diagnostics).toEqual(
+      "Required field bundle.entry[8].resource.telecom[0].use is missing."
+    )
   })
 
   test("Should reject a telecom with no value", () => {
@@ -307,7 +309,9 @@ describe("verifyCommonBundle", () => {
 
     const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
     expect(validationErrors).toHaveLength(1)
-    expect(validationErrors[0].diagnostics).toEqual("Required field telecom.value is missing.")
+    expect(validationErrors[0].diagnostics).toEqual(
+      "Required field bundle.entry[8].resource.telecom[0].value is missing."
+    )
   })
 })
 
