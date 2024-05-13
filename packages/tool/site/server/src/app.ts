@@ -15,6 +15,7 @@ import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
 import * as XLSX from "xlsx"
+import {parseOAuthState, prRedirectEnabled, prRedirectRequired} from "./routes/helpers"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -88,7 +89,7 @@ async function registerSession(server: Hapi.Server) {
 
 async function registerLogging(server: Hapi.Server) {
   await HapiPino.register(server, {
-    // For non-local environments, dont pretty print to avoid spamming logs
+    // For non-local environments, don't pretty print to avoid spamming logs
     ...(isLocal(CONFIG.environment) && {
       transport: {
         target: "pino-pretty",
@@ -183,7 +184,7 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("tracker"))
     server.route(addView("prescribe/load"))
     server.route(addView("prescribe/edit"))
-    server.route(addView("prescribe/send", true))
+    server.route(addView("prescribe/send", true, true))
     server.route(addView("prescribe/cancel"))
     server.route(addView("dispense/release"))
     server.route(addView("dispense/verify"))
@@ -205,18 +206,43 @@ function addViewRoutes(server: Hapi.Server) {
     return addView("/")
   }
 
-  function addView(path: string, skipAuth?: boolean): Hapi.ServerRoute {
+  function addView(path: string, skipAuth?: boolean, prRedirect?: boolean): Hapi.ServerRoute {
+
     const viewRoute = {
       method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
-      handler: {
-        view: {
-          template: "index",
-          context: {
-            baseUrl: CONFIG.baseUrl,
-            environment: CONFIG.environment
+      handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
+        const test = h
+        let viewPath = `${path}`
+        if (prRedirect) {
+          const parsedRequest = request.payload as {signatureToken: string, state?: string}
+          const state = parseOAuthState(parsedRequest.state as string, request.logger)
+          if (prRedirectRequired(state.prNumber)) {
+            if (prRedirectEnabled()) {
+              viewPath = `https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
+              return h.redirect(viewPath)
+            }
           }
         }
+
+        console.log(`this is the viewPath: ${viewPath}`)
+        console.log(`what is h: ${typeof test}`)
+
+        return h.view("index", {
+          baseUrl: CONFIG.baseUrl,
+          environment: CONFIG.environment
+        })
+
+        // return {
+        //   view: {
+        //     template: "index",
+        //     path: viewPath,
+        //     context: {
+        //       baseUrl: CONFIG.baseUrl,
+        //       environment: CONFIG.environment
+        //     }
+        //   }
+        // }
       }
     }
 

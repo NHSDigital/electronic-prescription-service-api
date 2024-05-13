@@ -78,7 +78,7 @@ info:
     This API supports a community pharmacy dispensing workflow.
 
     In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
-    - it is available for testing in the integration environment, but not for production use
+    - it is available in integration and production
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     ### Roadmap
@@ -313,7 +313,7 @@ paths:
                 summary: Acute Multiple Dosages
                 description: A valid acute, primary care prescription order request, with multiple dosage items.
                 value:
-                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Request-Multiple-Dosages-200_OK.json
+                  $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/Prepare-Request-Multiple-Dosages-200_OK.json
               repeat-primary:
                 summary: Repeat
                 description: A Valid repeat, primary care prepare request
@@ -346,7 +346,7 @@ paths:
                   summary: Acute Multiple Dosages
                   description: A successful response to an acute with multiple dosages, primary care prescription order request.
                   value:
-                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/4-Prepare-Response-Multiple-Dosages-200_OK.json
+                    $ref: examples/primary-care/acute/nominated-pharmacy/medical-prescriber/Prepare-Response-Multiple-Dosages-200_OK.json
                 repeat-primary:
                   summary: Repeat
                   description: A successful response to a repeat, primary care request.

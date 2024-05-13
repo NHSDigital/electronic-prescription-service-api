@@ -24,4 +24,4 @@ you want to run again e.g. internal-dev or internal-qa
 e.g.
 export client_id=${client_id value}
 export client_secret=${client_secret value}
-export private_key={your_private_key}
+export private_key={your_private_key}  

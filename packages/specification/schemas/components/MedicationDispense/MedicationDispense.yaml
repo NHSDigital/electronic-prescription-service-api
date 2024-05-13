@@ -174,37 +174,6 @@ properties:
     type: object
     description: The amount of medication that has been dispensed. Includes unit of measure.
     properties:
-      extension:
-        type: array
-        items:
-          type: object
-          properties:
-            url:
-              type: string
-              enum:
-                - https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal
-            valueQuantity:
-              type: object
-              properties:
-                value:
-                  type: number
-                  description: |
-                    The value of the measured amount. The value includes an implicit precision in the presentation of the value.
-                    A rational number with implicit precision, to a maximum of 2 decimal places with trailing zeroes removed.
-                    Do not use an IEEE type floating point type, instead use something like a true decimal, with inbuilt precision.
-                  example: 20.5
-                unit:
-                  type: string
-                  description: A human-readable representation of the unit.
-                  example: tablet
-                system:
-                  type: string
-                  description: The identification of the system that provides the coded form of the unit.
-                  enum: [http://snomed.info/sct]
-                code:
-                  type: string
-                  description: A computer processable form of the unit in some unit representation system.
-                  example: "732936001"
       value:
         type: number
         description: |

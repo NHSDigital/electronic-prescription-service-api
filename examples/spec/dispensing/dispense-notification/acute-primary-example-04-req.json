@@ -311,17 +311,6 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 20,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 0,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
@@ -604,17 +593,6 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 20,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 0,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
@@ -897,17 +875,6 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 30,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 15,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
@@ -1190,17 +1157,6 @@
           ]
         },
         "quantity": {
-          "extension": [
-            {
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-RunningTotal",
-              "valueQuantity": {
-                "value": 0,
-                "unit": "tablet",
-                "system": "http://snomed.info/sct",
-                "code": "732936001"
-              }
-            }
-          ],
           "value": 0,
           "unit": "tablet",
           "system": "http://snomed.info/sct",
@@ -1265,7 +1221,7 @@
           {
             "city": "West Yorkshire",
             "use": "work",
-            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+            "line": [ "17 Austhorpe Road", "Crossgates", "Leeds" ],
             "postalCode": "LS15 8BA"
           }
         ],

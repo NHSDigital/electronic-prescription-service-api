@@ -1,10 +1,10 @@
-docker_service_cpu: 1024
+docker_service_cpu: 2048
 docker_service_memory: 4096
 docker_service_autoscaling_prod:
   service_metric: ECSServiceAverageCPUUtilization
   target_value: 70
 docker_service_autoscaling: "{{ docker_service_autoscaling_prod if APIGEE_ENVIRONMENT in ('ref', 'prod') else dict() }}"
-docker_service_health_check_grace_period_seconds: 180
+docker_service_health_check_grace_period_seconds: 300
 docker_service:
   - name: eps-coordinator
     port: 9000
