@@ -226,13 +226,13 @@ function addViewRoutes(server: Hapi.Server) {
             if (prRedirectEnabled()) {
               viewPath = getPrBranchUrl(state.prNumber, path, `token=${parsedRequest.signatureToken}`)
               // viewPath = `https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
+              console.log(`this is the viewPath: ${viewPath}`)
+              console.log(`what is h: ${typeof test}`)
+
               return h.redirect(viewPath)
             }
           }
         }
-
-        console.log(`this is the viewPath: ${viewPath}`)
-        console.log(`what is h: ${typeof test}`)
 
         return h.view("index", {
           baseUrl: CONFIG.baseUrl,
