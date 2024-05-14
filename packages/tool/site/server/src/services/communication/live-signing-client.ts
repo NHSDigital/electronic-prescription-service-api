@@ -47,7 +47,6 @@ export class LiveSigningClient implements SigningClient {
       algorithm: prepareResponses[0].response.parameter?.find(p => p.name === "algorithm")?.valueString
     }
 
-
     // Log CONFIG.subject here
     console.log( "CONFIG.subject : " + CONFIG.subject)
 

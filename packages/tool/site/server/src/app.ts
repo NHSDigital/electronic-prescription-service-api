@@ -15,7 +15,12 @@ import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
 import * as XLSX from "xlsx"
-import {parseOAuthState, prRedirectEnabled, prRedirectRequired} from "./routes/helpers"
+import {
+  getPrBranchUrl,
+  parseOAuthState,
+  prRedirectEnabled,
+  prRedirectRequired
+} from "./routes/helpers"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -219,7 +224,8 @@ function addViewRoutes(server: Hapi.Server) {
           const state = parseOAuthState(parsedRequest.state as string, request.logger)
           if (prRedirectRequired(state.prNumber)) {
             if (prRedirectEnabled()) {
-              viewPath = `https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
+              viewPath = getPrBranchUrl(state.prNumber, path, `token=${parsedRequest.signatureToken}`)
+              // viewPath = `https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
               return h.redirect(viewPath)
             }
           }
