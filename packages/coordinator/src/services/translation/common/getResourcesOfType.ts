@@ -8,6 +8,28 @@ export function getResourcesOfType<T extends fhir.Resource>(bundle: fhir.Bundle,
     .filter(resource => resource.resourceType === resourceType) as Array<T>
 }
 
+export interface PathedResource<T> {
+  path: string;
+  resource: T;
+}
+export function getPathedResourcesOfType<T extends fhir.Resource>(
+  bundle: fhir.Bundle,
+  resourceType: string,
+): Array<PathedResource<T>> {
+  const root_path = "bundle.entry"
+
+  return bundle.entry
+    .map((entry, index) => {
+      return {
+        path: `${root_path}[${index}].resource`,
+        resource: entry.resource
+      }
+    })
+    .filter(
+      (resource) => resource.resource.resourceType === resourceType,
+    ) as Array<PathedResource<T>>
+}
+
 export function getBundleEntriesOfType(
   bundle: fhir.Bundle,
   resourceType: string
@@ -137,4 +159,27 @@ export function getContainedOrganizationViaReference<R extends fhir.Resource>(
     "Organization",
     isOrganization
   )
+}
+
+export function getPathedTelecoms(
+  bundle: fhir.Bundle,
+): Array<PathedResource<fhir.ContactPoint>> {
+  type ResourceToValidate = fhir.Organization | fhir.Practitioner | fhir.PractitionerRole;
+  const get_telecoms = (resource: PathedResource<ResourceToValidate>) => {
+    return (resource.resource.telecom ?? []).map((telecom, index) => {
+      return {
+        path: `${resource.path}.telecom[${index}]`,
+        resource: telecom
+      }
+    })
+  }
+
+  const organizations = getPathedResourcesOfType(bundle, "Organization")
+  const practitioners = getPathedResourcesOfType(bundle, "Practitioner")
+  const practitionerRoles = getPathedResourcesOfType(bundle, "PractitionerRole")
+
+  return organizations
+    .concat(practitioners)
+    .concat(practitionerRoles)
+    .flatMap(get_telecoms)
 }
