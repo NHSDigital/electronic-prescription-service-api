@@ -218,18 +218,17 @@ function addViewRoutes(server: Hapi.Server) {
       path: path.startsWith("/") ? path : `/${path}`,
       handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
         const test = h
-        let viewPath = `${path}`
         if (prRedirect) {
-          const parsedRequest = request.payload as {signatureToken: string, state?: string}
-          const state = parseOAuthState(parsedRequest.state as string, request.logger)
-          if (prRedirectRequired(state.prNumber)) {
-            if (prRedirectEnabled()) {
-              viewPath = getPrBranchUrl(state.prNumber, path, `token=${parsedRequest.signatureToken}`)
-              // viewPath = `https://internal-dev.api.service.nhs.uk/eps-api-tool-pr-${state.prNumber}/${path}` //getPrBranchUrl(state.prNumber, path, queryString )
-              console.log(`this is the viewPath: ${viewPath}`)
-              console.log(`what is h: ${typeof test}`)
-
-              return h.redirect(viewPath)
+          // const parsedRequest = request.payload as {signatureToken: string, state?: string}
+          if(request.query.state) {
+            const state = parseOAuthState(request.query.state as string, request.logger)
+            if (prRedirectRequired(state.prNumber)) {
+              if (prRedirectEnabled()) {
+                console.log(`this is the pr Number: ${state.prNumber}`)
+                const queryString = new URLSearchParams(request.query).toString()
+                return h.redirect(getPrBranchUrl(state.prNumber, path, queryString))
+                console.log(`what is h: ${typeof test}`)
+              }
             }
           }
         }
