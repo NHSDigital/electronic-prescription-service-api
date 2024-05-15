@@ -220,7 +220,9 @@ function addViewRoutes(server: Hapi.Server) {
         const test = h
         if (prRedirect) {
           // const parsedRequest = request.payload as {signatureToken: string, state?: string}
+          console.log("pr redirect for path :" + path)
           if(request.query.state) {
+            console.log(`state: ${request.query.state}`)
             const state = parseOAuthState(request.query.state as string, request.logger)
             if (prRedirectRequired(state.prNumber)) {
               if (prRedirectEnabled()) {
@@ -232,22 +234,12 @@ function addViewRoutes(server: Hapi.Server) {
             }
           }
         }
+        console.log("normal path for: " + path)
 
         return h.view("index", {
           baseUrl: CONFIG.baseUrl,
           environment: CONFIG.environment
         })
-
-        // return {
-        //   view: {
-        //     template: "index",
-        //     path: viewPath,
-        //     context: {
-        //       baseUrl: CONFIG.baseUrl,
-        //       environment: CONFIG.environment
-        //     }
-        //   }
-        // }
       }
     }
 
