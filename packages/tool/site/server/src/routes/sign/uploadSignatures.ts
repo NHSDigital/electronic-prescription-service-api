@@ -30,7 +30,7 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
-      console.log("upload-signatures request : " + request)
+      console.log("upload-signatures request : " + request.toString())
       console.log(`prescription IDs: ${prescriptionIds}`)
 
       const response = await signingClient.uploadSignatureRequest(prepareResponses, signInHeaders)

@@ -48,9 +48,9 @@ export class LiveSigningClient implements SigningClient {
     }
 
     // Log CONFIG.subject here
-    console.log( "CONFIG.subject : " + CONFIG.subject)
-    console.log( "payload : " + payload)
-    console.log("prepare responses: " + prepareResponses)
+    console.log( "CONFIG.subject : " + CONFIG.subject.toString())
+    console.log( "payload : " + payload.toString())
+    console.log("prepare responses: " + prepareResponses.toString())
 
     const body = jwt.sign(payload, LiveSigningClient.getPrivateKey(CONFIG.apigeeAppJWTPrivateKey), {
       algorithm: "RS512",
