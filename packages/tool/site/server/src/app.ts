@@ -222,11 +222,11 @@ function addViewRoutes(server: Hapi.Server) {
           // const parsedRequest = request.payload as {signatureToken: string, state?: string}
           console.log("pr redirect for path :" + path)
           if(request.query.state) {
-            console.log(`state: ${request.query.state}`)
+            console.log(`state: ${request.query.state as string}`)
             const state = parseOAuthState(request.query.state as string, request.logger)
             if (prRedirectRequired(state.prNumber)) {
+              console.log(`this is the pr Number: ${state.prNumber}`)
               if (prRedirectEnabled()) {
-                console.log(`this is the pr Number: ${state.prNumber}`)
                 const queryString = new URLSearchParams(request.query).toString()
                 return h.redirect(getPrBranchUrl(state.prNumber, path, queryString))
                 console.log(`what is h: ${typeof test}`)
