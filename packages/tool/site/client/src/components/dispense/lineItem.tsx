@@ -1,5 +1,5 @@
 import React, {FC} from "react"
-import {Checkboxes, Fieldset, Input} from "nhsuk-react-components"
+import {Checkboxes, Fieldset, TextInput} from "nhsuk-react-components"
 import LineItemSummaryList from "./lineItemSummaryList"
 import ConditionalField from "../common/conditionalField"
 import {LineItemFormValues} from "./dispenseForm"
@@ -45,7 +45,7 @@ const LineItem: React.FC<LineItemProps> = ({name, lineItem}) => (
       id={`${name}.suppliedQuantityValue`}
       name={`${name}.suppliedQuantityValue`}
       condition={lineItem.statusCode === LineItemStatus.PARTIALLY_DISPENSED}
-      as={Input}
+      as={TextInput}
       label="Quantity Dispensed"
     />
   </Fieldset>
