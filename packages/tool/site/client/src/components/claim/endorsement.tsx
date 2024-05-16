@@ -1,5 +1,5 @@
 import {Field} from "formik"
-import {Button, Input} from "nhsuk-react-components"
+import {Button, TextInput} from "nhsuk-react-components"
 import * as React from "react"
 import ButtonList from "../common/buttonList"
 import {VALUE_SET_DISPENSER_ENDORSEMENT} from "../../fhir/reference-data/valueSets"
@@ -26,7 +26,7 @@ const Endorsement: React.FC<EndorsementProps> = ({
     <Field
       id={`${name}.supportingInfo`}
       name={`${name}.supportingInfo`}
-      as={Input}
+      as={TextInput}
       width={30}
       label={`${label} Supporting Information`}
     />

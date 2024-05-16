@@ -1,5 +1,5 @@
 import {Field, Formik} from "formik"
-import {Button, Fieldset, Form, Input, Label, Textarea, ErrorSummary} from "nhsuk-react-components"
+import {Button, Fieldset, Form, TextInput, Label, Textarea, ErrorSummary} from "nhsuk-react-components"
 import * as React from "react"
 import {useContext, useEffect, useState} from "react"
 import BackButton from "../components/common/backButton"
@@ -163,13 +163,13 @@ const LoadPage: React.FC = () => {
                   rows={10}
                 />
                 <Label>Upload Test Pack</Label>
-                <Input
+                <TextInput
                   type="file"
                   accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
                   onChange={e => uploadPrescriptionTestPack(e.target)}
                 />
                 <Label>Upload FHIR prescription files</Label>
-                <Input
+                <TextInput
                   type="file"
                   multiple
                   accept="application/json"

@@ -17,7 +17,7 @@ exports[`Clicking Add Endorsement button adds one set of endorsement fields 1`] 
       </dl>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
@@ -35,7 +35,7 @@ exports[`Clicking Add Endorsement button adds one set of endorsement fields 1`] 
           <option value="SP">Special License</option>
           <option value="ZD">Zero Discount (List B only)</option>
         </select></div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" type="text" value=""></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" value=""></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
     </fieldset>
@@ -62,7 +62,7 @@ exports[`Clicking Add Endorsement button adds one set of endorsement fields 1`] 
         </select></div>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
@@ -88,7 +88,7 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
       </dl>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
@@ -106,7 +106,7 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
           <option value="SP">Special License</option>
           <option value="ZD">Zero Discount (List B only)</option>
         </select></div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" type="text" value=""></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" value=""></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.1.code--label" for="products.0.endorsements.1.code">Endorsement 2 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.1.code--label" name="products.0.endorsements.1.code" id="products.0.endorsements.1.code">
           <option value="BB">Broken Bulk</option>
@@ -123,7 +123,7 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
           <option value="SP">Special License</option>
           <option value="ZD">Zero Discount (List B only)</option>
         </select></div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.1.supportingInfo--label" for="products.0.endorsements.1.supportingInfo">Endorsement 2 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="products.0.endorsements.1.supportingInfo--label" name="products.0.endorsements.1.supportingInfo" id="products.0.endorsements.1.supportingInfo" type="text" value=""></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.1.supportingInfo--label" for="products.0.endorsements.1.supportingInfo">Endorsement 2 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.1.supportingInfo--label" name="products.0.endorsements.1.supportingInfo" id="products.0.endorsements.1.supportingInfo" value=""></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
     </fieldset>
@@ -150,7 +150,7 @@ exports[`Clicking Add Endorsement button twice adds two sets of endorsement fiel
         </select></div>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
@@ -176,7 +176,7 @@ exports[`Clicking Remove Endorsement button removes one set of endorsement field
       </dl>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
@@ -194,7 +194,7 @@ exports[`Clicking Remove Endorsement button removes one set of endorsement field
           <option value="SP">Special License</option>
           <option value="ZD">Zero Discount (List B only)</option>
         </select></div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" type="text" value=""></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" value=""></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
     </fieldset>
@@ -221,7 +221,7 @@ exports[`Clicking Remove Endorsement button removes one set of endorsement field
         </select></div>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
@@ -247,7 +247,7 @@ exports[`Form has no endorsement fields initially 1`] = `
       </dl>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
@@ -275,7 +275,7 @@ exports[`Form has no endorsement fields initially 1`] = `
         </select></div>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
@@ -301,7 +301,7 @@ exports[`Prepopulated claim info renders properly 1`] = `
       </dl>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
@@ -319,7 +319,7 @@ exports[`Prepopulated claim info renders properly 1`] = `
           <option value="SP">Special License</option>
           <option value="ZD">Zero Discount (List B only)</option>
         </select></div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" type="text" value="Broken Bulk"></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" value="Broken Bulk"></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
       <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
     </fieldset>
@@ -346,7 +346,7 @@ exports[`Prepopulated claim info renders properly 1`] = `
         </select></div>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
-          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
+          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
         </div>
       </div>
     </fieldset>
