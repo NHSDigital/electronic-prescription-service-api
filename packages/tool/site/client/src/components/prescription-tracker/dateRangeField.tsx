@@ -4,7 +4,7 @@ import {Field, FormikErrors, getIn, useFormikContext} from "formik"
 import * as React from "react"
 import moment from "moment"
 import ConditionalField from "../common/conditionalField"
-import {FormElementProps} from "nhsuk-react-components/dist/lib/util/types/FormTypes"
+import {FormElementProps} from "nhsuk-react-components/dist/esm/util/types/FormTypes"
 import {Coding} from "fhir/r4"
 
 export enum DateRangeType {

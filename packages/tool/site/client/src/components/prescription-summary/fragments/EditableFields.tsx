@@ -1,5 +1,5 @@
 import {Field} from "formik"
-import {Input, Label} from "nhsuk-react-components"
+import {TextInput, Label} from "nhsuk-react-components"
 import React from "react"
 
 const NumberOfCopiesField = ({errors}: { errors?: string }) => (
@@ -8,7 +8,7 @@ const NumberOfCopiesField = ({errors}: { errors?: string }) => (
     <Field
       id="numberOfCopies"
       name="numberOfCopies"
-      as={Input}
+      as={TextInput}
       width={500}
       error={errors} />
   </div>
