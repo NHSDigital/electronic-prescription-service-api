@@ -44,7 +44,7 @@
     "pretty": "^2.0.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
-    "styled-components": "^6.1.9",
+    "styled-components": "^6.1.11",
     "uuid": "^9.0.1",
     "webpack": "^5.91.0",
     "webpack-cli": "^5.1.4",
