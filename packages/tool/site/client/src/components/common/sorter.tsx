@@ -1,5 +1,5 @@
 import React, {ReactNode} from "react"
-import {ChevronLeft, ChevronRight} from "nhsuk-react-components/lib/components/icons"
+import {ChevronLeftIcon, ChevronRightIcon} from "nhsuk-react-components"
 import styled from "styled-components"
 
 export interface SortConfig<T> {
@@ -54,13 +54,13 @@ export const useSorter = <T extends unknown>(items: Array<T>, config: SortConfig
   return {sortedItems, sortBy, getIcon}
 }
 
-const ChevronUpMini = styled(ChevronLeft)`
+const ChevronUpMini = styled(ChevronLeftIcon)`
   transform: rotate(90deg);
   width: 1em;
   height: 1em;
 `
 
-const ChevronDownMini = styled(ChevronRight)`
+const ChevronDownMini = styled(ChevronRightIcon)`
   transform: rotate(90deg);
   width: 1em;
   height: 1em;

@@ -92,7 +92,7 @@ exports[`Displays release form 1`] = `
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-3" name="releaseType" aria-labelledby="releaseType-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-3--label" for="releaseType-3">With a FHIR release message</label></div>
         </div>
       </div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="prescriptionId--label" name="prescriptionId" id="prescriptionId" type="text" value="7A9089-A83008-56A03J"></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="prescriptionId--label" name="prescriptionId" id="prescriptionId" value="7A9089-A83008-56A03J"></div>
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label>
         <div class="nhsuk-radios" id="pharmacy" aria-labelledby="pharmacy--label" value="">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" aria-labelledby="pharmacy-1--label" type="radio" value="VNFKT"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>

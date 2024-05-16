@@ -15,21 +15,23 @@ const ComparePrescriptionCheckbox: React.FC<ComparePrescriptionsProps> = ({
 }) => {
   const {baseUrl} = useContext(AppContext)
   return (
-    <Checkboxes id={`prescription.${prescriptionId}`}>
-      <Checkboxes.Box
-        id={`prescription.${prescriptionId}.box`}
-        name={`prescription.${prescriptionId}.box`}
-        type="checkbox"
-        onChange={e => addToComparePrescriptions(
-          baseUrl,
-          name,
-          prescriptionId,
-          e
-        )}
-      >
+    <form>
+      <Checkboxes id={`prescription.${prescriptionId}`}>
+        <Checkboxes.Box
+          id={`prescription.${prescriptionId}.box`}
+          name={`prescription.${prescriptionId}.box`}
+          type="checkbox"
+          onChange={e => addToComparePrescriptions(
+            baseUrl,
+            name,
+            prescriptionId,
+            e
+          )}
+        >
         Add to Compare
-      </Checkboxes.Box>
-    </Checkboxes>
+        </Checkboxes.Box>
+      </Checkboxes>
+    </form>
   )
 }
 
