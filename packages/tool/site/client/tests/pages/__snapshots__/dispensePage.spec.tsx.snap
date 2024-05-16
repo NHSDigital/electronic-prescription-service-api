@@ -196,7 +196,7 @@ exports[`Displays dispense form if prescription details are retrieved successful
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" aria-labelledby="lineItems.0.suppliedQuantityValue--label" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" type="text" value=""></div>
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.0.suppliedQuantityValue--label" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
         </fieldset>
       </div>
       <div class="nhsuk-form-group">

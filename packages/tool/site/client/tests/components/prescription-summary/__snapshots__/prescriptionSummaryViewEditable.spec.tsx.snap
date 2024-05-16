@@ -4,7 +4,7 @@ exports[`Renders correctly 1`] = `
 "<form action="#">
   <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl"><span>Prescription Summary</span>
       <div style="float: right; width: 300px;"><label class="nhsuk-label">How many copies do you want?</label>
-        <div class="nhsuk-form-group"><input class="nhsuk-input nhsuk-input--width-500" name="numberOfCopies" id="numberOfCopies" type="text" value="1"></div>
+        <div class="nhsuk-form-group"><input class="nhsuk-input nhsuk-input--width-500" type="text" name="numberOfCopies" id="numberOfCopies" value="1"></div>
       </div>
     </label></h1>
   <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
@@ -36,7 +36,7 @@ exports[`Renders correctly 1`] = `
     <div class="nhsuk-summary-list__row">
       <dt class="nhsuk-summary-list__key">Nominated Pharmacy ODS Code</dt>
       <dd class="nhsuk-summary-list__value">
-        <div class="nhsuk-form-group"><input class="nhsuk-input nhsuk-input--width-30" name="nominatedOds" id="nominatedOds" type="text" value="FCG71"></div>
+        <div class="nhsuk-form-group"><input class="nhsuk-input nhsuk-input--width-30" type="text" name="nominatedOds" id="nominatedOds" value="FCG71"></div>
       </dd>
     </div>
     <div class="nhsuk-summary-list__row">
