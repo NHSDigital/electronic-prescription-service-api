@@ -2,7 +2,7 @@ import React, {FC, HTMLProps} from "react"
 import {Select} from "nhsuk-react-components"
 import {Field} from "formik"
 import {Coding} from "fhir/r4"
-import {FormElementProps} from "nhsuk-react-components/dist/lib/util/types/FormTypes"
+import {FormElementProps} from "nhsuk-react-components/dist/esm/util/types/FormTypes"
 
 export interface SelectFieldProps extends HTMLProps<HTMLSelectElement>, FormElementProps {
   fieldOptions: Array<Option>

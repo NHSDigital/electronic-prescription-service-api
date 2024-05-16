@@ -4,11 +4,11 @@ exports[`Displays validate form 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Validate a FHIR Resource</label></h1>
 <form>
   <div class="nhsuk-form-group">
-    <fieldset class="nhsuk-fieldset sc-fbJSV dTTHio">
+    <fieldset class="nhsuk-fieldset sc-cwHqhk kMCanE">
       <div class="nhsuk-form-group"><textarea class="nhsuk-textarea" name="validatePayload" id="validatePayload" rows="20"></textarea></div>
     </fieldset>
   </div>
-  <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button" aria-disabled="false" type="submit">Validate</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button" aria-disabled="false" type="submit">Validate</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -20,7 +20,7 @@ exports[`Displays validate result 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div>
       <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
         <div class="pretty-json-container object-container">
           <div class="object-content">
@@ -44,7 +44,7 @@ exports[`Displays validate result 1`] = `
 <details class="nhsuk-details nhsuk-expander">
   <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
   <div class="nhsuk-details__text">
-    <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
+    <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div>
     <div class="react-json-view" style="font-family: monospace; cursor: default; background-color: rgb(255, 255, 255); position: relative; margin-top: 10px;">
       <div class="pretty-json-container object-container">
         <div class="object-content">
@@ -66,5 +66,5 @@ exports[`Displays validate result 1`] = `
   </div>
 </details>
 </div>
-<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-eqUzNf chXQhu"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
