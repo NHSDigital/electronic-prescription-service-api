@@ -220,8 +220,8 @@ function addViewRoutes(server: Hapi.Server) {
         if (prRedirect) {
           // const parsedRequest = request.payload as {signatureToken: string, state?: string}
           console.log("pr redirect for path :" + path)
-          console.log("request query: ")
-          console.dir(request.query)
+          console.log("this is what request is: ")
+          console.dir(request)
           const anothertest = request.query.state ? true : false
           console.log("is there a  state? " + anothertest)
           if(request.query.state) {
