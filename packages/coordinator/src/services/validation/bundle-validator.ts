@@ -1,8 +1,10 @@
 import {
+  PathedResource,
   getBundleEntriesOfType,
   getContainedPractitionerRoleViaReference,
   getMedicationDispenses,
-  getMedicationRequests
+  getMedicationRequests,
+  getPathedTelecoms
 } from "../translation/common/getResourcesOfType"
 import {applyFhirPath} from "./fhir-path"
 import {getUniqueValues} from "../../utils/collections"
@@ -117,25 +119,9 @@ export function verifyCommonBundle(
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
   const medicationRequests = getMedicationRequests(bundle)
 
-  const containsPlanOrReflex = medicationRequests.some(
-    medicationRequest => isPlanOrReflex(medicationRequest.intent)
-  )
-  if (containsPlanOrReflex) {
-    incorrectValueErrors.push(
-      errors.createMedicationRequestIncorrectValueIssue(
-        "intent",
-        `${fhir.MedicationRequestIntent.ORDER}, `
-        + `${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or `
-        + `${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
-      )
-    )
-  }
+  validateMedicationRequests(medicationRequests, incorrectValueErrors)
 
-  if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
-    incorrectValueErrors.push(
-      errors.createMedicationFieldIssue("Request")
-    )
-  }
+  validateTelecoms(bundle, incorrectValueErrors)
 
   const responsiblePartyUrls = medicationRequests.map(request => {
     return getExtensionForUrlOrNull(
@@ -163,6 +149,31 @@ export function verifyCommonBundle(
   )
 
   return incorrectValueErrors
+}
+
+function validateMedicationRequests(
+  medicationRequests: Array<fhir.MedicationRequest>,
+  incorrectValueErrors: Array<fhir.OperationOutcomeIssue>
+) {
+  const containsPlanOrReflex = medicationRequests.some(
+    medicationRequest => isPlanOrReflex(medicationRequest.intent)
+  )
+  if (containsPlanOrReflex) {
+    incorrectValueErrors.push(
+      errors.createMedicationRequestIncorrectValueIssue(
+        "intent",
+        `${fhir.MedicationRequestIntent.ORDER}, `
+        + `${fhir.MedicationRequestIntent.ORIGINAL_ORDER} or `
+        + `${fhir.MedicationRequestIntent.INSTANCE_ORDER}`
+      )
+    )
+  }
+
+  if (resourceHasBothCodeableConceptAndReference(medicationRequests)) {
+    incorrectValueErrors.push(
+      errors.createMedicationFieldIssue("Request")
+    )
+  }
 }
 
 function validatePractitionerRole(
@@ -528,4 +539,19 @@ function checkPrimaryCarePrescriptionResources(
   if (!organization.partOf) {
     return errors.missingRequiredField("organization.partOf")
   }
+}
+
+function validateTelecoms(bundle: fhir.Bundle, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
+  const telecoms = getPathedTelecoms(bundle)
+
+  const validateTelecom = (resource: PathedResource<fhir.ContactPoint>) => {
+    if(!resource.resource.value){
+      incorrectValueErrors.push(errors.missingRequiredField(`${resource.path}.value`))
+    }
+    if(!resource.resource.use){
+      incorrectValueErrors.push(errors.missingRequiredField(`${resource.path}.use`))
+    }
+  }
+
+  telecoms.forEach(validateTelecom)
 }
