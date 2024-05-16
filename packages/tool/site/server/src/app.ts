@@ -217,11 +217,11 @@ function addViewRoutes(server: Hapi.Server) {
       method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
       handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
-        const test = h
         if (prRedirect) {
           // const parsedRequest = request.payload as {signatureToken: string, state?: string}
           console.log("pr redirect for path :" + path)
-          console.log("request query: " + request.query as string)
+          console.log("request query: ")
+          console.dir(request.query)
           const anothertest = request.query.state ? true : false
           console.log("is there a  state? " + anothertest)
           if(request.query.state) {
@@ -232,7 +232,6 @@ function addViewRoutes(server: Hapi.Server) {
               if (prRedirectEnabled()) {
                 const queryString = new URLSearchParams(request.query).toString()
                 return h.redirect(getPrBranchUrl(state.prNumber, path, queryString))
-                console.log(`what is h: ${typeof test}`)
               }
             }
           }
