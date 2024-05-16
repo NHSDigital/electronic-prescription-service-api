@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Input} from "nhsuk-react-components"
+import {TextInput} from "nhsuk-react-components"
 import {Field} from "formik"
 import RadioField from "./radioField"
 
@@ -58,7 +58,7 @@ const PharmacyRadios: React.FC<PharmacyProps> = ({
           <Field
             id="customPharmacy"
             name="customPharmacy"
-            as={Input}
+            as={TextInput}
             width={30}
             label="Enter an ODS Code"
           />

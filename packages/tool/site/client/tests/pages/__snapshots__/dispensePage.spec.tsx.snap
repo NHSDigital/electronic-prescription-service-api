@@ -21,7 +21,7 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">{
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
@@ -38,11 +38,11 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">{}</pre>
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-eqUzNf chXQhu"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays an error on invalid response 1`] = `
@@ -66,7 +66,7 @@ exports[`Displays an error on invalid response 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">{
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
     </div>
@@ -83,17 +83,17 @@ exports[`Displays an error on invalid response 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">{}</pre>
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">{}</pre>
     </div>
   </details>
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button sc-jTrOVX Rwgag" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-jTrOVX Rwgag" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-eDDOjk fRcVJg">{}</pre>
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">{}</pre>
     </div>
   </details>
 </fieldset>
-<div class="sc-dmqGRC jvbrQm"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-eqUzNf chXQhu"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `""`;
@@ -106,7 +106,7 @@ exports[`Displays loading text while dispense notification is being submitted 1`
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
 "<div style="text-align: center;">
-  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gLDymS zdUys">Loading</label></h1>
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gsFSjX exKTSW">Loading</label></h1>
   <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Retrieving prescription details.</span></div>
 </div>"
 `;

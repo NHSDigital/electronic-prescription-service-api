@@ -1,6 +1,6 @@
 import * as React from "react"
 import {useContext, useState} from "react"
-import {Label, Button, Fieldset, Form, Checkboxes, Input} from "nhsuk-react-components"
+import {Label, Button, Fieldset, Form, Checkboxes, TextInput} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
 import {Field, Formik} from "formik"
@@ -46,7 +46,7 @@ const ConfigPage: React.FC = () => {
               <Field
                 id="epsPrNumber"
                 name="epsPrNumber"
-                as={Input}
+                as={TextInput}
                 width={30}
                 label="EPS PR Number"
               />
@@ -60,7 +60,7 @@ const ConfigPage: React.FC = () => {
                 <Field
                   id="signingPrNumber"
                   name="signingPrNumber"
-                  as={Input}
+                  as={TextInput}
                   width={30}
                   label="Signing PR Number"
                 />

@@ -4,7 +4,7 @@ exports[`Fhir Field is required when releasing a custom fhir release message 1`]
 "<form>
   <div class="nhsuk-form-group nhsuk-form-group--error">
     <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="releaseType--label" for="releaseType">Choose how you want to release prescription(s)</label><span class="nhsuk-error-message" id="releaseType--error-message" role="alert"><span class="nhsuk-u-visually-hidden">Error: </span>You must enter a FHIR release message when selecting 'With a FHIR release message'</span>
+      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="releaseType--label" for="releaseType">Choose how you want to release prescription(s)</label><span class="nhsuk-error-message" role="alert" id="releaseType--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>You must enter a FHIR release message when selecting 'With a FHIR release message'</span>
         <div class="nhsuk-radios" id="releaseType" aria-labelledby="releaseType--label" value="custom">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-1" name="releaseType" aria-labelledby="releaseType-1--label" type="radio" value="all" checked=""><label class="nhsuk-label nhsuk-radios__label" id="releaseType-1--label" for="releaseType-1">All nominated prescriptions for the below pharmacy</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-2" name="releaseType" aria-labelledby="releaseType-2--label" type="radio" value="prescriptionId"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-2--label" for="releaseType-2">A single prescription by ID</label></div>
@@ -14,7 +14,7 @@ exports[`Fhir Field is required when releasing a custom fhir release message 1`]
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="customReleaseFhir--label" for="customReleaseFhir">Paste a FHIR release message</label><textarea class="nhsuk-textarea" aria-labelledby="customReleaseFhir--label" name="customReleaseFhir" id="customReleaseFhir" rows="20"></textarea></div>
     </fieldset>
   </div>
-  <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -38,7 +38,7 @@ exports[`Fields default to current values for nominated release 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -53,7 +53,7 @@ exports[`Fields default to current values for patient release 1`] = `
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-3" name="releaseType" aria-labelledby="releaseType-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-3--label" for="releaseType-3">With a FHIR release message</label></div>
         </div>
       </div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="prescriptionId--label" name="prescriptionId" id="prescriptionId" type="text" value="7A9089-A83008-56A03J"></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="prescriptionId--label" name="prescriptionId" id="prescriptionId" value="7A9089-A83008-56A03J"></div>
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label>
         <div class="nhsuk-radios" id="pharmacy" aria-labelledby="pharmacy--label" value="">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" aria-labelledby="pharmacy-1--label" type="radio" value="VNFKT"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
@@ -63,7 +63,7 @@ exports[`Fields default to current values for patient release 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -78,7 +78,7 @@ exports[`Pharmacy to release to is always required 1`] = `
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-3" name="releaseType" aria-labelledby="releaseType-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-3--label" for="releaseType-3">With a FHIR release message</label></div>
         </div>
       </div>
-      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label><span class="nhsuk-error-message" id="pharmacy--error-message" role="alert"><span class="nhsuk-u-visually-hidden">Error: </span>You must select a pharmacy to release to</span>
+      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label><span class="nhsuk-error-message" role="alert" id="pharmacy--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>You must select a pharmacy to release to</span>
         <div class="nhsuk-radios" id="pharmacy" aria-labelledby="pharmacy--label" value="">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" aria-labelledby="pharmacy-1--label" type="radio" value="VNFKT"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-2" name="pharmacy" aria-labelledby="pharmacy-2--label" type="radio" value="YGM1E"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-2--label" for="pharmacy-2">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
@@ -87,7 +87,7 @@ exports[`Pharmacy to release to is always required 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -95,15 +95,15 @@ exports[`Prescription Id Field is required when releasing by prescription Id 1`]
 "<form>
   <div class="nhsuk-form-group nhsuk-form-group--error">
     <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="releaseType--label" for="releaseType">Choose how you want to release prescription(s)</label><span class="nhsuk-error-message" id="releaseType--error-message" role="alert"><span class="nhsuk-u-visually-hidden">Error: </span>You must enter a 'Prescription ID' to release to when releasing a single prescription</span>
+      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="releaseType--label" for="releaseType">Choose how you want to release prescription(s)</label><span class="nhsuk-error-message" role="alert" id="releaseType--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>You must enter a 'Prescription ID' to release to when releasing a single prescription</span>
         <div class="nhsuk-radios" id="releaseType" aria-labelledby="releaseType--label" value="prescriptionId">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-1" name="releaseType" aria-labelledby="releaseType-1--label" type="radio" value="all" checked=""><label class="nhsuk-label nhsuk-radios__label" id="releaseType-1--label" for="releaseType-1">All nominated prescriptions for the below pharmacy</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-2" name="releaseType" aria-labelledby="releaseType-2--label" type="radio" value="prescriptionId"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-2--label" for="releaseType-2">A single prescription by ID</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-3" name="releaseType" aria-labelledby="releaseType-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-3--label" for="releaseType-3">With a FHIR release message</label></div>
         </div>
       </div>
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" aria-labelledby="prescriptionId--label" name="prescriptionId" id="prescriptionId" type="text" value=""></div>
-      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label><span class="nhsuk-error-message" id="pharmacy--error-message" role="alert"><span class="nhsuk-u-visually-hidden">Error: </span>You must select a pharmacy to release to</span>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="prescriptionId--label" name="prescriptionId" id="prescriptionId" value=""></div>
+      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label><span class="nhsuk-error-message" role="alert" id="pharmacy--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>You must select a pharmacy to release to</span>
         <div class="nhsuk-radios" id="pharmacy" aria-labelledby="pharmacy--label" value="">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" aria-labelledby="pharmacy-1--label" type="radio" value="VNFKT"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-2" name="pharmacy" aria-labelledby="pharmacy-2--label" type="radio" value="YGM1E"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-2--label" for="pharmacy-2">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
@@ -112,6 +112,6 @@ exports[`Prescription Id Field is required when releasing by prescription Id 1`]
       </div>
     </fieldset>
   </div>
-  <div class="sc-beqWNU flfmzC"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
