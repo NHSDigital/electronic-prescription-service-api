@@ -1,6 +1,6 @@
 import * as React from "react"
 import {Field, Formik, FormikErrors} from "formik"
-import {Button, Form, Label, Input} from "nhsuk-react-components"
+import {Button, Form, Label, TextInput} from "nhsuk-react-components"
 import ButtonList from "../common/buttonList"
 import {PrescriptionSearchCriteria} from "../../common/prescription-search"
 import {BackButton} from "../common/backButton"
@@ -61,7 +61,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             error={errors.prescriptionId}
             width={20}
             autoComplete="off"
-            as={Input}
+            as={TextInput}
           />
           <Field
             id="patientId"
@@ -70,7 +70,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             error={errors.patientId}
             width={10}
             autoComplete="off"
-            as={Input}
+            as={TextInput}
           />
           <SelectField
             id="businessStatus"
