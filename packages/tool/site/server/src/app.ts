@@ -15,12 +15,6 @@ import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
 import * as XLSX from "xlsx"
-import {
-  getPrBranchUrl,
-  parseOAuthState,
-  prRedirectEnabled,
-  prRedirectRequired
-} from "./routes/helpers"
 
 const init = async () => {
   axios.defaults.validateStatus = () => true
@@ -189,7 +183,7 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("tracker"))
     server.route(addView("prescribe/load"))
     server.route(addView("prescribe/edit"))
-    server.route(addView("prescribe/send", true, true))
+    server.route(addView("prescribe/send", true))
     server.route(addView("prescribe/cancel"))
     server.route(addView("dispense/release"))
     server.route(addView("dispense/verify"))
@@ -211,40 +205,21 @@ function addViewRoutes(server: Hapi.Server) {
     return addView("/")
   }
 
-  function addView(path: string, skipAuth?: boolean, prRedirect?: boolean): Hapi.ServerRoute {
-
+  function addView(path: string, skipAuth?: boolean): Hapi.ServerRoute {
+    console.log("this is the path for: " + path)
     const viewRoute = {
       method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
-      handler: (request: Hapi.Request, h: Hapi.ResponseToolkit) => {
-        if (prRedirect) {
-          // const parsedRequest = request.payload as {signatureToken: string, state?: string}
-          console.log("pr redirect for path :" + path)
-          console.log("this is what request is: ")
-          console.dir(request)
-          const anothertest = request.query.state ? true : false
-          console.log("is there a  state? " + anothertest)
-          if(request.query.state) {
-            console.log(`state: ${request.query.state as string}`)
-            const state = parseOAuthState(request.query.state as string, request.logger)
-            if (prRedirectRequired(state.prNumber)) {
-              console.log(`this is the pr Number: ${state.prNumber}`)
-              if (prRedirectEnabled()) {
-                const queryString = new URLSearchParams(request.query).toString()
-                return h.redirect(getPrBranchUrl(state.prNumber, path, queryString))
-              }
-            }
+      handler: {
+        view: {
+          template: "index",
+          context: {
+            baseUrl: CONFIG.baseUrl,
+            environment: CONFIG.environment
           }
         }
-        console.log("normal path for: " + path)
-
-        return h.view("index", {
-          baseUrl: CONFIG.baseUrl,
-          environment: CONFIG.environment
-        })
       }
     }
-
     if (skipAuth) {
       return {
         ...viewRoute,
