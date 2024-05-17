@@ -369,8 +369,7 @@ export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: Fi
 export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
   await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
-  const customRadio = await driver.findElement(customRadioSelector)
-  await customRadio.click()
+  await driver.findElement(customRadioSelector).click()
   const fileUploads = {xpath: "//*[@type = 'file']"}
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
   const upload = (await driver.findElements(fileUploads))[uploadType]
