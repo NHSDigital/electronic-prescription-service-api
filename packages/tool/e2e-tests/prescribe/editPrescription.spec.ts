@@ -4,6 +4,7 @@ import {
   createPrescription,
   defaultWaitTimeout,
   finaliseWebAction,
+  getElement,
   loadPredefinedExamplePrescription,
   loginViaSimulatedAuthSmartcardUser,
   sendPrescription,
@@ -47,9 +48,9 @@ async function editPrescriptionOrganisation(
   await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout)
   await driver.executeScript("arguments[0].scrollIntoView(true);", editButton)
   await editButton.click()
-  await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
-  await driver.findElement(By.id("nominatedOds")).clear()
-  await driver.findElement(By.id("nominatedOds")).sendKeys(newOrganisation)
+  await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout);
+  (await getElement(driver, By.id("nominatedOds"))).clear();
+  (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation);
   finaliseWebAction(driver, `PRESCRIPTION ORGANISATION SET TO: ${newOrganisation}`)
 }
 
@@ -57,7 +58,8 @@ async function checkPrescriptionOrganisation(
   driver: ThenableWebDriver,
   correctOrganisation: string
 ): Promise<void> {
-  const dispenserRow = await driver.findElement(By.id("prescriptionDispenser"))
+  const dispenserRow =(await getElement(driver, By.id("prescriptionDispenser")))
+
   const prescriptionOrganisation = await dispenserRow.getAttribute("innerText")
   expect(prescriptionOrganisation).toBe(correctOrganisation)
   finaliseWebAction(driver, `PRESCRIPTION HAS CORRECT ORGANISATION: ${correctOrganisation}`)

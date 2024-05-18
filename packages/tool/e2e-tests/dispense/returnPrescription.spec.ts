@@ -5,7 +5,8 @@ import {
   releasePrescriptionUserJourney,
   checkApiResult,
   defaultWaitTimeout,
-  finaliseWebAction
+  finaliseWebAction,
+  getElement
 } from "../helpers"
 import {returnButton, returnPageTitle} from "../locators"
 
@@ -18,10 +19,10 @@ describe("firefox", () => {
 })
 
 async function returnPrescriptionUserJourney(driver: ThenableWebDriver) {
-  await driver.findElement(By.linkText("Return prescription")).click()
+  (await getElement(driver, By.linkText("Return prescription"))).click();
   await driver.wait(until.elementsLocated(returnPageTitle), defaultWaitTimeout)
-  await driver.wait(until.elementsLocated(returnButton), defaultWaitTimeout)
-  await driver.findElement(returnButton).click()
+  await driver.wait(until.elementsLocated(returnButton), defaultWaitTimeout);
+  (await getElement(driver,returnButton)).click();
   finaliseWebAction(driver, "RETURNING PRESCRIPTION...")
   await checkApiResult(driver)
 }
