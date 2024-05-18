@@ -361,6 +361,7 @@ export function readBundleFromFile(filename: string): fhir.Bundle {
 export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<void> {
   const {filePath, fileName, uploadType} = fileUploadInfo
   const testPackUpload = await getUpload(driver, uploadType)
+  finaliseWebAction(driver, "ENTERING filepath and name...")
   testPackUpload.sendKeys(path.join(__dirname, filePath, fileName))
   await loadPrescriptionsFromTestData(driver)
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
@@ -368,9 +369,12 @@ export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: Fi
 
 export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
+  finaliseWebAction(driver, "FINDING BUTTON FOR customRadioSelector...")
   await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
+  finaliseWebAction(driver, "CLICCKING BUTTON FOR customRadioSelector...")
   await driver.findElement(customRadioSelector).click()
   const fileUploads = {xpath: "//*[@type = 'file']"}
+  finaliseWebAction(driver, "FINDING fileUploads...")
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
   const upload = (await driver.findElements(fileUploads))[uploadType]
   return upload
