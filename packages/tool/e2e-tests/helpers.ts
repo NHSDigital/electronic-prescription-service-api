@@ -116,8 +116,7 @@ export async function releasePrescriptionUserJourney(driver: ThenableWebDriver):
 
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
   const pharmacyToReleaseToRadios = await driver.findElements(pharmacyRadios)
-  const firstPharmacyToReleaseToRadio = pharmacyToReleaseToRadios[0]
-  await firstPharmacyToReleaseToRadio.click()
+  driver.wait(until.elementIsVisible(pharmacyToReleaseToRadios[0]), 5000).click()
   await driver.findElement(releaseButton).click()
 
   finaliseWebAction(driver, "RELEASING PRESCRIPTION...")
@@ -369,9 +368,12 @@ export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: Fi
 
 export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
+  finaliseWebAction(driver, "LOCATING BUTTON FOR customRadioSelector...")
+  await driver.wait(until.elementLocated(customRadioSelector), defaultWaitTimeout)
   finaliseWebAction(driver, "FINDING BUTTON FOR customRadioSelector...")
-  await driver.wait(until.elementsLocated(customRadioSelector), defaultWaitTimeout)
-  finaliseWebAction(driver, "CLICCKING BUTTON FOR customRadioSelector...")
+  const button = driver.findElement(customRadioSelector);
+  finaliseWebAction(driver, "CLICKING BUTTON FOR customRadioSelector...")
+  driver.wait(until.elementIsVisible(button), defaultWaitTimeout).click()
   await driver.findElement(customRadioSelector).click()
   const fileUploads = {xpath: "//*[@type = 'file']"}
   finaliseWebAction(driver, "FINDING fileUploads...")
