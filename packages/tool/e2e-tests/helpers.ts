@@ -132,10 +132,9 @@ export async function releasePrescriptionUserJourney(driver: ThenableWebDriver):
 
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
   // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
-  const pharmacyToReleaseToRadios = await driver.findElements(pharmacyRadios);
+  await new Promise(r => setTimeout(r, 2000));
   (await getElement(driver, By.id("pharmacy-1"))).click();
-  (await getElement(driver, releaseButton)).click();
+  (await getElement(driver, releaseButton)).click()
 
   finaliseWebAction(driver, "RELEASING PRESCRIPTION...")
 
