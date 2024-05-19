@@ -34,6 +34,9 @@ export async function searchForPrescriptionUserJourney(
   (await getElement(driver, searchPrescriptionsLink)).click()
   await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout);
   (await getElement(driver, By.id("prescriptionId"))).sendKeys(prescriptionId);
+    // wait 2 seconds for keys to complete
+    await new Promise(r => setTimeout(r, 2000));
+
 
   (await getElement(driver, searchButton)).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")

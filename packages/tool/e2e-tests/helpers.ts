@@ -172,6 +172,9 @@ export async function dispensePrescriptionWithBodyUserJourney(driver: ThenableWe
 
   (await getElement(driver, dispenseWithBodyRadio)).click();
   (await getElement(driver, dispenseBodyField)).sendKeys(dispenseBody);
+  // wait 2 seconds for keys to be sent
+  await new Promise(r => setTimeout(r, 2000));
+
   (await getElement(driver, dispenseButton)).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
