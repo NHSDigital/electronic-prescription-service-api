@@ -14,7 +14,6 @@ import {
   loginPageTitle,
   myPrescriptionsNavLink,
   myPrescriptionsPageTitle,
-  pharmacyRadios,
   sendPageTitle as sendPageTitle,
   releaseButton,
   releasePageTitle,
