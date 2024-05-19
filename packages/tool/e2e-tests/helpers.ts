@@ -321,6 +321,9 @@ export async function loadPredefinedExamplePrescription(driver: ThenableWebDrive
 export async function sendPrescription(driver: ThenableWebDriver): Promise<void> {
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout);
   (await getElement(driver, sendButton)).click()
+  // wait 10 seconds for click to register
+  await new Promise(r => setTimeout(r, 10000));
+
   finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
 
