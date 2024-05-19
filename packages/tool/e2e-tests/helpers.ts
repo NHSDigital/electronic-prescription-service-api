@@ -74,9 +74,9 @@ export async function getElement(
   locator: Locator
 ): Promise<WebElement> {
   try {
-    await driver.wait(until.elementLocated(locator), defaultWaitTimeout, `Timeout waiting for ${JSON.stringify(locator)} to be located`)
+    await driver.wait(until.elementLocated(locator), tenTimesDefaultWaitTimeout, `Timeout waiting for ${JSON.stringify(locator)} to be located`)
       .then(async el => {
-        await driver.wait(until.elementIsEnabled(el), defaultWaitTimeout, `Timeout waiting for ${JSON.stringify(locator)} to be enabled`)
+        await driver.wait(until.elementIsEnabled(el), tenTimesDefaultWaitTimeout, `Timeout waiting for ${JSON.stringify(locator)} to be enabled`)
       })
     return driver.findElement(locator)
   } catch(error) {
