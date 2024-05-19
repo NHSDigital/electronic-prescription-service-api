@@ -74,9 +74,16 @@ export async function getElement(
   driver: ThenableWebDriver,
   locator: Locator
 ): Promise<WebElement> {
-  const el = await driver.wait(until.elementLocated(locator), apiTimeout);
-  await driver.wait(until.elementIsVisible(el), apiTimeout);
-  return driver.findElement(locator);
+  try {
+    await driver.wait(until.elementLocated(locator), defaultWaitTimeout, `Timeout waiting for ${JSON.stringify(locator)} to be located`)
+    .then(async el => {
+      await driver.wait(until.elementIsEnabled(el), defaultWaitTimeout, `Timeout waiting for ${JSON.stringify(locator)} to be enabled`);
+    })
+    return driver.findElement(locator);
+  } catch(error) {
+    console.log(`error finding ${JSON.stringify(locator)}`)
+    throw error
+  }
 }
 
 export async function sendPrescriptionUserJourney(driver: ThenableWebDriver): Promise<string> {
@@ -346,7 +353,7 @@ async function checkBulkApiResult(driver: ThenableWebDriver, expectedSuccessResu
 }
 
 async function getCreatedPrescriptionId(driver: ThenableWebDriver): Promise<string> {
-  const prescriptionId = (await getElement(driver, By.className("nhsuk-summary-list__value"))).getText()
+  const prescriptionId = await (await getElement(driver, By.className("nhsuk-summary-list__value"))).getText()
   finaliseWebAction(driver, `CREATED PRESCRIPTION: ${prescriptionId}`)
   return prescriptionId
 }
@@ -376,13 +383,14 @@ export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: Fi
 }
 
 export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
-  const customRadioSelector = {xpath: "//*[@value = 'custom']"}
-  finaliseWebAction(driver, "LOCATING BUTTON FOR customRadioSelector...")
-  await driver.wait(until.elementLocated(customRadioSelector), defaultWaitTimeout)
-  finaliseWebAction(driver, "CLICKING BUTTON FOR customRadioSelector...");
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000));
+  const customRadioSelector = {xpath: "//*[@value = 'custom']"};
+  finaliseWebAction(driver, "CLICKING customRadioSelector");
   (await getElement(driver, customRadioSelector)).click();
+  finaliseWebAction(driver, "CLICKED customRadioSelector");
   const fileUploads = {xpath: "//*[@type = 'file']"}
-  finaliseWebAction(driver, "FINDING fileUploads...")
+  finaliseWebAction(driver, "FINDING fileUploads");
   await driver.wait(until.elementsLocated(fileUploads), defaultWaitTimeout)
   const upload = (await driver.findElements(fileUploads))[uploadType]
   return upload
