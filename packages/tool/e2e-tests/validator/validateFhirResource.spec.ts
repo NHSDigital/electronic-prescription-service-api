@@ -27,6 +27,8 @@ async function validateFhirResourceUserJourney(
   await driver.wait(until.elementLocated(By.linkText("Validate a FHIR Resource")), threeTimesDefaultWaitTimeout)
   finaliseWebAction(driver, "CLICKING THE LINK FOR Validate a FHIR Resource...");
   (await getElement(driver, By.linkText("Validate a FHIR Resource"))).click()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
   finaliseWebAction(driver, "WAITING FOR validatePayload to appear...")
   await driver.wait(until.elementsLocated(By.id("validatePayload")), defaultWaitTimeout)
   finaliseWebAction(driver, "PASTING THE CLIPBOARD INTO validatePayload...");
