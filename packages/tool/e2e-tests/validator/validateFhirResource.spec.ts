@@ -1,6 +1,13 @@
 import {By, Key, ThenableWebDriver, until} from "selenium-webdriver"
 import {driver} from "../live.test"
-import {checkApiResult, defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, getElement, navigateToUrl, sendPrescriptionUserJourney, threeTimesDefaultWaitTimeout} from "../helpers"
+import {checkApiResult,
+  defaultWaitTimeout,
+  EPSAT_HOME_URL,
+  finaliseWebAction,
+  getElement,
+  navigateToUrl,
+  sendPrescriptionUserJourney,
+  threeTimesDefaultWaitTimeout} from "../helpers"
 import {copyFhirRequestButton, fhirRequestExpander} from "../locators"
 
 describe("firefox", () => {
@@ -23,7 +30,7 @@ async function validateFhirResourceUserJourney(
   finaliseWebAction(driver, "WAITING FOR validatePayload to appear...")
   await driver.wait(until.elementsLocated(By.id("validatePayload")), defaultWaitTimeout)
   finaliseWebAction(driver, "PASTING THE CLIPBOARD INTO validatePayload...");
-  (await getElement(driver, By.id("validatePayload"))).sendKeys(Key.CONTROL, "v");
+  (await getElement(driver, By.id("validatePayload"))).sendKeys(Key.CONTROL, "v")
 
   finaliseWebAction(driver, "CLICKING THE VALIDATE BUTTON...");
   (await getElement(driver, {xpath: "//*[text() = 'Validate']"})).click()

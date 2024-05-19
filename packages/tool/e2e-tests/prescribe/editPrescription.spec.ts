@@ -50,7 +50,7 @@ async function editPrescriptionOrganisation(
   await editButton.click()
   await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout);
   (await getElement(driver, By.id("nominatedOds"))).clear();
-  (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation);
+  (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation)
   finaliseWebAction(driver, `PRESCRIPTION ORGANISATION SET TO: ${newOrganisation}`)
 }
 

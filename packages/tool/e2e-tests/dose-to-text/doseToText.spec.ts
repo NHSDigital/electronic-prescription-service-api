@@ -14,10 +14,10 @@ describe("firefox", () => {
 
 async function convertDoseToText() {
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout);
-  (await getElement(driver, doseToTextLink)).click();
+  (await getElement(driver, doseToTextLink)).click()
   await driver.wait(until.elementsLocated(doseToTextTitle), defaultWaitTimeout);
   (await getElement(driver, By.id("doseToTextRequest"))).sendKeys(examplePrescription);
-  (await getElement(driver, {xpath: "//*[text() = 'Convert']"})).click();
+  (await getElement(driver, {xpath: "//*[text() = 'Convert']"})).click()
   await checkApiResult(driver, true)
   finaliseWebAction(driver, "SUCCESSFULLY TRANSLATED DOSE TO TEXT")
 }

@@ -27,7 +27,7 @@ export async function getPrescriptionItemIds(
 
   const idElements = await driver.findElements(prescriptionLineItemIds)
   const idPromises = idElements.map(element => element.getText());
-  
+
   (await getElement(driver, dispensePrescriptionAction)).click()
 
   await driver.wait(

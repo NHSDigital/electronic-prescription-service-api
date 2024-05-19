@@ -29,13 +29,13 @@ export async function searchForPrescriptionUserJourney(
   driver: ThenableWebDriver,
   prescriptionId: string
 ): Promise<void> {
-  (await getElement(driver, homeNavLink)).click();
+  (await getElement(driver, homeNavLink)).click()
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout);
-  (await getElement(driver, searchPrescriptionsLink)).click();
+  (await getElement(driver, searchPrescriptionsLink)).click()
   await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout);
   (await getElement(driver, By.id("prescriptionId"))).sendKeys(prescriptionId);
 
-  (await getElement(driver, searchButton)).click();
+  (await getElement(driver, searchButton)).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
   await driver.wait(until.elementsLocated(By.className("nhsuk-table")), fiveTimesDefaultWaitTimeout)
   const table = (await getElement(driver, By.className("nhsuk-table")))

@@ -23,11 +23,11 @@ describe("firefox", () => {
 async function withdrawPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  (await getElement(driver, withdrawPrescriptionAction)).click();
+  (await getElement(driver, withdrawPrescriptionAction)).click()
   await driver.wait(until.elementsLocated(withdrawPageTitle), defaultWaitTimeout)
   const withdrawReasonRadios = await driver.findElements(By.name("reason"))
   withdrawReasonRadios[0].click();
-  (await getElement(driver, withdrawButton)).click();
+  (await getElement(driver, withdrawButton)).click()
   finaliseWebAction(driver, "WITHDRAWING PRESCRIPTION...")
   await checkApiResult(driver)
 }
