@@ -170,10 +170,10 @@ export async function dispensePrescriptionWithBodyUserJourney(driver: ThenableWe
 
   const dispenseBody = createDispenseBody(prescriptionId, lineItemIds);
 
-  (await getElement(driver, dispenseWithBodyRadio)).click();
+  (await getElement(driver, dispenseWithBodyRadio)).click()
   // wait 2 seconds for click to register
   await new Promise(r => setTimeout(r, 2000));
-  (await getElement(driver, dispenseBodyField)).sendKeys(dispenseBody);
+  (await getElement(driver, dispenseBodyField)).sendKeys(dispenseBody)
 
   // wait 5 seconds for keys to be sent
   await new Promise(r => setTimeout(r, 5000));
@@ -192,7 +192,7 @@ export async function amendDispenseUserJourney(driver: ThenableWebDriver): Promi
 
   const elements = await driver.findElements(itemAmendNotDispensedStatus)
   elements.forEach(async element => {
-    (await getElement(driver, By.id(await element.getId()))).click();
+    (await getElement(driver, By.id(await element.getId()))).click()
   });
   // wait 15 seconds for clicks to register?
   // await new Promise(r => setTimeout(r, 15000));
@@ -324,7 +324,7 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout);
   (await getElement(driver, sendButton)).click()
   // wait 10 seconds for click to register
-  await new Promise(r => setTimeout(r, 10000));
+  await new Promise(r => setTimeout(r, 10000))
 
   finaliseWebAction(driver, "SENDING PRESCRIPTION...")
 }
