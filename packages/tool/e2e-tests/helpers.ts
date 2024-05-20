@@ -344,6 +344,9 @@ export async function createPrescription(driver: ThenableWebDriver): Promise<voi
 
 export async function loadPredefinedExamplePrescription(driver: ThenableWebDriver, exampleName?: string): Promise<void> {
   const exampleNameOrDefault = exampleName ?? "Primary Care - Acute (nominated)"
+  // wait 2 seconds for page to load
+  await new Promise(r => setTimeout(r, 2000))
+
   await driver.wait(until.elementsLocated(loadPageTitle), defaultWaitTimeout)
   await (await getElement(driver, By.xpath(`//*[text() = '${exampleNameOrDefault}']`))).click()
   await (await getElement(driver, viewButton)).click()
