@@ -193,9 +193,7 @@ export async function amendDispenseUserJourney(driver: ThenableWebDriver): Promi
   await new Promise(r => setTimeout(r, 5000))
 
   const elements = await driver.findElements(itemAmendNotDispensedStatus)
-  elements.forEach(async element => {
-    (await getElement(driver, By.id(await element.getId()))).click()
-  });
+  elements.forEach(element => element.click());
 
   (await getElement(driver, dispenseButton)).click()
 
