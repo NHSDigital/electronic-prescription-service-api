@@ -29,23 +29,23 @@ export async function searchForPrescriptionUserJourney(
   driver: ThenableWebDriver,
   prescriptionId: string
 ): Promise<void> {
-  (await getElement(driver, homeNavLink)).click()
-  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout);
-  (await getElement(driver, searchPrescriptionsLink)).click()
-  await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout);
-  (await getElement(driver, By.id("prescriptionId"))).sendKeys(prescriptionId)
+  await (await getElement(driver, homeNavLink)).click()
+  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
+  await (await getElement(driver, searchPrescriptionsLink)).click()
+  await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout)
+  await (await getElement(driver, By.id("prescriptionId"))).sendKeys(prescriptionId)
   // wait 2 seconds for keys to complete
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 2000))
 
-  (await getElement(driver, searchButton)).click()
+  await (await getElement(driver, searchButton)).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
   await driver.wait(until.elementsLocated(By.className("nhsuk-table")), fiveTimesDefaultWaitTimeout)
   const table = (await getElement(driver, By.className("nhsuk-table")))
 
   const prescriptionIdEntry = By.xpath(`//*[text() = '${prescriptionId}']`)
   await table.findElement(prescriptionIdEntry)
-  finaliseWebAction(driver, "FOUND PRESCRIPTION");
-  (await getElement(driver, searchViewDetailsButton)).click()
+  finaliseWebAction(driver, "FOUND PRESCRIPTION")
+  await (await getElement(driver, searchViewDetailsButton)).click()
   await driver.wait(until.elementsLocated(searchDetailsPageTitle), defaultWaitTimeout)
   finaliseWebAction(driver, "VIEWED FOUND PRESCRIPTION DETAILS")
 }

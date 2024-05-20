@@ -2,7 +2,6 @@ import {driver} from "../live.test"
 import {
   checkApiResult,
   createPrescription,
-  defaultWaitTimeout,
   finaliseWebAction,
   getElement,
   loadPredefinedExamplePrescription,
@@ -41,16 +40,12 @@ async function editPrescriptionOrganisation(
   driver: ThenableWebDriver,
   newOrganisation: string
 ): Promise<void> {
+  // wait 5 seconds for page to load
+  await new Promise(r => setTimeout(r, 5000))
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
-  const editButtons = await driver.findElements(By.id("editPrescription"))
-  const editButton = editButtons[0]
-  await driver.wait(() => editButton.isDisplayed(), defaultWaitTimeout)
-  await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout)
-  await driver.executeScript("arguments[0].scrollIntoView(true);", editButton)
-  await editButton.click()
-  await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout);
-  (await getElement(driver, By.id("nominatedOds"))).clear();
-  (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation)
+  await (await getElement(driver, By.id("editPrescription"))).click()
+  await (await getElement(driver, By.id("nominatedOds"))).clear()
+  await (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation)
   // wait 2 seconds for keys to complete
   await new Promise(r => setTimeout(r, 2000))
 

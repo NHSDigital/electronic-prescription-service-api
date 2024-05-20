@@ -13,14 +13,14 @@ describe("firefox", () => {
 })
 
 async function convertDoseToText() {
-  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout);
-  (await getElement(driver, doseToTextLink)).click()
-  await driver.wait(until.elementsLocated(doseToTextTitle), defaultWaitTimeout);
-  (await getElement(driver, By.id("doseToTextRequest"))).sendKeys(examplePrescription)
+  await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
+  await (await getElement(driver, doseToTextLink)).click()
+  await driver.wait(until.elementsLocated(doseToTextTitle), defaultWaitTimeout)
+  await (await getElement(driver, By.id("doseToTextRequest"))).sendKeys(examplePrescription)
   // wait 2 seconds for keys to complete
-  await new Promise(r => setTimeout(r, 2000));
+  await new Promise(r => setTimeout(r, 2000))
 
-  (await getElement(driver, {xpath: "//*[text() = 'Convert']"})).click()
+  await (await getElement(driver, {xpath: "//*[text() = 'Convert']"})).click()
   await checkApiResult(driver, true)
   finaliseWebAction(driver, "SUCCESSFULLY TRANSLATED DOSE TO TEXT")
 }

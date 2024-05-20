@@ -6,15 +6,14 @@ import {checkApiResult,
   finaliseWebAction,
   getElement,
   navigateToUrl,
-  sendPrescriptionUserJourney,
-  threeTimesDefaultWaitTimeout} from "../helpers"
+  sendPrescriptionUserJourney} from "../helpers"
 import {copyFhirRequestButton, fhirRequestExpander} from "../locators"
 
 describe("firefox", () => {
   test("can validate a fhir resource", async () => {
-    await sendPrescriptionUserJourney(driver);
-    (await getElement(driver, fhirRequestExpander)).click();
-    (await getElement(driver, copyFhirRequestButton)).click()
+    await sendPrescriptionUserJourney(driver)
+    await (await getElement(driver, fhirRequestExpander)).click()
+    await (await getElement(driver, copyFhirRequestButton)).click()
     // wait 2 seconds for copy to complete
     await new Promise(r => setTimeout(r, 2000))
     await navigateToUrl(driver, `${EPSAT_HOME_URL}/`)
@@ -25,21 +24,19 @@ describe("firefox", () => {
 async function validateFhirResourceUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  finaliseWebAction(driver, "FINDING LINK FOR Validate a FHIR Resource...")
-  await driver.wait(until.elementLocated(By.linkText("Validate a FHIR Resource")), threeTimesDefaultWaitTimeout)
-  finaliseWebAction(driver, "CLICKING THE LINK FOR Validate a FHIR Resource...");
-  (await getElement(driver, By.linkText("Validate a FHIR Resource"))).click()
+  finaliseWebAction(driver, "CLICKING THE LINK FOR Validate a FHIR Resource...")
+  await (await getElement(driver, By.linkText("Validate a FHIR Resource"))).click()
   // wait 2 seconds for page to finish rendering
   await new Promise(r => setTimeout(r, 2000))
   finaliseWebAction(driver, "WAITING FOR validatePayload to appear...")
   await driver.wait(until.elementsLocated(By.id("validatePayload")), defaultWaitTimeout)
-  finaliseWebAction(driver, "PASTING THE CLIPBOARD INTO validatePayload...");
-  (await getElement(driver, By.id("validatePayload"))).sendKeys(Key.SHIFT, Key.INSERT)
+  finaliseWebAction(driver, "PASTING THE CLIPBOARD INTO validatePayload...")
+  await (await getElement(driver, By.id("validatePayload"))).sendKeys(Key.SHIFT, Key.INSERT)
   // wait 2 seconds for paste to complete
   await new Promise(r => setTimeout(r, 2000))
 
-  finaliseWebAction(driver, "CLICKING THE VALIDATE BUTTON...");
-  (await getElement(driver, {xpath: "//*[text() = 'Validate']"})).click()
+  finaliseWebAction(driver, "CLICKING THE VALIDATE BUTTON...")
+  await (await getElement(driver, {xpath: "//*[text() = 'Validate']"})).click()
   finaliseWebAction(driver, "VALIDATING FHIR RESOURCE...")
   await checkApiResult(driver, true)
 }

@@ -11,7 +11,7 @@ import {
 export async function getPrescriptionItemIds(
   driver: ThenableWebDriver
 ): Promise<string[]> {
-  (await getElement(driver, myPrescriptionsNavLink)).click()
+  await (await getElement(driver, myPrescriptionsNavLink)).click()
 
   // wait 10 seconds for click to register
   await new Promise(r => setTimeout(r, 10000))
@@ -19,9 +19,9 @@ export async function getPrescriptionItemIds(
   await driver.wait(
     until.elementsLocated(checkFirstReleasedPrescriptionStatusButton),
     fiveTimesDefaultWaitTimeout
-  );
+  )
 
-  (await getElement(driver, checkFirstReleasedPrescriptionStatusButton)).click()
+  await (await getElement(driver, checkFirstReleasedPrescriptionStatusButton)).click()
   await driver.wait(
     until.elementsLocated(dispensePrescriptionAction),
     fiveTimesDefaultWaitTimeout
@@ -30,8 +30,8 @@ export async function getPrescriptionItemIds(
   await new Promise(r => setTimeout(r, 10000))
 
   const idElements = await driver.findElements(prescriptionLineItemIds)
-  const idPromises = idElements.map(element => element.getText());
-  (await getElement(driver, dispensePrescriptionAction)).click()
+  const idPromises = idElements.map(element => element.getText())
+  await (await getElement(driver, dispensePrescriptionAction)).click()
 
   await driver.wait(
     until.elementsLocated(dispenseButton),
