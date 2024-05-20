@@ -1,4 +1,4 @@
-import {By, ThenableWebDriver, until} from "selenium-webdriver"
+import {ThenableWebDriver, until} from "selenium-webdriver"
 import {fiveTimesDefaultWaitTimeout, getElement} from "../helpers"
 import {
   checkFirstReleasedPrescriptionStatusButton,
@@ -14,7 +14,7 @@ export async function getPrescriptionItemIds(
   (await getElement(driver, myPrescriptionsNavLink)).click()
 
   // wait 10 seconds for click to register
-  await new Promise(r => setTimeout(r, 10000));
+  await new Promise(r => setTimeout(r, 10000))
 
   await driver.wait(
     until.elementsLocated(checkFirstReleasedPrescriptionStatusButton),
