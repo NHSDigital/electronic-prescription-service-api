@@ -13,7 +13,7 @@ export async function getPrescriptionItemIds(
 ): Promise<string[]> {
   await (await getElement(driver, myPrescriptionsNavLink)).click()
 
-  // wait 10 seconds for click to register
+  // wait 10 seconds for page to load
   await new Promise(r => setTimeout(r, 10000))
 
   await driver.wait(

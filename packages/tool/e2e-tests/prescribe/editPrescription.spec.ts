@@ -40,9 +40,10 @@ async function editPrescriptionOrganisation(
   driver: ThenableWebDriver,
   newOrganisation: string
 ): Promise<void> {
-  // wait 5 seconds for page to load
-  await new Promise(r => setTimeout(r, 5000))
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
+
   await (await getElement(driver, By.id("editPrescription"))).click()
   await (await getElement(driver, By.id("nominatedOds"))).clear()
   await (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation)

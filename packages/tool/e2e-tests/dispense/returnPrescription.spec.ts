@@ -21,6 +21,9 @@ describe("firefox", () => {
 async function returnPrescriptionUserJourney(driver: ThenableWebDriver) {
   await (await getElement(driver, By.linkText("Return prescription"))).click()
   await driver.wait(until.elementsLocated(returnPageTitle), defaultWaitTimeout)
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
+
   await (await getElement(driver, returnButton)).click()
   finaliseWebAction(driver, "RETURNING PRESCRIPTION...")
   await checkApiResult(driver)

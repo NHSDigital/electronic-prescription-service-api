@@ -14,6 +14,8 @@ describe("firefox", () => {
 
     let nextPageElement = paginationItemElements[2]
     await loadTheNextPrescription(driver, nextPageElement)
+    // wait 2 seconds for page to finish rendering
+    await new Promise(r => setTimeout(r, 2000))
 
     // pagniation has refreshed the dom, re-find elements for pagination so they're not stale
     paginationItemElements = await driver.findElements(By.className("pagination-item"))

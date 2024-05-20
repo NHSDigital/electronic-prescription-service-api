@@ -25,6 +25,9 @@ async function withdrawPrescriptionUserJourney(
 ): Promise<void> {
   await (await getElement(driver, withdrawPrescriptionAction)).click()
   await driver.wait(until.elementsLocated(withdrawPageTitle), defaultWaitTimeout)
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
+
   const withdrawReasonRadios = await driver.findElements(By.name("reason"))
   await withdrawReasonRadios[0].click()
   // wait 2 seconds for click to register
