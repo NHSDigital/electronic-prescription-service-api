@@ -191,9 +191,11 @@ export async function amendDispenseUserJourney(driver: ThenableWebDriver): Promi
   await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
 
   const elements = await driver.findElements(itemAmendNotDispensedStatus)
-  elements.forEach(element => element.click());
-  // wait 5 seconds for clicks to register
-  await new Promise(r => setTimeout(r, 5000));
+  elements.forEach(async element => {
+    (await getElement(driver, By.id(await element.getId()))).click();
+  });
+  // wait 15 seconds for clicks to register?
+  // await new Promise(r => setTimeout(r, 15000));
 
   (await getElement(driver, dispenseButton)).click()
 
