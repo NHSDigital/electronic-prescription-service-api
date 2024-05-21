@@ -147,7 +147,7 @@ async function renderClaimPage() {
 
 async function renderClaimAmendPage() {
   const {container} = renderWithContext(<BrowserRouter><ClaimPage prescriptionId={prescriptionId} amend/></BrowserRouter>, context)
-  await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
+  await screen.findByText("Claim for Dispensed Prescription")
   return container
 }
 
