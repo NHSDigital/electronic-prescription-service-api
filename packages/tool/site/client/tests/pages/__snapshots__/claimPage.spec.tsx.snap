@@ -147,67 +147,71 @@ exports[`Displays an error on invalid response 1`] = `
 exports[`Displays claim amend form if prescription details are retrieved successfully 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Claim for Dispensed Prescription</label></h1>
 <form>
-  <fieldset class="nhsuk-fieldset">
-    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
-    <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
-      <div class="nhsuk-summary-list__row">
-        <dt class="nhsuk-summary-list__key">Status</dt>
-        <dd class="nhsuk-summary-list__value">Item fully dispensed</dd>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+      <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Status</dt>
+          <dd class="nhsuk-summary-list__value">Item fully dispensed</dd>
+        </div>
+        <div class="nhsuk-summary-list__row">
+          <dt class="nhsuk-summary-list__key">Quantity Dispensed</dt>
+          <dd class="nhsuk-summary-list__value">63 tablet</dd>
+        </div>
+      </dl>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
+          <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
+        </div>
       </div>
-      <div class="nhsuk-summary-list__row">
-        <dt class="nhsuk-summary-list__key">Quantity Dispensed</dt>
-        <dd class="nhsuk-summary-list__value">63 tablet</dd>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
+          <option value="BB">Broken Bulk</option>
+          <option value="ED">Extemporaneously dispensed</option>
+          <option value="IP">Invoice Price for less common products or special items</option>
+          <option value="MF">Measured and Fitted</option>
+          <option value="NCSO">No Cheaper Stock Obtainable</option>
+          <option value="NDEC">No Dispenser Endorsement Code</option>
+          <option value="XP">Out of Pocket Expenses</option>
+          <option value="PC">Prescriber Contacted</option>
+          <option value="PNC">Prescriber Not Contacted</option>
+          <option value="RC">Rebate Claimed</option>
+          <option value="SSP">Serious Shortage Protocol</option>
+          <option value="SP">Special License</option>
+          <option value="ZD">Zero Discount (List B only)</option>
+        </select></div>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" value=""></div>
+      <div class="sc-aYaIB eQquhv"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
+      <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
+    </fieldset>
+  </div>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Charge Exemption</legend>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="exemption.code--label" for="exemption.code">Exemption Status</label><select class="nhsuk-select" aria-labelledby="exemption.code--label" name="exemption.code" id="exemption.code">
+          <option value="0001">Patient has paid appropriate charges</option>
+          <option value="0002">is under 16 years of age</option>
+          <option value="0003">is 16, 17 or 18 and in full-time education</option>
+          <option value="0004">is 60 years of age or over</option>
+          <option value="0005">has a valid maternity exemption certificate</option>
+          <option value="0006">has a valid medical exemption certificate</option>
+          <option value="0007">has a valid prescription pre-payment certificate</option>
+          <option value="0008">has a War Pension exemption certificate</option>
+          <option value="0009">is named on a current HC2 charges certificate</option>
+          <option value="0010">was prescribed free-of-charge contraceptives</option>
+          <option value="0011">gets income support (IS)</option>
+          <option value="0012">gets income based Job Seeker's Allowance (JSA (IB))</option>
+          <option value="0013">is entitled to, or named on a VALID NHS tax credit exemption certificate</option>
+          <option value="0014">has a partner who gets Pension Credit Guarantee Credit (PGCC)</option>
+          <option value="0015">Patient does not need to pay the prescription charge</option>
+        </select></div>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
+          <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
+        </div>
       </div>
-    </dl>
-    <div class="nhsuk-form-group">
-      <div class="nhsuk-checkboxes" id="products.0.patientPaid.boxes">
-        <div class="nhsuk-checkboxes__item"><input name="products.0.patientPaid" id="products.0.patientPaid.box" type="checkbox" data-checkbox-exclusive-group="products.0.patientPaid.boxes" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="products.0.patientPaid.box--label" for="products.0.patientPaid.box">Patient Paid</label></div>
-      </div>
-    </div>
-    <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.code--label" for="products.0.endorsements.0.code">Endorsement 1 Type</label><select class="nhsuk-select" aria-labelledby="products.0.endorsements.0.code--label" name="products.0.endorsements.0.code" id="products.0.endorsements.0.code">
-        <option value="BB">Broken Bulk</option>
-        <option value="ED">Extemporaneously dispensed</option>
-        <option value="IP">Invoice Price for less common products or special items</option>
-        <option value="MF">Measured and Fitted</option>
-        <option value="NCSO">No Cheaper Stock Obtainable</option>
-        <option value="NDEC">No Dispenser Endorsement Code</option>
-        <option value="XP">Out of Pocket Expenses</option>
-        <option value="PC">Prescriber Contacted</option>
-        <option value="PNC">Prescriber Not Contacted</option>
-        <option value="RC">Rebate Claimed</option>
-        <option value="SSP">Serious Shortage Protocol</option>
-        <option value="SP">Special License</option>
-        <option value="ZD">Zero Discount (List B only)</option>
-      </select></div>
-    <div class="nhsuk-form-group"><label class="nhsuk-label" id="products.0.endorsements.0.supportingInfo--label" for="products.0.endorsements.0.supportingInfo">Endorsement 1 Supporting Information</label><input class="nhsuk-input nhsuk-input--width-30" type="text" aria-labelledby="products.0.endorsements.0.supportingInfo--label" name="products.0.endorsements.0.supportingInfo" id="products.0.endorsements.0.supportingInfo" value=""></div>
-    <div class="sc-aYaIB eQquhv"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Remove Endorsement</button></div>
-    <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="button">Add Endorsement</button></div>
-  </fieldset>
-  <fieldset class="nhsuk-fieldset">
-    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Charge Exemption</legend>
-    <div class="nhsuk-form-group"><label class="nhsuk-label" id="exemption.code--label" for="exemption.code">Exemption Status</label><select class="nhsuk-select" aria-labelledby="exemption.code--label" name="exemption.code" id="exemption.code">
-        <option value="0001">Patient has paid appropriate charges</option>
-        <option value="0002">is under 16 years of age</option>
-        <option value="0003">is 16, 17 or 18 and in full-time education</option>
-        <option value="0004">is 60 years of age or over</option>
-        <option value="0005">has a valid maternity exemption certificate</option>
-        <option value="0006">has a valid medical exemption certificate</option>
-        <option value="0007">has a valid prescription pre-payment certificate</option>
-        <option value="0008">has a War Pension exemption certificate</option>
-        <option value="0009">is named on a current HC2 charges certificate</option>
-        <option value="0010">was prescribed free-of-charge contraceptives</option>
-        <option value="0011">gets income support (IS)</option>
-        <option value="0012">gets income based Job Seeker's Allowance (JSA (IB))</option>
-        <option value="0013">is entitled to, or named on a VALID NHS tax credit exemption certificate</option>
-        <option value="0014">has a partner who gets Pension Credit Guarantee Credit (PGCC)</option>
-        <option value="0015">Patient does not need to pay the prescription charge</option>
-      </select></div>
-    <div class="nhsuk-form-group">
-      <div class="nhsuk-checkboxes" id="exemption.evidenceSeen.boxes">
-        <div class="nhsuk-checkboxes__item"><input name="exemption.evidenceSeen" id="exemption.evidenceSeen.box" type="checkbox" data-checkbox-exclusive-group="exemption.evidenceSeen.boxes" value="true" checked=""><label class="nhsuk-label nhsuk-checkboxes__label" id="exemption.evidenceSeen.box--label" for="exemption.evidenceSeen.box">Evidence Seen</label></div>
-      </div>
-    </div>
-  </fieldset>
+    </fieldset>
+  </div>
   <div class="sc-aYaIB eQquhv"><button class="nhsuk-button" aria-disabled="false" type="submit">Claim</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
