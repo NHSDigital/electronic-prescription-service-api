@@ -9,7 +9,7 @@ import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import ValidatePage from "../../src/pages/validatePage"
 import {internalDev} from "../../src/services/environment"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -47,7 +47,7 @@ test("Displays validate result", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<BrowserRouter><ValidatePage/></BrowserRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ValidatePage/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Validate a FHIR Resource"))
   return container
 }

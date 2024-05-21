@@ -10,7 +10,7 @@ import {renderWithContext} from "../renderWithContext"
 import WithdrawPage from "../../src/pages/withdrawPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -61,7 +61,7 @@ describe("Withdraw Page", () => {
     beforeEach(async () => {
       mock.onAny(dispenseNotificationUrl).reply(200, [])
 
-      renderWithContext(<BrowserRouter><WithdrawPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+      renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
       await waitFor(() => screen.getByText("Withdraw Unavailable"))
     })
 
@@ -79,7 +79,7 @@ describe("Withdraw Page", () => {
     beforeEach(async () => {
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
 
-      container = renderWithContext(<BrowserRouter><WithdrawPage prescriptionId={prescriptionId}/></BrowserRouter>, context).container
+      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context).container
       await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
     })
 
@@ -100,7 +100,7 @@ describe("Withdraw Page", () => {
     beforeEach(async () => {
       mock.onAny(dispenseNotificationUrl).reply(500, {})
       await React.act(async () => {
-        renderWithContext(<BrowserRouter><WithdrawPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+        renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
       })
     })
 
@@ -121,7 +121,7 @@ describe("Withdraw Page", () => {
         response_xml: "XML Response"
       })
 
-      container = renderWithContext(<BrowserRouter><WithdrawPage prescriptionId={prescriptionId}/></BrowserRouter>, context).container
+      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context).container
       await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
       userEvent.click(screen.getByText("Withdraw"))
       await waitFor(() => screen.getByText("Withdraw Result"))
@@ -156,7 +156,7 @@ describe("Withdraw Page", () => {
         response_xml: "XML Response"
       })
 
-      container = renderWithContext(<BrowserRouter><WithdrawPage prescriptionId={prescriptionId}/></BrowserRouter>, context).container
+      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context).container
       await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
       userEvent.click(screen.getByText("Withdraw"))
       await waitFor(() => screen.getByText("Withdraw Result"))

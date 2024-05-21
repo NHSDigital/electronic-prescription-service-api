@@ -5,15 +5,15 @@ import * as React from "react"
 import {expect} from "@jest/globals"
 import ReleaseForm from "../../../src/components/release/releaseForm"
 import userEvent from "@testing-library/user-event"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const prescriptionId = "7A9089-A83008-56A03J"
 
 test("Fields default to current values for nominated release", async () => {
   const {container} = render(
-    <BrowserRouter>
+    <MemoryRouter>
       <ReleaseForm onSubmit={jest.fn}/>
-    </BrowserRouter>
+    </MemoryRouter>
   )
 
   const releaseTypeContainer = await screen.findByLabelText<HTMLElement>("Choose how you want to release prescription(s)")
@@ -41,9 +41,9 @@ test("Fields default to current values for nominated release", async () => {
 
 test("Fields default to current values for patient release", async () => {
   const {container} = render(
-    <BrowserRouter>
+    <MemoryRouter>
       <ReleaseForm prescriptionId={prescriptionId} onSubmit={jest.fn}/>
-    </BrowserRouter>
+    </MemoryRouter>
   )
 
   const releaseTypeContainer = await screen.findByLabelText<HTMLElement>("Choose how you want to release prescription(s)")
@@ -71,9 +71,9 @@ test("Fields default to current values for patient release", async () => {
 
 test("Prescription Id Field is required when releasing by prescription Id", async () => {
   const {container} = render(
-    <BrowserRouter>
+    <MemoryRouter>
       <ReleaseForm onSubmit={jest.fn}/>
-    </BrowserRouter>
+    </MemoryRouter>
   )
 
   const releaseTypeContainer = await screen.findByLabelText<HTMLElement>("Choose how you want to release prescription(s)")
@@ -89,9 +89,9 @@ test("Prescription Id Field is required when releasing by prescription Id", asyn
 
 test("Fhir Field is required when releasing a custom fhir release message", async () => {
   const {container} = render(
-    <BrowserRouter>
+    <MemoryRouter>
       <ReleaseForm onSubmit={jest.fn}/>
-    </BrowserRouter>
+    </MemoryRouter>
   )
 
   const releaseTypeContainer = await screen.findByLabelText<HTMLElement>("Choose how you want to release prescription(s)")
@@ -107,9 +107,9 @@ test("Fhir Field is required when releasing a custom fhir release message", asyn
 
 test("Pharmacy to release to is always required", async () => {
   const {container} = render(
-    <BrowserRouter>
+    <MemoryRouter>
       <ReleaseForm onSubmit={jest.fn}/>
-    </BrowserRouter>
+    </MemoryRouter>
   )
 
   userEvent.click(screen.getByText("Release"))

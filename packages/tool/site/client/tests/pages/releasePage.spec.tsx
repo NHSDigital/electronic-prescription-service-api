@@ -11,7 +11,7 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import {ReleaseFormValues} from "../../src/components/release/releaseForm"
 import * as fhir from "fhir/r4"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -126,7 +126,7 @@ describe("multiple instructions", () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<BrowserRouter><ReleasePage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ReleasePage prescriptionId={prescriptionId}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Release prescription(s)"))
   return container
 }

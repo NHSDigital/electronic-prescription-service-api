@@ -8,7 +8,7 @@ import ClaimForm, {ClaimFormValues} from "../../../src/components/claim/claimFor
 import {renderWithContext} from "../../renderWithContext"
 import {AppContextValue} from "../../../src"
 import {internalDev} from "../../../src/services/environment"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -63,7 +63,7 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
 test("Clicking Claim button calls the callback with form values", async () => {
   const submit = jest.fn()
   await React.act(async () => {
-    render(<BrowserRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/></BrowserRouter>)
+    render(<MemoryRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/></MemoryRouter>)
   })
   await enterValuesInAllFields()
   await React.act(async () => {
@@ -122,7 +122,7 @@ async function enterValuesInAllFields() {
 }
 
 async function renderClaimForm(initialValues: ClaimFormValues) {
-  const {container} = renderWithContext(<BrowserRouter><ClaimForm initialValues={initialValues} onSubmit={jest.fn}/></BrowserRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimForm initialValues={initialValues} onSubmit={jest.fn}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Claim"))
   return container
 }

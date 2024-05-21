@@ -7,7 +7,7 @@ import ViewPrescriptionPage from "../../src/pages/viewPrescriptionPage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import {readBundleFromFile} from "../messages"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -34,7 +34,7 @@ describe("View Prescription Page", () => {
           , 1000)
         })
       })
-      renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+      renderWithContext(<MemoryRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
     })
 
     it("should make a request to the task tracker to get the prescription details", () => {
@@ -63,7 +63,7 @@ describe("View Prescription Page", () => {
         })
       })
 
-      renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+      renderWithContext(<MemoryRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
     })
 
     it("should make a request to the tracker to get the prescription details", () => {
@@ -84,7 +84,7 @@ describe("View Prescription Page", () => {
       mock.onAny(trackerUrl).reply(500, {})
       mock.onAny(dispenseNotificationUrl).reply(500, {})
       await React.act(async () => {
-        renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+        renderWithContext(<MemoryRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
       })
     })
 
@@ -98,7 +98,7 @@ describe("View Prescription Page", () => {
       mock.onAny(trackerUrl).reply(200, detailSearchResult)
       mock.onAny(dispenseNotificationUrl).reply(200, [])
       await React.act(async () => {
-        renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+        renderWithContext(<MemoryRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
       })
     })
 
@@ -116,7 +116,7 @@ describe("View Prescription Page", () => {
       mock.onAny(trackerUrl).reply(200, detailSearchResult)
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
       await React.act(async () => {
-        renderWithContext(<BrowserRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></BrowserRouter>, context)
+        renderWithContext(<MemoryRouter><ViewPrescriptionPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
       })
     })
 

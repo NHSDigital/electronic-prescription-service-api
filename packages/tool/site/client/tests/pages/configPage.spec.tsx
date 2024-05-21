@@ -9,7 +9,7 @@ import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import ConfigPage from "../../src/pages/configPage"
-import {BrowserRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}
@@ -40,7 +40,7 @@ test("Displays config update result", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<BrowserRouter><ConfigPage/></BrowserRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ConfigPage/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Config"))
   return container
 }
