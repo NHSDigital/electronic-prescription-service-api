@@ -123,6 +123,8 @@ test("Displays claim amend form if prescription details are retrieved successful
   mock.onAny(claimDownloadUrl).reply(200, claim)
 
   const container = await renderClaimAmendPage()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Claim")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
