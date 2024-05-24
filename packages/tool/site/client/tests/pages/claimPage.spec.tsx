@@ -43,6 +43,8 @@ test("Displays claim form if prescription details are retrieved successfully", a
   mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
 
   const container = await renderClaimPage()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Claim")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()

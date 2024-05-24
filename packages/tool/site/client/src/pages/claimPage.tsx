@@ -52,10 +52,10 @@ const ClaimPage: React.FC<ClaimPageProps> = ({
           const formInitialValues = getInitialValues(products, prescriptionDetails.previousClaim)
 
           return (
-            <>
+            <React.Fragment key="claimPage">
               <Label isPageHeading>Claim for Dispensed Prescription</Label>
               <ClaimForm initialValues={formInitialValues} onSubmit={setClaimFormValues}/>
-            </>
+            </React.Fragment>
           )
         }
 
