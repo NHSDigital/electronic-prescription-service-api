@@ -44,7 +44,7 @@ function getResponseExpectation(response: fhir.Parameters) {
       },
       {
         name: "algorithm",
-        valueString: "RS256"
+        valueString: "RS1"
       }
     ]
   }

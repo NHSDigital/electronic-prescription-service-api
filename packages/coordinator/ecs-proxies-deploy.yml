@@ -35,7 +35,7 @@ docker_service:
       - name: CRL_DISTRIBUTION_PROXY
         value: "egress.ptl.api.platform.nhs.uk:700"
       - name: USE_SHA256_PREPARE
-        value: "true"
+        value: "false"
     secrets:
       - name: SPINE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}"
