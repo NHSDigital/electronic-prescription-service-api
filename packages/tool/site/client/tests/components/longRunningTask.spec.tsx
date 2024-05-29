@@ -71,9 +71,7 @@ test("Error page includes a back button with the provided onclick handler", asyn
   await screen.findByText("Some error message")
   expect(pretty(container.innerHTML)).toMatchSnapshot()
   const button = await screen.findByText<HTMLButtonElement>("Back")
-  await React.act(async () => {
-    await userEvent.click(button)
-  })
+  await userEvent.click(button)
   expect(mockTask).toHaveBeenCalledTimes(1)
   expect(mockBack).toHaveBeenCalledTimes(1)
 })

@@ -161,7 +161,7 @@ test("Exception report button shown if there are failed prescriptions", async ()
 async function renderPage() {
   let container
   await React.act(async () => {
-    container = renderWithContext(<MemoryRouter><SendPage token={token}/></MemoryRouter>, context)
+    container = renderWithContext(<MemoryRouter><SendPage token={token}/></MemoryRouter>, context).container
   })
   await waitFor(() => screen.getByText(/Send Result/))
   return container

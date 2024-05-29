@@ -96,13 +96,186 @@ exports[`Displays an error on invalid response 1`] = `
 <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
-exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `""`;
+exports[`Displays dispense form if prescription details are retrieved successfully (no previous dispense notification) 1`] = `
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Dispense Prescription</label></h1>
+<form>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
+        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
+        </div>
+      </div>
+      <fieldset class="nhsuk-fieldset">
+        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Quantity Requested</dt>
+            <dd class="nhsuk-summary-list__value">63 tablet</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Prior Status</dt>
+            <dd class="nhsuk-summary-list__value">Item to be dispensed</dd>
+          </div>
+        </dl>
+        <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+            <option value="0001">Item fully dispensed</option>
+            <option value="0002">Item not dispensed</option>
+            <option value="0003">Item dispensed - partial</option>
+            <option value="0004">Item not dispensed owing</option>
+            <option value="0005">Item cancelled</option>
+            <option value="0006">Expired</option>
+            <option value="0007">Item to be dispensed</option>
+            <option value="0008">Item with dispenser</option>
+          </select></div>
+      </fieldset>
+      <fieldset class="nhsuk-fieldset">
+        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Status</legend>
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Prior Status</dt>
+            <dd class="nhsuk-summary-list__value">To be Dispensed</dd>
+          </div>
+        </dl>
+        <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+            <option value="0001">To be Dispensed</option>
+            <option value="0002">With Dispenser</option>
+            <option value="0003">With Dispenser - Active</option>
+            <option value="0004">Expired</option>
+            <option value="0005">Cancelled</option>
+            <option value="0006">Dispensed</option>
+            <option value="0007">Not Dispensed</option>
+          </select></div>
+      </fieldset>
+    </fieldset>
+  </div>
+  <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+</form>"
+`;
 
-exports[`Displays dispense form if prescription details are retrieved successfully (previous dispense notifications) 1`] = `""`;
+exports[`Displays dispense form if prescription details are retrieved successfully (previous dispense notifications) 1`] = `
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Dispense Prescription</label></h1>
+<form>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset">
+      <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
+        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
+        </div>
+      </div>
+      <fieldset class="nhsuk-fieldset">
+        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Methotrexate 10mg/0.2ml solution for injection pre-filled syringes</legend>
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Quantity Requested</dt>
+            <dd class="nhsuk-summary-list__value">63 tablet</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Quantity Currently Dispensed</dt>
+            <dd class="nhsuk-summary-list__value">18 tablet</dd>
+          </div>
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Prior Status</dt>
+            <dd class="nhsuk-summary-list__value">Item dispensed - partial</dd>
+          </div>
+        </dl>
+        <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+            <option value="0001">Item fully dispensed</option>
+            <option value="0002">Item not dispensed</option>
+            <option value="0003">Item dispensed - partial</option>
+            <option value="0004">Item not dispensed owing</option>
+            <option value="0005">Item cancelled</option>
+            <option value="0006">Expired</option>
+            <option value="0007">Item to be dispensed</option>
+            <option value="0008">Item with dispenser</option>
+          </select></div>
+        <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.0.suppliedQuantityValue--label" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
+      </fieldset>
+      <fieldset class="nhsuk-fieldset">
+        <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Prescription Status</legend>
+        <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
+          <div class="nhsuk-summary-list__row">
+            <dt class="nhsuk-summary-list__key">Prior Status</dt>
+            <dd class="nhsuk-summary-list__value">With Dispenser - Active</dd>
+          </div>
+        </dl>
+        <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+            <option value="0001">To be Dispensed</option>
+            <option value="0002">With Dispenser</option>
+            <option value="0003">With Dispenser - Active</option>
+            <option value="0004">Expired</option>
+            <option value="0005">Cancelled</option>
+            <option value="0006">Dispensed</option>
+            <option value="0007">Not Dispensed</option>
+          </select></div>
+      </fieldset>
+    </fieldset>
+  </div>
+  <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+</form>"
+`;
 
-exports[`Displays dispense result 1`] = `""`;
+exports[`Displays dispense result 1`] = `
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Dispense Result <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
+      <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" fill="none" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
+    </svg></label></h1>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/prescribe/cancel?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Cancel prescription</span></a></div>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/dispense?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Dispense prescription</span></a></div>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/withdraw?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Withdraw prescription</span></a></div>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/dispense/claim?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Claim for prescription</span></a></div>
+<div class="nhsuk-action-link"><a class="nhsuk-action-link__link" href="baseUrl/view?prescription_id=7A9089-A83008-56A03J"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+      <path d="M0 0h24v24H0z" fill="none"></path>
+      <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+    </svg><span class="nhsuk-action-link__text">Check prescription status</span></a></div>
+<div class="nhsuk-expander-group">
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">1 - FHIR Request that a supplier would send to the FHIR API</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22req%22%3A%20%22JSON%20Request%22%0A%7D" download="message">Download</a></div><code class="json-view" style="margin-top: 10px;"><span>{</span><span class="jv-size-chevron"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16" class="jv-chevron"><path fill="currentColor" d="M12.473 5.806a.666.666 0 0 0-.946 0L8.473 8.86a.667.667 0 0 1-.946 0L4.473 5.806a.667.667 0 1 0-.946.94l3.06 3.06a2 2 0 0 0 2.826 0l3.06-3.06a.667.667 0 0 0 0-.94Z"></path></svg></span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="json-view--copy"><path fill="currentColor" d="M17.542 2.5h-4.75a3.963 3.963 0 0 0-3.959 3.958v4.75a3.963 3.963 0 0 0 3.959 3.959h4.75a3.963 3.963 0 0 0 3.958-3.959v-4.75A3.963 3.963 0 0 0 17.542 2.5Zm2.375 8.708a2.378 2.378 0 0 1-2.375 2.375h-4.75a2.378 2.378 0 0 1-2.375-2.375v-4.75a2.378 2.378 0 0 1 2.375-2.375h4.75a2.378 2.378 0 0 1 2.375 2.375v4.75Zm-4.75 6.334a3.963 3.963 0 0 1-3.959 3.958h-4.75A3.963 3.963 0 0 1 2.5 17.542v-4.75a3.963 3.963 0 0 1 3.958-3.959.791.791 0 1 1 0 1.584 2.378 2.378 0 0 0-2.375 2.375v4.75a2.378 2.378 0 0 0 2.375 2.375h4.75a2.378 2.378 0 0 0 2.375-2.375.792.792 0 1 1 1.584 0Z"></path></svg><div class="jv-indent"><div class="json-view--pair"><span class="json-view--property">req</span>: <span class="json-view--string">"JSON Request"</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="json-view--copy"><path fill="currentColor" d="M17.542 2.5h-4.75a3.963 3.963 0 0 0-3.959 3.958v4.75a3.963 3.963 0 0 0 3.959 3.959h4.75a3.963 3.963 0 0 0 3.958-3.959v-4.75A3.963 3.963 0 0 0 17.542 2.5Zm2.375 8.708a2.378 2.378 0 0 1-2.375 2.375h-4.75a2.378 2.378 0 0 1-2.375-2.375v-4.75a2.378 2.378 0 0 1 2.375-2.375h4.75a2.378 2.378 0 0 1 2.375 2.375v4.75Zm-4.75 6.334a3.963 3.963 0 0 1-3.959 3.958h-4.75A3.963 3.963 0 0 1 2.5 17.542v-4.75a3.963 3.963 0 0 1 3.958-3.959.791.791 0 1 1 0 1.584 2.378 2.378 0 0 0-2.375 2.375v4.75a2.378 2.378 0 0 0 2.375 2.375h4.75a2.378 2.378 0 0 0 2.375-2.375.792.792 0 1 1 1.584 0Z"></path></svg></div></div><span>}</span></code>
+    </div>
+  </details>
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">2 - Equivalent hl7v3 that the FHIR API has sent to spine</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Request" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">XML Request</pre>
+    </div>
+  </details>
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">3 -  The hl7v3 spine response that the FHIR API received from spine</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,XML%20Response" download="message">Download</a></div><pre class="sc-dcJtft jyMVel">XML Response</pre>
+    </div>
+  </details>
+  <details class="nhsuk-details nhsuk-expander">
+    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">4 - FHIR Response that a supplier will receive from the FHIR API</span></summary>
+    <div class="nhsuk-details__text">
+      <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button sc-iGgVNO cEsNDy" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iGgVNO cEsNDy" role="button" aria-disabled="false" draggable="false" href="data:application/json;charset=utf-8,%7B%0A%20%20%22res%22%3A%20%22JSON%20Response%22%0A%7D" download="message">Download</a></div><code class="json-view" style="margin-top: 10px;"><span>{</span><span class="jv-size-chevron"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 16 16" class="jv-chevron"><path fill="currentColor" d="M12.473 5.806a.666.666 0 0 0-.946 0L8.473 8.86a.667.667 0 0 1-.946 0L4.473 5.806a.667.667 0 1 0-.946.94l3.06 3.06a2 2 0 0 0 2.826 0l3.06-3.06a.667.667 0 0 0 0-.94Z"></path></svg></span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="json-view--copy"><path fill="currentColor" d="M17.542 2.5h-4.75a3.963 3.963 0 0 0-3.959 3.958v4.75a3.963 3.963 0 0 0 3.959 3.959h4.75a3.963 3.963 0 0 0 3.958-3.959v-4.75A3.963 3.963 0 0 0 17.542 2.5Zm2.375 8.708a2.378 2.378 0 0 1-2.375 2.375h-4.75a2.378 2.378 0 0 1-2.375-2.375v-4.75a2.378 2.378 0 0 1 2.375-2.375h4.75a2.378 2.378 0 0 1 2.375 2.375v4.75Zm-4.75 6.334a3.963 3.963 0 0 1-3.959 3.958h-4.75A3.963 3.963 0 0 1 2.5 17.542v-4.75a3.963 3.963 0 0 1 3.958-3.959.791.791 0 1 1 0 1.584 2.378 2.378 0 0 0-2.375 2.375v4.75a2.378 2.378 0 0 0 2.375 2.375h4.75a2.378 2.378 0 0 0 2.375-2.375.792.792 0 1 1 1.584 0Z"></path></svg><div class="jv-indent"><div class="json-view--pair"><span class="json-view--property">res</span>: <span class="json-view--string">"JSON Response"</span><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" class="json-view--copy"><path fill="currentColor" d="M17.542 2.5h-4.75a3.963 3.963 0 0 0-3.959 3.958v4.75a3.963 3.963 0 0 0 3.959 3.959h4.75a3.963 3.963 0 0 0 3.958-3.959v-4.75A3.963 3.963 0 0 0 17.542 2.5Zm2.375 8.708a2.378 2.378 0 0 1-2.375 2.375h-4.75a2.378 2.378 0 0 1-2.375-2.375v-4.75a2.378 2.378 0 0 1 2.375-2.375h4.75a2.378 2.378 0 0 1 2.375 2.375v4.75Zm-4.75 6.334a3.963 3.963 0 0 1-3.959 3.958h-4.75A3.963 3.963 0 0 1 2.5 17.542v-4.75a3.963 3.963 0 0 1 3.958-3.959.791.791 0 1 1 0 1.584 2.378 2.378 0 0 0-2.375 2.375v4.75a2.378 2.378 0 0 0 2.375 2.375h4.75a2.378 2.378 0 0 0 2.375-2.375.792.792 0 1 1 1.584 0Z"></path></svg></div></div><span>}</span></code>
+    </div>
+  </details>
+</div>
+<div class="sc-eqUzNf chXQhu"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+`;
 
-exports[`Displays loading text while dispense notification is being submitted 1`] = `""`;
+exports[`Displays loading text while dispense notification is being submitted 1`] = `
+"<div style="text-align: center;">
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gsFSjX exKTSW">Loading</label></h1>
+  <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Sending dispense notification.</span></div>
+</div>"
+`;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
 "<div style="text-align: center;">

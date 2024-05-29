@@ -116,10 +116,7 @@ test("Displays the amend id when amending a dispense notification", async () => 
 })
 
 async function renderPage() {
-  let container
-  await React.act(async () => {
-    container = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
-  })
+  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Dispense Prescription"))
   return container
 }

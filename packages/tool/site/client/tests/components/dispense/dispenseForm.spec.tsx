@@ -106,14 +106,11 @@ test("Quantity field is hidden when status is not set to partial dispensed", asy
 })
 
 test("Reason field value is reset when hidden", async () => {
-  let container
-  await React.act(async () => {
-    container = render(
-      <MemoryRouter>
-        <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
-      </MemoryRouter>
-    )
-  })
+  const {container} = render(
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
+  )
 
   const reasonFields = await screen.findAllByLabelText<HTMLSelectElement>("Reason")
   const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
@@ -125,12 +122,16 @@ test("Reason field value is reset when hidden", async () => {
   })
   expect(reasonFields[0].value).not.toEqual(initialValue)
 
-  userEvent.selectOptions(statusFields[1], LineItemStatus.DISPENSED)
+  await React.act(async () => {
+    await userEvent.selectOptions(statusFields[1], LineItemStatus.DISPENSED)
+  })
   await waitFor(() =>
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount - 1)
   )
 
-  userEvent.selectOptions(statusFields[1], LineItemStatus.NOT_DISPENSED)
+  await React.act(async () => {
+    await userEvent.selectOptions(statusFields[1], LineItemStatus.NOT_DISPENSED)
+  })
   await waitFor(() =>
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount)
   )

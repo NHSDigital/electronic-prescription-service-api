@@ -27,11 +27,11 @@ test("Clicking Add Endorsement button adds one set of endorsement fields", async
 
   await addEndorsement()
 
-  expect(screen.getByLabelText("Endorsement 1 Type")).toBeTruthy()
-  expect(screen.getByLabelText("Endorsement 1 Supporting Information")).toBeTruthy()
+  expect(await screen.findByLabelText("Endorsement 1 Type")).toBeTruthy()
+  expect(await screen.findByLabelText("Endorsement 1 Supporting Information")).toBeTruthy()
   expect(screen.queryByLabelText("Endorsement 2 Type")).toBeFalsy()
   expect(screen.queryByLabelText("Endorsement 2 Supporting Information")).toBeFalsy()
-  expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(1)
+  expect(await screen.findAllByText("Remove Endorsement")).toHaveLength(1)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -41,9 +41,9 @@ test("Clicking Add Endorsement button twice adds two sets of endorsement fields"
   await addEndorsement()
   await addEndorsement()
 
-  expect(screen.getByLabelText("Endorsement 2 Type")).toBeTruthy()
-  expect(screen.getByLabelText("Endorsement 2 Supporting Information")).toBeTruthy()
-  expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(2)
+  expect(await screen.findByLabelText("Endorsement 2 Type")).toBeTruthy()
+  expect(await screen.findByLabelText("Endorsement 2 Supporting Information")).toBeTruthy()
+  expect(await screen.findAllByText("Remove Endorsement")).toHaveLength(2)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
@@ -56,19 +56,15 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
 
   expect(screen.queryByLabelText("Endorsement 2 Type")).toBeFalsy()
   expect(screen.queryByLabelText("Endorsement 2 Supporting Information")).toBeFalsy()
-  expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(1)
+  expect(await screen.findAllByText("Remove Endorsement")).toHaveLength(1)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
 })
 
 test("Clicking Claim button calls the callback with form values", async () => {
   const submit = jest.fn()
-  await React.act(async () => {
-    render(<MemoryRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/></MemoryRouter>)
-  })
+  render(<MemoryRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/></MemoryRouter>)
   await enterValuesInAllFields()
-  await React.act(async () => {
-    await userEvent.click(screen.getByText("Claim"))
-  })
+  await userEvent.click(await screen.findByText("Claim"))
   await waitFor(() => expect(submit).toHaveBeenCalled())
 
   expect(submit).toHaveBeenCalledWith({
@@ -112,13 +108,11 @@ async function removeEndorsement() {
 
 async function enterValuesInAllFields() {
   await addEndorsement()
-  await React.act(async () => {
-    await userEvent.click(screen.getByLabelText("Patient Paid"))
-    await userEvent.selectOptions(screen.getByLabelText("Endorsement 1 Type"), "IP")
-    await userEvent.type(screen.getByLabelText("Endorsement 1 Supporting Information"), "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678")
-    await userEvent.selectOptions(screen.getByLabelText("Exemption Status"), "0005")
-    await userEvent.click(screen.getByLabelText("Evidence Seen"))
-  })
+  await userEvent.click(await screen.findByLabelText("Patient Paid"))
+  await userEvent.selectOptions(await screen.findByLabelText("Endorsement 1 Type"), "IP")
+  await userEvent.type(await screen.findByLabelText("Endorsement 1 Supporting Information"), "£210.91,100ml,Specials Ltd,Lic12345678,BN12345678")
+  await userEvent.selectOptions(await screen.findByLabelText("Exemption Status"), "0005")
+  await userEvent.click(await screen.findByLabelText("Evidence Seen"))
 }
 
 async function renderClaimForm(initialValues: ClaimFormValues) {
