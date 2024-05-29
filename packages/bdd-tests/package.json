@@ -18,8 +18,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/preset-env": "^7.24.5",
-    "@cucumber/cucumber": "^10.7.0",
+    "@babel/preset-env": "^7.24.6",
+    "@cucumber/cucumber": "^10.8.0",
     "@types/fhir": "^0.0.41",
     "axios": "^1.7.2",
     "axios-cookiejar-support": "^5.0.2",
