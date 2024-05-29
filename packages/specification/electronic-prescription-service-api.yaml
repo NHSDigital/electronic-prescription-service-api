@@ -78,7 +78,7 @@ info:
     This API supports a community pharmacy dispensing workflow.
 
     In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
-    - it is available for testing in the integration environment, but not for production use
+    - it is available in integration and production
     - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
 
     ### Roadmap

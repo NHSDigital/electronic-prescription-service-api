@@ -1,6 +1,6 @@
 import {Bundle, CommunicationRequest, CommunicationRequestPayload, MedicationRequest} from "fhir/r4"
 import {Field} from "formik"
-import {Input, SummaryList} from "nhsuk-react-components"
+import {TextInput, SummaryList} from "nhsuk-react-components"
 import React from "react"
 import {getPerformerSiteTypeExtension} from "../../../fhir/customExtensions"
 import {getCurrentIssueNumberAndEndIssueNumber} from "../../../fhir/helpers"
@@ -112,7 +112,7 @@ const PrescriptionLevelDetails = ({
         <>
           <SummaryListRow label="Nominated Pharmacy ODS Code" value={
             editMode
-              ? <Field id="nominatedOds" name="nominatedOds" as={Input} width={30} />
+              ? <Field id="nominatedOds" name="nominatedOds" as={TextInput} width={30} />
               : nominatedOds
           } />
 

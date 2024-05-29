@@ -1,5 +1,5 @@
 import * as React from "react"
-import {Input, Textarea} from "nhsuk-react-components"
+import {TextInput, Textarea} from "nhsuk-react-components"
 import {Field} from "formik"
 import RadioField from "../common/radioField"
 
@@ -43,7 +43,7 @@ const ReleaseType: React.FC<ReleaseTypeProps> = ({
         <Field
           id="prescriptionId"
           name="prescriptionId"
-          as={Input}
+          as={TextInput}
           width={30}
           label="Prescription ID"
         />

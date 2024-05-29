@@ -72,22 +72,7 @@ properties:
     type: array
     description: The telephone number associated with the organisation.
     items:
-      type: object
-      properties:
-        system:
-          description: Means of communication, such as phone or email.
-          type: string
-          enum: [phone, fax, email, other]
-          default: phone
-        use:
-          type: string
-          description: Location associated with the contact details provided.
-          enum: [home, work, temp, mobile]
-          default: work
-        value:
-          description: Phone number, email address, or other identifier for use with contact system.
-          type: string
-          example: '01234567890'
+      $ref: ../_fragments/telecom.yaml#/components/schemas/Telecom
   partOf:
     type: object
     description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of.
