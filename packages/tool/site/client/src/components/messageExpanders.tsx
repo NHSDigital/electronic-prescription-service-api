@@ -4,7 +4,7 @@ import Pre from "./common/pre"
 import {FhirResource} from "fhir/r4"
 import ButtonList from "./common/buttonList"
 import styled from "styled-components"
-import ReactJson from "react18-json-view"
+import {JsonView, defaultStyles} from "react-json-view-lite"
 
 interface MessageExpandersProps {
   fhirRequest: FhirResource
@@ -67,11 +67,9 @@ export const JsonMessageExpander: React.FC<JsonMessageExpanderProps> = ({
           <StyledButton onClick={() => navigator.clipboard.writeText(JSON.stringify(message, null, 2))}>Copy</StyledButton>
           <StyledButton download="message" href={downloadHref}>Download</StyledButton>
         </ButtonList>
-        <ReactJson
-          collapseStringsAfterLength={50}
-          displaySize={false}
-          src={message}
-          style={{marginTop: "10px"}}
+        <JsonView
+          data={message}
+          style={defaultStyles}
         />
       </Details.Text>
     </Details>
