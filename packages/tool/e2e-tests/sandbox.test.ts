@@ -2,7 +2,7 @@ import "chromedriver"
 import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
-import {EPSAT_HOME_URL, LOCAL_MODE} from "./helpers"
+import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
 import * as doseToText from "./dose-to-text/doseToText.spec"
 import _ from "lodash"
 import "path"
@@ -62,7 +62,7 @@ afterEach(async () => {
 function buildFirefoxOptions() {
   const firefoxOptions = new firefox.Options()
   if (LOCAL_MODE) {
-    firefoxOptions.setBinary(process.env.FIREFOX_BINARY_PATH)
+    firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
   }
   if (!LOCAL_MODE) {
     firefoxOptions.addArguments("--headless")
