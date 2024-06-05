@@ -62,7 +62,7 @@ afterEach(async () => {
 function buildFirefoxOptions() {
   const firefoxOptions = new firefox.Options()
   if (LOCAL_MODE) {
-    firefoxOptions.setBinary(process.env.FIREFOX_BINARY_PATH)
+    firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
   }
   if (!LOCAL_MODE) {
     firefoxOptions.addArguments("--headless")
