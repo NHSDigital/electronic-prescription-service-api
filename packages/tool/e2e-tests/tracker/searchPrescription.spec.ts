@@ -5,7 +5,8 @@ import {
   finaliseWebAction,
   fiveTimesDefaultWaitTimeout,
   getElement,
-  sendPrescriptionUserJourney
+  sendPrescriptionUserJourney,
+  waitForPageToRender
 } from "../helpers"
 import {
   homeNavLink,
@@ -31,13 +32,11 @@ export async function searchForPrescriptionUserJourney(
 ): Promise<void> {
   await (await getElement(driver, homeNavLink)).click()
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, searchPrescriptionsLink)).click()
   await driver.wait(until.elementsLocated(searchPageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, By.id("prescriptionId"))).sendKeys(prescriptionId)
   // wait 2 seconds for keys to complete
@@ -46,8 +45,7 @@ export async function searchForPrescriptionUserJourney(
   await (await getElement(driver, searchButton)).click()
   finaliseWebAction(driver, "SEARCHING FOR PRESCRIPTION...")
   await driver.wait(until.elementsLocated(By.className("nhsuk-table")), fiveTimesDefaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   const table = (await getElement(driver, By.className("nhsuk-table")))
 

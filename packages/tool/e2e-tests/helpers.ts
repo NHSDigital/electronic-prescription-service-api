@@ -128,8 +128,7 @@ export async function releasePrescriptionUserJourney(driver: ThenableWebDriver):
   await (await getElement(driver, releasePrescriptionAction)).click()
 
   await driver.wait(until.elementsLocated(releasePageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
   await (await getElement(driver, By.id("pharmacy-1"))).click()
   await (await getElement(driver, releaseButton)).click()
 
@@ -142,8 +141,7 @@ export async function viewPrescriptionUserJourney(driver: ThenableWebDriver): Pr
   await (await getElement(driver, viewPrescriptionAction)).click()
 
   await driver.wait(until.elementsLocated(searchDetailsPageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   finaliseWebAction(driver, "VIEWED PRESCRIPTION")
 }
@@ -151,15 +149,13 @@ export async function viewPrescriptionUserJourney(driver: ThenableWebDriver): Pr
 export async function dispensePrescriptionWithFormUserJourney(driver: ThenableWebDriver): Promise<void> {
   await (await getElement(driver, dispensePrescriptionAction)).click()
   await driver.wait(until.elementsLocated(dispensePageTitle), fiveTimesDefaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, dispenseByFormRadio)).click()
 
   const elements = await driver.findElements(itemFullyDispensedStatus)
   elements.forEach(async element => await element.click())
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
   await (await getElement(driver, dispenseButton)).click()
 
   finaliseWebAction(driver, "DISPENSING PRESCRIPTION...")
@@ -195,8 +191,7 @@ export async function amendDispenseUserJourney(driver: ThenableWebDriver): Promi
   await (await getElement(driver, AmendDispenseAction)).click()
 
   await driver.wait(until.elementsLocated(amendDispensePageTitle), fiveTimesDefaultWaitTimeout)
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   const elements = await driver.findElements(itemAmendNotDispensedStatus)
   elements.forEach(async element => await element.click())
@@ -213,8 +208,7 @@ export async function amendDispenseUserJourney(driver: ThenableWebDriver): Promi
 export async function claimPrescriptionUserJourney(driver: ThenableWebDriver): Promise<void> {
   await (await getElement(driver, By.linkText("Claim for prescription"))).click()
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
   const claimFormElements = await driver.findElements(claimFormAddEndorsement)
@@ -233,8 +227,7 @@ export async function claimPrescriptionUserJourney(driver: ThenableWebDriver): P
 
 export async function cancelPrescriptionUserJourney(driver: ThenableWebDriver): Promise<void> {
   await (await getElement(driver, cancelPrescriptionAction)).click()
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await driver.wait(until.elementsLocated(cancelPrescriptionPageTitle), defaultWaitTimeout)
   const medicationToCancelRadios = await driver.findElements(By.name("cancellationMedication"))
@@ -248,8 +241,7 @@ export async function cancelPrescriptionUserJourney(driver: ThenableWebDriver): 
 export async function claimAmendPrescriptionUserJourney(driver: ThenableWebDriver): Promise<void> {
   await (await getElement(driver, By.linkText("Amend the claim on this prescription"))).click()
   await driver.wait(until.elementsLocated(claimPageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await driver.wait(until.elementsLocated(claimFormAddEndorsement), defaultWaitTimeout)
   const claimFormlements = await driver.findElements(claimFormAddEndorsement)
@@ -266,8 +258,7 @@ export async function claimAmendPrescriptionUserJourney(driver: ThenableWebDrive
 export async function checkMyPrescriptions(driver: ThenableWebDriver, tableName: string, prescriptionId: string): Promise<void> {
   await (await getElement(driver, myPrescriptionsNavLink)).click()
   await driver.wait(until.elementsLocated(myPrescriptionsPageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   const tableSelector = By.xpath(`//*[text() = '${tableName}']`)
   const table = (await getElement(driver, tableSelector))
@@ -281,12 +272,10 @@ export async function checkMyPrescriptions(driver: ThenableWebDriver, tableName:
 export async function loginViaSimulatedAuthSmartcardUser(driver: ThenableWebDriver): Promise<void> {
   await navigateToUrl(driver, EPSAT_HOME_URL)
   await driver.wait(until.elementsLocated(loginPageTitle))
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, userButton)).click()
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await driver.wait(until.elementLocated(simulatedAuthPageTitle))
   await driver.wait(async () => {
@@ -306,8 +295,7 @@ export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<
   await navigateToUrl(driver, EPSAT_HOME_URL)
 
   await driver.wait(until.elementsLocated(loginPageTitle))
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, systemButton)).click()
 
@@ -318,8 +306,7 @@ export async function loginUnattendedAccess(driver: ThenableWebDriver): Promise<
 export async function updateConfigEpsPrNumber(driver: ThenableWebDriver, pr: number): Promise<void> {
   await (await getElement(driver, configLink)).click()
   await driver.wait(until.elementLocated(configPageTitle))
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, By.name("epsPrNumber"))).sendKeys(pr)
   await (await getElement(driver, By.name("useSigningMock"))).click()
@@ -333,8 +320,7 @@ export async function navigateToUrl(driver: ThenableWebDriver, url: string): Pro
 
 export async function createPrescription(driver: ThenableWebDriver): Promise<void> {
   await driver.wait(until.elementsLocated(homePageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, createPrescriptionsLink)).click()
   finaliseWebAction(driver, "CREATING PRESCRIPTION...")
@@ -342,8 +328,7 @@ export async function createPrescription(driver: ThenableWebDriver): Promise<voi
 
 export async function loadPredefinedExamplePrescription(driver: ThenableWebDriver, exampleName?: string): Promise<void> {
   const exampleNameOrDefault = exampleName ?? "Primary Care - Acute (nominated)"
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await driver.wait(until.elementsLocated(loadPageTitle), defaultWaitTimeout)
   await (await getElement(driver, By.xpath(`//*[text() = '${exampleNameOrDefault}']`))).click()
@@ -353,8 +338,7 @@ export async function loadPredefinedExamplePrescription(driver: ThenableWebDrive
 
 export async function sendPrescription(driver: ThenableWebDriver): Promise<void> {
   await driver.wait(until.elementsLocated(sendPageTitle), apiTimeout)
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, sendButton)).click()
   // wait 10 seconds for click to register
@@ -366,8 +350,7 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
 export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<void> {
   await (await getElement(driver, configLink)).click()
   await driver.wait(until.elementLocated(configPageTitle))
-  // wait 2 seconds for page to load
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, By.name("useSigningMock"))).click()
   await (await getElement(driver, configButton)).click()
@@ -429,8 +412,7 @@ export async function loadTestData(driver: ThenableWebDriver, fileUploadInfo: Fi
 }
 
 export async function getUpload(driver: ThenableWebDriver, uploadType: number): Promise<WebElement> {
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
   const customRadioSelector = {xpath: "//*[@value = 'custom']"}
   finaliseWebAction(driver, "CLICKING customRadioSelector")
   await (await getElement(driver, customRadioSelector)).click()
@@ -449,8 +431,12 @@ export async function loadPrescriptionsFromTestData(driver: ThenableWebDriver): 
 export async function logout(driver: ThenableWebDriver): Promise<void> {
   await (await getElement(driver, logoutNavLink)).click()
   await driver.wait(until.elementsLocated(logoutPageTitle), defaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   finaliseWebAction(driver, "LOGOUT SUCCESSFUL")
+}
+
+export async function waitForPageToRender(waitTime: number = 2000) {
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, waitTime))
 }

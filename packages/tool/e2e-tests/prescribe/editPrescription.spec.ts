@@ -9,7 +9,8 @@ import {
   sendPrescription,
   setMockSigningConfig,
   tenTimesDefaultWaitTimeout,
-  viewPrescriptionUserJourney
+  viewPrescriptionUserJourney,
+  waitForPageToRender
 } from "../helpers"
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {sendPageTitle} from "../locators"
@@ -41,8 +42,7 @@ async function editPrescriptionOrganisation(
   newOrganisation: string
 ): Promise<void> {
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   await (await getElement(driver, By.id("editPrescription"))).click()
   await (await getElement(driver, By.id("nominatedOds"))).clear()

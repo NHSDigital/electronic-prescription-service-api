@@ -6,7 +6,8 @@ import {checkApiResult,
   finaliseWebAction,
   getElement,
   navigateToUrl,
-  sendPrescriptionUserJourney} from "../helpers"
+  sendPrescriptionUserJourney,
+  waitForPageToRender} from "../helpers"
 import {copyFhirRequestButton, fhirRequestExpander} from "../locators"
 
 describe("firefox", () => {
@@ -26,14 +27,12 @@ async function validateFhirResourceUserJourney(
 ): Promise<void> {
   finaliseWebAction(driver, "CLICKING THE LINK FOR Validate a FHIR Resource...")
   await (await getElement(driver, By.linkText("Validate a FHIR Resource"))).click()
-  // wait 2 seconds for page to finish rendering
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
   finaliseWebAction(driver, "WAITING FOR validatePayload to appear...")
   await driver.wait(until.elementsLocated(By.id("validatePayload")), defaultWaitTimeout)
   finaliseWebAction(driver, "PASTING THE CLIPBOARD INTO validatePayload...")
   await (await getElement(driver, By.id("validatePayload"))).sendKeys(Key.SHIFT, Key.INSERT)
-  // wait 2 seconds for paste to complete
-  await new Promise(r => setTimeout(r, 2000))
+  await waitForPageToRender()
 
   finaliseWebAction(driver, "CLICKING THE VALIDATE BUTTON...")
   await (await getElement(driver, {xpath: "//*[text() = 'Validate']"})).click()

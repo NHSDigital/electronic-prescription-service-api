@@ -1,5 +1,5 @@
 import {ThenableWebDriver, until} from "selenium-webdriver"
-import {fiveTimesDefaultWaitTimeout, getElement} from "../helpers"
+import {fiveTimesDefaultWaitTimeout, getElement, waitForPageToRender} from "../helpers"
 import {
   checkFirstReleasedPrescriptionStatusButton,
   dispenseButton,
@@ -12,9 +12,7 @@ export async function getPrescriptionItemIds(
   driver: ThenableWebDriver
 ): Promise<string[]> {
   await (await getElement(driver, myPrescriptionsNavLink)).click()
-
-  // wait 10 seconds for page to load
-  await new Promise(r => setTimeout(r, 10000))
+  await waitForPageToRender(10000)
 
   await driver.wait(
     until.elementsLocated(checkFirstReleasedPrescriptionStatusButton),
@@ -26,8 +24,7 @@ export async function getPrescriptionItemIds(
     until.elementsLocated(dispensePrescriptionAction),
     fiveTimesDefaultWaitTimeout
   )
-  // wait 10 seconds for page to refresh
-  await new Promise(r => setTimeout(r, 10000))
+  await waitForPageToRender(10000)
 
   const idElements = await driver.findElements(prescriptionLineItemIds)
   const idPromises = idElements.map(element => element.getText())
