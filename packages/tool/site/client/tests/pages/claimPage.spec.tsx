@@ -43,7 +43,8 @@ test("Displays claim form if prescription details are retrieved successfully", a
   mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
 
   const container = await renderClaimPage()
-  await waitForPageToRender()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Claim")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -124,7 +125,8 @@ test("Displays claim amend form if prescription details are retrieved successful
   mock.onAny(claimDownloadUrl).reply(200, claim)
 
   const container = await renderClaimAmendPage()
-  await waitForPageToRender()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Claim")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -194,6 +196,3 @@ describe("getInitialValues", () => {
     expect(result.products[0].endorsements).toEqual([{code: "NDEC"}])
   })
 })
-function waitForPageToRender() {
-  throw new Error("Function not implemented.")
-}
