@@ -40,6 +40,8 @@ test("Displays dispense form if prescription details are retrieved successfully 
   mock.onAny(dispenseNotificationUrl).reply(200, [])
 
   const container = await renderPage()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Dispense")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -50,6 +52,8 @@ test("Displays dispense form if prescription details are retrieved successfully 
   mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
 
   const container = await renderPage()
+  // wait 2 seconds for page to finish rendering
+  await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Dispense")).toBeTruthy()
   expect(pretty(container.innerHTML)).toMatchSnapshot()
