@@ -5,6 +5,7 @@ import {FhirResource} from "fhir/r4"
 import ButtonList from "./common/buttonList"
 import styled from "styled-components"
 import ReactJson from "react18-json-view"
+import "react18-json-view/src/style.css"
 
 interface MessageExpandersProps {
   fhirRequest: FhirResource
@@ -71,7 +72,7 @@ export const JsonMessageExpander: React.FC<JsonMessageExpanderProps> = ({
           collapseStringsAfterLength={50}
           displaySize={false}
           src={message}
-          style={{marginTop: "10px"}}
+          theme="default"
         />
       </Details.Text>
     </Details>

@@ -18,6 +18,10 @@ const config: Configuration = {
             ]
           }
         }
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"]
       }
     ]
   },
