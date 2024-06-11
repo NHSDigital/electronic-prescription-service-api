@@ -24,6 +24,6 @@
         "geckodriver": "^4.4.1",
         "lodash": "^4.17.21",
         "selenium-webdriver": "^4.21.0",
-        "uuid": "^9.0.1"
+        "uuid": "^10.0.0"
     }
 }
