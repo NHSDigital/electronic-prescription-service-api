@@ -10,6 +10,7 @@ import {internalDevSandbox} from "../../src/services/environment"
 import DoseToTextPage from "../../src/pages/doseToTextPage"
 import userEvent from "@testing-library/user-event"
 import {readBundleFromFile} from "../messages"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDevSandbox}
@@ -57,7 +58,7 @@ test("Displays dose to text result", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<DoseToTextPage />, context)
+  const {container} = renderWithContext(<MemoryRouter><DoseToTextPage /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Dose to Text"))
   return container
 }

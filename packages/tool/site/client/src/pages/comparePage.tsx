@@ -1,6 +1,6 @@
 import {Label, Form, Button, Fieldset, Textarea} from "nhsuk-react-components"
 import ButtonList from "../components/common/buttonList"
-import ReactDiffViewer, {DiffMethod} from "react-diff-viewer"
+import ReactDiffViewer, {DiffMethod} from "react-diff-viewer-continued"
 import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
 import React, {useContext, useState} from "react"

@@ -5,5 +5,8 @@ module.exports = {
   },
   testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
-  testEnvironment: "jsdom"
+  testEnvironment: "jsdom",
+  moduleNameMapper: {
+    "\\.(css|less)$": "identity-obj-proxy"
+  }
 }

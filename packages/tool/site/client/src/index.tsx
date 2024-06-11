@@ -1,8 +1,8 @@
 import * as React from "react"
 import {Page} from "./components/page"
 import SignPage from "./pages/signPage"
-import * as ReactDOM from "react-dom"
-import {BrowserRouter, Route, Switch} from "react-router-dom"
+import {BrowserRouter, Route, Routes} from "react-router-dom"
+import {createRoot} from "react-dom/client"
 import ClaimPage from "./pages/claimPage"
 import DispensePage from "./pages/dispensePage"
 import {CookiesProvider} from "react-cookie"
@@ -42,109 +42,112 @@ async function startApplication(baseUrl: string, environment: Environment): Prom
       <CookiesProvider>
         <Page>
           <BrowserRouter>
-            <Switch>
-              <Route path={`${baseUrl}/`}>
+            <Routes>
+              <Route path={`${baseUrl}/`} element={
                 <PageContainer>
                   <HomePage />
-                </PageContainer>
+                </PageContainer>}>
+
               </Route>
-              <Route path={`${baseUrl}dose-to-text`}>
+              <Route path={`${baseUrl}dose-to-text`} element={
                 <PageContainer>
                   <DoseToTextPage/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}config`}>
+              <Route path={`${baseUrl}config`} element={
                 <PageContainer>
                   <ConfigPage/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}my-prescriptions`}>
+              <Route path={`${baseUrl}my-prescriptions`} element={
                 <PageContainer>
                   <MyPrescriptionsPage/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}login`}>
+              <Route path={`${baseUrl}login`} element={
                 <PageContainer>
                   <LoginPage separateAuth={urlParams.get("separate_auth")}/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}logout`}>
+              <Route path={`${baseUrl}logout`} element={
                 <PageContainer>
                   <LogoutPage/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}prescribe/load`}>
+              <Route path={`${baseUrl}prescribe/load`} element={
                 <PageContainer>
                   <LoadPage/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}prescribe/edit`}>
+              <Route path={`${baseUrl}prescribe/edit`} element={
                 <PageContainer>
                   <SignPage/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}prescribe/send`}>
+
+              <Route path={`${baseUrl}prescribe/send`} element={
                 <PageContainer>
                   <SendPage token={urlParams.get("token")} state={urlParams.get("state")}/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}prescribe/cancel`}>
+              <Route path={`${baseUrl}prescribe/cancel`} element={
                 <PageContainer>
                   <CancelPage prescriptionId={urlParams.get("prescription_id")}/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}dispense/release`}>
+              <Route path={`${baseUrl}dispense/release`} element={
                 <PageContainer>
                   <ReleasePage prescriptionId={urlParams.get("prescription_id")}/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}dispense/return`}>
+              <Route path={`${baseUrl}dispense/return`} element={
                 <PageContainer>
                   <ReturnPage prescriptionId={urlParams.get("prescription_id")} />
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}dispense/withdraw`}>
+              <Route path={`${baseUrl}dispense/withdraw`} element={
                 <PageContainer>
                   <WithdrawPage prescriptionId={urlParams.get("prescription_id")} />
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}dispense/dispense`}>
+              <Route path={`${baseUrl}dispense/dispense`} element={
                 <PageContainer>
                   <DispensePage prescriptionId={urlParams.get("prescription_id")} amendId={urlParams.get("amend_id")} />
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}dispense/claim`}>
+              <Route path={`${baseUrl}dispense/claim`} element={
                 <PageContainer>
                   <ClaimPage prescriptionId={urlParams.get("prescription_id")} amend={!!urlParams.get("amend")}/>
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}search`}>
+              <Route path={`${baseUrl}search`} element={
                 <PageContainer>
                   <PrescriptionSearchPage prescriptionId={urlParams.get("prescription_id")} />
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}view`}>
+              <Route path={`${baseUrl}view`} element={
                 <PageContainer>
                   <ViewPrescriptionPage prescriptionId={urlParams.get("prescription_id")} />
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}validate`}>
+              <Route path={`${baseUrl}validate`} element={
                 <PageContainer>
                   <ValidatePage />
-                </PageContainer>
+                </PageContainer>}>
               </Route>
-              <Route path={`${baseUrl}compare-prescriptions`}>
+              <Route path={`${baseUrl}compare-prescriptions`} element={
                 <PageFullWidth>
                   <ComparePage />
-                </PageFullWidth>
+                </PageFullWidth>}>
               </Route>
-            </Switch>
+            </Routes>
           </BrowserRouter>
         </Page>
       </CookiesProvider>
     </AppContext.Provider>
   )
-  ReactDOM.render(content, document.getElementById("root"))
+  const root = createRoot(document.getElementById("root"))
+  root.render(content)
 }
 
 customWindow.startApplication = startApplication

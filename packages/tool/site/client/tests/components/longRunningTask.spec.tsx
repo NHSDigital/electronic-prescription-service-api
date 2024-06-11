@@ -3,6 +3,7 @@ import {render, screen} from "@testing-library/react"
 import React from "react"
 import pretty from "pretty"
 import userEvent from "@testing-library/user-event"
+import {MemoryRouter} from "react-router-dom"
 
 test("Shows loading message while task runs", async () => {
   const mockTask = jest.fn()
@@ -41,9 +42,11 @@ test.each([
   const mockTask = jest.fn()
   mockTask.mockRejectedValue(rejectedValue)
 
-  const ui = <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading">
-    {result => <span>{result.data}</span>}
-  </LongRunningTask>
+  const ui = <MemoryRouter>
+    <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading">
+      {result => <span>{result.data}</span>}
+    </LongRunningTask>
+  </MemoryRouter>
   const {container} = render(ui)
 
   await screen.findByText(expectedText)
@@ -57,15 +60,18 @@ test("Error page includes a back button with the provided onclick handler", asyn
   const mockBack = jest.fn()
 
   const ui = (
-    <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading" back={mockBack}>
-      {result => <span>{result.data}</span>}
-    </LongRunningTask>
+    <MemoryRouter>
+      <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading" back={mockBack}>
+        {result => <span>{result.data}</span>}
+      </LongRunningTask>
+    </MemoryRouter>
   )
   const {container} = render(ui)
 
+  await screen.findByText("Some error message")
+  expect(pretty(container.innerHTML)).toMatchSnapshot()
   const button = await screen.findByText<HTMLButtonElement>("Back")
-  userEvent.click(button)
+  await userEvent.click(button)
   expect(mockTask).toHaveBeenCalledTimes(1)
   expect(mockBack).toHaveBeenCalledTimes(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
 })

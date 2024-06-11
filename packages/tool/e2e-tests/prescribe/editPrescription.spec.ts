@@ -2,14 +2,15 @@ import {driver} from "../live.test"
 import {
   checkApiResult,
   createPrescription,
-  defaultWaitTimeout,
   finaliseWebAction,
+  getElement,
   loadPredefinedExamplePrescription,
   loginViaSimulatedAuthSmartcardUser,
   sendPrescription,
   setMockSigningConfig,
   tenTimesDefaultWaitTimeout,
-  viewPrescriptionUserJourney
+  viewPrescriptionUserJourney,
+  waitForPageToRender
 } from "../helpers"
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {sendPageTitle} from "../locators"
@@ -41,15 +42,14 @@ async function editPrescriptionOrganisation(
   newOrganisation: string
 ): Promise<void> {
   await driver.wait(until.elementsLocated(sendPageTitle), tenTimesDefaultWaitTimeout)
-  const editButtons = await driver.findElements(By.id("editPrescription"))
-  const editButton = editButtons[0]
-  await driver.wait(() => editButton.isDisplayed(), defaultWaitTimeout)
-  await driver.wait(() => editButton.isEnabled(), defaultWaitTimeout)
-  await driver.executeScript("arguments[0].scrollIntoView(true);", editButton)
-  await editButton.click()
-  await driver.wait(until.elementsLocated(By.id("nominatedOds")), defaultWaitTimeout)
-  await driver.findElement(By.id("nominatedOds")).clear()
-  await driver.findElement(By.id("nominatedOds")).sendKeys(newOrganisation)
+  await waitForPageToRender()
+
+  await (await getElement(driver, By.id("editPrescription"))).click()
+  await (await getElement(driver, By.id("nominatedOds"))).clear()
+  await (await getElement(driver, By.id("nominatedOds"))).sendKeys(newOrganisation)
+  // wait 2 seconds for keys to complete
+  await new Promise(r => setTimeout(r, 2000))
+
   finaliseWebAction(driver, `PRESCRIPTION ORGANISATION SET TO: ${newOrganisation}`)
 }
 
@@ -57,7 +57,8 @@ async function checkPrescriptionOrganisation(
   driver: ThenableWebDriver,
   correctOrganisation: string
 ): Promise<void> {
-  const dispenserRow = await driver.findElement(By.id("prescriptionDispenser"))
+  const dispenserRow =(await getElement(driver, By.id("prescriptionDispenser")))
+
   const prescriptionOrganisation = await dispenserRow.getAttribute("innerText")
   expect(prescriptionOrganisation).toBe(correctOrganisation)
   finaliseWebAction(driver, `PRESCRIPTION HAS CORRECT ORGANISATION: ${correctOrganisation}`)

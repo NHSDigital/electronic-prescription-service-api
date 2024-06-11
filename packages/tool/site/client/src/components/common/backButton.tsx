@@ -1,10 +1,10 @@
 import {Button} from "nhsuk-react-components"
 import React from "react"
-import {useHistory} from "react-router-dom"
+import {useNavigate} from "react-router-dom"
 
 export const BackButton : React.FC = () => {
-  const history = useHistory()
-  return <Button type="button" secondary onClick={() => history.goBack()}>Back</Button>
+  const navigate = useNavigate()
+  return <Button type="button" secondary onClick={() => navigate(-1)}>Back</Button>
 }
 
 export default BackButton
