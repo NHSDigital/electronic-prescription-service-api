@@ -13,3 +13,7 @@ Parameters:
     Default: "xxx"
 
 Resources:
+  # Placeholder - Remove once real resources are added
+  NullResource:
+    Type: Custom:NullResource
+    Condition: Never
