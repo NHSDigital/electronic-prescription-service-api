@@ -55,12 +55,14 @@ jobs:
           mkdir -p .aws-sam/build/specification
           cp packages/specification/dist/electronic-prescription-service-api.resolved.json .aws-sam/build/specification/
       
+      # Readme is included to stop the action flattening the folder structure of aws-sam/build when it is the only item to upload
       - uses: actions/upload-artifact@v4
         name: Upload build artifact
         with:
           name: packaged_code
           path: |
             .aws-sam/build
+            README.md
       
       - uses: actions/upload-artifact@v4
         name: Upload specification artifact
