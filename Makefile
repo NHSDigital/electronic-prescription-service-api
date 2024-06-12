@@ -423,13 +423,13 @@ mark-jira-released: guard-release_version
 update-snapshots: install-all
 	npm run update-snapshots --workspace packages/tool/site/client
 
-sam-build: sam-validate compile
+sam-build: sam-validate
 	sam build --template-file SAMtemplates/main_template.yaml --region eu-west-2
 
 sam-validate: 
 	sam validate --template-file SAMtemplates/main_template.yaml --region eu-west-2
 
-sam-build-sandbox: sam-validate-sandbox compile
+sam-build-sandbox: sam-validate-sandbox
 	sam build --template-file SAMtemplates/sandbox_template.yaml --region eu-west-2
 
 sam-validate-sandbox:
