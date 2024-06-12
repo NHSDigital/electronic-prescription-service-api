@@ -5,7 +5,7 @@ exports[`Dispense Different Medication checkbox is present for paracetamol 500 (
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -27,7 +27,7 @@ exports[`Dispense Different Medication checkbox is present for paracetamol 500 (
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -52,7 +52,7 @@ exports[`Dispense Different Medication checkbox is present for paracetamol 500 (
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -62,7 +62,7 @@ exports[`Dispense Different Medication checkbox is present for paracetamol 500 (
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.1.nonDispensingReasonCode--label" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -91,7 +91,7 @@ exports[`Dispense Different Medication checkbox is present for paracetamol 500 (
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -113,7 +113,7 @@ exports[`Fields default to current values 1`] = `
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -135,7 +135,7 @@ exports[`Fields default to current values 1`] = `
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -160,7 +160,7 @@ exports[`Fields default to current values 1`] = `
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -170,7 +170,7 @@ exports[`Fields default to current values 1`] = `
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.1.nonDispensingReasonCode--label" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -199,7 +199,7 @@ exports[`Fields default to current values 1`] = `
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -221,7 +221,7 @@ exports[`Prescription status is not updated automatically if field has been touc
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -243,7 +243,7 @@ exports[`Prescription status is not updated automatically if field has been touc
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -253,7 +253,7 @@ exports[`Prescription status is not updated automatically if field has been touc
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.0.suppliedQuantityValue--label" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
         </fieldset>
       </div>
       <div class="nhsuk-form-group">
@@ -269,7 +269,7 @@ exports[`Prescription status is not updated automatically if field has been touc
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -284,7 +284,7 @@ exports[`Prescription status is not updated automatically if field has been touc
               <div class="nhsuk-checkboxes__item"><input name="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication" id="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication" type="checkbox" data-checkbox-exclusive-group="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication" value=""><label class="nhsuk-label nhsuk-checkboxes__label" id="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label" for="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication">Dispense Different Medication</label></div>
             </div>
           </div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.suppliedQuantityValue--label" for="lineItems.1.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.1.suppliedQuantityValue--label" name="lineItems.1.suppliedQuantityValue" id="lineItems.1.suppliedQuantityValue" value=""></div>
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.suppliedQuantityValue--label" for="lineItems.1.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" name="lineItems.1.suppliedQuantityValue" id="lineItems.1.suppliedQuantityValue" value=""></div>
         </fieldset>
       </div>
       <div class="nhsuk-form-group">
@@ -296,7 +296,7 @@ exports[`Prescription status is not updated automatically if field has been touc
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -318,7 +318,7 @@ exports[`Prescription status updates to suggested value when line item status is
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -340,7 +340,7 @@ exports[`Prescription status updates to suggested value when line item status is
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -350,7 +350,7 @@ exports[`Prescription status updates to suggested value when line item status is
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.0.suppliedQuantityValue--label" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
         </fieldset>
       </div>
       <div class="nhsuk-form-group">
@@ -366,7 +366,7 @@ exports[`Prescription status updates to suggested value when line item status is
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -381,7 +381,7 @@ exports[`Prescription status updates to suggested value when line item status is
               <div class="nhsuk-checkboxes__item"><input name="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication" id="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication" type="checkbox" data-checkbox-exclusive-group="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication" value=""><label class="nhsuk-label nhsuk-checkboxes__label" id="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication--label" for="lineItems.1.dispenseDifferentMedication.dispenseDifferentMedication">Dispense Different Medication</label></div>
             </div>
           </div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.suppliedQuantityValue--label" for="lineItems.1.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.1.suppliedQuantityValue--label" name="lineItems.1.suppliedQuantityValue" id="lineItems.1.suppliedQuantityValue" value=""></div>
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.suppliedQuantityValue--label" for="lineItems.1.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" name="lineItems.1.suppliedQuantityValue" id="lineItems.1.suppliedQuantityValue" value=""></div>
         </fieldset>
       </div>
       <div class="nhsuk-form-group">
@@ -393,7 +393,7 @@ exports[`Prescription status updates to suggested value when line item status is
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -415,7 +415,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -437,7 +437,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -462,7 +462,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -472,7 +472,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.1.nonDispensingReasonCode--label" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -501,7 +501,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -523,7 +523,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -545,7 +545,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -555,7 +555,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" aria-labelledby="lineItems.0.suppliedQuantityValue--label" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.suppliedQuantityValue--label" for="lineItems.0.suppliedQuantityValue">Quantity Dispensed</label><input class="nhsuk-input" type="text" name="lineItems.0.suppliedQuantityValue" id="lineItems.0.suppliedQuantityValue" value=""></div>
         </fieldset>
       </div>
       <div class="nhsuk-form-group">
@@ -571,7 +571,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -581,7 +581,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.1.nonDispensingReasonCode--label" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -610,7 +610,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -632,7 +632,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -654,7 +654,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -679,7 +679,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -705,7 +705,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -727,7 +727,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -749,7 +749,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -759,7 +759,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.nonDispensingReasonCode--label" for="lineItems.0.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.0.nonDispensingReasonCode--label" name="lineItems.0.nonDispensingReasonCode" id="lineItems.0.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.nonDispensingReasonCode--label" for="lineItems.0.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.0.nonDispensingReasonCode" id="lineItems.0.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -787,7 +787,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -797,7 +797,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.1.nonDispensingReasonCode--label" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -826,7 +826,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
@@ -848,7 +848,7 @@ exports[`Reason field value is reset when hidden 1`] = `
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
-        <div class="nhsuk-radios" id="dispenseType" aria-labelledby="dispenseType--label" value="form">
+        <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
@@ -870,7 +870,7 @@ exports[`Reason field value is reset when hidden 1`] = `
               <dd class="nhsuk-summary-list__value">Item with dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.0.statusCode--label" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.0.statusCode--label" for="lineItems.0.statusCode">Status</label><select class="nhsuk-select" name="lineItems.0.statusCode" id="lineItems.0.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -895,7 +895,7 @@ exports[`Reason field value is reset when hidden 1`] = `
               <dd class="nhsuk-summary-list__value">Item not dispensed</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="lineItems.1.statusCode--label" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.statusCode--label" for="lineItems.1.statusCode">Status</label><select class="nhsuk-select" name="lineItems.1.statusCode" id="lineItems.1.statusCode">
               <option value="0001">Item fully dispensed</option>
               <option value="0002">Item not dispensed</option>
               <option value="0003">Item dispensed - partial</option>
@@ -905,7 +905,7 @@ exports[`Reason field value is reset when hidden 1`] = `
               <option value="0007">Item to be dispensed</option>
               <option value="0008">Item with dispenser</option>
             </select></div>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" aria-labelledby="lineItems.1.nonDispensingReasonCode--label" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="lineItems.1.nonDispensingReasonCode--label" for="lineItems.1.nonDispensingReasonCode">Reason</label><select class="nhsuk-select" name="lineItems.1.nonDispensingReasonCode" id="lineItems.1.nonDispensingReasonCode">
               <option value="0001">Not required as instructed by the patient</option>
               <option value="0002">Clinically unsuitable</option>
               <option value="0003">Owings note issued to patient</option>
@@ -934,7 +934,7 @@ exports[`Reason field value is reset when hidden 1`] = `
               <dd class="nhsuk-summary-list__value">With Dispenser</dd>
             </div>
           </dl>
-          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" aria-labelledby="prescription.statusCode--label" name="prescription.statusCode" id="prescription.statusCode">
+          <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescription.statusCode--label" for="prescription.statusCode">Status</label><select class="nhsuk-select" name="prescription.statusCode" id="prescription.statusCode">
               <option value="0001">To be Dispensed</option>
               <option value="0002">With Dispenser</option>
               <option value="0003">With Dispenser - Active</option>
