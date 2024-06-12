@@ -452,4 +452,4 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--parameter-overrides \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
-			Env=$$TARGET_ENVIRONMENT \S
+			Env=$$TARGET_ENVIRONMENT
