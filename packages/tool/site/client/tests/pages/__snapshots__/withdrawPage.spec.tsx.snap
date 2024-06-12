@@ -237,14 +237,14 @@ exports[`Withdraw Page When there are two dispense notifications should match th
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy withdrawing prescription</label>
-        <div class="nhsuk-radios" id="pharmacy" aria-labelledby="pharmacy--label" value="VNFKT">
+        <div class="nhsuk-radios" id="pharmacy" value="VNFKT" aria-label="Pharmacy withdrawing prescription">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" aria-labelledby="pharmacy-1--label" type="radio" value="VNFKT" checked=""><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-2" name="pharmacy" aria-labelledby="pharmacy-2--label" type="radio" value="YGM1E"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-2--label" for="pharmacy-2">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-3" name="pharmacy" aria-labelledby="pharmacy-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-3--label" for="pharmacy-3">Other</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="reason--label" for="reason">Choose a reason for withdrawing</label>
-        <div class="nhsuk-radios" id="reason" aria-labelledby="reason--label" value="0002">
+        <div class="nhsuk-radios" id="reason" value="0002" aria-label="Choose a reason for withdrawing">
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="reason-1" name="reason" aria-labelledby="reason-1--label" type="radio" value="QU"><label class="nhsuk-label nhsuk-radios__label" id="reason-1--label" for="reason-1">Quantity Update</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="reason-2" name="reason" aria-labelledby="reason-2--label" type="radio" value="MU"><label class="nhsuk-label nhsuk-radios__label" id="reason-2--label" for="reason-2">Medication Update</label></div>
           <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="reason-3" name="reason" aria-labelledby="reason-3--label" type="radio" value="DA"><label class="nhsuk-label nhsuk-radios__label" id="reason-3--label" for="reason-3">Dosage Amendments</label></div>
