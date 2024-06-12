@@ -2,8 +2,8 @@
 
 exports[`Displays error message if prepare errors present 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
-<div class="nhsuk-error-summary">
-  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
+<div class="nhsuk-error-summary" tabindex="-1" role="alert" aria-labelledby="error-summary-title">
+  <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
 <fieldset class="nhsuk-fieldset">
@@ -68,8 +68,8 @@ exports[`Displays error message if prepare errors present 1`] = `
 
 exports[`Displays error message if redirect URI not present 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Error</label></h1>
-<div class="nhsuk-error-summary">
-  <h2 class="nhsuk-error-summary__title">Something went wrong while processing your request:</h2>
+<div class="nhsuk-error-summary" tabindex="-1" role="alert" aria-labelledby="error-summary-title">
+  <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
 <fieldset class="nhsuk-fieldset">
@@ -260,7 +260,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
     </div>
   </dl>
   <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="signingOptions--label" for="signingOptions">Choose a sign in option</label>
-    <div class="nhsuk-radios" id="signingOptions" aria-labelledby="signingOptions--label" value="N3_SMARTCARD">
+    <div class="nhsuk-radios" id="signingOptions" value="N3_SMARTCARD" aria-label="Choose a sign in option">
       <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-1" name="signingOptions" aria-labelledby="signingOptions-1--label" type="radio" value="N3_SMARTCARD" checked=""><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-1--label" for="signingOptions-1">N3 Smartcard</label></div>
       <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-2" name="signingOptions" aria-labelledby="signingOptions-2--label" type="radio" value="IOS"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-2--label" for="signingOptions-2">IOS</label></div>
       <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-3" name="signingOptions" aria-labelledby="signingOptions-3--label" type="radio" value="FIDO2"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-3--label" for="signingOptions-3">FIDO2</label></div>
