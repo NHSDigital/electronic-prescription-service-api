@@ -1,0 +1,158 @@
+name: sam release code
+
+on:
+  workflow_call:
+    inputs:
+      STACK_NAME:
+        required: true
+        type: string
+      ARTIFACT_BUCKET_PREFIX:
+        required: true
+        type: string
+      AWS_ENVIRONMENT:
+        required: true
+        type: string
+      # APIGEE_ENVIRONMENT:
+      #   required: true
+      #   type: string
+      # ENABLE_MUTUAL_TLS:
+      #   required: true
+      #   type: boolean
+      BUILD_ARTIFACT:
+        required: true
+        type: string
+      SPEC_ARTIFACT:
+        required: true
+        type: string
+      # TRUSTSTORE_FILE:
+      #   required: true
+      #   type: string
+      VERSION_NUMBER:
+        required: true
+        type: string
+      COMMIT_ID:
+        required: true
+        type: string
+      # LOG_LEVEL:
+      #   required: false
+      #   type: string
+      #   default: INFO
+      # LOG_RETENTION_DAYS:
+      #   required: true
+      #   type: string
+      # CREATE_INT_RELEASE_NOTES:
+      #   type: boolean
+      #   default: false
+      # CREATE_INT_RC_RELEASE_NOTES:
+      #   type: boolean
+      #   default: false
+      # CREATE_PROD_RELEASE_NOTES:
+      #   type: boolean
+      #   default: false
+      # MARK_JIRA_RELEASED:
+      #   type: boolean
+      #   default: false
+      # DEPLOY_APIGEE:
+      #   type: boolean
+      #   default: true
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE:
+        required: true
+      DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+        required: false
+      INT_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+        required: false
+      PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+        required: false
+      DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
+        required: false
+  
+jobs:
+  sam_release_code:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.AWS_ENVIRONMENT }}
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: Checkout local github actions
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+          fetch-depth: 0
+          sparse-checkout: |
+            .github
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
+          role-session-name: github-actions
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.BUILD_ARTIFACT }}
+          path: .
+
+      - name: Download specification artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.SPEC_ARTIFACT }}
+          path: .
+
+      - name: Download python dependency artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: python_dependency_files
+          path: .
+  
+      # using git commit sha for version of action to ensure we have stable version
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+  
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared
+
+      - name: Run make install-python
+        run: |
+          make install-python
+  
+      - name: Export specification paths
+        run: |
+          SPEC_PATH="$(pwd)/eps-prescription-status-update-api.resolved.json"
+          echo "Specification location: $SPEC_PATH"
+          echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
+      
+      - name: release code
+        shell: bash
+        working-directory: .github/scripts
+        env:
+          artifact_bucket_prefix: prescription_status_update/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
+          COMMIT_ID: ${{ inputs.COMMIT_ID }}
+          # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
+          # LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
+          stack_name: ${{ inputs.STACK_NAME }}
+          TARGET_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          template_file: template.yaml
+          # TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+        run: ./release_code.sh
