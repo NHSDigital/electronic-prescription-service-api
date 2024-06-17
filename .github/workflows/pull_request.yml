@@ -1,0 +1,94 @@
+name: deploy_pr
+
+on:
+  pull_request:
+    branches: [master]
+
+env:
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+
+jobs:
+  quality_checks:
+    uses: ./.github/workflows/quality_checks.yml
+
+  pr_title_format_check:
+    uses: ./.github/workflows/pr_title_check.yml
+  
+  get_issue_number:
+    runs-on: ubuntu-latest
+    needs: quality_checks
+    outputs:
+      issue_number: ${{steps.get_issue_number.outputs.result}}
+
+    steps:
+      - uses: actions/github-script@v7
+        name: get issue number
+        id: get_issue_number
+        with:
+          script: |
+            if (context.issue.number) {
+              // Return issue number if present
+              return context.issue.number;
+            } else {
+              // Otherwise return issue number from commit
+              return (
+                await github.rest.repos.listPullRequestsAssociatedWithCommit({
+                  commit_sha: context.sha,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                })
+              ).data[0].number;
+            }
+          result-encoding: string
+
+  get_commit_id:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+    steps:
+      - name: Get Commit ID
+        id: commit_id
+        run: |
+          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+  
+  package_code:
+    needs: get_issue_number
+    uses: ./.github/workflows/sam_package_code.yml
+  
+  release_code:
+    needs: [get_issue_number, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      STACK_NAME: fhir-prescribing-and-dispensing-pr-${{needs.get_issue_number.outputs.issue_number}}
+      ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
+      AWS_ENVIRONMENT: dev
+      # APIGEE_ENVIRONMENT: internal-dev
+      # ENABLE_MUTUAL_TLS: false
+      BUILD_ARTIFACT: packaged_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: ??-truststore.pem
+      VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
+      COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
+      # LOG_RETENTION_DAYS: 30
+      # DEPLOY_APIGEE: true
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+  
+  release_sandbox_code:
+    needs: [get_issue_number, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      STACK_NAME: fhir-prescribing-and-dispensing-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      AWS_ENVIRONMENT: dev
+      # APIGEE_ENVIRONMENT: internal-dev-sandbox
+      # ENABLE_MUTUAL_TLS: false
+      BUILD_ARTIFACT: packaged_sandbox_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: ??-sandbox-truststore.pem
+      VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
+      COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
+      # LOG_RETENTION_DAYS: 30
+      # DEPLOY_APIGEE: true
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}

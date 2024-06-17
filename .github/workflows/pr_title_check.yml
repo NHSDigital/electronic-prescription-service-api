@@ -1,0 +1,33 @@
+name: PR Title Check
+
+on:
+  workflow_call:
+
+jobs:
+  pr_title_format_check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR Title is Prefixed with Change Type
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "$PR_TITLE" =~ ^(Fix|Update|New|Breaking|Docs|Build|Upgrade|Chore):.*$ ]]; then
+            echo "PR title is prefixed with change type."
+          else
+            echo "PR title is not prefixed with change type."
+            echo "Please prefix your PR title with a change type (Fix, Update, New, Breaking, Docs, Build, Upgrade, Chore)."
+            echo "See the contributing guide for more details:"
+            echo "https://github.com/NHSDigital/eps-prescription-status-update-api/blob/main/CONTRIBUTING.md"
+            exit 1
+          fi
+      - name: Check PR Title contains Ticket/Dependabot Reference
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          if [[ "$PR_TITLE" =~ ^.*:.*\[([A-Z]+-[0-9]+|dependabot)\].*-.*$ ]]; then
+            echo "PR title contains ticket or dependabot reference."
+          else
+            echo "PR title does not contain ticket or dependabot reference."
+            echo "Please ensure PR title contains a ticket (eg. 'Fix: [AEA-####] - ...', or 'Chore: [dependabot] - ...')."
+            exit 1
+          fi
