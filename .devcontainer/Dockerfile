@@ -14,6 +14,19 @@ RUN apt-get update \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
     xz-utils tk-dev liblzma-dev netcat awscli default-jre maven
 
+# install aws stuff
+RUN wget -O /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" && \
+    unzip /tmp/awscliv2.zip -d /tmp/aws-cli && \
+    /tmp/aws-cli/aws/install && \
+    rm tmp/awscliv2.zip && \
+    rm -rf /tmp/aws-cli
+
+RUN wget -O /tmp/aws-sam-cli.zip https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip && \
+    unzip /tmp/aws-sam-cli.zip -d /tmp/aws-sam-cli && \
+    /tmp/aws-sam-cli/install && \
+    rm /tmp/aws-sam-cli.zip && \
+    rm -rf /tmp/aws-sam-cli
+
 # install non snap version of firefox
 RUN add-apt-repository -y ppa:mozillateam/ppa
 COPY <<EOF /etc/apt/preferences.d/mozilla-firefox 
