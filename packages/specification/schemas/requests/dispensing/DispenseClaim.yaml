@@ -424,11 +424,21 @@ properties:
                             type: string
                             enum: ["https://fhir.nhs.uk/CodeSystem/medicationdispense-type"]
                           code:
-                            description: A code representing the intended line item status. 
-                            example: "0001"
+                            description: A code representing the intended line item status.
+                            type: string
+                            enum: ["0001", "0002", "0003", "0004", "0005", "0006", "0007", "0008", "0009", "0010", "0011"]
                           display:
-                            description: human readable representation of the intended line item status code.
-                            example: "Item fully dispensed"
+                            description: Human readable representation of the intended line item status code.
+                            type: string
+                            enum: 
+                            - Item fully dispensed	
+                            - Item not dispensed	
+                            - Item dispensed - partial	
+                            - Item not dispensed owing	
+                            - Item cancelled	
+                            - Expired	
+                            - Item to be dispensed	
+                            - Item with dispenser
               programCode:
                 type: array
                 description: Information about whether a patient has or has not paid for their prescription, and any endorsements that apply to the medication dispensed.
