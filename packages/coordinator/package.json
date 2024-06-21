@@ -51,7 +51,7 @@
     "@types/lossless-json": "^1.0.4",
     "@types/module-alias": "^2.0.4",
     "@types/mustache": "^4.2.5",
-    "@types/uuid": "^9.0.8",
+    "@types/uuid": "^10.0.0",
     "@types/xml-c14n": "^0.0.3",
     "axios-mock-adapter": "^1.22.0",
     "jest-expect-message": "^1.1.3",
