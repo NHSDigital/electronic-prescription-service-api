@@ -8,9 +8,12 @@ export default class CustomEnvironment extends NodeEnvironment {
     this.global.hasTestFailures = false
   }
 
-  handleTestEvent(event: Event) :void {
+  async handleTestEvent(event: Event) :Promise<void> {
     if (event.name === "test_fn_failure") {
       this.global.hasTestFailures = true
+      console.log("***** ERROR IN TEST *****")
+      console.log(event)
+      console.log()
     }
   }
 

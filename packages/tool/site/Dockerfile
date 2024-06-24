@@ -31,6 +31,7 @@ COPY --from=build-server /build/packages/tool/site/server/dist/ /app/packages/to
 COPY --from=build-server /build/packages/tool/site/server/package*.json /app/packages/tool/site/server/
 COPY --from=build-client /build/packages/tool/site/client/static /app/packages/tool/site/server/static
 COPY --from=build-client /build/packages/tool/site/client/dist/index.js /app/packages/tool/site/server/static/
+COPY --from=build-client /build/packages/tool/site/client/dist/index.js.map /app/packages/tool/site/server/static/
 COPY --from=build-client /build/packages/tool/site/client/index.html /app/packages/tool/site/server/templates/index.html
 RUN npm ci --ignore-scripts --only=production --workspace packages/tool/site/server --workspace packages/tool/site/client
 RUN mkdir "/.npm"

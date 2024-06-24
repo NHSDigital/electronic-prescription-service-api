@@ -1,0 +1,33 @@
+name: 'Delete old cloudformation stacks'
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 3,15 * * *"
+
+jobs:
+  delete-old-cloudformation-stacks:
+    runs-on: ubuntu-latest
+    permissions:
+        id-token: write
+        contents: read
+
+    steps:
+      - name: Checkout local github scripts
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+          sparse-checkout: |
+            .github/scripts
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+          role-session-name: github-actions
+
+      - name: delete stacks
+        shell: bash
+        working-directory: .github/scripts
+        run: ./delete_stacks.sh

@@ -18,7 +18,7 @@ interface Radio {
 }
 
 const RadioField: FC<RadioFieldProps> = ({name, label, fieldRadios, defaultValue, onClick, error}) => (
-  <Field id={name} name={name} labelProps={{bold: true}} label={label} onClick={onClick} error={error} as={Radios}>
+  <Field id={name} name={name} labelProps={{bold: true}} aria-label={label} label={label} onClick={onClick} error={error} as={Radios}>
     {fieldRadios.map(radio =>
       <Radios.Radio
         key={radio.id}

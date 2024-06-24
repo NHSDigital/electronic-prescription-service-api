@@ -9,6 +9,7 @@ import userEvent from "@testing-library/user-event"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import ReturnPage from "../../src/pages/returnPage"
 import {internalDev} from "../../src/services/environment"
+import {MemoryRouter} from "react-router-dom"
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"
@@ -50,7 +51,7 @@ test("Displays return result", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<ReturnPage prescriptionId={prescriptionId}/>, context)
+  const {container} = renderWithContext(<MemoryRouter><ReturnPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Return prescription"))
   return container
 }

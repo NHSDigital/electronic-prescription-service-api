@@ -2,13 +2,13 @@
 
 exports[`Renders correctly 1`] = `
 "<form action="#">
-  <div class="nhsuk-form-group"><label class="nhsuk-label" id="test--label" for="test">test</label><select class="nhsuk-select" aria-labelledby="test--label" name="test" id="test"></select></div>
+  <div class="nhsuk-form-group"><label class="nhsuk-label" id="test--label" for="test">test</label><select class="nhsuk-select" name="test" id="test"></select></div>
 </form>"
 `;
 
 exports[`Renders correctly with many field options 1`] = `
 "<form action="#">
-  <div class="nhsuk-form-group"><label class="nhsuk-label" id="test--label" for="test">test</label><select class="nhsuk-select" aria-labelledby="test--label" name="test" id="test">
+  <div class="nhsuk-form-group"><label class="nhsuk-label" id="test--label" for="test">test</label><select class="nhsuk-select" name="test" id="test">
       <option value="testValue">testText</option>
       <option value="testValue">testText</option>
       <option value="testValue">testText</option>

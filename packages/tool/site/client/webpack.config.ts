@@ -18,9 +18,14 @@ const config: Configuration = {
             ]
           }
         }
+      },
+      {
+        test: /\.css$/i,
+        use: ["style-loader", "css-loader"]
       }
     ]
   },
+  devtool: "source-map",
   plugins: [
     new ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
