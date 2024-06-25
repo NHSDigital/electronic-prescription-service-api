@@ -1,0 +1,242 @@
+name: release workflow
+
+on:
+  push:
+    branches: [main]
+    tags: [v**]
+
+env:
+  BRANCH_NAME: ${{ github.event.ref.BRANCH_NAME }}
+
+jobs:
+  quality_checks:
+    uses: ./.github/workflows/quality_checks.yml
+
+  get_commit_id:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+    steps:
+      - name: Get Commit ID
+        id: commit_id
+        run: |
+          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+  tag_release:
+    needs: quality_checks
+    runs-on: ubuntu-latest
+    outputs:
+      spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+          fetch-depth: 0
+
+      # using git commit sha for version of action to ensure we have stable version
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+  
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-
+
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.11.3
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared 
+  
+      - name: Install python packages
+        run: |
+          make install-python
+
+      - name: Set SPEC_VERSION env var for merges to main
+        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
+        if: github.ref == 'refs/heads/main'
+
+      - name: Set SPEC_VERSION env var for tags
+        run: echo "SPEC_VERSION=${{ github.ref_name }}" >> "$GITHUB_ENV"
+        if: github.ref != 'refs/heads/main'
+
+      - name: Create release (tags and main)
+        id: create-release
+        # using commit hash for version v1.13.0
+        uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag: ${{ env.SPEC_VERSION }}
+          commit: ${{  github.sha }}
+          body: |
+            ## Commit message
+            ${{ github.event.head_commit.message }}
+            ## Info
+            [See code diff](${{ github.event.compare }})
+            [Release workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+
+            It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }})
+
+      - name: output SPEC_VERSION
+        id: output_spec_version
+        run: |
+          echo "## RELEASE TAG :** ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
+
+  package_code:
+    needs: tag_release
+    uses: ./.github/workflows/sam_package_code.yml
+
+  release_dev:
+    needs: [tag_release, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing
+      AWS_ENVIRONMENT: dev
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: DEBUG
+      # LOG_RETENTION_DAYS: 30
+      # CREATE_INT_RELEASE_NOTES: true
+      # CREATE_PROD_RELEASE_NOTES: true
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+  
+  release_dev_sandbox:
+    needs: [tag_release, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing-sandbox
+      AWS_ENVIRONMENT: dev
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_sandbox_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: DEBUG
+      # LOG_RETENTION_DAYS: 30
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+
+  release_ref:
+    needs: [tag_release, release_dev, release_dev_sandbox, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing
+      AWS_ENVIRONMENT: ref
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: DEBUG
+      # LOG_RETENTION_DAYS: 30
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+
+  release_qa:
+    needs: [tag_release, release_dev, release_dev_sandbox, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing
+      AWS_ENVIRONMENT: qa
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: DEBUG
+      # LOG_RETENTION_DAYS: 30
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
+
+  release_int:
+    needs: [tag_release, release_qa, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing
+      AWS_ENVIRONMENT: int
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: DEBUG
+      # LOG_RETENTION_DAYS: 30
+      # CREATE_INT_RELEASE_NOTES: true
+      # CREATE_INT_RC_RELEASE_NOTES: false
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
+      DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+  
+  release_sandbox:
+    needs: [tag_release, release_qa, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing-sandox
+      AWS_ENVIRONMENT: int
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_sandbox_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: DEBUG
+      # LOG_RETENTION_DAYS: 30
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
+
+  release_prod:
+    needs: [tag_release, release_int, release_sandbox, package_code, get_commit_id]
+    uses: ./.github/workflows/sam_release_code.yml
+    with:
+      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+      STACK_NAME: fhir-prescribing-and-dispensing
+      AWS_ENVIRONMENT: prod
+      # ENABLE_MUTUAL_TLS: true
+      BUILD_ARTIFACT: packaged_code
+      SPEC_ARTIFACT: specification_code
+      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      # LOG_LEVEL: INFO
+      # LOG_RETENTION_DAYS: 731
+      # MARK_JIRA_RELEASED: true
+      # CREATE_PROD_RELEASE_NOTES: true
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_DEPLOY_ROLE }}
+      DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
