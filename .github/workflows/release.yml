@@ -2,7 +2,7 @@ name: release workflow
 
 on:
   push:
-    branches: [main]
+    branches: [master]
     tags: [v**]
 
 env:
@@ -60,15 +60,15 @@ jobs:
         run: |
           make install-python
 
-      - name: Set SPEC_VERSION env var for merges to main
+      - name: Set SPEC_VERSION env var for merges to master
         run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/master'
 
       - name: Set SPEC_VERSION env var for tags
         run: echo "SPEC_VERSION=${{ github.ref_name }}" >> "$GITHUB_ENV"
-        if: github.ref != 'refs/heads/main'
+        if: github.ref != 'refs/heads/master'
 
-      - name: Create release (tags and main)
+      - name: Create release (tags and master)
         id: create-release
         # using commit hash for version v1.13.0
         uses: ncipollo/release-action@2c591bcc8ecdcd2db72b97d6147f871fcd833ba5
