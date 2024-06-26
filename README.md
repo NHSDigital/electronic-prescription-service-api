@@ -371,7 +371,6 @@ Workflows are in the `/.github/workflows` folder
 
 - `codeql-analysis.yml` Workflow for automated security analysis and vulnerability detection
 - `combine-dependabot-prs.yml` Workflow for combining dependabot pull requests
-- `continuous-integration.yml` This workflow template publishes a Github release when merged to master
 - `create_int_release_notes.yml` Workflow for creating int release notes. Called from azure pipeline
 - `create_prod_release_notes.yml` Workflow for creating prod release notes. Called from azure pipeline
 - `create_rc_int_release_notes.yml` Workflow for creating RC int release notes. Called from azure pipeline
