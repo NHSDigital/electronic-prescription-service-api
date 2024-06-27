@@ -6,7 +6,9 @@ import {
   finaliseWebAction,
   sendPrescriptionUserJourney,
   releasePrescriptionUserJourney,
-  dispensePrescriptionWithFormUserJourney
+  dispensePrescriptionWithFormUserJourney,
+  getElement,
+  waitForPageToRender
 } from "../helpers"
 import {withdrawButton, withdrawPageTitle, withdrawPrescriptionAction} from "../locators"
 
@@ -22,11 +24,17 @@ describe("firefox", () => {
 async function withdrawPrescriptionUserJourney(
   driver: ThenableWebDriver
 ): Promise<void> {
-  await driver.findElement(withdrawPrescriptionAction).click()
+  await (await getElement(driver, withdrawPrescriptionAction)).click()
   await driver.wait(until.elementsLocated(withdrawPageTitle), defaultWaitTimeout)
+  await waitForPageToRender()
+
   const withdrawReasonRadios = await driver.findElements(By.name("reason"))
-  withdrawReasonRadios[0].click()
-  await driver.findElement(withdrawButton).click()
+  await withdrawReasonRadios[0].click()
+  // wait 2 seconds for click to register
+  await new Promise(r => setTimeout(r, 2000))
+  await (await getElement(driver, withdrawButton)).click()
+  // wait 2 seconds for click to register
+  await new Promise(r => setTimeout(r, 2000))
   finaliseWebAction(driver, "WITHDRAWING PRESCRIPTION...")
   await checkApiResult(driver)
 }

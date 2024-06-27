@@ -30,3 +30,4 @@ api.release
 packages/tool/site/client/src/models
 packages/tool/site/client/static/examples
 .venv
+.aws-sam

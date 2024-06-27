@@ -1,0 +1,18 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  FHIR Prescribing and Dispensing
+# Params passed from the Makefile
+Parameters:
+  VersionNumber:
+    Type: String
+    Default: "xxx"
+
+  CommitId:
+    Type: String
+    Default: "xxx"
+
+Resources:
+  # Placeholder - Remove once real resources are added
+  NullResource:
+    Type: AWS::CloudFormation::WaitConditionHandle

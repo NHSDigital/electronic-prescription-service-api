@@ -7,10 +7,13 @@ import {staticLineItemInfoArray, staticPrescriptionInfo} from "./props"
 import {LineItemStatus, PrescriptionStatus} from "../../../src/fhir/reference-data/valueSets"
 import {expect} from "@jest/globals"
 import userEvent from "@testing-library/user-event"
+import {MemoryRouter} from "react-router-dom"
 
 test("Fields default to current values", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const statusFields = await screen.findAllByLabelText<HTMLSelectElement>("Status")
@@ -31,7 +34,9 @@ test("Fields default to current values", async () => {
 
 test("Reason field is shown when status is set to not dispensed", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const nonDispensingReasonFields = await screen.findAllByLabelText<HTMLSelectElement>("Reason")
@@ -48,7 +53,9 @@ test("Reason field is shown when status is set to not dispensed", async () => {
 
 test("Reason field is hidden when status is not set to not dispensed", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const nonDispensingReasonFields = await screen.findAllByLabelText<HTMLSelectElement>("Reason")
@@ -65,7 +72,9 @@ test("Reason field is hidden when status is not set to not dispensed", async () 
 
 test("Quantity field is shown when status is set to partial dispensed", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
@@ -81,7 +90,9 @@ test("Quantity field is shown when status is set to partial dispensed", async ()
 
 test("Quantity field is hidden when status is not set to partial dispensed", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
@@ -96,7 +107,9 @@ test("Quantity field is hidden when status is not set to partial dispensed", asy
 
 test("Reason field value is reset when hidden", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const reasonFields = await screen.findAllByLabelText<HTMLSelectElement>("Reason")
@@ -104,15 +117,21 @@ test("Reason field value is reset when hidden", async () => {
   const initialCount = reasonFields.length
   const initialValue = reasonFields[0].value
 
-  userEvent.selectOptions(reasonFields[0], "0001")
+  await React.act(async () => {
+    await userEvent.selectOptions(reasonFields[0], "0001")
+  })
   expect(reasonFields[0].value).not.toEqual(initialValue)
 
-  userEvent.selectOptions(statusFields[1], LineItemStatus.DISPENSED)
+  await React.act(async () => {
+    await userEvent.selectOptions(statusFields[1], LineItemStatus.DISPENSED)
+  })
   await waitFor(() =>
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount - 1)
   )
 
-  userEvent.selectOptions(statusFields[1], LineItemStatus.NOT_DISPENSED)
+  await React.act(async () => {
+    await userEvent.selectOptions(statusFields[1], LineItemStatus.NOT_DISPENSED)
+  })
   await waitFor(() =>
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount)
   )
@@ -123,7 +142,9 @@ test("Reason field value is reset when hidden", async () => {
 
 test("Prescription status updates to suggested value when line item status is changed", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
@@ -142,7 +163,9 @@ test("Prescription status updates to suggested value when line item status is ch
 
 test("Prescription status is not updated automatically if field has been touched", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   const statusFields = screen.getAllByLabelText<HTMLSelectElement>("Status")
@@ -159,7 +182,9 @@ test("Prescription status is not updated automatically if field has been touched
 
 test("Dispense Different Medication checkbox is present for paracetamol 500 (60)", async () => {
   const {container} = render(
-    <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    <MemoryRouter>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+    </MemoryRouter>
   )
 
   await waitFor(() => {
