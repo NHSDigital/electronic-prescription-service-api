@@ -88,7 +88,7 @@ async function registerSession(server: Hapi.Server) {
 
 async function registerLogging(server: Hapi.Server) {
   await HapiPino.register(server, {
-    // For non-local environments, dont pretty print to avoid spamming logs
+    // For non-local environments, don't pretty print to avoid spamming logs
     ...(isLocal(CONFIG.environment) && {
       transport: {
         target: "pino-pretty",
@@ -206,6 +206,7 @@ function addViewRoutes(server: Hapi.Server) {
   }
 
   function addView(path: string, skipAuth?: boolean): Hapi.ServerRoute {
+    console.log("this is the path for: " + path)
     const viewRoute = {
       method: "GET" as RouteDefMethods,
       path: path.startsWith("/") ? path : `/${path}`,
@@ -219,7 +220,6 @@ function addViewRoutes(server: Hapi.Server) {
         }
       }
     }
-
     if (skipAuth) {
       return {
         ...viewRoute,
