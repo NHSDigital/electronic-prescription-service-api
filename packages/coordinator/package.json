@@ -28,7 +28,7 @@
     "@xmldom/xmldom": "^0.8.10",
     "axios": "^1.7.2",
     "crypto-js": "^4.2.0",
-    "fhirpath": "3.10.1",
+    "fhirpath": "3.13.4",
     "hapi-pino": "^12.1.0",
     "joi": "^17.13.3",
     "jsrsasign": "^11.1.0",
