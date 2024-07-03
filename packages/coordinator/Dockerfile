@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1
 
 # --- Dependencies ---
-FROM node:20.10.0-alpine AS base
+FROM node:22.4.0-alpine AS base
 WORKDIR /app
 
 
 # --- Build---
-FROM node:20.10.0-alpine AS build
+FROM node:22.4.0-alpine AS build
 WORKDIR /build
 COPY package*.json ./
 COPY packages/coordinator ./packages/coordinator
