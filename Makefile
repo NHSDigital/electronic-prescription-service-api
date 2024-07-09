@@ -296,6 +296,9 @@ lint-epsat:
 lint-githubactions:
 	actionlint
 
+lint-samtemplates:
+	poetry run cfn-lint -I "SAMtemplates/**/*.y*ml" 2>&1 | awk '/Run scan/ { print } /^[EW][0-9]/ { print; getline; print }'
+
 lint-all: lint-api lint-epsat lint-githubactions
 
 ## check licenses
