@@ -32,7 +32,7 @@ extends:
       - bash: |
           make prepare-for-epsat-release
           # Get latest released validator tag and set as environment variable in deploy templates
-          VALIDATOR_VERSION=v1.0.177-alpha
+          VALIDATOR_VERSION=v1.0.181-alpha
           sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-int.yml
           sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-internal-dev-sandbox.yml
           sed -i "s/{{ VALIDATOR_VERSION }}/$VALIDATOR_VERSION/g" ecs-proxies-deploy-internal-qa.yml
