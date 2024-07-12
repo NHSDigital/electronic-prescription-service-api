@@ -18,9 +18,9 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.24.7",
+    "@babel/core": "^7.24.8",
     "@babel/plugin-transform-runtime": "^7.24.7",
-    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-env": "^7.24.8",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@testing-library/dom": "^10.3.1",
@@ -49,7 +49,7 @@
     "style-loader": "^4.0.0",
     "styled-components": "^6.1.11",
     "uuid": "^10.0.0",
-    "webpack": "^5.92.1",
+    "webpack": "^5.93.0",
     "webpack-cli": "^5.1.4",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
