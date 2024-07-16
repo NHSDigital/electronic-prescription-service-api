@@ -1,7 +1,6 @@
 {
   "name": "apim-e2e-tests",
   "version": "0.0.1",
-  "type": "module",
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit --coverage",
