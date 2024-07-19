@@ -14,7 +14,7 @@ exports[`Displays config form 1`] = `
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="signingPrNumber--label" for="signingPrNumber">Signing PR Number</label><input class="nhsuk-input nhsuk-input--width-30" type="text" name="signingPrNumber" id="signingPrNumber" value=""></div>
     </fieldset>
   </div>
-  <div class="sc-eqUzNf chXQhu"><button class="nhsuk-button" aria-disabled="false" type="submit">Save</button></div>
+  <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button" aria-disabled="false" type="submit">Save</button></div>
 </form>"
 `;
 
@@ -22,5 +22,5 @@ exports[`Displays config update result 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Config Saved <svg class="nhsuk-icon nhsuk-icon__tick" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
       <path stroke-width="4" stroke-linecap="round" stroke="#007f3b" fill="none" d="M18.4 7.8l-8.5 8.4L5.6 12"></path>
     </svg></label></h1>
-<div class="sc-eqUzNf chXQhu"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-elDIKY jDXWZk"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
