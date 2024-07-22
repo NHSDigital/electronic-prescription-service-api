@@ -121,26 +121,26 @@ jobs:
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
   
-  release_dev_sandbox:
-    needs: [tag_release, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
-    with:
-      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing-sandbox
-      AWS_ENVIRONMENT: dev
-      # ENABLE_MUTUAL_TLS: true
-      BUILD_ARTIFACT: packaged_sandbox_code
-      SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
-      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      # LOG_LEVEL: DEBUG
-      # LOG_RETENTION_DAYS: 30
-    secrets:
-      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+  # release_dev_sandbox:
+  #   needs: [tag_release, package_code, get_commit_id]
+  #   uses: ./.github/workflows/sam_release_code.yml
+  #   with:
+  #     ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+  #     STACK_NAME: fhir-prescribing-and-dispensing-sandbox
+  #     AWS_ENVIRONMENT: dev
+  #     # ENABLE_MUTUAL_TLS: true
+  #     BUILD_ARTIFACT: packaged_sandbox_code
+  #     SPEC_ARTIFACT: specification_code
+  #     # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
+  #     VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+  #     COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+  #     # LOG_LEVEL: DEBUG
+  #     # LOG_RETENTION_DAYS: 30
+  #   secrets:
+  #     CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
 
   release_ref:
-    needs: [tag_release, release_dev, release_dev_sandbox, package_code, get_commit_id]
+    needs: [tag_release, release_dev, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
@@ -158,7 +158,7 @@ jobs:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
 
   release_qa:
-    needs: [tag_release, release_dev, release_dev_sandbox, package_code, get_commit_id]
+    needs: [tag_release, release_dev, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
@@ -199,26 +199,26 @@ jobs:
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
   
-  release_sandbox:
-    needs: [tag_release, release_qa, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
-    with:
-      ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing-sandox
-      AWS_ENVIRONMENT: int
-      # ENABLE_MUTUAL_TLS: true
-      BUILD_ARTIFACT: packaged_sandbox_code
-      SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
-      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      # LOG_LEVEL: DEBUG
-      # LOG_RETENTION_DAYS: 30
-    secrets:
-      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
+  # release_sandbox:
+  #   needs: [tag_release, release_qa, package_code, get_commit_id]
+  #   uses: ./.github/workflows/sam_release_code.yml
+  #   with:
+  #     ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+  #     STACK_NAME: fhir-prescribing-and-dispensing-sandox
+  #     AWS_ENVIRONMENT: int
+  #     # ENABLE_MUTUAL_TLS: true
+  #     BUILD_ARTIFACT: packaged_sandbox_code
+  #     SPEC_ARTIFACT: specification_code
+  #     # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
+  #     VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+  #     COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+  #     # LOG_LEVEL: DEBUG
+  #     # LOG_RETENTION_DAYS: 30
+  #   secrets:
+  #     CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
 
   release_prod:
-    needs: [tag_release, release_int, release_sandbox, package_code, get_commit_id]
+    needs: [tag_release, release_int, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
