@@ -3,6 +3,8 @@ description: Details of organization (pharmacy) downloading the prescriptions.
 required:
   - resourceType
   - identifier
+  - name
+  - address
   - telecom
   - type
 properties:

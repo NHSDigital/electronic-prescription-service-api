@@ -34,7 +34,9 @@ properties:
       properties:
         fullUrl:
           type: string
+          required: true
           example: urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6
+        required: true
         resource:
           oneOf:
           - $ref: ../../components/MessageHeader/DispenseNotificationMessageHeader.yaml

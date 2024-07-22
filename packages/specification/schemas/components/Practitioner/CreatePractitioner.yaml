@@ -19,6 +19,8 @@ properties:
         - $ref: ../_fragments/identifiers.yaml#/components/schemas/NmcNumber
   name:
     type: array
+    required:
+      - family
     description: The prescriber's name.
     items:
       type: object
