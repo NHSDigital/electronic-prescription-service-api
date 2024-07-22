@@ -1,0 +1,26 @@
+name: Test Docker Image
+
+on:
+  push:
+    branches:
+      - docker-test
+
+jobs:
+  test_docker_image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        id: build-image
+        run: |
+          # Set ECR_REPOSITORY and IMAGE_TAG for testing purposes
+          export ECR_REPOSITORY="test-repo"
+          export IMAGE_TAG="test-tag"
+          docker build -t "${ECR_REPOSITORY}:${IMAGE_TAG}" .
+
+      - name: Upload Docker image as artifact
+        uses: ishworkh/container-image-artifact-upload@v1.1.1
+        with:
+          image: "test-repo:test-tag"

@@ -92,20 +92,20 @@ jobs:
           cp samconfig_package_and_deploy.toml .aws-sam/build/
       
       # Readme is included to stop the action flattening the folder structure of aws-sam/build when it is the only item to upload
-      - uses: actions/upload-artifact@v4
-        name: Upload sandbox build artifact
-        with:
-          name: packaged_sandbox_code
-          path: |
-            .aws-sam/build
-            README.md
+      # - uses: actions/upload-artifact@v4
+      #   name: Upload sandbox build artifact
+      #   with:
+      #     name: packaged_sandbox_code
+      #     path: |
+      #       .aws-sam/build
+      #       README.md
 
-      - name: Build Docker image
-        id: build-image
-        run: |
-           docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" .
+      # - name: Build Docker image
+      #   id: build-image
+      #   run: |
+      #      docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" .
     
-      - name: Upload Docker image as artifact
-        uses: ishworkh/container-image-artifact-upload@v1.1.1
-        with:
-          image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"     
+      # - name: Upload Docker image as artifact
+      #   uses: ishworkh/container-image-artifact-upload@v1.1.1
+      #   with:
+      #     image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"     
