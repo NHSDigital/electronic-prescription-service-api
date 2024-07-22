@@ -3,7 +3,7 @@ name: Test Docker Image
 on:
   push:
     branches:
-      - docker-test  # Change this to a branch you want to use for testing
+      - docker-test 
 
 jobs:
   test_docker_image:
