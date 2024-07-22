@@ -3,7 +3,7 @@ name: Test Docker Image
 on:
   push:
     branches:
-      - docker-test
+      - docker-test  # Change this to a branch you want to use for testing
 
 jobs:
   test_docker_image:
@@ -18,7 +18,7 @@ jobs:
           # Set ECR_REPOSITORY and IMAGE_TAG for testing purposes
           export ECR_REPOSITORY="test-repo"
           export IMAGE_TAG="test-tag"
-          docker build -t "${ECR_REPOSITORY}:${IMAGE_TAG}" .
+          docker build -t "${ECR_REPOSITORY}:${IMAGE_TAG}" -f .devcontainer/Dockerfile .
 
       - name: Upload Docker image as artifact
         uses: ishworkh/container-image-artifact-upload@v1.1.1
