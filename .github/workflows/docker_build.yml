@@ -5,7 +5,7 @@ on:
     branches: [docker-test]
 
 env:
-  ECR_REPOSITORY: your-ecr-repository-name
+  ECR_REPOSITORY: FHIR_API_repo
   IMAGE_TAG: ${{ github.sha }}
 
 jobs:
@@ -32,4 +32,3 @@ jobs:
         uses: ishworkh/container-image-artifact-upload@v1.1.1
         with:
           image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-          
