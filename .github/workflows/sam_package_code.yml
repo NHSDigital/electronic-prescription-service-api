@@ -42,8 +42,8 @@ jobs:
         run: |
           make install-api
 
-      - shell: bash
-        name: Package code
+      - name: Package code
+        shell: bash
         run: |
           cp .tool-versions ~/
           rm -rf .aws-sam
@@ -81,8 +81,8 @@ jobs:
             poetry.toml
             pyproject.toml
       
-      - shell: bash
-        name: Package sandbox
+      - name: Package sandbox
+        shell: bash
         run: |
           cp .tool-versions ~/
           rm -rf .aws-sam
@@ -100,6 +100,11 @@ jobs:
             .aws-sam/build
             README.md
 
+      - name: Set ECR Repository and Image Tag
+        run: |
+          echo "ECR_REPOSITORY=fhir-api-repo" >> "$GITHUB_ENV"
+          echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+
       - name: Build Docker image
         id: build-image
         run: |
@@ -108,4 +113,4 @@ jobs:
       - name: Upload Docker image as artifact
         uses: ishworkh/container-image-artifact-upload@v1.1.1
         with:
-          image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"     
+          image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
