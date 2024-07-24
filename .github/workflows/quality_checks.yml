@@ -2,6 +2,9 @@ name: quality checks
 
 on:
   workflow_call:
+    secrets:
+      SONAR_TOKEN:
+        required: true
 
 jobs:
   quality_checks:
@@ -12,7 +15,7 @@ jobs:
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
-      
+
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
         uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
@@ -33,20 +36,20 @@ jobs:
         with:
           asdf_branch: v0.11.3
         env:
-          PYTHON_CONFIGURE_OPTS: --enable-shared 
-      
+          PYTHON_CONFIGURE_OPTS: --enable-shared
+
       - name: make install
         run: |
           make install-api
 
       - name: run check-licenses
         run: make check-licenses-api
-      
+
       - name: run lint
         run: |
           make lint-api
           make lint-githubactions
-      
+
       - name: run unit tests
         run: make test-api
 
