@@ -162,6 +162,11 @@ jobs:
           echo "ECR_REPOSITORY=fhir-api-repo" >> "$GITHUB_ENV"
           echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
 
+      - name: Print environment variables for debugging
+        run: |
+          echo "ECR_REPOSITORY=${{ env.ECR_REPOSITORY }}"
+          echo "IMAGE_TAG=${{ env.IMAGE_TAG }}"       
+
       - name: Download Docker image artifact
         uses: ishworkh/container-image-artifact-download@v1.1.1
         id: download-image
