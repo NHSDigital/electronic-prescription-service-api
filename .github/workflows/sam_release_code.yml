@@ -170,6 +170,20 @@ jobs:
       - name: List all available artifacts
         run: |
           echo "Listing all available artifacts:"
+          gh api -H "Accept: application/vnd.github+json" /repos/${{ github.repository }}/actions/artifacts    
+
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+          sudo apt-add-repository https://cli.github.com/packages
+          sudo apt-get update
+          sudo apt-get install gh -y
+
+      - name: List all available artifacts
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Listing all available artifacts:"
           gh api -H "Accept: application/vnd.github+json" /repos/${{ github.repository }}/actions/artifacts          
 
       - name: Download Docker image artifact
