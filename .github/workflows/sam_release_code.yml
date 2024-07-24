@@ -169,7 +169,7 @@ jobs:
           image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
 
       - name: Load Docker image from artifact
-        run: docker load -i docker load -i ${{ env.ECR_REPOSITORY }}_${{ env.IMAGE_TAG }}
+        run: docker load -i docker load -i action_image_artifact_${{ env.ECR_REPOSITORY }}_${{ env.IMAGE_TAG }}
 
       - name: Login to Amazon ECR
         id: login-ecr
