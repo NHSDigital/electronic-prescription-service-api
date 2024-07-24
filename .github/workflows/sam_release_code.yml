@@ -181,7 +181,7 @@ jobs:
 
       - name: List all available artifacts
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           echo "Listing all available artifacts:"
           gh api -H "Accept: application/vnd.github+json" /repos/${{ github.repository }}/actions/artifacts          
