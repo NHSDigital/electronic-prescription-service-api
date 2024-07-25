@@ -51,7 +51,7 @@ jobs:
           make lint-githubactions
 
       - name: run unit tests
-        run: make test-api
+        run: make test
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
