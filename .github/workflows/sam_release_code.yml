@@ -167,19 +167,22 @@ jobs:
           echo "ECR_REPOSITORY=${{ env.ECR_REPOSITORY }}"
           echo "IMAGE_TAG=${{ env.IMAGE_TAG }}"
 
-      - name: Install GitHub CLI
-        run: |
-          sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
-          sudo apt-add-repository https://cli.github.com/packages
-          sudo apt-get update
-          sudo apt-get install gh -y
+      # - name: Install GitHub CLI
+      #   run: |
+      #     sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-key C99B11DEB97541F0
+      #     sudo apt-add-repository https://cli.github.com/packages
+      #     sudo apt-get update
+      #     sudo apt-get install gh -y
 
-      - name: List all available artifacts
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          echo "Listing all available artifacts:"
-          gh api -H "Accept: application/vnd.github+json" /repos/${{ github.repository }}/actions/artifacts          
+      # - name: List all available artifacts
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     echo "Listing all available artifacts:"
+      #     gh api -H "Accept: application/vnd.github+json" /repos/${{ github.repository }}/actions/artifacts        
+
+      - name: List all files for debugging
+        run: find . -type f  
 
       - name: Download Docker image artifact
         uses: ishworkh/container-image-artifact-download@v1.1.1
@@ -191,9 +194,6 @@ jobs:
         run: |
           echo "Checking if artifact was downloaded:"
           ls -la     
-
-      - name: List all files for debugging
-        run: find . -type f
 
       - name: Load Docker image from artifact
         run: docker load -i action_image_artifact_${{ env.ECR_REPOSITORY }}_${{ env.IMAGE_TAG }}.tar
