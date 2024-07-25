@@ -228,11 +228,13 @@ clean:
 	rm -rf packages/specification/dist
 	rm -rf packages/specification/build
 	rm -rf packages/coordinator/dist
+	rm -rf packages/coordinator/coverage
 	rm -rf packages/tool/site/server/dist
 	rm -rf packages/tool/site/client/dist
 	rm -rf packages/tool/site/client/coverage
 	rm -f packages/e2e-tests/postman/electronic-prescription-coordinator-postman-tests.json
 	rm -f packages/e2e-tests/postman/collections/electronic-prescription-service-collection.json
+	rm -rf packages/e2e-tests/coverage
 	rm -rf packages/tool/templates
 	rm -rf packages/tool/static
 	rm -rf packages/e2e-tests/pact/pacts

@@ -10,10 +10,12 @@ env:
 jobs:
   quality_checks:
     uses: ./.github/workflows/quality_checks.yml
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   pr_title_format_check:
     uses: ./.github/workflows/pr_title_check.yml
-  
+
   get_issue_number:
     runs-on: ubuntu-latest
     needs: quality_checks
@@ -50,11 +52,11 @@ jobs:
         id: commit_id
         run: |
           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-  
+
   package_code:
     needs: get_issue_number
     uses: ./.github/workflows/sam_package_code.yml
-  
+
   release_code:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
@@ -73,7 +75,7 @@ jobs:
       # DEPLOY_APIGEE: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
-  
+
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
