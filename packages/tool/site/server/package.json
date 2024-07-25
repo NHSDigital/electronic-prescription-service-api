@@ -38,7 +38,7 @@
     "handlebars": "^4.7.7",
     "hapi-pino": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pino": "^9.3.1",
+    "pino": "^9.3.2",
     "pino-pretty": "^11.2.1",
     "uuid": "^10.0.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
