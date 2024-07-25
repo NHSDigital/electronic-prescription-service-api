@@ -1,4 +1,8 @@
 type: object
+required:
+  - name
+  - address
+  - telecom
 description: Details of the dispensing organisation.
 properties:
   id:

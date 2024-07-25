@@ -39,6 +39,8 @@ properties:
               example: The Simple Pharmacy
   sender:
     type: object
+    required:
+      - display
     properties:
       identifier:
         $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
