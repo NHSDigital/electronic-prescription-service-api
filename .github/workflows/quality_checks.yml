@@ -41,6 +41,7 @@ jobs:
       - name: make install
         run: |
           make install-api
+          make install-epsat
 
       - name: run check-licenses
         run: make check-licenses-api
