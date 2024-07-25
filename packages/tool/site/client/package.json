@@ -4,7 +4,7 @@
   "description": "EPS API Tool Client",
   "main": "client/index-react.tsx",
   "scripts": {
-    "test": "jest --ci --reporters=default --reporters=jest-junit --coverage  --coverageReporters=cobertura --coverageReporters=text --coverageReporters=html",
+    "test": "jest --ci --reporters=default --reporters=jest-junit --coverage",
     "update-snapshots": "jest --updateSnapshot",
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch --progress",
