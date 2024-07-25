@@ -1,6 +1,7 @@
 type: object
 required:
   - resourceType
+  - extension
   - identifier
   - status
   - intent
@@ -131,7 +132,7 @@ properties:
     description: |
       A FHIR object containing information relevant to how the prescription should be dispensed. 
       These values should be consistent across all MedicationRequests in a Bundle.
-    required: [quantity]
+    required: [extension, quantity]
     properties:
       extension:
         type: array

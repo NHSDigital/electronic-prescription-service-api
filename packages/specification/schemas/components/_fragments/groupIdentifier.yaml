@@ -1,5 +1,5 @@
 type: object
-required: [value]
+required: [system, value]
 description: An object containing the short-form and long-form Prescription ID.
 properties:
   system:

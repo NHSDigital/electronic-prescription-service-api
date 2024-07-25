@@ -1,4 +1,9 @@
 type: object
+required:
+  - name
+  - address
+  - telecom
+  - partOf
 description: |
   Details of prescribing organisation (primary care) or the managing organisation (secondary care) for a prescription. Details of the prescribing organisation are planned to be deprecated within cancel responses.
 
@@ -75,6 +80,8 @@ properties:
       $ref: ../_fragments/telecom.yaml#/components/schemas/Telecom
   partOf:
     type: object
+    required: 
+      - display
     description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of.
     properties:
       identifier:

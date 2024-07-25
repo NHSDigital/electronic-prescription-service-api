@@ -1,5 +1,6 @@
 type: object
 required:
+- practitioner
 - organization
 description: |
   Role-specific details of the author or responsible party of a cancel request. 
@@ -49,6 +50,8 @@ properties:
             $ref: ../_fragments/codes.yaml#/components/schemas/SdsJobRoleCode
   telecom:
     type: array
+    required:
+      - system
     description: the telephone number of a given prescriber or dispenser.
     items:
       type: object
