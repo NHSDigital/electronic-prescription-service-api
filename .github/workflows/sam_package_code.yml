@@ -111,10 +111,6 @@ jobs:
            docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
            docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
     
-      # - name: Upload Docker image as artifact
-      #   uses: ishworkh/container-image-artifact-upload@v1.1.1
-      #   with:
-      #     image: "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
       - uses: actions/upload-artifact@v4
         name: Upload docker image
         with:
