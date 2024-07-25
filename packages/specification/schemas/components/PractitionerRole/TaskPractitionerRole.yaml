@@ -1,4 +1,6 @@
 type: object
+required:
+  - practitioner
 description: The dispenser returning the prescription.
 properties:
   resourceType:

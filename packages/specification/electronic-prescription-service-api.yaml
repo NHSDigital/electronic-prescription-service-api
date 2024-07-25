@@ -1284,6 +1284,8 @@ components:
     Create-MessageHeader-Resource:
       type: object
       description: MessageHeader
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1294,6 +1296,8 @@ components:
     Create-MedicationRequest-Resource:
       type: object
       description: MedicationRequest
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1304,6 +1308,8 @@ components:
     Create-Patient-Resource:
       type: object
       description: Patient
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1314,6 +1320,8 @@ components:
     Create-PractitionerRole-Resource:
       type: object
       description: PractitionerRole
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1324,6 +1332,8 @@ components:
     Create-Practitioner-Resource:
       type: object
       description: Practitioner
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1334,6 +1344,8 @@ components:
     Create-Organization-Resource:
       type: object
       description: Organization
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1344,6 +1356,8 @@ components:
     Create-List-Resource:
       type: object
       description: List
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1354,6 +1368,8 @@ components:
     Create-CommunicationRequest-Resource:
       type: object
       description: CommunicationRequest
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1364,6 +1380,8 @@ components:
     Create-Location-Resource:
       type: object
       description: Location
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1374,6 +1392,8 @@ components:
     Create-Provenance-Resource:
       type: object
       description: Provenance
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1384,6 +1404,8 @@ components:
     Cancel-Request-MessageHeader-Resource:
       type: object
       description: MessageHeader
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1394,6 +1416,8 @@ components:
     Cancel-Request-MedicationRequest-Resource:
       type: object
       description: MedicationRequest
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1404,6 +1428,8 @@ components:
     Cancel-Request-Patient-Resource:
       type: object
       description: Patient
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1414,6 +1440,8 @@ components:
     Cancel-Request-PractitionerRole-Resource:
       type: object
       description: PractitionerRole
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1424,6 +1452,8 @@ components:
     Cancel-Request-Practitioner-Resource:
       type: object
       description: Practitioner
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1434,6 +1464,8 @@ components:
     Cancel-Request-Organization-Resource:
       type: object
       description: Organization
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1444,6 +1476,8 @@ components:
     Cancel-Request-List-Resource:
       type: object
       description: List
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1454,6 +1488,8 @@ components:
     Cancel-Request-CommunicationRequest-Resource:
       type: object
       description: CommunicationRequest
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1464,6 +1500,8 @@ components:
     Cancel-Request-Location-Resource:
       type: object
       description: Location
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1474,6 +1512,8 @@ components:
     Cancel-Response-MessageHeader-Resource:
       type: object
       description: MessageHeader
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1484,6 +1524,8 @@ components:
     Cancel-Response-MedicationRequest-Resource:
       type: object
       description: MedicationRequest
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1494,6 +1536,8 @@ components:
     Cancel-Response-Patient-Resource:
       type: object
       description: Patient
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1504,6 +1548,8 @@ components:
     Cancel-Response-Practitioner-Resource:
       type: object
       description: Practitioner
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1514,6 +1560,8 @@ components:
     Cancel-Response-PractitionerRole-Resource:
       type: object
       description: PractitionerRole
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1524,6 +1572,8 @@ components:
     Cancel-Response-Organization-Resource:
       type: object
       description: Organization
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1534,6 +1584,8 @@ components:
     Cancel-Response-List-Resource:
       type: object
       description: List
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1544,6 +1596,8 @@ components:
     Cancel-Response-CommunicationRequest-Resource:
       type: object
       description: CommunicationRequest
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string
@@ -1554,6 +1608,8 @@ components:
     Cancel-Response-Location-Resource:
       type: object
       description: Location
+      required:
+        - fullUrl
       properties:
         fullUrl:
           type: string

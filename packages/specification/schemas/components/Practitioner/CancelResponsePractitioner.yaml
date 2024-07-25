@@ -21,6 +21,8 @@ properties:
       - $ref: ../_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
   name:
     type: array
+    required:
+      - family
     description: The prescriber's or dispenser's name.
     items:
       type: object

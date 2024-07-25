@@ -1,4 +1,8 @@
 type: object
+required:
+  - name
+  - telecom
+  - address
 description: Details of the dispensing organisation returning the prescription.
 properties:
   id:
