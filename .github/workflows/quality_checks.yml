@@ -40,16 +40,14 @@ jobs:
 
       - name: make install
         run: |
-          make install-api
-          make install-epsat
+          make install-all
 
       - name: run check-licenses
         run: make check-licenses-api
 
       - name: run lint
         run: |
-          make lint-api
-          make lint-githubactions
+          make lint-all
 
       - name: run unit tests
         run: make test
