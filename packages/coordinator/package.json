@@ -10,7 +10,7 @@
     "start": "node dist/coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "test": "jest --reporters=default --reporters=jest-junit --coverage --coverageReporters=cobertura --coverageReporters=text --coverageReporters=html",
+    "test": "jest --reporters=default --reporters=jest-junit --coverage",
     "test:debug": "jest -i --reporters=default --reporters=jest-junit",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "create-examples": "ts-node tests/generate-spine-examples.ts"
