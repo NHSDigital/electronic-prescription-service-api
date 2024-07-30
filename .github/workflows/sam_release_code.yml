@@ -181,9 +181,7 @@ jobs:
        
       - name: Print environment variables for debugging
         run: |
-          echo "ACCOUNT_ID=${{ secrets.ACCOUNT_ID }}"
-          echo "Contents of \$GITHUB_ENV:"
-          cat "$GITHUB_ENV"
+          echo "ACCOUNT_ID=${env.ACCOUNT_ID}"
 
       - name: Login to Amazon ECR
         id: login-ecr
