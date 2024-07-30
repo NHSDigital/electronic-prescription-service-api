@@ -190,5 +190,5 @@ jobs:
 
       - name: Push image to Amazon ECR
         run: |
-          docker tag "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" "${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-          docker push "${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"  
+          docker tag "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"  
