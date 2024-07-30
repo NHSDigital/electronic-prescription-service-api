@@ -66,6 +66,8 @@ on:
         required: false
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
         required: false
+      ACCOUNT_ID:
+        required: false
   
 jobs:
   sam_release_code:
@@ -173,10 +175,16 @@ jobs:
         run: |
            docker load -i docker.img
 
+      - name: Print environment variables for debugging
+        run: |
+          echo "ACCOUNT_ID=${{ secrets.ACCOUNT_ID }}"
+          echo "Contents of \$GITHUB_ENV:"
+          cat "$GITHUB_ENV"
+
       - name: Login to Amazon ECR
         id: login-ecr
         run: |
-         aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${{ env.ACCOUNT_ID }}".dkr.ecr.eu-west-2.amazonaws.com  
+         "aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com"  
 
       - name: Push image to Amazon ECR
         run: |
