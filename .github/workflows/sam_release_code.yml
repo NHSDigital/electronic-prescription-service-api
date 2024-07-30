@@ -175,6 +175,10 @@ jobs:
         run: |
            docker load -i docker.img
 
+      - name: Retrieve AWS Account ID
+        id: retrieve-account-id
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+       
       - name: Print environment variables for debugging
         run: |
           echo "ACCOUNT_ID=${{ secrets.ACCOUNT_ID }}"
