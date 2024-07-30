@@ -102,7 +102,7 @@ jobs:
 
       - name: Set ECR Repository and Image Tag
         run: |
-          echo "ECR_REPOSITORY=fhir-api-repo" >> "$GITHUB_ENV"
+          echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
           echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
 
       - name: Build Docker image
