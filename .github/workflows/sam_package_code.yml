@@ -139,17 +139,17 @@ jobs:
       #   run: |
       #      docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
       #      docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
-      - name: Build and Push Docker images
+      - name: Build Docker images
         run: |
           REPOSITORIES=("fhir-facade-repo" "validator-repo")
           for REPO in "${REPOSITORIES[@]}"; do
-            IMAGE_TAG_ENV_VAR="${REPO^^}_IMAGE_TAG" 
+            IMAGE_TAG_ENV_VAR="${REPO^^}_IMAGE_TAG"
             IMAGE_TAG="${!IMAGE_TAG_ENV_VAR}"
             REPO_ENV_VAR="${REPO^^}_ECR_REPOSITORY"
             REPO_NAME="${!REPO_ENV_VAR}"
-            echo "Building and pushing ${REPO_NAME}:${IMAGE_TAG}"
-            docker build -t "${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.ECR_REGION }}.amazonaws.com/${REPO_NAME}:${IMAGE_TAG}" -f "packages/${REPO}/Dockerfile" .
-            docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.ECR_REGION }}.amazonaws.com/${REPO_NAME}:${IMAGE_TAG}"
+            echo "Building ${REPO_NAME}:${IMAGE_TAG}"
+            docker build -t "${REPO_NAME}:${IMAGE_TAG}" -f "packages/${REPO}/Dockerfile" .
+            docker save "${REPO_NAME}:${IMAGE_TAG}" -o "${REPO_NAME}-docker.img"
           done
     
       - uses: actions/upload-artifact@v4
@@ -157,5 +157,6 @@ jobs:
         with:
           name: docker_artifact
           path: |
-            docker.img
+            fhir-facade-repo-docker.img
+            validator-repo-docker.img
             README.md
