@@ -100,16 +100,57 @@ jobs:
             .aws-sam/build
             README.md
 
-      - name: Set ECR Repository and Image Tag
-        run: |
-          echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
-          echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+###have a for loop here for setting repo names and tags
+###then on step below, append name to start of ecr.repositry step.
+###i.e env.${{validator}}_repository
+      # - name: Set ECR Repository and Image Tag
+      #   run: |
+      #     echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+      #     echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
 
-      - name: Build Docker image
-        id: build-image
+      - name: Determine Repositories and Image Tags
+        id: determine-tags
         run: |
-           docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
-           docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
+          REPOSITORIES=("fhir-facade-repo" "validator-repo")
+          for REPO in "${REPOSITORIES[@]}"; do
+            if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+              IMAGE_TAG="PR-${{ github.event.pull_request.number }}"
+            elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              VERSION=$(cat VERSION)
+              SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+              IMAGE_TAG="${SHORT_SHA}-${VERSION}"
+            else
+              IMAGE_TAG="latest"
+            fi
+            echo "${REPO^^}_ECR_REPOSITORY=${REPO}" >> "$GITHUB_ENV"
+            echo "${REPO^^}_IMAGE_TAG=${IMAGE_TAG}" >> "$GITHUB_ENV"
+          done
+
+      - name: Print environment variables for debugging
+        run: |
+          echo "ACCOUNT_ID=${{ env.ACCOUNT_ID }}"
+          echo "FHIR_FACADE_ECR_REPOSITORY=${{ env.FHIR_FACADE_REPO_ECR_REPOSITORY }}"
+          echo "FHIR_FACADE_IMAGE_TAG=${{ env.FHIR_FACADE_REPO_IMAGE_TAG }}"
+          echo "VALIDATOR_ECR_REPOSITORY=${{ env.VALIDATOR_REPO_ECR_REPOSITORY }}"
+          echo "VALIDATOR_IMAGE_TAG=${{ env.VALIDATOR_REPO_IMAGE_TAG }}"
+
+      # - name: Build Docker image
+      #   id: build-image
+      #   run: |
+      #      docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+      #      docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
+      - name: Build and Push Docker images
+        run: |
+          REPOSITORIES=("fhir-facade-repo" "validator-repo")
+          for REPO in "${REPOSITORIES[@]}"; do
+            IMAGE_TAG_ENV_VAR="${REPO^^}_IMAGE_TAG" 
+            IMAGE_TAG="${!IMAGE_TAG_ENV_VAR}"
+            REPO_ENV_VAR="${REPO^^}_ECR_REPOSITORY"
+            REPO_NAME="${!REPO_ENV_VAR}"
+            echo "Building and pushing ${REPO_NAME}:${IMAGE_TAG}"
+            docker build -t "${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.ECR_REGION }}.amazonaws.com/${REPO_NAME}:${IMAGE_TAG}" -f "packages/${REPO}/Dockerfile" .
+            docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.${{ env.ECR_REGION }}.amazonaws.com/${REPO_NAME}:${IMAGE_TAG}"
+          done
     
       - uses: actions/upload-artifact@v4
         name: Upload docker image
