@@ -1,8 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
-  FHIR Prescribing and Dispensing
-# Params passed from the Makefile
+  FHIR Prescribing and Dispensing with mTLS
 Parameters:
   VersionNumber:
     Type: String
@@ -12,7 +11,97 @@ Parameters:
     Type: String
     Default: "xxx"
 
+  # Add parameters for ACM Certificate and CA
+  CertificateArn:
+    Type: String
+    Description: ARN of the ACM certificate for the load balancer
+  CertificateAuthorityArn:
+    Type: String
+    Description: ARN of the ACM Private CA for mTLS
+  VPC:
+    Type: AWS::EC2::VPC::Id
+  SubnetA:
+    Type: AWS::EC2::Subnet::Id
+  SubnetB:
+    Type: AWS::EC2::Subnet::Id
+  HostedZoneName:
+    Type: String
+    Default: company.com
+  Subdomain:
+    Type: String
+    Default: myservice
+
 Resources:
   # Placeholder - Remove once real resources are added
   NullResource:
     Type: AWS::CloudFormation::WaitConditionHandle
+
+  # Define the Load Balancer
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: 60
+      Name: !Join ['', [!Ref ServiceName, LoadBalancer]]
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
+      Subnets:
+        - !Ref SubnetA
+        - !Ref SubnetB
+
+  # Define the HTTPS Listener with mTLS
+  ListenerHTTPS:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - TargetGroupArn: !Ref TargetGroup
+          Type: forward
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref CertificateArn
+      SslPolicy: ELBSecurityPolicy-2016-08
+      # mTLS configuration
+      MutualTlsAuthentication:
+        Truststore:
+          AcmCertificateArn: !Ref CertificateAuthorityArn
+        MutualTlsAuthenticationMode:
+          Mode: OPTIONAL  # Set to 'REQUIRED' if mTLS is mandatory
+
+  # Define the Target Group
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: !Ref HealthCheckPath
+      HealthCheckTimeoutSeconds: 5
+      UnhealthyThresholdCount: 2
+      HealthyThresholdCount: 2
+      Name: !Join ['', [!Ref ServiceName, TargetGroup]]
+      Port: !Ref ContainerPort
+      Protocol: HTTP
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 60
+      TargetType: ip
+      VpcId: !Ref VPC
+
+  # Define DNS record
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Join ['', [!Ref HostedZoneName, .]]
+      Name: !Join ['', [!Ref Subdomain, ., !Ref HostedZoneName, .]]
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer.DNSName
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+
+  # Define Log Group
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Join ['', [/ecs/, !Ref ServiceName, TaskDefinition]]
