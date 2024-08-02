@@ -157,10 +157,30 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
         run: ./release_code.sh
 
-      - name: Set ECR Repository and Image Tag
+      # - name: Set ECR Repository and Image Tag
+      #   run: |
+      #     echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+      #     echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+
+      - name: Set ECR Repository
+        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+
+      - name: Determine Image Tag
+        id: determine-image-tag
         run: |
-          echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
-          echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VERSION=$(cat VERSION)
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
+          else
+            echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+          fi
+      - name: Print environment variables for debugging
+        run: |
+           echo "ECR_REPOSITORY=${{ env.ECR_REPOSITORY }}"
+           echo "IMAGE_TAG=${{ env.IMAGE_TAG }}"
 
       - name: docker_artifact download
         uses: actions/download-artifact@v4
