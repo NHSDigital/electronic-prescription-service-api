@@ -84,8 +84,10 @@ Resources:
       Name: !Sub '${Subdomain}.${HostedZoneName}'
       Type: A
       AliasTarget:
-        DNSName: !GetAtt LoadBalancer.DNSName
-        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+        DNSName:
+          Fn::ImportValue: eps-route53-resources:EPS-domain
+        HostedZoneId:
+          Fn::ImportValue: eps-route53-resources:EPS-domain
 
 Outputs:
   Endpoint:
