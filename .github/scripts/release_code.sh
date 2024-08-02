@@ -16,12 +16,15 @@ TRUSTSTORE_BUCKET_NAME=$(echo "${TRUSTSTORE_BUCKET_ARN}" | cut -d ":" -f 6)
 LATEST_TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKET_NAME}" --prefix "${TRUSTSTORE_FILE}" --query 'Versions[?IsLatest].[VersionId]' --output text)
 export LATEST_TRUSTSTORE_VERSION
 
-# Fetch the domain name and zone ID
-DOMAIN_NAME_EXPORT=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "eps-route53-resources:EPS-domain") | .Value')
-export DOMAIN_NAME_EXPORT
+if [ -z "${DOMAIN_NAME_EXPORT}" ];
+then
+  export DOMAIN_NAME_EXPORT="NOT_SET"
+fi
 
-ZONE_ID_EXPORT=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "eps-route53-resources:EPS-zone-id") | .Value')
-export ZONE_ID_EXPORT
+if [ -z "${ZONE_ID_EXPORT}" ];
+then
+  export ZONE_ID_EXPORT="NOT_SET"
+fi
 
 # Debugging: Print the values for verification
 echo "DOMAIN_NAME_EXPORT: $DOMAIN_NAME_EXPORT"

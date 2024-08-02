@@ -68,7 +68,7 @@ jobs:
       # ENABLE_MUTUAL_TLS: false
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: ??-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       # LOG_RETENTION_DAYS: 30
@@ -87,7 +87,7 @@ jobs:
       # ENABLE_MUTUAL_TLS: false
       BUILD_ARTIFACT: packaged_sandbox_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: ??-sandbox-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       # LOG_RETENTION_DAYS: 30

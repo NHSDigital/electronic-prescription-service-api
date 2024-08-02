@@ -437,7 +437,7 @@ sam-build-sandbox: sam-validate-sandbox
 sam-validate-sandbox:
 	sam validate --template-file SAMtemplates/sandbox_template.yaml --region eu-west-2
 
-sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-stack_name guard-template_file guard-cloud_formation_execution_role guard-VERSION_NUMBER guard-COMMIT_ID guard-TARGET_ENVIRONMENT guard-DOMAIN_NAME_EXPORT guard-ZONE_ID_EXPORT
+sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-stack_name guard-template_file guard-cloud_formation_execution_role guard-LATEST_TRUSTSTORE_VERSION guard-TRUSTSTORE_FILE guard-VERSION_NUMBER guard-COMMIT_ID guard-TARGET_ENVIRONMENT guard-DOMAIN_NAME_EXPORT guard-ZONE_ID_EXPORT
 	sam deploy \
 		--template-file $$template_file \
 		--stack-name $$stack_name \
@@ -452,6 +452,8 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--force-upload \
 		--tags "version=$$VERSION_NUMBER" \
 		--parameter-overrides \
+			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
+			TruststoreFile=$$TRUSTSTORE_FILE \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
 			Env=$$TARGET_ENVIRONMENT \
