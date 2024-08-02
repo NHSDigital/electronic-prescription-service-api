@@ -15,13 +15,13 @@
   ],
   "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
   // Features to add to the dev container. More info: https://containers.dev/features.
-  // "features": {
-  //   "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-  //     "version": "latest",
-  //     "moby": "true",
-  //     "installDockerBuildx": "true"
-  //   }
-  // },
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "moby": "true",
+      "installDockerBuildx": "true"
+    }
+  },
   "customizations": {
     "vscode": {
       "extensions": [
