@@ -20,10 +20,6 @@ Parameters:
     Type: String
     Default: none
 
-  CertificateArn:
-    Type: String
-    Description: ARN of the ACM certificate for the load balancer
-
   VPC:
     Type: AWS::EC2::VPC::Id
 
@@ -33,14 +29,6 @@ Parameters:
   SubnetB:
     Type: AWS::EC2::Subnet::Id
 
-  HostedZoneName:
-    Type: String
-    Default: company.com
-
-  Subdomain:
-    Type: String
-    Default: myservice
-
   VersionNumber:
     Type: String
     Default: "xxx"
@@ -49,18 +37,35 @@ Parameters:
     Type: String
     Default: "xxx"
 
+  DomainNameExport:
+    Type: String
+    Description: The domain name to be used for the certificate
+
+  ZoneIDExport:
+    Type: String
+    Description: The hosted zone ID for the domain
+
 Resources:
+  GenerateCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      ValidationMethod: DNS
+      DomainName: !Ref DomainNameExport
+      DomainValidationOptions:
+        - DomainName: !Ref DomainNameExport
+          HostedZoneId: !Ref ZoneIDExport
+
   LoadBalancerResources:
     Type: AWS::Serverless::Application
     Properties:
       Location: load_balancer_resources.yaml
       Parameters:
-        CertificateArn: !Ref CertificateArn
+        CertificateArn: !Ref GenerateCertificate
         VPC: !Ref VPC
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
-        HostedZoneName: !Ref HostedZoneName
-        Subdomain: !Ref Subdomain
+        HostedZoneName: !Ref DomainNameExport
+        Subdomain: !Ref StackName
 
 Outputs:
   Endpoint:
