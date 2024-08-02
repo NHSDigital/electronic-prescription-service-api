@@ -1,15 +1,16 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
-  FHIR Prescribing and Dispensing with mTLS
+  Main template for Load Balancer
 
 Parameters:
+  StackName:
+    Type: String
+    Default: none
+
   EnableMutualTLS:
     Type: String
     Default: false
-    AllowedValues:
-      - true
-      - false
 
   TruststoreVersion:
     Type: String
@@ -18,14 +19,6 @@ Parameters:
   TruststoreFile:
     Type: String
     Default: none
-
-  VersionNumber:
-    Type: String
-    Default: "xxx"
-
-  CommitId:
-    Type: String
-    Default: "xxx"
 
   CertificateArn:
     Type: String
@@ -48,26 +41,28 @@ Parameters:
     Type: String
     Default: myservice
 
+  VersionNumber:
+    Type: String
+    Default: "xxx"
+
+  CommitId:
+    Type: String
+    Default: "xxx"
+
 Resources:
   LoadBalancerResources:
     Type: AWS::Serverless::Application
     Properties:
-      Location: load_balancer/main.yaml
+      Location: load_balancer_resources.yaml
       Parameters:
-        StackName: !Ref AWS::StackName
-        EnableMutualTLS: !Ref EnableMutualTLS
-        TruststoreVersion: !Ref TruststoreVersion
-        TruststoreFile: !Ref TruststoreFile
         CertificateArn: !Ref CertificateArn
         VPC: !Ref VPC
         SubnetA: !Ref SubnetA
         SubnetB: !Ref SubnetB
         HostedZoneName: !Ref HostedZoneName
         Subdomain: !Ref Subdomain
-        VersionNumber: !Ref VersionNumber
-        CommitId: !Ref CommitId
 
 Outputs:
-  LoadBalancerEndpoint:
+  Endpoint:
     Description: Load Balancer Endpoint
     Value: !GetAtt LoadBalancerResources.Outputs.Endpoint
