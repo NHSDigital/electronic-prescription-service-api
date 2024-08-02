@@ -2,6 +2,7 @@ AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
   FHIR Prescribing and Dispensing with mTLS
+# Params passed from the Makefile
 Parameters:
   VersionNumber:
     Type: String
@@ -15,9 +16,6 @@ Parameters:
   CertificateArn:
     Type: String
     Description: ARN of the ACM certificate for the load balancer
-  CertificateAuthorityArn:
-    Type: String
-    Description: ARN of the ACM Private CA for mTLS
   VPC:
     Type: AWS::EC2::VPC::Id
   SubnetA:
@@ -56,20 +54,21 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        - TargetGroupArn: !Ref TargetGroup
-          Type: forward
+        - Type: authenticate-cognito
+          AuthenticateCognitoConfig:
+            UserPoolArn: !GetAtt CognitoUserPool.Arn
+            UserPoolClientId: !Ref CognitoUserPoolClient
+            UserPoolDomain: !Ref CognitoUserPoolDomain
+            AuthenticationRequestExtraParams:
+              Param1: "value1"
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
       Port: 443
       Protocol: HTTPS
       Certificates:
         - CertificateArn: !Ref CertificateArn
       SslPolicy: ELBSecurityPolicy-2016-08
-      # mTLS configuration
-      MutualTlsAuthentication:
-        Truststore:
-          AcmCertificateArn: !Ref CertificateAuthorityArn
-        MutualTlsAuthenticationMode:
-          Mode: OPTIONAL  # Set to 'REQUIRED' if mTLS is mandatory
 
   # Define the Target Group
   TargetGroup:
@@ -105,3 +104,57 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Join ['', [/ecs/, !Ref ServiceName, TaskDefinition]]
+
+  # IAM Role for Secrets Manager Access
+  SecretsManagerAccessRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: SecretsManagerAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - secretsmanager:GetSecretValue
+                Resource: 
+                  - !Ref FhirFacadeCACertSecret
+
+  # ECS Task Definition with Secrets
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Join ['', [!Ref ServiceName, TaskDefinition]]
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      Cpu: 256
+      Memory: 0.5GB
+      ExecutionRoleArn: !Ref ExecutionRole
+      TaskRoleArn: !Ref SecretsManagerAccessRole
+      ContainerDefinitions:
+        - Name: !Ref ServiceName
+          Image: !Ref Image
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-region: !Ref AWS::Region
+              awslogs-group: !Ref LogGroup
+              awslogs-stream-prefix: ecs
+          Secrets:
+            - Name: CACert
+              ValueFrom: !Ref FhirFacadeCACertSecret
+
+Outputs:
+  Endpoint:
+    Description: Endpoint
+    Value: !Join ['', ['https://', !Ref DNSRecord]]
