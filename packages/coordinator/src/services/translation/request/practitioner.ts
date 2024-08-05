@@ -40,6 +40,7 @@ function setSignatureTimeAndText(author: hl7V3.PrescriptionAuthor, requesterSign
     try {
       const decodedSignatureData = Buffer.from(requesterSignature.data, "base64").toString("utf-8")
       author.signatureText = XmlJs.xml2js(decodedSignatureData, {compact: true})
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       throw new errors.InvalidValueError("Invalid signature format.", "Provenance.signature.data")
     }
