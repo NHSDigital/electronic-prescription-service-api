@@ -93,13 +93,6 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
       DefaultActions:
-        - Type: authenticate-cognito
-          AuthenticateCognitoConfig:
-            UserPoolArn: !GetAtt CognitoUserPool.Arn
-            UserPoolClientId: !Ref CognitoUserPoolClient
-            UserPoolDomain: !Ref CognitoUserPoolDomain
-            AuthenticationRequestExtraParams:
-              Param1: "value1"
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       LoadBalancerArn: !Ref LoadBalancer
