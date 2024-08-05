@@ -64,10 +64,17 @@ Resources:
     Type: AWS::CertificateManager::Certificate
     Properties:
       ValidationMethod: DNS
-      DomainName: !Ref DomainNameExport
+      DomainName:
+        Fn::Join:
+          - .
+          - - !Ref StackName
+            - Fn::ImportValue: eps-route53-resources:EPS-domain
       DomainValidationOptions:
-        - DomainName: !Ref DomainNameExport
-          HostedZoneId: !Ref ZoneIDExport
+        - DomainName: !Join
+            - .
+            - - !Ref StackName
+              - !ImportValue eps-route53-resources:EPS-domain
+          HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -101,7 +108,7 @@ Resources:
       Port: 443
       Protocol: HTTPS
       Certificates:
-        - CertificateArn: !Ref CertificateArn
+        - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-2016-08
 
   TargetGroup:
