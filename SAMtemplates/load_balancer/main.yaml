@@ -22,6 +22,7 @@ Parameters:
 
   VPC:
     Type: AWS::EC2::VPC::Id
+    Default: "vpc-0f97ef05d582e50dc"
 
   SubnetA:
     Type: AWS::EC2::Subnet::Id
@@ -52,6 +53,7 @@ Parameters:
   CertificateArn:
     Type: String
     Description: ARN of the ACM certificate for the load balancer
+    Default: "arn:aws:acm:eu-west-2:591291862413:certificate/a414c6a6-4ecb-4071-96f0-7de2e5a95413"
 
   HostedZoneName:
     Type: String
