@@ -31,6 +31,10 @@ Parameters:
   SubnetC:
     Type: AWS::EC2::Subnet::Id
 
+  LoadBalancerPort:
+    Type: Number
+    Default: 443
+
   VersionNumber:
     Type: String
     Default: "xxx"
@@ -69,12 +73,8 @@ Resources:
       VpcId: !Ref VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
-          FromPort: 80
-          ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 443
-          ToPort: 443
+          FromPort: !Ref LoadBalancerPort
+          ToPort: !Ref LoadBalancerPort
           CidrIp: 0.0.0.0/0
 
   GenerateCertificate:
