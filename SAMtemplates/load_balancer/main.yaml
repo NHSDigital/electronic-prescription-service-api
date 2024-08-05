@@ -42,10 +42,12 @@ Parameters:
   DomainNameExport:
     Type: String
     Description: The domain name to be used for the certificate
+    Default: dev.eps.national.nhs.uk
 
   ZoneIDExport:
     Type: String
     Description: The hosted zone ID for the domain
+    Default: Z0135802PDMHNUI5JMQ7
 
   CertificateArn:
     Type: String
@@ -74,7 +76,7 @@ Resources:
             - .
             - - !Ref Subdomain
               - !Ref HostedZoneName
-          HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
+          HostedZoneId: !Ref ZoneIDExport
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -135,10 +137,8 @@ Resources:
       Name: !Sub '${Subdomain}.${HostedZoneName}'
       Type: A
       AliasTarget:
-        DNSName:
-          Fn::ImportValue: eps-route53-resources:EPS-domain
-        HostedZoneId:
-          Fn::ImportValue: eps-route53-resources:EPS-ZoneID
+        DNSName: !Ref DomainNameExport
+        HostedZoneId: !Ref ZoneIDExport
 
 Outputs:
   Endpoint:
