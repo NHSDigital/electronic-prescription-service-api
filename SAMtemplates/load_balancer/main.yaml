@@ -49,10 +49,6 @@ Parameters:
     Description: The hosted zone ID for the domain
     Default: Z0135802PDMHNUI5JMQ7
 
-  CertificateArn:
-    Type: String
-    Description: ARN of the ACM certificate for the load balancer
-
   HostedZoneName:
     Type: String
     Default: company.com
