@@ -437,7 +437,7 @@ sam-build-sandbox: sam-validate-sandbox
 sam-validate-sandbox:
 	sam validate --template-file SAMtemplates/sandbox_template.yaml --region eu-west-2
 
-sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-stack_name guard-template_file guard-cloud_formation_execution_role guard-LATEST_TRUSTSTORE_VERSION guard-TRUSTSTORE_FILE guard-VERSION_NUMBER guard-COMMIT_ID guard-TARGET_ENVIRONMENT guard-DOMAIN_NAME_EXPORT guard-ZONE_ID_EXPORT guard-CERTIFICATE_ARN guard-VPC guard-SUBNET_A guard-SUBNET_B guard-SUBNET_C
+sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-stack_name guard-template_file guard-cloud_formation_execution_role guard-LATEST_TRUSTSTORE_VERSION guard-TRUSTSTORE_FILE guard-VERSION_NUMBER guard-COMMIT_ID guard-TARGET_ENVIRONMENT guard-DOMAIN_NAME_EXPORT guard-ZONE_ID_EXPORT guard-VPC guard-SUBNET_A guard-SUBNET_B guard-SUBNET_C
 	sam deploy \
 		--template-file $$template_file \
 		--stack-name $$stack_name \
@@ -459,7 +459,6 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			Env=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
 			ZoneIDExport=$$ZONE_ID_EXPORT \
-			CertificateArn=$$CERTIFICATE_ARN \
 			VPC=$$VPC \
 			SubnetA=$$SUBNET_A \
 			SubnetB=$$SUBNET_B \
