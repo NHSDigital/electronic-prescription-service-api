@@ -43,7 +43,7 @@ Parameters:
   DomainNameExport:
     Type: String
     Description: The domain name to be used for the certificate
-    Default: "pfp.dev.eps.national.nhs.uk"
+    Default: "eps-route53-resources:EPS-domain"
 
   ZoneIDExport:
     Type: String

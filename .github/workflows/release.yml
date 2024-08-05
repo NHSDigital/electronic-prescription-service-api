@@ -104,7 +104,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: dev
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
@@ -130,7 +130,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing-sandbox
+      STACK_NAME: prescribe-dispense-sandbox
       AWS_ENVIRONMENT: dev
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_sandbox_code
@@ -157,7 +157,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: ref
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
@@ -182,7 +182,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: qa
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
@@ -200,7 +200,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: int
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
@@ -224,7 +224,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing-sandox
+      STACK_NAME: prescribe-dispense-sandox
       AWS_ENVIRONMENT: int
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_sandbox_code
@@ -243,7 +243,7 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: prod
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
