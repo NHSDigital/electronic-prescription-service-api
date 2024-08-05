@@ -60,22 +60,6 @@ Parameters:
     Default: myservice
 
 Resources:
-  GenerateCertificate:
-    Type: AWS::CertificateManager::Certificate
-    Properties:
-      ValidationMethod: DNS
-      DomainName:
-        Fn::Join:
-          - .
-          - - !Ref StackName
-            - Fn::ImportValue: eps-route53-resources:EPS-domain
-      DomainValidationOptions:
-        - DomainName: !Join
-            - .
-            - - !Ref StackName
-              - !ImportValue eps-route53-resources:EPS-domain
-          HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
-
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -108,7 +92,7 @@ Resources:
       Port: 443
       Protocol: HTTPS
       Certificates:
-        - CertificateArn: !Ref GenerateCertificate
+        - CertificateArn: !Ref CertificateArn
       SslPolicy: ELBSecurityPolicy-2016-08
 
   TargetGroup:
@@ -138,7 +122,7 @@ Resources:
         DNSName:
           Fn::ImportValue: eps-route53-resources:EPS-domain
         HostedZoneId:
-          Fn::ImportValue: eps-route53-resources:EPS-domain
+          Fn::ImportValue: eps-route53-resources:EPS-ZoneID
 
 Outputs:
   Endpoint:

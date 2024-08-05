@@ -40,6 +40,22 @@ Parameters:
     Default: myservice
 
 Resources:
+  GenerateCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      ValidationMethod: DNS
+      DomainName:
+        Fn::Join:
+          - .
+          - - !Ref Subdomain
+            - !Ref HostedZoneName
+      DomainValidationOptions:
+        - DomainName: !Join
+            - .
+            - - !Ref Subdomain
+              - !Ref HostedZoneName
+          HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
+
   LoadBalancerResources:
     Type: AWS::Serverless::Application
     Properties:
@@ -49,7 +65,7 @@ Resources:
         EnableMutualTLS: !Ref EnableMutualTLS
         TruststoreVersion: !Ref TruststoreVersion
         TruststoreFile: !Ref TruststoreFile
-        CertificateArn: !Ref CertificateArn
+        CertificateArn: !Ref GenerateCertificate
         VPC: !ImportValue DefaultVPCId
         SubnetA: !ImportValue vpc-resources:PrivateSubnetA
         SubnetB: !ImportValue vpc-resources:PrivateSubnetB
