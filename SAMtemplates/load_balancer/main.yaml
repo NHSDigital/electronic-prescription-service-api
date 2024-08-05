@@ -22,15 +22,15 @@ Parameters:
 
   VPC:
     Type: AWS::EC2::VPC::Id
-    Default: "vpc-0f97ef05d582e50dc"
 
   SubnetA:
     Type: AWS::EC2::Subnet::Id
-    Default: "subnet-081d80544dd3be7a0"
 
   SubnetB:
     Type: AWS::EC2::Subnet::Id
-    Default: "subnet-05db1befe34d2ad4f"
+
+  SubnetC:
+    Type: AWS::EC2::Subnet::Id
 
   VersionNumber:
     Type: String
@@ -84,6 +84,7 @@ Resources:
       Subnets:
         - !Ref SubnetA
         - !Ref SubnetB
+        - !Ref SubnetC
 
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener

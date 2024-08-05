@@ -34,12 +34,6 @@ Parameters:
   VPC:
     Type: AWS::EC2::VPC::Id
 
-  SubnetA:
-    Type: AWS::EC2::Subnet::Id
-
-  SubnetB:
-    Type: AWS::EC2::Subnet::Id
-
   HostedZoneName:
     Type: String
     Default: company.com
@@ -60,8 +54,9 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         CertificateArn: !Ref CertificateArn
         VPC: !Ref VPC
-        SubnetA: !Ref SubnetA
-        SubnetB: !Ref SubnetB
+        SubnetA: !ImportValue vpc-resources:PrivateSubnetA
+        SubnetB: !ImportValue vpc-resources:PrivateSubnetB
+        SubnetC: !ImportValue vpc-resources:PrivateSubnetC
         HostedZoneName: !Ref HostedZoneName
         Subdomain: !Ref Subdomain
         VersionNumber: !Ref VersionNumber
