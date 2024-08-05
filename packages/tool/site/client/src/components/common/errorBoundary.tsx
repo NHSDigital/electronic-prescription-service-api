@@ -29,6 +29,7 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
         <ErrorMessage>Something went wrong displaying information on this page. See console for details.</ErrorMessage>
       )
     }
+    // eslint-disable-next-line react/prop-types
     return this.props.children
   }
 }

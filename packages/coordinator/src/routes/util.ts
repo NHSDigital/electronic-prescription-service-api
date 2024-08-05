@@ -15,7 +15,7 @@ import {
   isTask
 } from "../utils/type-guards"
 
-type HapiPayload = string | object | Buffer | stream //eslint-disable-line @typescript-eslint/ban-types
+type HapiPayload = string | object | Buffer | stream
 
 export enum ContentTypes {
   XML = "application/xml",

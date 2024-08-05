@@ -1,5 +1,5 @@
 /* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
-const register = require("tsconfig-paths/register")
+import register from "tsconfig-paths/register"
 import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
