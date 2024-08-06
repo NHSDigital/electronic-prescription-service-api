@@ -157,21 +157,37 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
         run: ./release_code.sh
 
-      - name: Set ECR Repository
-        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+      - name: Set FHIR FACADE ECR Repository
+        run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
 
-      - name: Determine Image Tag
-        id: determine-image-tag
+      - name: Set Validator ECR Repository
+        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
+
+      - name: Determine FHIR Facade Image Tag
+        id: determine-fhir-facade-image-tag
         run: |
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+            echo "FHIR_FACADE_IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
           elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
             VERSION=$(cat VERSION)
             SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            echo "IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
+            echo "FHIR_FACADE_IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
           else
-            echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+            echo "FHIR_FACADE_IMAGE_TAG=latest" >> "$GITHUB_ENV"
           fi
+
+      - name: Determine Validator Image Tag
+        id: determine-validator-image-tag
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "VALIDATOR_IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VERSION=$(cat VERSION)
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "VALIDATOR_IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
+          else
+            echo "VALIDATOR_IMAGE_TAG=latest" >> "$GITHUB_ENV"
+          fi      
 
       - name: docker_artifact download
         uses: actions/download-artifact@v4
@@ -193,7 +209,13 @@ jobs:
         run: |
          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
 
-      - name: Push image to Amazon ECR
+      - name: Push Fhir Facade image to Amazon ECR
         run: |
-          docker tag "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"  
+          docker tag "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}"  
+
+
+      - name: Push Validator image to Amazon ECR
+        run: |
+          docker tag "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}"      
