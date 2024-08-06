@@ -20,6 +20,7 @@ export function parseOAuthState(state: string, logger: pino.Logger): OAuthState 
   try {
     const decodedState = Buffer.from(state, "base64").toString("utf-8")
     return JSON.parse(decodedState)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     logger.error(`Invalid client state was returned from auth provider. Got: ${state}`)
     throw Boom.badRequest()

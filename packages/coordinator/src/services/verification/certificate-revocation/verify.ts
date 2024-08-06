@@ -100,6 +100,7 @@ const getSubCaCert = (certificate: X509, serialNumber: string, logger: pino.Logg
     c => {
       try {
         return c.getExtSubjectKeyIdentifier().kid.hex === caIssuerCertSerial.hex
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         logger.error(
           `Error getting SubjectKeyIdentifier from certificate with serial ${getX509SerialNumber(c)}`

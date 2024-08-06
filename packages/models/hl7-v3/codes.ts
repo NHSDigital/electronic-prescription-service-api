@@ -209,6 +209,7 @@ export class GlobalIdentifier extends Identifier<string> {
         extension: undefined
     }
   constructor(root: string) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     isUUID(root) ? super(root.toUpperCase()) : super(root)
   }
 }
