@@ -195,10 +195,15 @@ jobs:
           name: docker_artifact
           path: .
 
-      - name: Extract docker image
-        id: extract-image
+      - name: Extract FHIR Facade docker image
+        id: extract-FHIR-facade-image
         run: |
-           docker load -i docker.img
+           docker load -i FHIR_facade_docker.img
+
+      - name: Extract validator docker image
+        id: extract-validator-image
+        run: |
+           docker load -i validator_docker.img
 
       - name: Retrieve AWS Account ID
         id: retrieve-account-id
