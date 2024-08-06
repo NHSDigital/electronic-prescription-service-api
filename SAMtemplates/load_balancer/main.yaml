@@ -31,9 +31,9 @@ Parameters:
   SubnetC:
     Type: AWS::EC2::Subnet::Id
 
-  LoadBalancerPort:
-    Type: Number
-    Default: 443
+  # LoadBalancerPort:
+  #   Type: Number
+  #   Default: 443
 
   VersionNumber:
     Type: String
@@ -61,22 +61,21 @@ Parameters:
     Type: String
     Default: myservice
 
-  LoadBalancerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup::Id
-    Description: The security group for the load balancer
-    Default: "xxx"
+  # LoadBalancerSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup::Id
+  #   Description: The security group for the load balancer
 
 Resources:
-  LoadBalancerSecurityGroup:
-    Type: AWS::EC2::SecurityGroup
-    Properties:
-      GroupDescription: Security group for the load balancer
-      VpcId: !Ref VPC
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: !Ref LoadBalancerPort
-          ToPort: !Ref LoadBalancerPort
-          CidrIp: 0.0.0.0/0
+  # LoadBalancerSecurityGroup:
+  #   Type: AWS::EC2::SecurityGroup
+  #   Properties:
+  #     GroupDescription: Security group for the load balancer
+  #     VpcId: !Ref VPC
+  #     SecurityGroupIngress:
+  #       - IpProtocol: tcp
+  #         FromPort: !Ref LoadBalancerPort
+  #         ToPort: !Ref LoadBalancerPort
+  #         CidrIp: 0.0.0.0/0
 
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -104,8 +103,8 @@ Resources:
           Value: 60
       Name: !Sub '${AWS::StackName}-LoadBalancer'
       Scheme: internet-facing
-      SecurityGroups:
-        - !Ref LoadBalancerSecurityGroup
+      # SecurityGroups:
+      #   - !Ref LoadBalancerSecurityGroup
       Subnets:
         - !Ref SubnetA
         - !Ref SubnetB
