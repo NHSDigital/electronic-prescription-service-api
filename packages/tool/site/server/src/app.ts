@@ -119,6 +119,7 @@ async function registerViewRouteHandlers(server: Hapi.Server) {
   await server.register(Vision)
   server.views({
     engines: {
+      // eslint-disable-next-line @typescript-eslint/no-require-imports
       html: require("handlebars")
     },
     relativeTo: __dirname,

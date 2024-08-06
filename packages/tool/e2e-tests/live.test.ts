@@ -47,6 +47,7 @@ async function dirExists(path: PathLike) {
 }
 
 beforeAll(async () => {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
   global.console = require("console")
   const exist = await dirExists(testResultsDirectory)
   if (!exist) {

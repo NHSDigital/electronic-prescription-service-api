@@ -24,6 +24,7 @@ const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescrip
     const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
     const x509Certificate = new X509(x509CertificatePem)
     return x509Certificate
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     return null
   }
