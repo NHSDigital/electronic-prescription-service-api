@@ -37,7 +37,7 @@ Resources:
         EnableMutualTLS: !Ref EnableMutualTLS
         TruststoreVersion: !Ref TruststoreVersion
         TruststoreFile: !Ref TruststoreFile
-        VPC: !ImportValue DefaultVPCId
+        VPC: !ImportValue vpc-resources:VpcId
         SubnetA: !ImportValue vpc-resources:PrivateSubnetA
         SubnetB: !ImportValue vpc-resources:PrivateSubnetB
         SubnetC: !ImportValue vpc-resources:PrivateSubnetC
