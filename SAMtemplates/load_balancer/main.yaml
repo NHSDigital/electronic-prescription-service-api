@@ -31,10 +31,6 @@ Parameters:
   SubnetC:
     Type: AWS::EC2::Subnet::Id
 
-  # LoadBalancerPort:
-  #   Type: Number
-  #   Default: 443
-
   VersionNumber:
     Type: String
     Default: "xxx"
@@ -43,36 +39,10 @@ Parameters:
     Type: String
     Default: "xxx"
 
-  DomainNameExport:
-    Type: String
-    Description: The domain name to be used for the certificate
-    Default: "eps-route53-resources:EPS-domain"
-
-  ZoneIDExport:
-    Type: String
-    Description: The hosted zone ID for the domain
-    Default: "eps-route53-resources:EPS-ZoneID"
-
   HostedZoneName:
     Type: String
-    Default: "dev.eps.national.nhs.uk"
-
-  # LoadBalancerSecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup::Id
-  #   Description: The security group for the load balancer
 
 Resources:
-  # LoadBalancerSecurityGroup:
-  #   Type: AWS::EC2::SecurityGroup
-  #   Properties:
-  #     GroupDescription: Security group for the load balancer
-  #     VpcId: !Ref VPC
-  #     SecurityGroupIngress:
-  #       - IpProtocol: tcp
-  #         FromPort: !Ref LoadBalancerPort
-  #         ToPort: !Ref LoadBalancerPort
-  #         CidrIp: 0.0.0.0/0
-
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -81,13 +51,13 @@ Resources:
         Fn::Join:
           - "."
           - - !Ref StackName
-            - Fn::ImportValue: !Ref DomainNameExport
+            - !ImportValue eps-route53-resources:EPS-domain
       DomainValidationOptions:
         - DomainName:
             Fn::Join:
               - "."
               - - !Ref StackName
-                - Fn::ImportValue: !Ref DomainNameExport
+                - !ImportValue eps-route53-resources:EPS-domain
           HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
   LoadBalancer:
@@ -97,8 +67,8 @@ Resources:
         - Key: idle_timeout.timeout_seconds
           Value: 60
       Scheme: internet-facing
-      # SecurityGroups:
-      #   - !Ref LoadBalancerSecurityGroup
+      SecurityGroups:
+        - !ImportValue vpc-resources:VpcDefaultSecurityGroup
       Subnets:
         - !Ref SubnetA
         - !Ref SubnetB

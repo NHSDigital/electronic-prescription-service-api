@@ -27,14 +27,6 @@ Parameters:
     Type: String
     Default: "xxx"
 
-  HostedZoneName:
-    Type: String
-    Default: "dev.eps.national.nhs.uk"
-
-  ZoneIDExport:
-    Type: String
-    Default: "eps-route53-resources:EPS-ZoneID"
-
 Resources:
   LoadBalancerResources:
     Type: AWS::Serverless::Application
@@ -49,8 +41,7 @@ Resources:
         SubnetA: !ImportValue vpc-resources:PrivateSubnetA
         SubnetB: !ImportValue vpc-resources:PrivateSubnetB
         SubnetC: !ImportValue vpc-resources:PrivateSubnetC
-        HostedZoneName: !Ref HostedZoneName
-        ZoneIDExport: !Ref ZoneIDExport
+        HostedZoneName: !ImportValue eps-route53-resources:EPS-domain
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
 
