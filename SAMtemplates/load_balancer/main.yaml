@@ -55,11 +55,7 @@ Parameters:
 
   HostedZoneName:
     Type: String
-    Default: company.com
-
-  Subdomain:
-    Type: String
-    Default: myservice
+    Default: "eps-route53-resources:EPS-domain"
 
   # LoadBalancerSecurityGroup:
   #   Type: AWS::EC2::SecurityGroup::Id
@@ -83,17 +79,16 @@ Resources:
       ValidationMethod: DNS
       DomainName:
         Fn::Join:
-          - .
-          - - !Ref StackName
-            - Fn::ImportValue: !Sub ${DomainNameExport}
+          - "."
+          - - !Ref "AWS::StackName"
+            - Fn::ImportValue: !Ref DomainNameExport
       DomainValidationOptions:
         - DomainName:
             Fn::Join:
-              - .
-              - - !Ref StackName
-                - Fn::ImportValue: !Sub ${DomainNameExport}
-          HostedZoneId:
-            Fn::ImportValue: !Sub ${ZoneIDExport}
+              - "."
+              - - !Ref "AWS::StackName"
+                - Fn::ImportValue: !Ref DomainNameExport
+          HostedZoneId: !ImportValue ZoneIDExport
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -142,13 +137,13 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Sub '${HostedZoneName}.'
-      Name: !Sub '${Subdomain}.${HostedZoneName}'
+      Name: !Sub '${AWS::StackName}.${HostedZoneName}'
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
-        HostedZoneId: !ImportValue ${ZoneIDExport}
+        HostedZoneId: !ImportValue ZoneIDExport
 
 Outputs:
   Endpoint:
     Description: Load Balancer Endpoint
-    Value: !Sub 'https://${Subdomain}.${HostedZoneName}'
+    Value: !Sub 'https://${AWS::StackName}.${HostedZoneName}'
