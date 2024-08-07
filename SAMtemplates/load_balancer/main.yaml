@@ -101,7 +101,6 @@ Resources:
       LoadBalancerAttributes:
         - Key: idle_timeout.timeout_seconds
           Value: 60
-      Name: !Sub '${AWS::StackName}-LoadBalancer'
       Scheme: internet-facing
       # SecurityGroups:
       #   - !Ref LoadBalancerSecurityGroup
@@ -131,7 +130,6 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       UnhealthyThresholdCount: 2
       HealthyThresholdCount: 2
-      Name: !Sub '${AWS::StackName}-TargetGroup'
       Port: 80
       Protocol: HTTP
       TargetGroupAttributes:
@@ -147,7 +145,7 @@ Resources:
       Name: !Sub '${Subdomain}.${HostedZoneName}'
       Type: A
       AliasTarget:
-        DNSName: !Ref DomainNameExport
+        DNSName: !GetAtt LoadBalancer.DNSName
         HostedZoneId: !Ref ZoneIDExport
 
 Outputs:
