@@ -55,7 +55,7 @@ Parameters:
 
   HostedZoneName:
     Type: String
-    Default: "eps-route53-resources:EPS-domain"
+    Default: "dev.eps.national.nhs.uk"
 
   # LoadBalancerSecurityGroup:
   #   Type: AWS::EC2::SecurityGroup::Id
