@@ -29,7 +29,11 @@ Parameters:
 
   HostedZoneName:
     Type: String
-    Default: company.com
+    Default: "eps-route53-resources:EPS-domain"
+
+  ZoneIDExport:
+    Type: String
+    Default: "eps-route53-resources:EPS-ZoneID"
 
 Resources:
   LoadBalancerResources:
@@ -46,6 +50,7 @@ Resources:
         SubnetB: !ImportValue vpc-resources:PrivateSubnetB
         SubnetC: !ImportValue vpc-resources:PrivateSubnetC
         HostedZoneName: !Ref HostedZoneName
+        ZoneIDExport: !Ref ZoneIDExport
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
 
