@@ -31,10 +31,6 @@ Parameters:
     Type: String
     Default: company.com
 
-  Subdomain:
-    Type: String
-    Default: myservice
-
 Resources:
   LoadBalancerResources:
     Type: AWS::Serverless::Application
@@ -50,7 +46,6 @@ Resources:
         SubnetB: !ImportValue vpc-resources:PrivateSubnetB
         SubnetC: !ImportValue vpc-resources:PrivateSubnetC
         HostedZoneName: !Ref HostedZoneName
-        Subdomain: !Ref Subdomain
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
 
