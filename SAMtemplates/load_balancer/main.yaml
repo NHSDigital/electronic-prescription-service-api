@@ -106,12 +106,16 @@ Resources:
   DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
-      HostedZoneName: !Sub '${HostedZoneName}.'
-      Name: !Sub '${StackName}.${HostedZoneName}'
+      HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
+      Name: !Join
+        - "."
+        - - !Ref StackName
+          - !ImportValue eps-route53-resources:EPS-domain
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
-        HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
+        EvaluateTargetHealth: False
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
 
 Outputs:
   Endpoint:
