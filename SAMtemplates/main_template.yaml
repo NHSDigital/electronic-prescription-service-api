@@ -29,7 +29,7 @@ Parameters:
 
   HostedZoneName:
     Type: String
-    Default: "dev.eps.national.nhs.uk"
+    Default: "eps-route53-resources:EPS-domain"
 
   ZoneIDExport:
     Type: String

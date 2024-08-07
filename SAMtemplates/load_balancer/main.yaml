@@ -55,7 +55,7 @@ Parameters:
 
   HostedZoneName:
     Type: String
-    Default: "dev.eps.national.nhs.uk"
+    Default: "eps-route53-resources:EPS-domain"
 
   # LoadBalancerSecurityGroup:
   #   Type: AWS::EC2::SecurityGroup::Id
@@ -80,15 +80,15 @@ Resources:
       DomainName:
         Fn::Join:
           - "."
-          - - !Ref "AWS::StackName"
+          - - !Ref StackName
             - Fn::ImportValue: !Ref DomainNameExport
       DomainValidationOptions:
         - DomainName:
             Fn::Join:
               - "."
-              - - !Ref "AWS::StackName"
+              - - !Ref StackName
                 - Fn::ImportValue: !Ref DomainNameExport
-          HostedZoneId: !ImportValue ZoneIDExport
+          HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
@@ -137,13 +137,13 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneName: !Sub '${HostedZoneName}.'
-      Name: !Sub '${AWS::StackName}.${HostedZoneName}'
+      Name: !Sub '${StackName}.${HostedZoneName}'
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
-        HostedZoneId: !ImportValue ZoneIDExport
+        HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
 Outputs:
   Endpoint:
     Description: Load Balancer Endpoint
-    Value: !Sub 'https://${AWS::StackName}.${HostedZoneName}'
+    Value: !Sub 'https://${StackName}.${HostedZoneName}'
