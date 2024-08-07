@@ -83,14 +83,14 @@ Resources:
       ValidationMethod: DNS
       DomainName:
         Fn::Join:
-          - "."
-          - - !Ref "AWS::StackName"
+          - .
+          - - !Ref StackName
             - Fn::ImportValue: !Sub ${DomainNameExport}
       DomainValidationOptions:
         - DomainName:
             Fn::Join:
-              - "."
-              - - !Ref "AWS::StackName"
+              - .
+              - - !Ref StackName
                 - Fn::ImportValue: !Sub ${DomainNameExport}
           HostedZoneId:
             Fn::ImportValue: !Sub ${ZoneIDExport}
@@ -146,7 +146,7 @@ Resources:
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
-        HostedZoneId: !Ref ZoneIDExport
+        HostedZoneId: !ImportValue ${ZoneIDExport}
 
 Outputs:
   Endpoint:
