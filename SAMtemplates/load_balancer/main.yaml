@@ -42,6 +42,9 @@ Parameters:
   HostedZoneName:
     Type: String
 
+Conditions:
+  EnableMutualTLSCondition: !Equals [ !Ref EnableMutualTLS, "true" ]
+
 Resources:
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -85,7 +88,19 @@ Resources:
       Protocol: HTTPS
       Certificates:
         - CertificateArn: !Ref GenerateCertificate
-      SslPolicy: ELBSecurityPolicy-2016-08
+      SslPolicy: !If
+        - EnableMutualTLSCondition
+        - ELBSecurityPolicy-TLS-1-2-2018-06
+        - ELBSecurityPolicy-2016-08
+      ClientAuthenticationPolicy: !If
+        - EnableMutualTLSCondition
+        - required
+        - !Ref AWS::NoValue
+      AlpnPolicy: !If
+        - EnableMutualTLSCondition
+        - 
+          - HTTP/1.1
+        - !Ref AWS::NoValue
 
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
