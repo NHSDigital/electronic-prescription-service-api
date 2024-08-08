@@ -9,7 +9,7 @@ Parameters:
 
   EnableMutualTLS:
     Type: String
-    Default: false
+    Default: true
 
   TruststoreVersion:
     Type: String
