@@ -16,11 +16,11 @@ Parameters:
 
   TruststoreVersion:
     Type: String
-    Default: "1"
+    Default: none
 
   TruststoreFile:
     Type: String
-    Default: "fhirfacade-truststore.pem"
+    Default: none
 
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -79,14 +79,13 @@ Resources:
         - !Ref SubnetB
         - !Ref SubnetC
 
-  # Define Truststore for mTLS
+  # Create Trust Store for mTLS
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Properties:
-      TrustStoreName: !Sub "${StackName}-truststore"
-      TrustStoreCertificates:
-        - CertificateArn: !Sub "arn:aws:s3:::ci-resources-truststorebucket-1emm0xo65wil5/${TruststoreFile}"
-      TrustStoreVersion: !Ref TruststoreVersion
+      CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
+      CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
+      Name: !Sub "${StackName}-truststore"
 
   # Create Listener with mTLS Verify Mode
   ListenerHTTPS:
@@ -103,8 +102,7 @@ Resources:
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
       MutualAuthentication:
         Mode: verify
-        TrustStoreArn: !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:truststore/${StackName}-truststore"
-        TrustStoreVersion: !Ref TruststoreVersion
+        TrustStoreArn: !GetAtt Truststore.TrustStoreArn
 
   # Create Target Group
   TargetGroup:
