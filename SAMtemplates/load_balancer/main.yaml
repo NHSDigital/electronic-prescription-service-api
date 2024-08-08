@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
-  Main template for Load Balancer with all resources included
+  Main template for Load Balancer with all resources included, supporting mutual TLS
 
 Parameters:
   StackName:
@@ -10,14 +10,17 @@ Parameters:
   EnableMutualTLS:
     Type: String
     Default: true
+    AllowedValues:
+      - true
+      - false
 
   TruststoreVersion:
     Type: String
-    Default: none
+    Default: "1"
 
   TruststoreFile:
     Type: String
-    Default: none
+    Default: "fhirfacade-truststore.pem"
 
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -43,6 +46,7 @@ Parameters:
     Type: String
 
 Resources:
+  # Generate a new ACM certificate
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -60,6 +64,7 @@ Resources:
                 - !ImportValue eps-route53-resources:EPS-domain
           HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
+  # Create a new Application Load Balancer
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -74,6 +79,16 @@ Resources:
         - !Ref SubnetB
         - !Ref SubnetC
 
+  # Define Truststore for mTLS
+  Truststore:
+    Type: AWS::ElasticLoadBalancingV2::TrustStore
+    Properties:
+      TrustStoreName: !Sub "${StackName}-truststore"
+      TrustStoreCertificates:
+        - CertificateArn: !Sub "arn:aws:s3:::ci-resources-truststorebucket-1emm0xo65wil5/${TruststoreFile}"
+      TrustStoreVersion: !Ref TruststoreVersion
+
+  # Create Listener with mTLS Verify Mode
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -85,8 +100,13 @@ Resources:
       Protocol: HTTPS
       Certificates:
         - CertificateArn: !Ref GenerateCertificate
-      SslPolicy: ELBSecurityPolicy-2016-08
+      SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
+      MutualAuthentication:
+        Mode: verify
+        TrustStoreArn: !Sub "arn:aws:elasticloadbalancing:${AWS::Region}:${AWS::AccountId}:truststore/${StackName}-truststore"
+        TrustStoreVersion: !Ref TruststoreVersion
 
+  # Create Target Group
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -103,6 +123,7 @@ Resources:
       TargetType: ip
       VpcId: !Ref VPC
 
+  # DNS Record for Load Balancer
   DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
