@@ -42,8 +42,8 @@ jobs:
         run: |
           make install-api
 
-      - shell: bash
-        name: Package code
+      - name: Package code
+        shell: bash
         run: |
           cp .tool-versions ~/
           rm -rf .aws-sam
@@ -81,8 +81,8 @@ jobs:
             poetry.toml
             pyproject.toml
       
-      - shell: bash
-        name: Package sandbox
+      - name: Package sandbox
+        shell: bash
         run: |
           cp .tool-versions ~/
           rm -rf .aws-sam
@@ -98,4 +98,57 @@ jobs:
           name: packaged_sandbox_code
           path: |
             .aws-sam/build
+            README.md
+
+      - name: Set FHIR FACADE ECR Repository
+        run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+
+      - name: Set Validator ECR Repository
+        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
+
+      - name: Determine FHIR Facade Image Tag
+        id: determine-fhir-facade-image-tag
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "FHIR_FACADE_IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VERSION=$(cat VERSION)
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "FHIR_FACADE_IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
+          else
+            echo "FHIR_FACADE_IMAGE_TAG=latest" >> "$GITHUB_ENV"
+          fi
+
+      - name: Determine Validator Image Tag
+        id: determine-validator-image-tag
+        run: |
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            echo "VALIDATOR_IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+            VERSION=$(cat VERSION)
+            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+            echo "VALIDATOR_IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
+          else
+            echo "VALIDATOR_IMAGE_TAG=latest" >> "$GITHUB_ENV"
+          fi  
+
+      - name: Build FHIR Facade Docker image
+        id: build-fhir-facade-image
+        run: |
+           docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+           docker save "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -o FHIR_facade_docker.img
+
+      - name: Build Validator Docker image
+        id: build-validator-image
+        run: |
+           docker build -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+           docker save "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -o validator_docker.img       
+    
+      - uses: actions/upload-artifact@v4
+        name: Upload docker images
+        with:
+          name: docker_artifact
+          path: |
+            FHIR_facade_docker.img
+            validator_docker.img
             README.md
