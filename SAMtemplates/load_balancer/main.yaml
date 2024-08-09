@@ -9,18 +9,12 @@ Parameters:
 
   EnableMutualTLS:
     Type: String
-    Default: true
-    AllowedValues:
-      - true
-      - false
 
   TruststoreVersion:
     Type: String
-    Default: none
 
   TruststoreFile:
     Type: String
-    Default: none
 
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -36,14 +30,15 @@ Parameters:
 
   VersionNumber:
     Type: String
-    Default: "xxx"
 
   CommitId:
     Type: String
-    Default: "xxx"
 
   HostedZoneName:
     Type: String
+
+Conditions:
+  CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
 Resources:
   # Generate a new ACM certificate
@@ -82,6 +77,7 @@ Resources:
   # Create Trust Store for mTLS
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
+    Condition: CreateTruststore
     Properties:
       CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
       CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
@@ -101,8 +97,12 @@ Resources:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
       MutualAuthentication:
+        Condition: CreateTruststore
         Mode: verify
-        TrustStoreArn: !GetAtt Truststore.TrustStoreArn
+        TrustStoreArn: !If
+          - CreateTruststore
+          - !GetAtt Truststore.TrustStoreArn
+          - !Ref "AWS::NoValue"
 
   # Create Target Group
   TargetGroup:
