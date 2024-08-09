@@ -9,12 +9,18 @@ Parameters:
 
   EnableMutualTLS:
     Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
 
   TruststoreVersion:
     Type: String
+    Default: none
 
   TruststoreFile:
     Type: String
+    Default: none
 
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -30,15 +36,18 @@ Parameters:
 
   VersionNumber:
     Type: String
+    Default: "xxx"
 
   CommitId:
     Type: String
+    Default: "xxx"
 
   HostedZoneName:
     Type: String
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
+  CreateListenerHTTPS: !Equals [!Ref EnableMutualTLS, true]
 
 Resources:
   # Generate a new ACM certificate
@@ -86,6 +95,7 @@ Resources:
   # Create Listener with mTLS Verify Mode
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
+    Condition: CreateListenerHTTPS
     Properties:
       DefaultActions:
         - Type: forward
@@ -97,7 +107,6 @@ Resources:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
       MutualAuthentication:
-        Condition: CreateTruststore
         Mode: verify
         TrustStoreArn: !If
           - CreateTruststore
