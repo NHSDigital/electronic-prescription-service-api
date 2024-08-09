@@ -9,6 +9,9 @@ Parameters:
 
   EnableMutualTLS:
     Type: String
+    AllowedValues:
+      - true
+      - false
 
   TruststoreVersion:
     Type: String
@@ -39,7 +42,6 @@ Parameters:
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
-  CreateListenerHTTPS: !Equals [!Ref EnableMutualTLS, true]
 
 Resources:
   # Generate a new ACM certificate
@@ -84,10 +86,9 @@ Resources:
       CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
       Name: !Sub "${StackName}-trst"
 
-  # Create Listener with mTLS Verify Mode
+  # Create Listener with optional mTLS Verify Mode
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
-    Condition: CreateListenerHTTPS
     Properties:
       DefaultActions:
         - Type: forward
@@ -99,10 +100,12 @@ Resources:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
       MutualAuthentication:
-        Mode: verify
-        TrustStoreArn: !If
+        !If
           - CreateTruststore
-          - !GetAtt Truststore.TrustStoreArn
+          - {
+              Mode: verify,
+              TrustStoreArn: !GetAtt Truststore.TrustStoreArn
+            }
           - !Ref "AWS::NoValue"
 
   # Create Target Group
