@@ -9,18 +9,12 @@ Parameters:
 
   EnableMutualTLS:
     Type: String
-    Default: true
-    AllowedValues:
-      - true
-      - false
 
   TruststoreVersion:
     Type: String
-    Default: none
 
   TruststoreFile:
     Type: String
-    Default: none
 
   VPC:
     Type: AWS::EC2::VPC::Id
@@ -36,11 +30,9 @@ Parameters:
 
   VersionNumber:
     Type: String
-    Default: "xxx"
 
   CommitId:
     Type: String
-    Default: "xxx"
 
   HostedZoneName:
     Type: String
