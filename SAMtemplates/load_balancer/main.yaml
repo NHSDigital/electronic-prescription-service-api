@@ -85,7 +85,6 @@ Resources:
     Properties:
       CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
       CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
-      Name: !Sub "${StackName}-truststore"
 
   # Create Listener with mTLS Verify Mode
   ListenerHTTPS:
