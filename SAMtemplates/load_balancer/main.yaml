@@ -25,9 +25,6 @@ Parameters:
   CommitId:
     Type: String
 
-  HostedZoneName:
-    Type: String
-
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
@@ -128,4 +125,4 @@ Resources:
 Outputs:
   Endpoint:
     Description: Load Balancer Endpoint
-    Value: !Sub 'https://${StackName}.${HostedZoneName}'
+    Value: !Sub "https://${StackName}.${!ImportValue eps-route53-resources:EPS-domain}"
