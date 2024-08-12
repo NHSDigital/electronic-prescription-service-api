@@ -28,7 +28,7 @@ Parameters:
     Default: "xxx"
 
 Resources:
-  LoadBalancerResources:
+  LoadBalancers:
     Type: AWS::Serverless::Application
     Properties:
       Location: load_balancer/main.yaml
@@ -37,11 +37,10 @@ Resources:
         EnableMutualTLS: !Ref EnableMutualTLS
         TruststoreVersion: !Ref TruststoreVersion
         TruststoreFile: !Ref TruststoreFile
-        HostedZoneName: !ImportValue eps-route53-resources:EPS-domain
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
 
 Outputs:
   LoadBalancerEndpoint:
     Description: Load Balancer Endpoint
-    Value: !GetAtt LoadBalancerResources.Outputs.Endpoint
+    Value: !GetAtt LoadBalancers.Outputs.Endpoint
