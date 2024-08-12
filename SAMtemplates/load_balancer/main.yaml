@@ -126,3 +126,15 @@ Outputs:
   Endpoint:
     Description: Load Balancer Endpoint
     Value: !Sub "https://${StackName}.${!ImportValue eps-route53-resources:EPS-domain}"
+
+  LoadBalancerArn:
+    Description: ARN of the Load Balancer
+    Value: !Ref LoadBalancer
+
+  TargetGroupArn:
+    Description: ARN of the Target Group
+    Value: !Ref TargetGroup
+
+  SecurityGroupIds:
+    Description: Security Group IDs associated with the Load Balancer
+    Value: !Join [",", !GetAtt LoadBalancer.SecurityGroups]
