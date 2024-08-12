@@ -60,7 +60,7 @@ Resources:
       Scheme: internet-facing
       SecurityGroups:
         - !ImportValue vpc-resources:VpcDefaultSecurityGroup
-      Subnets: !ImportValue vpc-resources:PublicSubnets
+      Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
   # Create Trust Store for mTLS
   Truststore:
