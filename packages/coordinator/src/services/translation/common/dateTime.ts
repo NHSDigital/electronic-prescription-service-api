@@ -1,4 +1,4 @@
-// eslint-disable-next-line max-len
+
 import moment from "moment"
 import {hl7V3, processingErrors as errors} from "@models"
 

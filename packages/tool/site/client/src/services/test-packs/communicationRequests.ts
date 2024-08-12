@@ -33,7 +33,7 @@ export function createCommunicationRequest(
           }
         }
       ]
-    } as fhir.CommunicationRequest
+    } satisfies fhir.CommunicationRequest
   }
 }
 

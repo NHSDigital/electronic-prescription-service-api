@@ -1,6 +1,11 @@
 import {By, ThenableWebDriver, WebElement} from "selenium-webdriver"
 import {driver} from "../live.test"
-import {createPrescription, loadTestData, loginViaSimulatedAuthSmartcardUser, waitForPageToRender} from "../helpers"
+import {
+  createPrescription,
+  loadTestData,
+  loginViaSimulatedAuthSmartcardUser,
+  waitForPageToRender
+} from "../helpers"
 import * as fileInfoFactory from "../file-upload-info/upload-info/Test-pack-info"
 
 describe("firefox", () => {

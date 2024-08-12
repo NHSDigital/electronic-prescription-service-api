@@ -114,7 +114,7 @@ export class AuthClient {
 
 export const getAuthForm = async (
   axiosInstance: AxiosInstance,
-  requestUrl: string,
+  requestUrl: string
 ): Promise<AxiosResponse> => {
   const response = await axiosInstance.get(requestUrl)
 

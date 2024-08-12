@@ -4,7 +4,7 @@
   "description": "Electronic Prescription Service API Models",
   "scripts": {
     "build": "tsc --build --clean ./tsconfig.json",
-    "lint": "eslint . --ext .ts --max-warnings 0 --fix",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "test": "jest --ci --reporters=default --reporters=jest-junit --coverage",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
   },

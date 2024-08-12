@@ -41,7 +41,7 @@ describe("convertPrescriptionDispense", () => {
   const cases = toArray(TestResources.specification[2]).map((example: TestResources.ExamplePrescription) => [
     example.description,
     example.fhirMessageDispense,
-    // eslint-disable-next-line max-len
+
     example.hl7V3MessageDispense.PORX_IN080101SM31.ControlActEvent.subject
       .DispenseNotification as hl7V3.DispenseNotification
   ])
@@ -53,7 +53,7 @@ describe("convertPrescriptionDispense", () => {
 
 describe("getPrescriptionStatus", () => {
   const cases = [
-    /* eslint-disable max-len */
+
     [{code: "0001", display: "To be Dispensed"}, createStatusCode("0001", "To be Dispensed")._attributes],
     [{code: "0002", display: "With Dispenser"}, createStatusCode("0002", "With Dispenser")._attributes],
     [
@@ -64,7 +64,7 @@ describe("getPrescriptionStatus", () => {
     [{code: "0005", display: "Cancelled"}, createStatusCode("0005", "Cancelled")._attributes],
     [{code: "0006", display: "Dispensed"}, createStatusCode("0006", "Dispensed")._attributes],
     [{code: "0007", display: "Not Dispensed"}, createStatusCode("0007", "Not Dispensed")._attributes]
-    /* eslint-enable max-len */
+
   ]
 
   test.each(cases)(
@@ -253,7 +253,7 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
     expect(() => {
       convertDispenseNotification(dispenseNotification, logger)
     }).toThrow(
-      "The dispense notification is missing the reimbursement authority and it should be provided.",
+      "The dispense notification is missing the reimbursement authority and it should be provided."
     )
   })
 
@@ -263,7 +263,7 @@ describe("fhir MedicationDispense throws error for DispenseNotification", () => 
     expect(() => {
       convertDispenseNotification(dispenseNotification, logger)
     }).toThrow(
-      "The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.",
+      "The dispense notification is missing the ODS code for the reimbursement authority and it should be provided."
     )
   })
 })
@@ -482,7 +482,6 @@ describe("Multiple MedicationRequests for one prescribed item", () => {
     hl7v3DispenseNotification = convertDispenseNotification(dispenseNotification, logger)
   })
 
-  // eslint-disable-next-line max-len
   test("multiple MedicationRequests for same prescribed item does not result in additional SuppliedLineItems", () => {
     expect(hl7v3DispenseNotification.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.length).toEqual(
       2

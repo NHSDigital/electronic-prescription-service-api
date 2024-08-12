@@ -80,7 +80,7 @@ function convertRepresentedOrganizationDetails(
 }
 
 function convertCommonOrganizationDetails(
-  costCentre: CostCentre,
+  costCentre: CostCentre
 ): hl7V3.Organization {
   const result = new hl7V3.Organization()
 
