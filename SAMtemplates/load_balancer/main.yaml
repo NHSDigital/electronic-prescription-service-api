@@ -25,6 +25,9 @@ Parameters:
   CommitId:
     Type: String
 
+  HostedZoneName:
+    Type: String
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
