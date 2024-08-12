@@ -19,18 +19,6 @@ Parameters:
   TruststoreFile:
     Type: String
 
-  VPC:
-    Type: AWS::EC2::VPC::Id
-
-  SubnetA:
-    Type: AWS::EC2::Subnet::Id
-
-  SubnetB:
-    Type: AWS::EC2::Subnet::Id
-
-  SubnetC:
-    Type: AWS::EC2::Subnet::Id
-
   VersionNumber:
     Type: String
 
@@ -72,10 +60,7 @@ Resources:
       Scheme: internet-facing
       SecurityGroups:
         - !ImportValue vpc-resources:VpcDefaultSecurityGroup
-      Subnets:
-        - !Ref SubnetA
-        - !Ref SubnetB
-        - !Ref SubnetC
+      Subnets: !ImportValue vpc-resources:PublicSubnets
 
   # Create Trust Store for mTLS
   Truststore:
@@ -123,7 +108,7 @@ Resources:
         - Key: deregistration_delay.timeout_seconds
           Value: 60
       TargetType: ip
-      VpcId: !Ref VPC
+      VpcId: !ImportValue vpc-resources:VpcId
 
   # DNS Record for Load Balancer
   DNSRecord:
