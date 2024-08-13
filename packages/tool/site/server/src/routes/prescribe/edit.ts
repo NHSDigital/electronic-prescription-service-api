@@ -18,6 +18,7 @@ export default [
         if (prescriptionId) {
           const prescription = {bundleId: prepareBundle.id, prescriptionId}
           const existingPrescriptionIndex = sessionPrescriptionIds.findIndex(sessionId => {
+            // eslint-disable-next-line max-len
             return sessionId.bundleId === prescription.bundleId && sessionId.prescriptionId === prescription.prescriptionId
           })
 

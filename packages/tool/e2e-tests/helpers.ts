@@ -1,4 +1,11 @@
-import {By, Locator, ThenableWebDriver, until, WebElement} from "selenium-webdriver"
+/* eslint-disable max-len */
+import {
+  By,
+  Locator,
+  ThenableWebDriver,
+  until,
+  WebElement
+} from "selenium-webdriver"
 import {
   createPrescriptionsLink,
   dispenseButton,

@@ -51,6 +51,6 @@ export function createPlaceResources(
         },
         display: account.name
       }
-    } as fhir.Organization
+    } satisfies fhir.Organization
   }]
 }

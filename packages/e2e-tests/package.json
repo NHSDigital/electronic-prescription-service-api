@@ -4,7 +4,7 @@
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit --coverage",
-    "lint": "eslint . --ext .ts --max-warnings 0 --fix",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
     "clear-cache": "jest --clearCache",

@@ -60,6 +60,7 @@ export function requiresDispensingRepeatInformationExtension(medicationRequest: 
   return medicationRequest.courseOfTherapyType.coding[0].code !== COURSE_OF_THERAPY_TYPE_CODES.ACUTE
 }
 
+// eslint-disable-next-line max-len
 export function createDispensingRepeatInformationExtension(medicationRequest: fhir.MedicationRequest): RepeatInformationExtension {
   const [currentIssueNumber, endIssueNumber] = getCurrentIssueNumberAndEndIssueNumber(medicationRequest)
   return {

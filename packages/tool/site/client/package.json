@@ -8,7 +8,7 @@
     "update-snapshots": "jest --updateSnapshot",
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch --progress",
-    "lint": "eslint . --ext .ts --ext .tsx --fix --max-warnings 0",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs .",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../../.."
   },
   "repository": {

@@ -406,7 +406,7 @@ function createSuppliedLineItemQuantity(
     hl7Quantity,
     dispenseProduct
   )
-  // eslint-disable-next-line max-len
+
   hl7SuppliedLineItemQuantity.pertinentInformation1 =
     new hl7V3.DispenseNotificationSuppliedLineItemQuantityPertinentInformation1(
       //This needs replacing with full dosage instructions

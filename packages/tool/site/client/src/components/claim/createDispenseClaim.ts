@@ -23,7 +23,12 @@ import {
   CODEABLE_CONCEPT_PRIORITY_NORMAL
 } from "../../fhir/reference-data/codeableConcepts"
 import {INSURANCE_NHS_BSA} from "../../fhir/reference-data/insurance"
-import {ClaimFormValues, EndorsementFormValues, ExemptionFormValues, ProductFormValues} from "./claimForm"
+import {
+  ClaimFormValues,
+  EndorsementFormValues,
+  ExemptionFormValues,
+  ProductFormValues
+} from "./claimForm"
 import {
   LineItemStatus,
   VALUE_SET_DISPENSER_ENDORSEMENT,
@@ -43,7 +48,7 @@ import {PrescriptionDetails} from "../../pages/claimPage"
 
 export function createClaim(
   prescriptionDetails: PrescriptionDetails,
-  claimFormValues: ClaimFormValues,
+  claimFormValues: ClaimFormValues
 ): fhir.Claim {
   const {patient, medicationRequests, medicationDispenses, dispensingOrganization, previousClaim} = prescriptionDetails
   const patientIdentifier = patient.identifier[0]

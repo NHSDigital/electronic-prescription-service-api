@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {Dispatch, SetStateAction} from "react"
 import * as XLSX from "xlsx"
 
@@ -5,6 +6,7 @@ export interface XlsRow {
   [column: string]: string | undefined
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getRowsFromSheet(sheetName: string, workbook: XLSX.WorkBook, required = true): any {
   const sheet = workbook.Sheets[sheetName]
   if (!sheet && required)
@@ -182,7 +184,7 @@ export function parseAccountRowsOrDefault(rows: Array<XlsRow>, prescriptionCount
   return fillDefaultMap(prescriptionCount, defaultAccountRow)
 }
 
-function getOrganisationFromRow(rows: XlsRow[]) {
+function getOrganisationFromRow(rows: Array<XlsRow>) {
   return rows.map(row => {
     return {
       testId: row["Test"].toString(),
@@ -222,6 +224,7 @@ export interface PrescriptionRow {
   startDate?: string
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Dispatch<SetStateAction<any>>): Array<PrescriptionRow> {
   const errors: Array<string> = []
 
@@ -275,7 +278,7 @@ export function parsePrescriptionRows(rows: Array<XlsRow>, setLoadPageErrors: Di
   })
 }
 
-function validateColumnExists(rows: XlsRow[], columnName: string, description: string, errors: Array<string>) {
+function validateColumnExists(rows: Array<XlsRow>, columnName: string, description: string, errors: Array<string>) {
   if (!rows[0][columnName]) {
     errors.push(`Must provide a column named: '${columnName}' which identifies ${description}`)
   }

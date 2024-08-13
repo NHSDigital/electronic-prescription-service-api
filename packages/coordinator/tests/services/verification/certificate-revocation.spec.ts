@@ -122,7 +122,7 @@ let loggerError: jest.SpyInstance
 const MSG_VALID_CERT = /Valid signature found for prescription (.*) signed by cert (.*)/
 // eslint-disable-next-line max-len
 const MSG_VALID_CERT_ON_CRL = /Certificate with serial (.*) found on CRL, but prescription (.*) was signed before its revocation/
-// eslint-disable-next-line max-len
+
 const MSG_INVALID_CERT_ON_CRL = /Certificate with serial (?:.*) found on CRL with(\s(?:unhandled))? Reason Code \d{1,2}/
 const MSG_INVALID_CERT_ON_CRL_NO_REASON_CODE = /Cannot extract Reason Code from CRL for certificate with serial(.*)/
 

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import * as crypto from "crypto"
 import {Req} from "../src/configs/spec"
 import {
@@ -42,6 +43,7 @@ export async function preparePrescription(number, site, medReqNo = 1, table: Dat
     const now = new Date()
     const later = new Date()
     later.setMonth(later.getMonth() + 3)
+
     const validStart = `${now.getFullYear()}-${("0" + (now.getMonth() + 1)).slice(-2)}-${("0" + now.getDate()).slice(-2)}`
     const validEnd = `${later.getFullYear()}-${("0" + (later.getMonth() + 1)).slice(-2)}-${("0" + later.getDate()).slice(-2)}`
     const shortPrescId = genid.shortPrescId()

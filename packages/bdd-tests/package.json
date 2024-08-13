@@ -7,7 +7,7 @@
     "test-sandbox": "jest sandbox",
     "test": "cucumber-js --tags 'not @excluded'",
     "test:debug": "cucumber-js --tags 'not @excluded'",
-    "lint": "eslint . --ext .ts --max-warnings 0 --debug",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL"
   },
   "engines": {

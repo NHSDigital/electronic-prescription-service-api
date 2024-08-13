@@ -7,7 +7,7 @@
     "test": "jest --ci --reporters=default --reporters=jest-junit",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
-    "lint": "eslint . --ext .ts --fix --max-warnings 0",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs .",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../../.."
   },
   "author": "NHS Digital",

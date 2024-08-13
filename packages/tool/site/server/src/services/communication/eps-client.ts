@@ -85,6 +85,7 @@ class EpsClient {
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
     const requestId = uuid.v4()
+    // eslint-disable-next-line max-len
     const response = await this.makeApiCall<OperationOutcome>("$validate", body, undefined, requestId, {"x-show-validation-warnings": "true"})
     const statusCode = response.status
     const fhirResponse = response.data
@@ -116,6 +117,7 @@ class EpsClient {
     const fhirResponse = response.data
     const spineResponse = fhirResponseOnly
       ? ""
+      // eslint-disable-next-line max-len
       : (await this.makeApiCall<string | OperationOutcome>(endpoint, body, params, requestId, {"x-raw-response": "true"})).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
