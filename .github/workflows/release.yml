@@ -14,27 +14,56 @@ jobs:
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+  # get_commit_id:
+  #   runs-on: ubuntu-latest
+  #   outputs:
+  #     commit_id: ${{ steps.output_commit_id.outputs.commit_id }}
+  #   steps:
+  #     - name: Get Commit ID
+  #       id: commit_id
+  #       run: |
+  #         echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
   get_commit_id:
     runs-on: ubuntu-latest
     outputs:
       commit_id: ${{ steps.commit_id.outputs.commit_id }}
     steps:
       - name: Get Commit ID
-        id: commit_id
+        id: commit_id  # This is the ID of the step
         run: |
           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
 
   tag_release:
     needs: quality_checks
     runs-on: ubuntu-latest
     outputs:
       spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
+      commit_id: ${{steps.commit_id.outputs.commit_id}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH_NAME }}
-          fetch-depth: 0
+      - name: Get Commit ID
+        id: commit_id  # This ID must match the one in outputs
+        run: |
+          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+
+  #         tag_release:
+  # needs: quality_checks
+  # runs-on: ubuntu-latest
+  # outputs:
+  #   spec_version: ${{ steps.output_spec_version.outputs.SPEC_VERSION }}
+  #   commit_id: ${{ steps.commit_id.outputs.commit_id }}  # Ensure 'commit_id' is the correct step ID
+  # steps:
+  #   - name: Checkout code
+  #     uses: actions/checkout@v4
+  #     with:
+  #       ref: ${{ env.BRANCH_NAME }}
+  #       fetch-depth: 0
+  #         fetch-depth: 0
 
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
@@ -95,9 +124,17 @@ jobs:
           echo "## RELEASE TAG :** ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
           echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
 
+      - name: output Commit ID
+        id: output_commit_id
+        run: |
+          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"    
+
   package_code:
     needs: tag_release
     uses: ./.github/workflows/sam_package_code.yml
+    with:
+      VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
+      COMMIT_ID: ${{ needs.tag_release.outputs.commit_id }}
 
   release_dev:
     needs: [tag_release, package_code, get_commit_id]

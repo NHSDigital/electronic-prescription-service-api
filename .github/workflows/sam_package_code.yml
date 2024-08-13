@@ -2,6 +2,13 @@ name: sam package code
 
 on:
   workflow_call:
+    inputs:
+      VERSION_NUMBER:
+        required: true
+        type: string
+      COMMIT_ID:
+        required: true
+        type: string
 
 jobs:
   sam_package_code:
@@ -103,18 +110,26 @@ jobs:
       - name: Set ECR Repository
         run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
 
-      - name: Determine Image Tag
-        id: determine-image-tag
+      - name: Print environment variables for debugging
         run: |
-          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-            echo "IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
-          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-            VERSION=$(cat VERSION)
-            SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-            echo "IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
-          else
-            echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
-          fi
+          echo "VERSION_NUMBER=${{ env.VERSION_NUMBER }}"
+          echo "COMMIT_ID=${{ env.COMMIT_ID }}"
+
+      - name: Set Image Tag
+        run: echo "IMAGE_TAG=${COMMIT_ID}-${VERSION_NUMBER}" >> "$GITHUB_ENV"
+
+      # - name: Determine Image Tag
+      #   id: determine-image-tag
+      #   run: |
+      #     if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+      #       echo "IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
+      #     elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+      #       VERSION=$(cat VERSION)
+      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+      #       echo "IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
+      #     else
+      #       echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
+      #     fi
 
       - name: Build Docker image
         id: build-image
