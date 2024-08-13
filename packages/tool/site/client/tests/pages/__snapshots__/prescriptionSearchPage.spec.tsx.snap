@@ -283,13 +283,13 @@ exports[`Displays error if creation date field invalid 1`] = `
       <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="authoredOn.low--label" for="authoredOn.low">Earliest Date</label><span class="nhsuk-error-message" id="authoredOn.low--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>Invalid date</span>
         <div class="nhsuk-date-input" id="authoredOn.low" aria-describedby="authoredOn.low--error-message">
           <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.day--label" for="authoredOn.low.day">Day</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error" id="authoredOn.low.day" aria-labelledby="authoredOn.low.day--label" name="authoredOn.low.day" pattern="[0-9]*" inputmode="numeric" type="text" value="45"></div>
+            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.day--label" for="authoredOn.low.day">Day</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error" id="authoredOn.low.day" name="authoredOn.low.day" pattern="[0-9]*" inputmode="numeric" type="text" value="45"></div>
           </div>
           <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.month--label" for="authoredOn.low.month">Month</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error" id="authoredOn.low.month" aria-labelledby="authoredOn.low.month--label" name="authoredOn.low.month" pattern="[0-9]*" inputmode="numeric" type="text" value="12"></div>
+            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.month--label" for="authoredOn.low.month">Month</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error" id="authoredOn.low.month" name="authoredOn.low.month" pattern="[0-9]*" inputmode="numeric" type="text" value="12"></div>
           </div>
           <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.year--label" for="authoredOn.low.year">Year</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error" id="authoredOn.low.year" aria-labelledby="authoredOn.low.year--label" name="authoredOn.low.year" pattern="[0-9]*" inputmode="numeric" type="text" value="2020"></div>
+            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.year--label" for="authoredOn.low.year">Year</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error" id="authoredOn.low.year" name="authoredOn.low.year" pattern="[0-9]*" inputmode="numeric" type="text" value="2020"></div>
           </div>
         </div>
       </div>
@@ -330,13 +330,13 @@ exports[`Displays error if creation date field partially completed 1`] = `
       <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="authoredOn.low--label" for="authoredOn.low">Earliest Date</label><span class="nhsuk-error-message" id="authoredOn.low--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>All fields are required for a date search</span>
         <div class="nhsuk-date-input" id="authoredOn.low" aria-describedby="authoredOn.low--error-message">
           <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.day--label" for="authoredOn.low.day">Day</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="authoredOn.low.day" aria-labelledby="authoredOn.low.day--label" name="authoredOn.low.day" pattern="[0-9]*" inputmode="numeric" type="text" value="12"></div>
+            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.day--label" for="authoredOn.low.day">Day</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="authoredOn.low.day" name="authoredOn.low.day" pattern="[0-9]*" inputmode="numeric" type="text" value="12"></div>
           </div>
           <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.month--label" for="authoredOn.low.month">Month</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="authoredOn.low.month" aria-labelledby="authoredOn.low.month--label" name="authoredOn.low.month" pattern="[0-9]*" inputmode="numeric" type="text" value="6"></div>
+            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.month--label" for="authoredOn.low.month">Month</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="authoredOn.low.month" name="authoredOn.low.month" pattern="[0-9]*" inputmode="numeric" type="text" value="6"></div>
           </div>
           <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.year--label" for="authoredOn.low.year">Year</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error" id="authoredOn.low.year" aria-labelledby="authoredOn.low.year--label" name="authoredOn.low.year" pattern="[0-9]*" inputmode="numeric" type="text" value=""></div>
+            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.year--label" for="authoredOn.low.year">Year</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error" id="authoredOn.low.year" name="authoredOn.low.year" pattern="[0-9]*" inputmode="numeric" type="text" value=""></div>
           </div>
         </div>
       </div>
