@@ -27,27 +27,28 @@ jobs:
   get_commit_id:
     runs-on: ubuntu-latest
     outputs:
-      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+      commit_id: ${{ steps.commit_id.outputs.commit_id }} 
     steps:
       - name: Get Commit ID
-        id: commit_id  # This is the ID of the step
+        id: commit_id 
         run: |
           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-
 
   tag_release:
     needs: quality_checks
     runs-on: ubuntu-latest
     outputs:
-      spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
-      commit_id: ${{steps.commit_id.outputs.commit_id}}
+      spec_version: ${{ steps.output_spec_version.outputs.SPEC_VERSION }}
+      commit_id: ${{ steps.commit_id.outputs.commit_id }} 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH_NAME }}
+
+      # This step generates the commit ID
       - name: Get Commit ID
-        id: commit_id  # This ID must match the one in outputs
+        id: commit_id 
         run: |
           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
