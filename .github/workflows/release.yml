@@ -14,57 +14,51 @@ jobs:
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+  get_version:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.set_version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Set version
+        id: set_version
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"   
+
+  get_commit_id:
+    runs-on: ubuntu-latest
+    outputs:
+      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+      short_commit_id: ${{ steps.short_commit_id.outputs.short_commit_id }}
+    steps:
+      - name: Get Commit ID
+        id: commit_id
+        run: echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+      - name: Get Short Commit ID
+        id: short_commit_id
+        run: echo "short_commit_id=$(echo ${{ github.sha }} | cut -c1-7)" >>   "$GITHUB_OUTPUT"
+
   # get_commit_id:
   #   runs-on: ubuntu-latest
   #   outputs:
-  #     commit_id: ${{ steps.output_commit_id.outputs.commit_id }}
+  #     commit_id: ${{ steps.commit_id.outputs.commit_id }}
   #   steps:
   #     - name: Get Commit ID
   #       id: commit_id
   #       run: |
   #         echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
-  get_commit_id:
-    runs-on: ubuntu-latest
-    outputs:
-      commit_id: ${{ steps.commit_id.outputs.commit_id }} 
-    steps:
-      - name: Get Commit ID
-        id: commit_id 
-        run: |
-          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-
   tag_release:
     needs: quality_checks
     runs-on: ubuntu-latest
     outputs:
-      spec_version: ${{ steps.output_spec_version.outputs.SPEC_VERSION }}
-      commit_id: ${{ steps.commit_id.outputs.commit_id }} 
+      spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH_NAME }}
-
-      # This step generates the commit ID
-      - name: Get Commit ID
-        id: commit_id 
-        run: |
-          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-
-  #         tag_release:
-  # needs: quality_checks
-  # runs-on: ubuntu-latest
-  # outputs:
-  #   spec_version: ${{ steps.output_spec_version.outputs.SPEC_VERSION }}
-  #   commit_id: ${{ steps.commit_id.outputs.commit_id }}  # Ensure 'commit_id' is the correct step ID
-  # steps:
-  #   - name: Checkout code
-  #     uses: actions/checkout@v4
-  #     with:
-  #       ref: ${{ env.BRANCH_NAME }}
-  #       fetch-depth: 0
-  #         fetch-depth: 0
+          fetch-depth: 0
 
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
@@ -125,18 +119,19 @@ jobs:
           echo "## RELEASE TAG :** ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
           echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
 
-      - name: output Commit ID
-        id: output_commit_id
-        run: |
-          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"    
-
+  # package_code:
+  #   needs: get_commit_id
+  #   uses: ./.github/workflows/sam_package_code.yml
+  #   with:
+  #     version: ${{ needs.get_issue_number.outputs.version }}
+  #     commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
   package_code:
-    needs: tag_release
+    needs: [get_version, get_commit_id]
     uses: ./.github/workflows/sam_package_code.yml
     with:
-      VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
-      COMMIT_ID: ${{ needs.tag_release.outputs.commit_id }}
-
+      version: ${{ needs.get_commit_id.outputs.short_commit_id }}-${{ needs.get_version.  outputs.version }}
+      commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
+  
   release_dev:
     needs: [tag_release, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml

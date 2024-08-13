@@ -3,10 +3,10 @@ name: sam package code
 on:
   workflow_call:
     inputs:
-      VERSION_NUMBER:
+      version:
         required: true
         type: string
-      COMMIT_ID:
+      commit_id:
         required: true
         type: string
 
@@ -110,6 +110,11 @@ jobs:
       - name: Set ECR Repository
         run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
 
+      - name: Set environment variables
+        run: |
+          echo "VERSION_NUMBER=${{ inputs.version }}" >> "$GITHUB_ENV"
+          echo "COMMIT_ID=${{ inputs.commit_id }}" >> "$GITHUB_ENV"
+
       - name: Print environment variables for debugging
         run: |
           echo "VERSION_NUMBER=${{ env.VERSION_NUMBER }}"
@@ -130,11 +135,6 @@ jobs:
       #     else
       #       echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
       #     fi
-
-      - name: Print environment variables for debugging
-        run: |
-          echo "ECR_REPOSITORY=${{ env.ECR_REPOSITORY }}"
-          echo "IMAGE_TAG=${{ env.IMAGE_TAG }}"
           
       - name: Build Docker image
         id: build-image
