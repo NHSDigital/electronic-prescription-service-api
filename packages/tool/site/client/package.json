@@ -20,7 +20,7 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@babel/plugin-transform-runtime": "^7.24.7",
-    "@babel/preset-env": "^7.25.2",
+    "@babel/preset-env": "^7.25.3",
     "@babel/preset-react": "^7.24.7",
     "@babel/preset-typescript": "^7.24.7",
     "@testing-library/dom": "^10.4.0",
@@ -42,7 +42,7 @@
     "identity-obj-proxy": "^3.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "moment": "^2.30.1",
-    "nhsuk-react-components": "^4.1.0",
+    "nhsuk-react-components": "^4.1.1",
     "pretty": "^2.0.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
@@ -59,7 +59,7 @@
   },
   "dependencies": {
     "@types/file-saver": "^2.0.7",
-    "axios": "^1.7.2",
+    "axios": "^1.7.3",
     "buffer": "^6.0.3",
     "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
@@ -68,7 +68,7 @@
     "jszip": "^3.10.0",
     "react-cookie": "^7.2.0",
     "react-diff-viewer-continued": "^3.4.0",
-    "react-router-dom": "^6.25.1",
+    "react-router-dom": "^6.26.0",
     "react18-json-view": "^0.2.8"
   }
 }
