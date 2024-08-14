@@ -117,11 +117,12 @@ jobs:
 
       - name: Print environment variables for debugging
         run: |
-          echo "VERSION_NUMBER=${{ env.VERSION_NUMBER }}"
-          echo "COMMIT_ID=${{ env.COMMIT_ID }}"
+          echo "VERSION_NUMBER=${{ inputs.version }}"
+          echo "COMMIT_ID1=${{ env.COMMIT_ID }}"
+          echo "COMMIT_ID2=${{ inputs.commit_id }}"
 
       - name: Set Image Tag
-        run: echo "IMAGE_TAG=${COMMIT_ID}-${VERSION_NUMBER}" >> "$GITHUB_ENV"
+        run: echo "IMAGE_TAG=${COMMIT_ID}-${inputs.version}" >> "$GITHUB_ENV"
 
       # - name: Determine Image Tag
       #   id: determine-image-tag
