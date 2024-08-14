@@ -125,13 +125,20 @@ jobs:
   #   with:
   #     version: ${{ needs.get_issue_number.outputs.version }}
   #     commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
+  # package_code:
+  #   needs: [get_version, get_commit_id]
+  #   uses: ./.github/workflows/sam_package_code.yml
+  #   with:
+  #     version: ${{ needs.get_commit_id.outputs.short_commit_id }}-${{ needs.get_version.outputs.version }}
+  #     commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
+
   package_code:
     needs: [get_version, get_commit_id]
     uses: ./.github/workflows/sam_package_code.yml
     with:
-      version: ${{ needs.get_commit_id.outputs.short_commit_id }}-${{ needs.get_version.  outputs.version }}
+      version: ${{ format('{0}-{1}', needs.get_commit_id.outputs.short_commit_id, needs.get_version.outputs.version) }}
       commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
-  
+    
   release_dev:
     needs: [tag_release, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
