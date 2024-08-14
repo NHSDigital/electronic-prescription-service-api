@@ -52,6 +52,20 @@ jobs:
       - name: run unit tests
         run: make test
 
+      - name: Run cfn-guard
+        run: make cfn-guard
+
+      - name: show cfn-guard output
+        if: failure()
+        run: cat cfn_guard_output/*.txt
+
+      - uses: actions/upload-artifact@v4
+        name: upload cfn_guard_output
+        if: failure()
+        with:
+          name: cfn_guard_output
+          path: cfn_guard_output
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:

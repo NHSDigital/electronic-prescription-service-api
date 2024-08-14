@@ -456,3 +456,6 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
 			Env=$$TARGET_ENVIRONMENT
+
+cfn-guard:
+	./scripts/run_cfn_guard.sh
