@@ -57,7 +57,7 @@ jobs:
 
       - name: show cfn-guard output
         if: failure()
-        run: cat cfn_guard_output/*.txt
+        run: cat cfn_guard_output/*
 
       - uses: actions/upload-artifact@v4
         name: upload cfn_guard_output
