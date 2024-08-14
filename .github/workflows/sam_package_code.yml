@@ -115,55 +115,15 @@ jobs:
           echo "VERSION_NUMBER=${{ inputs.version }}" >> "$GITHUB_ENV"
           echo "COMMIT_ID=${{ inputs.commit_id }}" >> "$GITHUB_ENV"
 
-      - name: Print environment variables for debugging
-        run: |
-          echo "VERSION_NUMBER=${{ inputs.version }}"
-          echo "COMMIT_ID1=${{ env.COMMIT_ID }}"
-          echo "COMMIT_ID2=${{ inputs.commit_id }}"
-
-      # - name: Set Image Tag
-      #   run: echo "IMAGE_TAG=${COMMIT_ID}-${VERSION_NUMBER}" >> "$GITHUB_ENV"
-
-      # - name: Determine Image Tag
-      #   id: determine-image-tag
-      #   run: |
-      #     if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-      #       echo "IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
-      #     elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-      #       VERSION=$(cat VERSION)
-      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #       echo "IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
-      #     else
-      #       echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
-      #     fi
-          
-      # - name: Print IMAGE_TAG
-      #   run: echo "current IMAGE_TAG= ${{ env.IMAGE_TAG }}"
-
       - name: Set Image Tag
         run: echo "IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV"
 
       - name: Build Docker image
         id: build-image
         run: |
-          echo "Building Docker image with tag: ${{ env.IMAGE_TAG }}"
           docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
-          echo "Docker build completed. Listing images:"
           docker images
-          echo "Saving Docker image..."
           docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
-     
-      # - name: Build Docker image
-      #   id: build-image
-      #   run: |
-      #     echo "Building Docker image..."
-      #     docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
-      #     echo "Docker build completed. Listing images:"
-      #     docker images
-      #     echo "Saving Docker image..."
-      #     docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
-      #     echo "Docker save completed. Listing contents of current directory:"
-      #     ls -l
     
       - uses: actions/upload-artifact@v4
         name: Upload docker image

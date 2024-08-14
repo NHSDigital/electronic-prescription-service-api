@@ -38,16 +38,6 @@ jobs:
         id: short_commit_id
         run: echo "short_commit_id=$(echo ${{ github.sha }} | cut -c1-7)" >>   "$GITHUB_OUTPUT"
 
-  # get_commit_id:
-  #   runs-on: ubuntu-latest
-  #   outputs:
-  #     commit_id: ${{ steps.commit_id.outputs.commit_id }}
-  #   steps:
-  #     - name: Get Commit ID
-  #       id: commit_id
-  #       run: |
-  #         echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-
   tag_release:
     needs: quality_checks
     runs-on: ubuntu-latest
@@ -118,19 +108,6 @@ jobs:
         run: |
           echo "## RELEASE TAG :** ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
           echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
-
-  # package_code:
-  #   needs: get_commit_id
-  #   uses: ./.github/workflows/sam_package_code.yml
-  #   with:
-  #     version: ${{ needs.get_issue_number.outputs.version }}
-  #     commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
-  # package_code:
-  #   needs: [get_version, get_commit_id]
-  #   uses: ./.github/workflows/sam_package_code.yml
-  #   with:
-  #     version: ${{ needs.get_commit_id.outputs.short_commit_id }}-${{ needs.get_version.outputs.version }}
-  #     commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
 
   package_code:
     needs: [get_version, get_commit_id]

@@ -57,12 +57,6 @@ jobs:
         #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
-  # package_code:
-  #   needs: [get_issue_number, get_commit_id]
-  #   uses: ./.github/workflows/sam_package_code.yml
-  #   with:
-  #     version: ${{ needs.get_issue_number.outputs.version }}
-  #     commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
   package_code:
     needs: [get_issue_number, get_commit_id]
     uses: ./.github/workflows/sam_package_code.yml
