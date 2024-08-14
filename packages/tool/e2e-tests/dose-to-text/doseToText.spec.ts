@@ -1,7 +1,16 @@
 import {driver} from "../sandbox.test"
 import {By, until} from "selenium-webdriver"
 import {doseToTextLink, homePageTitle, doseToTextTitle} from "../locators"
-import {defaultWaitTimeout, EPSAT_HOME_URL, finaliseWebAction, navigateToUrl, checkApiResult, readBundleFromFile, getElement, waitForPageToRender} from "../helpers"
+import {
+  defaultWaitTimeout,
+  EPSAT_HOME_URL,
+  finaliseWebAction,
+  navigateToUrl,
+  checkApiResult,
+  readBundleFromFile,
+  getElement,
+  waitForPageToRender
+} from "../helpers"
 
 const examplePrescription = JSON.stringify(readBundleFromFile("./messages/prescriptionOrder.json"))
 

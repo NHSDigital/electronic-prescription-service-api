@@ -541,7 +541,7 @@ export class ReleaseResponseHandler
     translator: (releaseResponse: hl7V3.PrescriptionReleaseResponse,
       logger: pino.Logger, returnFactory: ReturnFactory) => Promise<TranslationResponseResult>
     = releaseResponseTranslator.translateReleaseResponse,
-    dispenseReturnFactory: ReturnFactory = new DispenseProposalReturnFactory(),
+    dispenseReturnFactory: ReturnFactory = new DispenseProposalReturnFactory()
 
   ) {
     super(interactionId)

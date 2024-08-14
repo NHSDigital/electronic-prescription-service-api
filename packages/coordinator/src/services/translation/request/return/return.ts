@@ -20,7 +20,7 @@ import {
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 
 export function convertTaskToDispenseProposalReturn(
-  task: fhir.Task,
+  task: fhir.Task
 ): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)

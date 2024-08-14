@@ -86,10 +86,12 @@ export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): 
   })
 
   // TODO: /token failure
+  // eslint-disable-next-line max-len
   const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/oauth2/token`, bodyParams)
   return axiosOAuthTokenResponse.data
 }
 
+// eslint-disable-next-line max-len
 export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request, mock: boolean): Promise<OAuthTokenResponse> {
   // TODO: handle code not present
   const authorisationCode = request.query.code

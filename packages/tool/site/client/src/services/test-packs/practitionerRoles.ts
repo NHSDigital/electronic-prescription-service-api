@@ -37,7 +37,7 @@ export function createPractitionerRole(row: PrescriberRow): fhir.BundleEntry {
           use: "work"
         }
       ]
-    } as fhir.PractitionerRole
+    } satisfies fhir.PractitionerRole
   }
 
   const prescribingCode = row.prescribingCode?.toString()

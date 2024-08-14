@@ -57,7 +57,7 @@ export default [
       }
 
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
-      const prepares: {prescriptionId: string, request: fhir.Bundle}[] = prescriptionIds.map((id: string) => {
+      const prepares: Array<{prescriptionId: string, request: fhir.Bundle}> = prescriptionIds.map((id: string) => {
         return {
           prescriptionId: id,
           request: getSessionValue(`prepare_request_${id}`, request)
