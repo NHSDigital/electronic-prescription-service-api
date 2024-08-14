@@ -34,6 +34,6 @@ export function createMessageHeader(): fhir.BundleEntry {
         }
       ],
       focus: []
-    } as fhir.MessageHeader
+    } satisfies fhir.MessageHeader
   }
 }

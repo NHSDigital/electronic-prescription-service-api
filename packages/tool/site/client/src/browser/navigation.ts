@@ -1,4 +1,5 @@
 export function redirect(url: string): void {
+  // eslint-disable-next-line no-undef
   window.location.assign(url)
 }
 

@@ -5,7 +5,7 @@
     "scripts": {
         "test-live": "jest live --ci --reporters=default --reporters=jest-junit",
         "test-sandbox": "jest sandbox --ci --reporters=default --reporters=jest-junit",
-        "lint": "eslint . --max-warnings 0 --fix",
+        "lint": "eslint  --max-warnings 0 --fix --config ../../../eslint.config.mjs .",
         "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../.."
     },
     "jest-junit": {

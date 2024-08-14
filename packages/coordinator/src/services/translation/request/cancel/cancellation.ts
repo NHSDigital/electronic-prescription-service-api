@@ -105,7 +105,7 @@ export function convertResponsibleParty(
 
   responsibleParty.AgentPerson = convertPractitionerRole(
     bundle,
-    responsiblePartyPractitionerRole,
+    responsiblePartyPractitionerRole
   )
 
   return responsibleParty

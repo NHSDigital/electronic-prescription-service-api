@@ -1,4 +1,4 @@
-/* eslint-disable-next-line */
+
 import * as fs from "fs"
 import {Case} from "./case"
 import * as LosslessJson from "lossless-json"

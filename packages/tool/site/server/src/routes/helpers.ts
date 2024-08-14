@@ -54,7 +54,7 @@ export function prRedirectRequired(
 export function getPrBranchUrl(
   requestPrNumber: number | undefined,
   endpoint: string,
-  queryString: string,
+  queryString: string
 ): string {
   const basePath = "https://internal-dev.api.service.nhs.uk"
   return `${basePath}/eps-api-tool-pr-${requestPrNumber}/${endpoint}?${queryString}`

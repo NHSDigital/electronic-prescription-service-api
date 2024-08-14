@@ -226,7 +226,7 @@ function addViewRoutes(server: Hapi.Server) {
         ...viewRoute,
         options: {
           auth: false
-        } as RouteOptions
+        } satisfies RouteOptions
       }
     }
 

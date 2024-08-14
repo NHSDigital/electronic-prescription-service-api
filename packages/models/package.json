@@ -4,7 +4,7 @@
   "description": "Electronic Prescription Service API Models",
   "scripts": {
     "build": "tsc --build --clean ./tsconfig.json",
-    "lint": "eslint . --ext .ts --max-warnings 0 --fix",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "test": "jest --ci --reporters=default --reporters=jest-junit --coverage",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
   },
@@ -15,7 +15,7 @@
     "npm": "10.2.x"
   },
   "dependencies": {
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "fhirpath": "^3.10.1",
     "lossless-json": "^4.0.1",
     "xml-js": "^1.6.11"

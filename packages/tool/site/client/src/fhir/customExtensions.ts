@@ -1,4 +1,11 @@
-import {CodeableConcept, Coding, Extension, Identifier, Reference} from "fhir/r4"
+/* eslint-disable max-len */
+import {
+  CodeableConcept,
+  Coding,
+  Extension,
+  Identifier,
+  Reference
+} from "fhir/r4"
 
 /* Helper Methods */
 

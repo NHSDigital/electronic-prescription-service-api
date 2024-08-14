@@ -19,6 +19,7 @@ export interface SignatureDownloadResponse {
 }
 
 export interface SigningClient {
+  // eslint-disable-next-line max-len
   uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, signingOptions: string): Promise<SignatureUploadResponse>
   makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse>
   makePingRequest(): Promise<Ping>

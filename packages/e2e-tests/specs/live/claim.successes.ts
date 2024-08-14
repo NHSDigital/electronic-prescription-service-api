@@ -39,7 +39,7 @@ describe("claim amend e2e tests", () => {
         options,
         message,
         successfulOperationOutcome,
-        `a request to amend a claim for prescription: ${desc} message to Spine`,
+        `a request to amend a claim for prescription: ${desc} message to Spine`
       )
       await provider.addInteraction(interaction)
       await provider.writePact()

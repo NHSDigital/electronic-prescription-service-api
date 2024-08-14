@@ -1,10 +1,7 @@
 import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
 import * as uuid from "uuid"
-import {
-  TaskBusinessStatusExtension,
-  URL_TASK_BUSINESS_STATUS
-} from "../../fhir/customExtensions"
+import {TaskBusinessStatusExtension, URL_TASK_BUSINESS_STATUS} from "../../fhir/customExtensions"
 import {
   LineItemStatus,
   PrescriptionStatus,
@@ -319,8 +316,9 @@ function createMessageHeader(
   return header
 }
 
+// eslint-disable-next-line max-len
 function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, needsReplacement: boolean): fhir.CodeableConcept {
-  const medicationToSupply = {
+  const medicationToSupply: fhir.CodeableConcept = {
     "coding": [
       {
         "system": "http://snomed.info/sct",
@@ -328,7 +326,7 @@ function keepOrReplaceMedication(requestedMedication: fhir.CodeableConcept, need
         "display": "Paracetamol 500mg soluble tablets (Alliance Healthcare (Distribution) Ltd) 60 tablet"
       }
     ]
-  } as fhir.CodeableConcept
+  }
 
   return needsReplacement ? medicationToSupply : requestedMedication
 }

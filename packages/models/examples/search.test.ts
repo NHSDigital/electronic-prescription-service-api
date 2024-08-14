@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import * as fetchers from "./fetchers"
 import {Case} from "./cases/case"
 

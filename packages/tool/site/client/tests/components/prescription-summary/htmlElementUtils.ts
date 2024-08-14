@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 export function getSummaryListKeyValueMap(container: HTMLElement): Record<string, string> {
   const summaryMap: Record<string, string> = {}
   container.querySelectorAll(".nhsuk-summary-list__row").forEach(row => {

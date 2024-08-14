@@ -309,7 +309,7 @@ export function createDispenseRequest(
   lineItemQuantity: hl7V3.LineItemQuantity,
   daysSupply: hl7V3.DaysSupply,
   performer: hl7V3.PrescriptionPerformer,
-  lineItemRepeatNumberHigh?: hl7V3.NumericValue,
+  lineItemRepeatNumberHigh?: hl7V3.NumericValue
 ): fhir.MedicationRequestDispenseRequest {
 
   const repeatHigh = lineItemRepeatNumberHigh?._attributes.value ?

@@ -17,7 +17,7 @@ export function createAuthor(
 }
 
 export function createAuthorForWithdraw(
-  practitionerRole: fhir.PractitionerRole,
+  practitionerRole: fhir.PractitionerRole
 ): hl7V3.AuthorPersonSds {
   const sdsRoleProfileId = getIdentifierValueForSystem(
     practitionerRole.identifier,
@@ -78,7 +78,7 @@ export function createAuthorForDispenseNotification(
 
 export function createAgentPersonUsingPractitionerRoleAndOrganization(
   practitionerRole: fhir.PractitionerRole,
-  organization: fhir.Organization,
+  organization: fhir.Organization
 ): hl7V3.AgentPerson {
   const agentPerson = new hl7V3.AgentPerson()
 
@@ -102,7 +102,7 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
 }
 
 export function createAgentPersonPersonUsingPractitionerRole(
-  practitionerRole: fhir.PractitionerRole,
+  practitionerRole: fhir.PractitionerRole
 ): hl7V3.AgentPersonPerson {
   if (isReference(practitionerRole.practitioner)) {
     throw new errors.InvalidValueError(

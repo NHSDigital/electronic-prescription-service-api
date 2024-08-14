@@ -24,7 +24,6 @@ const injectServerRequest = async (
   return res.request.logs
 }
 
-// eslint-disable-next-line max-len
 describe.each(TestResources.specification)(
   "When a request payload is sent to a",
   (example: TestResources.ExamplePrescription) => {
