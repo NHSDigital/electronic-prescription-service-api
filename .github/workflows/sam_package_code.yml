@@ -147,7 +147,7 @@ jobs:
         id: build-image
         run: |
           echo "Building Docker image with tag: ${{ env.IMAGE_TAG }}"
-          docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/     coordinator/Dockerfile .
+          docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
           echo "Docker build completed. Listing images:"
           docker images
           echo "Saving Docker image..."
