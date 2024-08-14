@@ -36,7 +36,7 @@ export default [
       let withDispenser: DispenserDetails | undefined = undefined
       const releasedPrescriptionIds: Array<string> = []
       if (!responseIsError(releaseResponse.fhirResponse)) {
-        let bundleEntries: BundleEntry[] = []
+        let bundleEntries: Array<BundleEntry> = []
         const passedBundle = releaseResponse.fhirResponse.parameter
           ?.find(p => p.name === "passedPrescriptions")?.resource as Bundle
         if (passedBundle.entry) {
@@ -97,7 +97,7 @@ function handleResponseError(releaseFailure: OperationOutcome): (DispenserDetail
   if (!releaseFailure) return undefined
   const details = releaseFailure.issue[0].details as CodeableConcept
   if(!details) return undefined
-  const coding = details.coding as Coding[]
+  const coding = details.coding as Array<Coding>
   if(!coding || coding[0].code !== "PRESCRIPTION_WITH_ANOTHER_DISPENSER") return undefined
   const diagnosticsUnparsed = releaseFailure.issue[0].diagnostics
   if(!diagnosticsUnparsed) return undefined

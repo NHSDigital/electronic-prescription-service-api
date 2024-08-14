@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-undef
 module.exports = {
   roots: ["./tests"],
   transform: {
@@ -20,6 +21,7 @@ module.exports = {
     // use the CommonJS import.
     // Source (actually from axios, not lossless-json):
     // https://github.com/axios/axios/issues/5101#issuecomment-1276572468
+    // eslint-disable-next-line no-undef
     "^lossless-json$": require.resolve("lossless-json")
   },
 

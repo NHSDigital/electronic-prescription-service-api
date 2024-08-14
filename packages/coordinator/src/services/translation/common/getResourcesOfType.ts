@@ -14,7 +14,7 @@ export interface PathedResource<T> {
 }
 export function getPathedResourcesOfType<T extends fhir.Resource>(
   bundle: fhir.Bundle,
-  resourceType: string,
+  resourceType: string
 ): Array<PathedResource<T>> {
   const root_path = "bundle.entry"
 
@@ -26,7 +26,7 @@ export function getPathedResourcesOfType<T extends fhir.Resource>(
       }
     })
     .filter(
-      (resource) => resource.resource.resourceType === resourceType,
+      (resource) => resource.resource.resourceType === resourceType
     ) as Array<PathedResource<T>>
 }
 
@@ -162,7 +162,7 @@ export function getContainedOrganizationViaReference<R extends fhir.Resource>(
 }
 
 export function getPathedTelecoms(
-  bundle: fhir.Bundle,
+  bundle: fhir.Bundle
 ): Array<PathedResource<fhir.ContactPoint>> {
   type ResourceToValidate = fhir.Organization | fhir.Practitioner | fhir.PractitionerRole;
   const get_telecoms = (resource: PathedResource<ResourceToValidate>) => {

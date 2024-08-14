@@ -1,7 +1,7 @@
 import * as uuid from "uuid"
 import * as templateBody from "./templateBodies/templateDispenseBody.json"
 
-export function createDispenseBody(prescriptionId: string, lineItemIds: string[]): string {
+export function createDispenseBody(prescriptionId: string, lineItemIds: Array<string>): string {
   const body = {...templateBody.templateBody}
 
   body.identifier.value = uuid.v4()

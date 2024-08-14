@@ -1,9 +1,5 @@
 import {driver} from "../live.test"
-import {
-  sendPrescriptionUserJourney,
-  releasePrescriptionUserJourney,
-  checkMyPrescriptions
-} from "../helpers"
+import {sendPrescriptionUserJourney, releasePrescriptionUserJourney, checkMyPrescriptions} from "../helpers"
 
 describe("firefox", () => {
   test("can release prescription", async () => {

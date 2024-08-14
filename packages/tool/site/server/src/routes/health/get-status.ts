@@ -33,7 +33,7 @@ export default [
     path: "/_status",
     options: {
       auth: false
-    } as RouteOptions,
+    } satisfies RouteOptions,
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(200, {
         // todo
@@ -45,7 +45,7 @@ export default [
     path: "/_healthcheck",
     options: {
       auth: false
-    } as RouteOptions,
+    } satisfies RouteOptions,
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const epsClient = getEpsClient("", request)
       const signingClient = getSigningClient(request, "")

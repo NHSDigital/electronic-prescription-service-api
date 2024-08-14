@@ -58,6 +58,6 @@ export function createPractitioner(row: PrescriberRow): fhir.BundleEntry {
           text: row.prescriberName
         }
       ]
-    } as fhir.Practitioner
+    } satisfies fhir.Practitioner
   }
 }

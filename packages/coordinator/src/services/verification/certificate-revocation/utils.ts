@@ -1,5 +1,5 @@
 import axios from "axios"
-import {X509} from "jsrsasign"
+import {X509, Hex} from "jsrsasign"
 import pino from "pino"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
@@ -71,7 +71,7 @@ const getX509DistributionPointsURI = (x509Certificate: X509): Array<string> => {
   return x509Certificate.getExtCRLDistributionPointsURI()
 }
 
-const getX509IssuerId = (x509Certificate: X509): jsrsasign.Hex => {
+const getX509IssuerId = (x509Certificate: X509): Hex => {
   return x509Certificate.getExtAuthorityKeyIdentifier().kid
 }
 

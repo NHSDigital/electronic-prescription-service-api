@@ -10,7 +10,7 @@ import {
 
 export async function getPrescriptionItemIds(
   driver: ThenableWebDriver
-): Promise<string[]> {
+): Promise<Array<string>> {
   await (await getElement(driver, myPrescriptionsNavLink)).click()
   await waitForPageToRender(10000)
 

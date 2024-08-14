@@ -98,6 +98,7 @@ export function createMedicationRequests(
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function createPrescriptionType(row: PrescriptionRow): any {
   const treatmentTypeCode = getPrescriptionTreatmentType(row)
   const treatmentTypeSystem =
@@ -110,6 +111,7 @@ function createPrescriptionType(row: PrescriptionRow): any {
   }
 }
 
+// eslint-disable-next-line max-len
 function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
   const dispenseRequest: fhir.MedicationRequestDispenseRequest =
     {
@@ -167,6 +169,7 @@ export function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
   }
 }
 
+// eslint-disable-next-line max-len
 function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatmentTypeCode: TreatmentType, repeatsIssued: number): Array<fhir.Extension> {
   const {prescriptionTypeCode, prescriptionTypeDescription, controlledDrugQuantity, controlledDrugSchedule} = row
   const extension: Array<fhir.Extension> = [
@@ -227,7 +230,7 @@ function getMedicationRequestExtensions(row: PrescriptionRow, prescriptionTreatm
 function createRepeatInformationExtensions(
   prescriptionTreatmentTypeCode: TreatmentType,
   repeatsIssued: number
-): {url: string, extension: fhir.Extension[]} {
+): {url: string, extension: Array<fhir.Extension>} {
   const extension: Array<fhir.Extension> = [
     {
       url: "authorisationExpiryDate",
