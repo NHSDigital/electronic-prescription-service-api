@@ -136,11 +136,20 @@ jobs:
       #       echo "IMAGE_TAG=latest" >> "$GITHUB_ENV"
       #     fi
           
+      - name: Print IMAGE_TAG
+        run: echo "current IMAGE_TAG= ${{ env.IMAGE_TAG }}"
+     
       - name: Build Docker image
         id: build-image
         run: |
-           docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
-           docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
+          echo "Building Docker image..."
+          docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+          echo "Docker build completed. Listing images:"
+          docker images
+          echo "Saving Docker image..."
+          docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
+          echo "Docker save completed. Listing contents of current directory:"
+          ls -l
     
       - uses: actions/upload-artifact@v4
         name: Upload docker image
