@@ -46,7 +46,6 @@ jobs:
 
   get_commit_id:
    runs-on: ubuntu-latest
-  #  needs: get_issue_number
    outputs:
      commit_id: ${{ steps.commit_id.outputs.commit_id }}
 
