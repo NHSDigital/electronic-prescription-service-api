@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {Then} from "@cucumber/cucumber"
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

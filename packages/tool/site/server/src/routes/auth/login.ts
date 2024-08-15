@@ -72,6 +72,7 @@ export default {
         ["client_assertion", jwt]
       ])
 
+      // eslint-disable-next-line max-len
       const axiosResponse = await axios.post<UnattendedTokenResponse>(url, urlParams, {headers: {"content-type": "application/x-www-form-urlencoded"}})
       const oauthResponse = axiosResponse.data
       const accessToken = oauthResponse.access_token
@@ -95,6 +96,7 @@ export default {
 
     // Attended (user-separate)
     if (loginInfo.authLevel === "user-separate") {
+      // eslint-disable-next-line max-len
       const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
       const scopes = ["openid", "profile"]
       const redirectUri = getRedirectUri(authorizationUri, CONFIG.cis2AppClientId, callbackUri, scopes)

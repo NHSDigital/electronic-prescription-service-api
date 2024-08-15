@@ -25,7 +25,7 @@ import {createMedicationRequests} from "./medicationRequests"
 import {groupBy} from "./helpers"
 
 type PrescriptionData = {
-  medicationRows: PrescriptionRow[],
+  medicationRows: Array<PrescriptionRow>,
   nominatedPharmacy: string,
   nominatedPharmacyType: string,
   patient: fhir.BundleEntry,
@@ -36,14 +36,17 @@ type PrescriptionData = {
 
 type PrescriptionCreator = (
   prescriptionData: PrescriptionData,
-  prescriptions: fhir.Bundle[]
+  prescriptions: Array<fhir.Bundle>
 ) => void
 
 export const createPrescriptionsFromExcelFile = (
   file: Blob,
-  setPrescriptionsInTestPack: Dispatch<SetStateAction<any[]>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  setPrescriptionsInTestPack: Dispatch<SetStateAction<Array<any>>>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): void => {
+  // eslint-disable-next-line no-undef
   const reader = new FileReader()
 
   reader.onload = function (e) {
@@ -54,7 +57,9 @@ export const createPrescriptionsFromExcelFile = (
 
     const medicationRows = parsePrescriptionRows(getRowsFromSheet("Prescriptions", workbook), setLoadPageErrors)
     const patientRows = parsePatientRowsOrDefault(getRowsFromSheet("Patients", workbook, false), medicationRows.length)
+    // eslint-disable-next-line max-len
     const prescriberRows = parsePrescriberRowsOrDefault(getRowsFromSheet("Prescribers", workbook, false), medicationRows.length)
+    // eslint-disable-next-line max-len
     const organisationRows = parseOrganisationRowsOrDefault(getRowsFromSheet("Organisations", workbook, false), medicationRows.length)
     const accountRows = parseAccountRowsOrDefault(getRowsFromSheet("Accounts", workbook, false), medicationRows.length)
 
@@ -83,9 +88,10 @@ function createPrescriptions(
   organisationRows: Map<string, OrganisationRow>,
   accountRows: Map<string, AccountRow>,
   medicationRows: Array<PrescriptionRow>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   setLoadPageErrors: Dispatch<SetStateAction<any>>
 ): Array<fhir.Bundle> {
-  const prescriptions: fhir.Bundle[] = []
+  const prescriptions: Array<fhir.Bundle> = []
 
   const prescriptionRows = groupBy(medicationRows, (row: PrescriptionRow) => row.testId)
 
@@ -128,7 +134,7 @@ function getCreateFunc(prescriptionTreatmentTypeCode: string): PrescriptionCreat
 
 const createAcutePrescription: PrescriptionCreator = (
   prescriptionData: PrescriptionData,
-  prescriptions: fhir.Bundle[]
+  prescriptions: Array<fhir.Bundle>
 ) => {
   const prescription = createPrescription(prescriptionData)
   updateNominatedPharmacy(prescription, prescriptionData.nominatedPharmacy)
@@ -138,7 +144,7 @@ const createAcutePrescription: PrescriptionCreator = (
 
 const createRepeatPrescribingPrescriptions: PrescriptionCreator = (
   prescriptionData: PrescriptionData,
-  prescriptions: fhir.Bundle[]
+  prescriptions: Array<fhir.Bundle>
 ) => {
   const prescriptionRow = prescriptionData.medicationRows[0]
   const repeatsAllowed = prescriptionRow.repeatsAllowed
@@ -156,7 +162,7 @@ const createRepeatPrescribingPrescriptions: PrescriptionCreator = (
 
 const createRepeatDispensingPrescription: PrescriptionCreator = (
   prescriptionData: PrescriptionData,
-  prescriptions: fhir.Bundle[]
+  prescriptions: Array<fhir.Bundle>
 ) => {
   const prescriptionRow = prescriptionData.medicationRows[0]
   const prescription = createPrescription(
@@ -228,6 +234,7 @@ const validFhirPrescriptionTypes = [
   "repeat-prescribing"
 ]
 
+// eslint-disable-next-line max-len, @typescript-eslint/no-explicit-any
 export function getPrescriptionTreatmentType(row: PrescriptionRow, setLoadPageErrors?: Dispatch<SetStateAction<any>>): TreatmentType {
   const code = row.prescriptionTreatmentTypeCode
   if (!validFhirPrescriptionTypes.includes(code)) {

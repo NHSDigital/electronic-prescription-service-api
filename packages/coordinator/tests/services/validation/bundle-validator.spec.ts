@@ -272,7 +272,7 @@ describe("verifyCommonBundle", () => {
     practitioner.identifier = testReference
 
     validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
-    // eslint-disable-next-line max-len
+
     expect(console.warn).not.toHaveBeenCalledWith(
       "SDS Role ID does not match between access token and message body." +
         "Access Token: test_sds_role_id Body: test_sds_role_id."
@@ -516,7 +516,7 @@ describe("MedicationRequest consistency checks", () => {
 
     const validationErrors = validator.verifyPrescriptionBundle(bundle)
     expect(validationErrors).toHaveLength(1)
-    // eslint-disable-next-line max-len
+
     expect(validationErrors[0].diagnostics).toEqual(
       "Bundle resource Practitioner.identifier expected " +
         "exactly one professional code from GMC|NMC|GPhC|HCPC|professional-code."

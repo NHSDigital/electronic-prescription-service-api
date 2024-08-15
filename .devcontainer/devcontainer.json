@@ -32,7 +32,7 @@
         "orta.vscode-jest",
         "42crunch.vscode-openapi",
         "mermade.openapi-lint",
-        "rvest.vs-code-prettier-eslint",
+        "baeumer.vscode-eslint",
         "redhat.vscode-yaml",
         "christian-kohler.npm-intellisense",
         "dbaeumer.vscode-eslint",
@@ -53,7 +53,7 @@
         "python.linting.pylintEnabled": false,
         "python.linting.flake8Enabled": true,
         "python.linting.enabled": true, // required to format on save
-        "editor.defaultFormatter": "rvest.vs-code-prettier-eslint",
+        "editor.defaultFormatter": "baeumer.vscode-eslint",
         "editor.formatOnPaste": false, // required
         "editor.formatOnType": false, // required
         "editor.formatOnSave": true, // optional

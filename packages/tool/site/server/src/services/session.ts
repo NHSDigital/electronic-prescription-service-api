@@ -4,6 +4,7 @@ import {CONFIG} from "../config"
 import {isLocal} from "./environment"
 import {OAuthTokenResponse} from "../oauthUtils"
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getSessionValue(key: string, request: Hapi.Request): any {
   const sessionValue = request.yar.get(key)
   if (isLocal(CONFIG.environment)) {
@@ -19,6 +20,7 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
   return sessionValue
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getSessionValueOrDefault(key: string, request: Hapi.Request, fallback: unknown): any {
   return getSessionValue(key, request) ?? fallback
 }

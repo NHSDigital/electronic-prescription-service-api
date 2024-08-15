@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {FileUploadType} from "../../enums/FileUploadType.enum"
 import {FileUploadInfo} from "../interfaces/FileUploadInfo.interface"
 

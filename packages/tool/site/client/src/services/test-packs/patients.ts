@@ -37,11 +37,11 @@ export function createPatient(row: PatientRow): fhir.BundleEntry {
           }
         }
       ]
-    } as fhir.Patient
+    } satisfies fhir.Patient
   }
 }
 
-function getGivenName(row: PatientRow): string[] {
+function getGivenName(row: PatientRow): Array<string> {
   return [
     row.otherGivenName,
     row.givenName
@@ -50,7 +50,7 @@ function getGivenName(row: PatientRow): string[] {
 
 // pds test data to eps translation
 // todo: analyse and address any inconsistencies between pds and eps across platform?
-function getGender(row: PatientRow) {
+function getGender(row: PatientRow): fhir.Patient["gender"] {
   const gender = row.gender
   if (gender === "indeterminate") {
     return "other"
@@ -58,7 +58,7 @@ function getGender(row: PatientRow) {
   if (gender === "not known") {
     return "unknown"
   }
-  return gender
+  return gender as fhir.Patient["gender"]
 }
 
 // pds test data to eps translation
@@ -69,7 +69,7 @@ function getBirthDate(row: PatientRow): string {
     + `-${row.dateOfBirth.toString().substring(6)}`
 }
 
-function getAddressLines(row: PatientRow): string[] {
+function getAddressLines(row: PatientRow): Array<string> {
   return [
     row.addressLine1,
     row.addressLine2,

@@ -4,7 +4,7 @@
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit --coverage",
-    "lint": "eslint . --ext .ts --max-warnings 0 --fix",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
     "clear-cache": "jest --clearCache",
@@ -30,7 +30,7 @@
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.6",
     "@types/lossless-json": "1.0.4",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "axios-cookiejar-support": "^5.0.2",
     "jsdom": "^24.1.1",
     "jsonwebtoken": "^9.0.2",

@@ -7,7 +7,7 @@
     "test": "jest --ci --reporters=default --reporters=jest-junit",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node app.js --use_strict",
-    "lint": "eslint . --ext .ts --fix --max-warnings 0",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs .",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../../.."
   },
   "author": "NHS Digital",
@@ -32,7 +32,7 @@
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
     "@hapi/yar": "^11.0.2",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
     "handlebars": "^4.7.7",

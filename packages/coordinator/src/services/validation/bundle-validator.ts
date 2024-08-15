@@ -277,7 +277,7 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
   const prescriptionTypeExtension = getExtensionForUrlOrNull(
     medicationRequests[0].extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
-    'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")',
+    'Entry("MedicationRequest").extension("https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType")'
   ) as fhir.CodingExtension
   const prescriptionType = prescriptionTypeExtension.valueCoding.code
 
@@ -530,7 +530,7 @@ function allMedicationRequestsHaveUniqueIdentifier(
 
 function checkPrimaryCarePrescriptionResources(
   practitionerRole: fhir.PractitionerRole,
-  organization: fhir.Organization,
+  organization: fhir.Organization
 ): fhir.OperationOutcomeIssue {
   if (practitionerRole.healthcareService) {
     return errors.unexpectedField("practitionerRole.healthcareService")

@@ -7,9 +7,11 @@ export default [
     method: "GET" as RouteDefMethods,
     path: "/prescriptionIds",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      // eslint-disable-next-line max-len
       const editPrescriptionsIds: Array<{bundleId: string, prescriptionId: string}> = getSessionValueOrDefault("prescription_ids", request, [])
       const sentPrescriptionIds: Array<string> = getSessionValueOrDefault("sent_prescription_ids", request, [])
       const releasedPrescriptionIds: Array<string> = getSessionValueOrDefault("released_prescription_ids", request, [])
+      // eslint-disable-next-line max-len
       const dispensedPrescriptionIds: Array<string> = getSessionValueOrDefault("dispensed_prescription_ids", request, [])
       const claimedPrescriptionIds: Array<string> = getSessionValueOrDefault("claimed_prescription_ids", request, [])
 
