@@ -71,7 +71,6 @@ Resources:
           Value: 60
       Scheme: internet-facing
       SecurityGroups:
-        # - !ImportValue vpc-resources:VpcDefaultSecurityGroup
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
