@@ -1,4 +1,4 @@
-/* eslint-disable-next-line  @typescript-eslint/no-var-requires, @typescript-eslint/no-unused-vars */
+/* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
 import register from "tsconfig-paths/register"
 import {ApiEndpoint, ApiOperation} from "../resources/common"
 import path from "path"

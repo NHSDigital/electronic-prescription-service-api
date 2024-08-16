@@ -289,6 +289,7 @@ lint-api: build-api
 	shellcheck scripts/*.sh
 	npm run lint --workspace packages/e2e-tests
 	npm run lint --workspace packages/bdd-tests
+	npm run lint --workspace packages/models
 
 lint-epsat:
 	npm run lint --workspace packages/tool/site/client

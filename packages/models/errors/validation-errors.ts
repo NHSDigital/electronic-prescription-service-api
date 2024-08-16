@@ -253,7 +253,7 @@ export function createInvalidIdentifierIssue(
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
-    // eslint-disable-next-line max-len
+
     diagnostics: `Bundle resource ${resource}.identifier expected exactly one professional code from ${acceptedList}.`
   }
 }

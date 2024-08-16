@@ -1,13 +1,20 @@
-import {By, Key, ThenableWebDriver, until} from "selenium-webdriver"
+import {
+  By,
+  Key,
+  ThenableWebDriver,
+  until
+} from "selenium-webdriver"
 import {driver} from "../live.test"
-import {checkApiResult,
+import {
+  checkApiResult,
   defaultWaitTimeout,
   EPSAT_HOME_URL,
   finaliseWebAction,
   getElement,
   navigateToUrl,
   sendPrescriptionUserJourney,
-  waitForPageToRender} from "../helpers"
+  waitForPageToRender
+} from "../helpers"
 import {copyFhirRequestButton, fhirRequestExpander} from "../locators"
 
 describe("firefox", () => {

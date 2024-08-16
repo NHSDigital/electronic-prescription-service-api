@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import {By} from "selenium-webdriver"
 
 export const simulatedAuthPageTitle = By.id("kc-page-title")

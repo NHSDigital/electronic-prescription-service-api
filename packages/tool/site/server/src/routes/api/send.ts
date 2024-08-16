@@ -18,6 +18,7 @@ interface SuccessfulPrepareData {
 
 function generateProvenance(prepare: SuccessfulPrepareData, signatureResponse: SignatureDownloadResponse) {
   const payload = prepare.response.parameter?.find(p => p.name === "digest")?.valueString ?? ""
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const signature = signatureResponse.signatures.find((sig: any) => sig.id === prepare.prescriptionId)?.signature
   const certificate = signatureResponse.certificate
 
@@ -82,7 +83,9 @@ export default [
 
         const sendRequest = prepare.request
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let sendRequestHl7: any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let sendResponse: any
         if (prepares.length === 1) {
           sendResponse = await epsClient.makeSendRequest(sendRequest)
