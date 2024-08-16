@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "4557b6bc-47c3-441d-8754-c0515a9ecbfe",
 		"name": "EPS FHIR Dispensing",
-		"description": "This collection includes requests for releasing, returning, dispensing, withdrawing, and claiming for a prescription using FHIR EPS in the INT environment.\n\n## Authentication\n\nAll requests use an authentication bearer token acquired from a CIS2 OAuth call (Not included in this collection). This token should be set to the `accessToken` variable.\n\n## Variables\n\nEach request uses a different subset of the below collection variables. `host` and `accessToken` are required for all collections so will not be specified per request.\n\n- `host` - The url for the FHIR EPS API. For INT this is `https://int.api.service.nhs.uk/electronic-prescriptions/FHIR/R4`\n    \n- `accessToken` - The CIS2 OAuth2 access token.\n    \n- `prescriptionId` - The shortform prescription ID of the prescription being dispensed, eg. `E5F28A-A83008-96CCCM`.\n    \n- `NHSNumber` - The NHS number of the patient who's prescription is being dispensed.\n    \n- `returnReasonCode` - The reason code for a prescription return, eg. `0001`.\n    \n- `withdrawReasonCode` - The reason code for a dispense notification withdrawal, eg. `MU`.\n    \n- `prescriptionStatusCode` - The status code of the prescription, eg. `0006`.\n    \n- `lineItemCount` - The number of line items in the prescription being dispensed (1-4).\n    \n- `lineItem{N}OrderItemNumber` - The longform ID of line item N of the prescription, eg. `1fc414a2-b0ab-4bdc-9cc5-7877d583c1c4`. Only 1<= N <= lineItemCount is mandatory.\n    \n- `lineItem{N}StatusCode` - The status code of line item N, eg. `0001`. Only 1<= N <= lineItemCount is mandatory.\n    \n- `requesterODSCode` - The ODS code of the organization which requested the prescription.\n    \n- `nominatedODSCode` - The ODS code of the organization which the prescription is nominated to.\n    \n- `releaseODSCode` - The ODS code of the organization a prescription is released to.\n    \n- `releaseResponseID` - The `rfc4122` ID of the release message which released this prescription.\n    \n- `dispenseNotificationID` - The `rfc4122` ID of the dispense notification being withdrawn.",
+		"description": "This collection includes requests for releasing, returning, dispensing, withdrawing, and claiming for a prescription using FHIR EPS in the INT environment.\n\n## Authentication\n\nAll requests use an authentication bearer token acquired from a CIS2 OAuth call (Not included in this collection). This token should be set to the `accessToken` variable.\n\n## Headers\n\nHeaders are automatically populated, with the exception of `NHSD-Session-URID`. This is an optional header which can be enabled if a user has multiple roles assigned. Its value is set by the `Session-URID` variable.\n\n## Variables\n\nEach request uses a different subset of the below collection variables. `host` and `accessToken` are required for all collections so will not be specified per request.\n\n- `host` - The url for the FHIR EPS API. For INT this is `https://int.api.service.nhs.uk/electronic-prescriptions/FHIR/R4`\n    \n- `accessToken` - The CIS2 OAuth2 access token.\n    \n- `Session-URID` - The user role ID (URID) for the current session.\n    \n- `prescriptionId` - The shortform prescription ID of the prescription being dispensed, eg. `E5F28A-A83008-96CCCM`.\n    \n- `NHSNumber` - The NHS number of the patient who's prescription is being dispensed.\n    \n- `returnReasonCode` - The reason code for a prescription return, eg. `0001`.\n    \n- `withdrawReasonCode` - The reason code for a dispense notification withdrawal, eg. `MU`.\n    \n- `prescriptionStatusCode` - The status code of the prescription, eg. `0006`.\n    \n- `lineItemCount` - The number of line items in the prescription being dispensed (1-4).\n    \n- `lineItem{N}OrderItemNumber` - The longform ID of line item N of the prescription, eg. `1fc414a2-b0ab-4bdc-9cc5-7877d583c1c4`. Only 1<= N <= lineItemCount is mandatory.\n    \n- `lineItem{N}StatusCode` - The status code of line item N, eg. `0001`. Only 1<= N <= lineItemCount is mandatory.\n    \n- `requesterODSCode` - The ODS code of the organization which requested the prescription.\n    \n- `nominatedODSCode` - The ODS code of the organization which the prescription is nominated to.\n    \n- `releaseODSCode` - The ODS code of the organization a prescription is released to.\n    \n- `releaseResponseID` - The `rfc4122` ID of the release message which released this prescription.\n    \n- `dispenseNotificationID` - The `rfc4122` ID of the dispense notification being withdrawn.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "32854853"
 	},
@@ -16,6 +16,12 @@
 						"key": "X-Request-ID",
 						"value": "{{$guid}}",
 						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -50,6 +56,12 @@
 						"key": "X-Request-ID",
 						"value": "{{$guid}}",
 						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -116,6 +128,12 @@
 						"key": "X-Request-ID",
 						"value": "{{$guid}}",
 						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -233,6 +251,12 @@
 						"key": "X-Request-ID",
 						"value": "{{$guid}}",
 						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -292,6 +316,12 @@
 						"key": "X-Request-ID",
 						"value": "{{$guid}}",
 						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -387,6 +417,12 @@
 						"key": "X-Request-ID",
 						"value": "{{$guid}}",
 						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
 					}
 				],
 				"body": {
@@ -452,6 +488,11 @@
 		},
 		{
 			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "Session-URID",
 			"value": "",
 			"type": "string"
 		},
