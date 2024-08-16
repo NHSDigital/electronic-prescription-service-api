@@ -29,6 +29,21 @@ Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
 Resources:
+  # Create Security Group for the Load Balancer
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !ImportValue vpc-resources:VpcId
+      GroupDescription: Allow inbound HTTPS traffic
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lb-sg"
+
   # Generate a new ACM certificate
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
@@ -56,7 +71,7 @@ Resources:
           Value: 60
       Scheme: internet-facing
       SecurityGroups:
-        - !ImportValue vpc-resources:VpcDefaultSecurityGroup
+        - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
   # Create Trust Store for mTLS
@@ -137,4 +152,4 @@ Outputs:
 
   SecurityGroupIds:
     Description: Security Group IDs associated with the Load Balancer
-    Value: !Join [",", !GetAtt LoadBalancer.SecurityGroups]
+    Value: !Join [",", !Ref LoadBalancerSecurityGroup]
