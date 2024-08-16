@@ -127,10 +127,7 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
-      Name: !Join
-        - "."
-        - - !Ref StackName
-          - !ImportValue eps-route53-resources:EPS-domain
+      Name: !Sub "${StackName}.${!ImportValue eps-route53-resources:EPS-domain}"
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
@@ -152,4 +149,4 @@ Outputs:
 
   SecurityGroupIds:
     Description: Security Group IDs associated with the Load Balancer
-    Value: !Join [",", !Ref LoadBalancerSecurityGroup]
+    Value: !Join [",", [!Ref LoadBalancerSecurityGroup]]
