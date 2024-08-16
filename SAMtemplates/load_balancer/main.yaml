@@ -153,5 +153,4 @@ Outputs:
 
   SecurityGroupIds:
     Description: Security Group IDs associated with the Load Balancer
-    Value: !Join [",", !GetAtt LoadBalancer.SecurityGroups]
-    # Value: !Join [",", [!Ref LoadBalancerSecurityGroup]]
+    Value: !Join [",", [!Ref LoadBalancerSecurityGroup]]
