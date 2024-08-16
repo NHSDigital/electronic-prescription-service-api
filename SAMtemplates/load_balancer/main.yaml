@@ -128,7 +128,10 @@ Resources:
     Type: AWS::Route53::RecordSet
     Properties:
       HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
-      Name: !Sub "${StackName}.${!ImportValue eps-route53-resources:EPS-domain}"
+      Name: !Join
+        - "."
+        - - !Ref StackName
+          - !ImportValue eps-route53-resources:EPS-domain
       Type: A
       AliasTarget:
         DNSName: !GetAtt LoadBalancer.DNSName
