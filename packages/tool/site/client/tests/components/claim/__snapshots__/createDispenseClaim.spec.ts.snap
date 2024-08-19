@@ -42,7 +42,7 @@ exports[`Produces expected result when endorsement not present 1`] = `
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "VNE51",
+          "value": "FA565",
         },
       ],
       "name": "The Simple Pharmacy",
@@ -347,7 +347,7 @@ exports[`Produces expected result when multiple endorsements present 1`] = `
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "VNE51",
+          "value": "FA565",
         },
       ],
       "name": "The Simple Pharmacy",
@@ -671,7 +671,7 @@ exports[`Produces expected result when non-default exemption code selected 1`] =
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "VNE51",
+          "value": "FA565",
         },
       ],
       "name": "The Simple Pharmacy",
@@ -976,7 +976,7 @@ exports[`Produces expected result when single endorsement present 1`] = `
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-          "value": "VNE51",
+          "value": "FA565",
         },
       ],
       "name": "The Simple Pharmacy",

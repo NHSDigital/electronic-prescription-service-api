@@ -485,7 +485,7 @@ exports[`Produces expected result when status full dispense is done on a partial
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
         "name": "The Simple Pharmacy",
@@ -1006,7 +1006,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
         "name": "The Simple Pharmacy",
@@ -1527,7 +1527,7 @@ exports[`Produces expected result when status partial dispense is done on a part
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
         "name": "The Simple Pharmacy",
@@ -2048,7 +2048,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
         "name": "The Simple Pharmacy",
