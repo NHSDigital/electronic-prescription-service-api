@@ -1,0 +1,155 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: |
+  Main template for Load Balancer with all resources included, supporting mutual TLS
+
+Parameters:
+  StackName:
+    Type: String
+
+  EnableMutualTLS:
+    Type: String
+    AllowedValues:
+      - true
+      - false
+
+  TruststoreVersion:
+    Type: String
+
+  TruststoreFile:
+    Type: String
+
+  VersionNumber:
+    Type: String
+
+  CommitId:
+    Type: String
+
+Conditions:
+  CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
+
+Resources:
+  # Create Security Group for the Load Balancer
+  LoadBalancerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !ImportValue vpc-resources:VpcId
+      GroupDescription: Allow inbound HTTPS traffic
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: !Sub "${AWS::StackName}-lb-sg"
+
+  # Generate a new ACM certificate
+  GenerateCertificate:
+    Type: AWS::CertificateManager::Certificate
+    Properties:
+      ValidationMethod: DNS
+      DomainName:
+        Fn::Join:
+          - "."
+          - - !Ref StackName
+            - !ImportValue eps-route53-resources:EPS-domain
+      DomainValidationOptions:
+        - DomainName:
+            Fn::Join:
+              - "."
+              - - !Ref StackName
+                - !ImportValue eps-route53-resources:EPS-domain
+          HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
+
+  # Create a new Application Load Balancer
+  LoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: 60
+      Scheme: internet-facing
+      SecurityGroups:
+        - !Ref LoadBalancerSecurityGroup
+      Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
+
+  # Create Trust Store for mTLS
+  Truststore:
+    Type: AWS::ElasticLoadBalancingV2::TrustStore
+    Condition: CreateTruststore
+    Properties:
+      CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
+      CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
+      Name: !Sub "${StackName}-trst"
+
+  # Create Listener with optional mTLS Verify Mode
+  ListenerHTTPS:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      LoadBalancerArn: !Ref LoadBalancer
+      Port: 443
+      Protocol: HTTPS
+      Certificates:
+        - CertificateArn: !Ref GenerateCertificate
+      SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
+      MutualAuthentication:
+        !If
+          - CreateTruststore
+          - {
+              Mode: verify,
+              TrustStoreArn: !GetAtt Truststore.TrustStoreArn
+            }
+          - !Ref "AWS::NoValue"
+
+  # Create Target Group
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      HealthCheckIntervalSeconds: 10
+      HealthCheckPath: /
+      HealthCheckTimeoutSeconds: 5
+      UnhealthyThresholdCount: 2
+      HealthyThresholdCount: 2
+      Port: 80
+      Protocol: HTTP
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: 60
+      TargetType: ip
+      VpcId: !ImportValue vpc-resources:VpcId
+
+  # DNS Record for Load Balancer
+  DNSRecord:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
+      Name: !Join
+        - "."
+        - - !Ref StackName
+          - !ImportValue eps-route53-resources:EPS-domain
+      Type: A
+      AliasTarget:
+        DNSName: !GetAtt LoadBalancer.DNSName
+        EvaluateTargetHealth: False
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+
+Outputs:
+  Endpoint:
+    Description: Load Balancer Endpoint
+    Value: !Sub "https://${StackName}.${!ImportValue eps-route53-resources:EPS-domain}"
+
+  LoadBalancerArn:
+    Description: ARN of the Load Balancer
+    Value: !Ref LoadBalancer
+
+  TargetGroupArn:
+    Description: ARN of the Target Group
+    Value: !Ref TargetGroup
+
+  SecurityGroupIds:
+    Description: Security Group IDs associated with the Load Balancer
+    Value: !Join [",", [!Ref LoadBalancerSecurityGroup]]
