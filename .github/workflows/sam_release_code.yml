@@ -164,3 +164,34 @@ jobs:
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
         run: ./release_code.sh
+
+      - name: Set ECR Repository
+        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+
+      - name: Set Image Tag
+        run: echo "IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
+
+      - name: docker_artifact download
+        uses: actions/download-artifact@v4
+        with:
+          name: docker_artifact
+          path: .
+
+      - name: Extract docker image
+        id: extract-image
+        run: |
+          docker load -i docker.img
+      
+      - name: Retrieve AWS Account ID
+        id: retrieve-account-id
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+       
+      - name: Login to Amazon ECR
+        id: login-ecr
+        run: |
+         aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+
+      - name: Push image to Amazon ECR
+        run: |
+          docker tag "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"  
