@@ -50,7 +50,7 @@ Resources:
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-lb-sg"
+          Value: !Sub "${StackName}-lb-sg"
 
   # Generate a new ACM certificate
   GenerateCertificate:
@@ -267,7 +267,7 @@ Resources:
           SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
       Tags:
         - Key: Name
-          Value: !Sub "${AWS::StackName}-ecs-sg"
+          Value: !Sub "${StackName}-ecs-sg"
 
 Outputs:
   Endpoint:
@@ -277,6 +277,14 @@ Outputs:
   LoadBalancerArn:
     Description: ARN of the Load Balancer
     Value: !Ref LoadBalancer
+
+  TargetGroupArn:
+    Description: ARN of the Target Group
+    Value: !Ref TargetGroup
+
+  SecurityGroupIds:
+    Description: Security Group IDs associated with the Load Balancer
+    Value: !Join [",", [!Ref LoadBalancerSecurityGroup]]
 
   ECSClusterName:
     Description: Name of the ECS Cluster
