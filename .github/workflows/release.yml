@@ -121,18 +121,20 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: dev
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
       # CREATE_INT_RELEASE_NOTES: true
       # CREATE_PROD_RELEASE_NOTES: true
+      DOMAIN_NAME_EXPORT: eps-route53-resources:EPS-domain
+      ZONE_ID_EXPORT: eps-route53-resources:EPS-ZoneID
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -145,16 +147,18 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing-sandbox
+      STACK_NAME: prescribe-dispense-sandbox
       AWS_ENVIRONMENT: dev
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_sandbox_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
+      DOMAIN_NAME_EXPORT: eps-route53-resources:EPS-domain
+      ZONE_ID_EXPORT: eps-route53-resources:EPS-ZoneID
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
 
@@ -170,12 +174,12 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: ref
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: DEBUG
@@ -195,12 +199,12 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: qa
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: DEBUG
@@ -213,12 +217,12 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: int
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: DEBUG
@@ -237,12 +241,12 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing-sandox
+      STACK_NAME: prescribe-dispense-sandox
       AWS_ENVIRONMENT: int
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_sandbox_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-sandbox-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: DEBUG
@@ -256,12 +260,12 @@ jobs:
     uses: ./.github/workflows/sam_release_code.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-      STACK_NAME: fhir-prescribing-and-dispensing
+      STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: prod
       # ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: fhir-prescribing-and-dispensing-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       # LOG_LEVEL: INFO
