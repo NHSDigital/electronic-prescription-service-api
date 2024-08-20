@@ -121,33 +121,6 @@ jobs:
       - name: Set Validator Image Tag
         run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV" 
 
-
-      # - name: Determine FHIR Facade Image Tag
-      #   id: determine-fhir-facade-image-tag
-      #   run: |
-      #     if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-      #       echo "FHIR_FACADE_IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
-      #     elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-      #       VERSION=$(cat VERSION)
-      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #       echo "FHIR_FACADE_IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
-      #     else
-      #       echo "FHIR_FACADE_IMAGE_TAG=latest" >> "$GITHUB_ENV"
-      #     fi
-
-      # - name: Determine Validator Image Tag
-      #   id: determine-validator-image-tag
-      #   run: |
-      #     if [[ "${{ github.event_name }}" == "pull_request" ]]; then
-      #       echo "VALIDATOR_IMAGE_TAG=PR-${{ github.event.pull_request.number }}" >> "$GITHUB_ENV"
-      #     elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
-      #       VERSION=$(cat VERSION)
-      #       SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
-      #       echo "VALIDATOR_IMAGE_TAG=${SHORT_SHA}-${VERSION}" >> "$GITHUB_ENV"
-      #     else
-      #       echo "VALIDATOR_IMAGE_TAG=latest" >> "$GITHUB_ENV"
-      #     fi  
-
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
         run: |
