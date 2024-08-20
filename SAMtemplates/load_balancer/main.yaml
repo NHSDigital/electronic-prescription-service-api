@@ -28,6 +28,7 @@ Parameters:
   ImageUri:
     Type: String
     Description: The URI of the Docker image in ECR
+    Default: "591291862413.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:PR-2652"
 
   ContainerPort:
     Type: Number
