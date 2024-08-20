@@ -1,9 +1,24 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
-  FHIR Prescribing and Dispensing
-# Params passed from the Makefile
+  FHIR Prescribing and Dispensing with mTLS
+
 Parameters:
+  EnableMutualTLS:
+    Type: String
+    Default: false
+    AllowedValues:
+      - true
+      - false
+
+  TruststoreVersion:
+    Type: String
+    Default: none
+
+  TruststoreFile:
+    Type: String
+    Default: none
+
   VersionNumber:
     Type: String
     Default: "xxx"
@@ -13,6 +28,19 @@ Parameters:
     Default: "xxx"
 
 Resources:
-  # Placeholder - Remove once real resources are added
-  NullResource:
-    Type: AWS::CloudFormation::WaitConditionHandle
+  LoadBalancers:
+    Type: AWS::Serverless::Application
+    Properties:
+      Location: load_balancer/main.yaml
+      Parameters:
+        StackName: !Ref AWS::StackName
+        EnableMutualTLS: !Ref EnableMutualTLS
+        TruststoreVersion: !Ref TruststoreVersion
+        TruststoreFile: !Ref TruststoreFile
+        VersionNumber: !Ref VersionNumber
+        CommitId: !Ref CommitId
+
+Outputs:
+  LoadBalancerEndpoint:
+    Description: Load Balancer Endpoint
+    Value: !GetAtt LoadBalancers.Outputs.Endpoint

@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc --build --clean && tsc --alwaysStrict --project tsconfig-build.json",
     "copy-resources": "cp -r ./src/resources/ ./dist/coordinator/src/",
-    "lint": "eslint . --ext .ts --max-warnings 0 --fix",
+    "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "start": "node dist/coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
@@ -23,10 +23,10 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
-    "@peculiar/x509": "^1.11.0",
+    "@peculiar/x509": "^1.12.0",
     "@hapi/hapi": "^21.3.10",
     "@xmldom/xmldom": "^0.8.10",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "crypto-js": "^4.2.0",
     "fhirpath": "3.10.1",
     "hapi-pino": "^12.1.0",

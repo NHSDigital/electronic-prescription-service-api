@@ -1,9 +1,5 @@
 import {driver} from "../live.test"
-import {
-  loginUnattendedAccess,
-  loginViaSimulatedAuthSmartcardUser,
-  logout
-} from "../helpers"
+import {loginUnattendedAccess, loginViaSimulatedAuthSmartcardUser, logout} from "../helpers"
 
 describe("firefox", () => {
   test("can logout from attended session", async () => {

@@ -202,7 +202,7 @@ describe("filterValidatorResponse", () => {
         {
           severity: "error",
           code: fhir.IssueCodes.PROCESSING,
-          // eslint-disable-next-line max-len
+
           diagnostics:
             "None of the codes provided are in the value set " +
             "https://fhir.hl7.org.uk/ValueSet/UKCore-NHSNumberVerificationStatus " +
@@ -213,7 +213,7 @@ describe("filterValidatorResponse", () => {
         {
           severity: "error",
           code: fhir.IssueCodes.PROCESSING,
-          // eslint-disable-next-line max-len
+
           diagnostics:
             "Unknown code 'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01' for " +
             "'https://fhir.hl7.org.uk/CodeSystem/UKCore-NHSNumberVerificationStatus#01'"

@@ -16,6 +16,7 @@ describe("firefox", () => {
   })
 
   test("can send prescriptions from prescription types with invalid types test pack", async () => {
+    // eslint-disable-next-line max-len
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPrescriptionTypesWithInvalidTypesTestPackInfo(), 25)
   })
 
@@ -23,4 +24,3 @@ describe("firefox", () => {
     await sendBulkPrescriptionUserJourney(driver, fileInfoFactory.getPostDatedPrescriptionTestPackInfo(), 2)
   })
 })
-
