@@ -24,9 +24,9 @@ on:
       SPEC_ARTIFACT:
         required: true
         type: string
-      TRUSTSTORE_FILE:
-        required: true
-        type: string
+      # TRUSTSTORE_FILE:
+      #   required: true
+      #   type: string
       VERSION_NUMBER:
         required: true
         type: string
@@ -55,12 +55,6 @@ on:
       # DEPLOY_APIGEE:
       #   type: boolean
       #   default: true
-      DOMAIN_NAME_EXPORT:
-        required: false
-        type: string
-      ZONE_ID_EXPORT:
-        required: false
-        type: string
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -151,7 +145,7 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         env:
-          artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
+          artifact_bucket_prefix: prescription_status_update/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
           COMMIT_ID: ${{ inputs.COMMIT_ID }}
           # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
           # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
@@ -159,10 +153,8 @@ jobs:
           stack_name: ${{ inputs.STACK_NAME }}
           TARGET_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           template_file: template.yaml
-          TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
+          # TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
-          ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
         run: ./release_code.sh
 
       - name: Set ECR Repository
