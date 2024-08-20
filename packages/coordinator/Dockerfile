@@ -9,8 +9,9 @@ WORKDIR /app
 FROM node:20.10.0-alpine AS build
 WORKDIR /build
 COPY package*.json ./
-COPY packages/coordinator ./packages/coordinator
 COPY packages/models ./packages/models
+# COPY packages/coordinator ./packages/coordinator
+COPY packages/${service} ./packages/${service}
 RUN npm ci --ignore-scripts --workspace packages/coordinator --workspace packages/models --include-workspace-root
 RUN npm run build --workspace packages/coordinator
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +

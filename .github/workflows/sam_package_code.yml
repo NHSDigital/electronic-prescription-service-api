@@ -124,14 +124,16 @@ jobs:
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
         run: |
-           docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+           docker build --build-arg service=coordinator -t "${{ env.   FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/  coordinator/Dockerfile .
            docker images
            docker save "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -o FHIR_facade_docker.img
 
+#docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+#docker build -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
       - name: Build Validator Docker image
         id: build-validator-image
         run: |
-           docker build -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+           docker build --build-arg service=validator -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
            docker images
            docker save "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -o validator_docker.img       
     
