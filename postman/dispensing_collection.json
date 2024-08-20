@@ -1,0 +1,595 @@
+{
+	"info": {
+		"_postman_id": "4557b6bc-47c3-441d-8754-c0515a9ecbfe",
+		"name": "EPS FHIR Dispensing",
+		"description": "This collection includes requests for releasing, returning, dispensing, withdrawing, and claiming for a prescription using FHIR EPS in the INT environment.\n\n## Authentication\n\nAll requests use an authentication bearer token acquired from a CIS2 OAuth call (Not included in this collection). This token should be set to the `accessToken` variable.\n\n## Headers\n\nHeaders are automatically populated, with the exception of `NHSD-Session-URID`. This is an optional header which can be enabled if a user has multiple roles assigned. Its value is set by the `Session-URID` variable.\n\n## Variables\n\nEach request uses a different subset of the below collection variables. `host` and `accessToken` are required for all collections so will not be specified per request.\n\n- `host` - The url for the FHIR EPS API. For INT this is `https://int.api.service.nhs.uk/electronic-prescriptions/FHIR/R4`\n    \n- `accessToken` - The CIS2 OAuth2 access token.\n    \n- `Session-URID` - The user role ID (URID) for the current session.\n    \n- `prescriptionId` - The shortform prescription ID of the prescription being dispensed, eg. `E5F28A-A83008-96CCCM`.\n    \n- `NHSNumber` - The NHS number of the patient who's prescription is being dispensed.\n    \n- `returnReasonCode` - The reason code for a prescription return, eg. `0001`.\n    \n- `withdrawReasonCode` - The reason code for a dispense notification withdrawal, eg. `MU`.\n    \n- `prescriptionStatusCode` - The status code of the prescription, eg. `0006`.\n    \n- `lineItemCount` - The number of line items in the prescription being dispensed (1-4).\n    \n- `lineItem{N}OrderItemNumber` - The longform ID of line item N of the prescription, eg. `1fc414a2-b0ab-4bdc-9cc5-7877d583c1c4`. Only 1<= N <= lineItemCount is mandatory.\n    \n- `lineItem{N}StatusCode` - The status code of line item N, eg. `0001`. Only 1<= N <= lineItemCount is mandatory.\n    \n- `requesterODSCode` - The ODS code of the organization which requested the prescription.\n    \n- `nominatedODSCode` - The ODS code of the organization which the prescription is nominated to.\n    \n- `releaseODSCode` - The ODS code of the organization a prescription is released to.\n    \n- `releaseResponseID` - The `rfc4122` ID of the release message which released this prescription.\n    \n- `dispenseNotificationID` - The `rfc4122` ID of the dispense notification being withdrawn.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32854853"
+	},
+	"item": [
+		{
+			"name": "Release By ODS Code",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Parameters\",\r\n    \"id\": \"{{$guid}}\",\r\n    \"parameter\": [\r\n        {\r\n            \"name\": \"owner\",\r\n            \"resource\": {\r\n                \"resourceType\": \"Organization\",\r\n                \"id\": \"organization\",\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                        \"value\": \"{{nominatedODSCode}}\"\r\n                    }\r\n                ],\r\n                \"name\": \"The Simple Pharmacy\",\r\n                \"address\": [\r\n                    {\r\n                        \"use\": \"work\",\r\n                        \"line\": [\r\n                            \"17 Austhorpe Road\",\r\n                            \"Crossgates\",\r\n                            \"Leeds\"\r\n                        ],\r\n                        \"city\": \"West Yorkshire\",\r\n                        \"postalCode\": \"LS15 8BA\"\r\n                    }\r\n                ],\r\n                \"telecom\": [\r\n                    {\r\n                        \"system\": \"phone\",\r\n                        \"value\": \"0113 3180277\",\r\n                        \"use\": \"work\"\r\n                    }\r\n                ],\r\n                \"type\": [\r\n                    {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/CodeSystem/organisation-role\",\r\n                                \"code\": \"182\",\r\n                                \"display\": \"PHARMACY\"\r\n                            }\r\n                        ]\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"status\",\r\n            \"valueCode\": \"accepted\"\r\n        },\r\n        {\r\n            \"name\": \"agent\",\r\n            \"resource\": {\r\n                \"resourceType\": \"PractitionerRole\",\r\n                \"practitioner\": {\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                        \"value\": \"3415870201\"\r\n                    },\r\n                    \"display\": \"Jackie Clark\"\r\n                },\r\n                \"telecom\": [\r\n                    {\r\n                        \"system\": \"phone\",\r\n                        \"value\": \"02380798431\",\r\n                        \"use\": \"work\"\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                        \"value\": \"555086415105\"\r\n                    }\r\n                ],\r\n                \"code\": [\r\n                    {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                                \"code\": \"S8000:G8000:R8000\",\r\n                                \"display\": \"Clinical Practitioner Access Role\"\r\n                            }\r\n                        ]\r\n                    }\r\n                ]\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/Task/$release",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"Task",
+						"$release"
+					]
+				},
+				"description": "Release all prescriptions nominated to a given ODS Code using the `/Task/$release` endpoint.\n\n## Variables\n\n- `nominatedODSCode` - The ODS Code with nominated prescriptions to be released."
+			},
+			"response": []
+		},
+		{
+			"name": "Release by Prescription ID",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Parameters\",\r\n    \"id\": \"{{$guid}}\",\r\n    \"parameter\": [\r\n        {\r\n            \"name\": \"owner\",\r\n            \"resource\": {\r\n                \"resourceType\": \"Organization\",\r\n                \"id\": \"organization\",\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                        \"value\": \"{{releaseODSCode}}\"\r\n                    }\r\n                ],\r\n                \"name\": \"The Simple Pharmacy\",\r\n                \"address\": [\r\n                    {\r\n                        \"use\": \"work\",\r\n                        \"line\": [\r\n                            \"17 Austhorpe Road\",\r\n                            \"Crossgates\",\r\n                            \"Leeds\"\r\n                        ],\r\n                        \"city\": \"West Yorkshire\",\r\n                        \"postalCode\": \"LS15 8BA\"\r\n                    }\r\n                ],\r\n                \"telecom\": [\r\n                    {\r\n                        \"system\": \"phone\",\r\n                        \"value\": \"0113 3180277\",\r\n                        \"use\": \"work\"\r\n                    }\r\n                ],\r\n                \"type\": [\r\n                    {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/CodeSystem/organisation-role\",\r\n                                \"code\": \"182\",\r\n                                \"display\": \"PHARMACY\"\r\n                            }\r\n                        ]\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"group-identifier\",\r\n            \"valueIdentifier\": {\r\n                \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n                \"value\": \"{{prescriptionID}}\"\r\n            }\r\n        },\r\n        {\r\n            \"name\": \"status\",\r\n            \"valueCode\": \"accepted\"\r\n        },\r\n        {\r\n            \"name\": \"agent\",\r\n            \"resource\": {\r\n                \"resourceType\": \"PractitionerRole\",\r\n                \"practitioner\": {\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                        \"value\": \"3415870201\"\r\n                    },\r\n                    \"display\": \"Jackie Clark\"\r\n                },\r\n                \"telecom\": [\r\n                    {\r\n                        \"system\": \"phone\",\r\n                        \"value\": \"02380798431\",\r\n                        \"use\": \"work\"\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                        \"value\": \"555086415105\"\r\n                    }\r\n                ],\r\n                \"code\": [\r\n                    {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                                \"code\": \"S8000:G8000:R8000\",\r\n                                \"display\": \"Clinical Practitioner Access Role\"\r\n                            }\r\n                        ]\r\n                    }\r\n                ]\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/Task/$release",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"Task",
+						"$release"
+					]
+				},
+				"description": "Release all prescriptions nominated to a given ODS Code using the `/Task/$release` endpoint.\n\n## Variables\n\n- `prescriptionID` - The shortform prescription ID of the prescription to be released.\n\n- `releaseODSCode` - The ODS Code to release the given prescription to.\n    \n"
+			},
+			"response": []
+		},
+		{
+			"name": "Return a Prescription",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate request guid\r",
+							"var uuid = require('uuid');\r",
+							"\r",
+							"var request_guid = uuid.v4();\r",
+							"pm.environment.set(\"return_request_guid\", request_guid)\r",
+							"\r",
+							"// Map reason code\r",
+							"var reason_display_map = {\r",
+							"    \"0001\": \"Patient non-attendance\",\r",
+							"    \"0002\": \"Unable to dispense medication on prescriptions\",\r",
+							"    \"0003\": \"Patient requested release\",\r",
+							"    \"0004\": \"Another dispenser requested release on behalf of the patient\",\r",
+							"    \"0005\": \"Invalid digital signature\",\r",
+							"    \"0006\": \"Rejected due to version problem\",\r",
+							"    \"0007\": \"Prescription otherwise invalid or unreadable\",\r",
+							"    \"0008\": \"Prescription expired\"\r",
+							"};\r",
+							"var reason_code = pm.variables.get(\"returnReasonCode\");\r",
+							"var reason_display = reason_display_map[reason_code];\r",
+							"pm.environment.set(\"return_reason_display\", reason_display);\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Task\",\r\n    \"id\": \"{{return_request_guid}}\",\r\n    \"identifier\": [\r\n        {\r\n            \"system\": \"https://tools.ietf.org/html/rfc4122\",\r\n            \"value\": \"{{return_request_guid}}\"\r\n        }\r\n    ],\r\n    \"authoredOn\": \"2024-07-29T13:41:18+00:00\",\r\n    \"groupIdentifier\": {\r\n        \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n        \"value\": \"{{prescriptionID}}\"\r\n    },\r\n    \"focus\": {\r\n        \"type\": \"Bundle\",\r\n        \"identifier\": {\r\n            \"system\": \"https://tools.ietf.org/html/rfc4122\",\r\n            \"value\": \"{{releaseResponseID}}\"\r\n        }\r\n    },\r\n    \"intent\": \"order\",\r\n    \"status\": \"rejected\",\r\n    \"statusReason\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason\",\r\n                \"code\": \"{{returnReasonCode}}\",\r\n                \"display\": \"{{return_reason_display}}\"\r\n            }\r\n        ]\r\n    },\r\n    \"code\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://hl7.org/fhir/CodeSystem/task-code\",\r\n                \"code\": \"change\",\r\n                \"display\": \"Change the focal resource\"\r\n            }\r\n        ]\r\n    },\r\n    \"for\": {\r\n        \"identifier\": {\r\n            \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n            \"value\": \"{{NHSNumber}}\"\r\n        }\r\n    },\r\n    \"owner\": {\r\n        \"identifier\": {\r\n            \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n            \"value\": \"{{releaseODSCode}}\"\r\n        }\r\n    },\r\n    \"requester\": {\r\n        \"reference\": \"#requester\"\r\n    },\r\n    \"contained\": [\r\n        {\r\n            \"resourceType\": \"PractitionerRole\",\r\n            \"id\": \"requester\",\r\n            \"identifier\": [\r\n                {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                    \"value\": \"641555508105\"\r\n                }\r\n            ],\r\n            \"practitioner\": {\r\n                \"display\": \"Ms Lottie Maifeld\",\r\n                \"identifier\": {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                    \"value\": \"3415870201\"\r\n                }\r\n            },\r\n            \"organization\": {\r\n                \"reference\": \"#organisation\"\r\n            },\r\n            \"telecom\": [\r\n                {\r\n                    \"system\": \"phone\",\r\n                    \"use\": \"work\",\r\n                    \"value\": \"01234567890\"\r\n                }\r\n            ],\r\n            \"code\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                            \"code\": \"S8000:G8000:R8000\",\r\n                            \"display\": \"Clinical Practitioner Access Role\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"resourceType\": \"Organization\",\r\n            \"id\": \"organisation\",\r\n            \"identifier\": [\r\n                {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                    \"value\": \"{{requesterODSCode}}\"\r\n                }\r\n            ],\r\n            \"name\": \"The Simple Pharmacy\",\r\n            \"address\": [\r\n                {\r\n                    \"city\": \"West Yorkshire\",\r\n                    \"use\": \"work\",\r\n                    \"line\": [\r\n                        \"17 Austhorpe Road\",\r\n                        \"Crossgates\",\r\n                        \"Leeds\"\r\n                    ],\r\n                    \"postalCode\": \"LS15 8BA\"\r\n                }\r\n            ],\r\n            \"telecom\": [\r\n                {\r\n                    \"system\": \"phone\",\r\n                    \"use\": \"work\",\r\n                    \"value\": \"0113 3180277\"\r\n                }\r\n            ],\r\n            \"active\": true,\r\n            \"type\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/organisation-role\",\r\n                            \"code\": \"182\",\r\n                            \"display\": \"PHARMACY\"\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/Task#return",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"Task"
+					],
+					"hash": "return"
+				},
+				"description": "Return a released prescription to Spine using the `/Task#return` endpoint.\n\n## Variables\n\n- `prescriptionID` - The shortform prescription ID of the prescription to be returned.\n\n- `NHSNumber` - The NHS Number of the Patient who's prescription is being returned.\n\n- `returnReasonCode` - The reason code for the return.\n    \n- `releaseResponseID` - The `rfc4122` ID of the release message which released this prescription.\n \n- `releaseODSCode` - The ODS code of the organization the prescription was released to.\n    \n- `requesterODSCode` - The ODS code of the organization which requested the prescription.\n    \n\n## Return Reasons\n\nThe following return reason codes are supported\n\n| Reason Code | Reason Display |\n| --- | --- |\n| 0001 | Patient non-attendance |\n| 0002 | Unable to dispense medication on prescriptions |\n| 0003 | Patient requested release |\n| 0004 | Another dispenser requested release on behalf of the patient |\n| 0005 | Invalid digital signature |\n| 0006 | Rejected due to version problem |\n| 0007 | Prescription otherwise invalid or unreadable |\n| 0008 | Prescription expired |"
+			},
+			"response": []
+		},
+		{
+			"name": "Send a Dispense Notificaiton",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Generate uuids\r",
+							"var uuid = require('uuid')\r",
+							"\r",
+							"var headerGuid = uuid.v4();\r",
+							"pm.environment.set(\"header_guid\", headerGuid)\r",
+							"\r",
+							"// Set line items appropriate to count\r",
+							"var lineItemCount = Number(pm.variables.get('lineItemCount'))\r",
+							"var body = JSON.parse(pm.request.body.raw)\r",
+							"\r",
+							"var header = body.entry[0]\r",
+							"var medicationDispenses = body.entry.slice(1, 1 + lineItemCount)\r",
+							"var patient = body.entry[5]\r",
+							"var org = body.entry[6]\r",
+							"\r",
+							"var orgFocus = body.entry[0].resource.focus[0]\r",
+							"var dispenseFocus = body.entry[0].resource.focus.slice(1, 1 + lineItemCount)\r",
+							"var newFocus = [orgFocus, ...dispenseFocus]\r",
+							"header.resource.focus = newFocus\r",
+							"\r",
+							"// Remove nominated pharmacy for non-nominated prescriptions\r",
+							"var nominatedODSCode = pm.variables.get(\"nominatedODSCode\")\r",
+							"if (!nominatedODSCode) {\r",
+							"    body.entry[0].resource.destination = []\r",
+							"}\r",
+							"\r",
+							"// Set prescription status\r",
+							"var prescriptionStatusMap = {\r",
+							"    \"0003\": \"With Dispenser - Active\",\r",
+							"    \"0006\": \"Dispensed\",\r",
+							"    \"0007\": \"Not Dispensed\"\r",
+							"}\r",
+							"var prescriptionStatusCode = pm.variables.get(\"prescriptionStatusCode\")\r",
+							"var prescriptionStatusDisplay = prescriptionStatusMap[prescriptionStatusCode]\r",
+							"\r",
+							"pm.environment.set('prescription_status_display', prescriptionStatusDisplay)\r",
+							"\r",
+							"// Set line item information\r",
+							"var lineItemStatusMap = {\r",
+							"    \"0001\": \"Item fully dispensed\",\r",
+							"    \"0002\": \"Item not dispensed\",\r",
+							"    \"0003\": \"Item dispensed - partial\",\r",
+							"    \"0004\": \"Item not dispensed owing\",\r",
+							"    \"0005\": \"Item cancelled\",\r",
+							"    \"0006\": \"Expired\",\r",
+							"    \"0007\": \"Item to be dispensed\",\r",
+							"    \"0008\": \"Item with dispenser\"\r",
+							"}\r",
+							"\r",
+							"for ([lineItemIndex, medicationDispense] in medicationDispenses.entries()) {\r",
+							"    // Line item status\r",
+							"    var lineItemStatusCode = pm.variables.get(`lineItem${lineItemIndex + 1}StatusCode`)\r",
+							"    var lineItemStatusDisplay = lineItemStatusMap[lineItemStatusCode]\r",
+							"    pm.environment.set(`line_item_${lineItemIndex + 1}_status_display`, lineItemStatusDisplay)\r",
+							"\r",
+							"    // Update if non-nominated\r",
+							"    if (!nominatedODSCode) {\r",
+							"        medicationDispense.resource.contained[1].dispenseRequest.extension[0].valueCoding.code = \"0004\"\r",
+							"        medicationDispense.resource.contained[1].dispenseRequest.performer = undefined\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"// Rebuild entries\r",
+							"var newEntries = [header, ...medicationDispenses, patient, org]\r",
+							"body.entry = newEntries\r",
+							"\r",
+							"// Set request body\r",
+							"pm.request.body.update({\r",
+							"    mode: \"raw\",\r",
+							"    raw: JSON.stringify(body, space = 2)\r",
+							"})\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Bundle\",\r\n    \"id\": \"{{$guid}}\",\r\n    \"identifier\": {\r\n        \"system\": \"https://tools.ietf.org/html/rfc4122\",\r\n        \"value\": \"{{$guid}}\"\r\n    },\r\n    \"type\": \"message\",\r\n    \"entry\": [\r\n        {\r\n            \"fullUrl\": \"urn:uuid:{{header_guid}}\",\r\n            \"resource\": {\r\n                \"resourceType\": \"MessageHeader\",\r\n                \"id\": \"{{header_guid}}\",\r\n                \"destination\": [\r\n                    {\r\n                        \"endpoint\": \"urn:nhs-uk:addressing:ods:{{nominatedODSCode}}\",\r\n                        \"receiver\": {\r\n                            \"identifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                \"value\": \"{{nominatedODSCode}}\"\r\n                            }\r\n                        }\r\n                    }\r\n                ],\r\n                \"sender\": {\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                        \"value\": \"X2601\"\r\n                    },\r\n                    \"display\": \"NHS Digital Spine\"\r\n                },\r\n                \"source\": {\r\n                    \"name\": \"NHS Spine\",\r\n                    \"endpoint\": \"https://int.api.service.nhs.uk/electronic-prescriptions/$process-message\"\r\n                },\r\n                \"response\": {\r\n                    \"code\": \"ok\",\r\n                    \"identifier\": \"ffffffff-ffff-4fff-bfff-ffffffffffff\"\r\n                },\r\n                \"eventCoding\": {\r\n                    \"system\": \"https://fhir.nhs.uk/CodeSystem/message-event\",\r\n                    \"code\": \"dispense-notification\",\r\n                    \"display\": \"Dispense Notification\"\r\n                },\r\n                \"focus\": [\r\n                    {\r\n                        \"reference\": \"urn:uuid:04458512-dc08-4409-99a1-ae3d3b74cd59\"\r\n                    },\r\n                    {\r\n                        \"reference\": \"urn:uuid:c2940e25-8455-488f-b48a-2d76ac94dd83\"\r\n                    },\r\n                    {\r\n                        \"reference\": \"urn:uuid:aac82511-db64-4849-8dfb-a2dfbd5025cb\"\r\n                    },\r\n                    {\r\n                        \"reference\": \"urn:uuid:53ee68aa-16f4-4a17-9a5d-abdd079497f8\"\r\n                    },\r\n                    {\r\n                        \"reference\": \"urn:uuid:cdb5d465-3823-4b7d-b298-1b8e0c2f6fc8\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"fullUrl\": \"urn:uuid:c2940e25-8455-488f-b48a-2d76ac94dd83\",\r\n            \"resource\": {\r\n                \"resourceType\": \"MedicationDispense\",\r\n                \"id\": \"c2940e25-8455-488f-b48a-2d76ac94dd83\",\r\n                \"extension\": [\r\n                    {\r\n                        \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\",\r\n                        \"valueCoding\": {\r\n                            \"code\": \"{{prescriptionStatusCode}}\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\",\r\n                            \"display\": \"{{prescription_status_display}}\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/prescription-dispense-item-number\",\r\n                        \"value\": \"{{$guid}}\"\r\n                    }\r\n                ],\r\n                \"contained\": [\r\n                    {\r\n                        \"resourceType\": \"PractitionerRole\",\r\n                        \"id\": \"performer\",\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                                \"value\": \"555086415105\"\r\n                            }\r\n                        ],\r\n                        \"practitioner\": {\r\n                            \"identifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                                \"value\": \"3415870201\"\r\n                            },\r\n                            \"display\": \"Mr Peter Potion\"\r\n                        },\r\n                        \"organization\": {\r\n                            \"reference\": \"urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b\"\r\n                        },\r\n                        \"code\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                                        \"code\": \"S8000:G8000:R8000\",\r\n                                        \"display\": \"Clinical Practitioner Access Role\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"telecom\": [\r\n                            {\r\n                                \"system\": \"phone\",\r\n                                \"use\": \"work\",\r\n                                \"value\": \"0532567890\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"resourceType\": \"MedicationRequest\",\r\n                        \"id\": \"m1\",\r\n                        \"extension\": [\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner\",\r\n                                \"valueReference\": {\r\n                                    \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                                }\r\n                            },\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType\",\r\n                                \"valueCoding\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/prescription-type\",\r\n                                    \"code\": \"0101\"\r\n                                }\r\n                            }\r\n                        ],\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                \"value\": \"{{lineItem1OrderItemNumber}}\"\r\n                            }\r\n                        ],\r\n                        \"status\": \"active\",\r\n                        \"intent\": \"order\",\r\n                        \"medicationCodeableConcept\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://snomed.info/sct\",\r\n                                    \"code\": \"39732311000001104\",\r\n                                    \"display\": \"Amoxicillin 250mg capsules\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"subject\": {\r\n                            \"reference\": \"urn:uuid:ac46c48e-d7a8-4d6a-afb2-69e2daa1c75f\"\r\n                        },\r\n                        \"authoredOn\": \"2024-07-29T14:36:49+00:00\",\r\n                        \"category\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-category\",\r\n                                        \"code\": \"outpatient\",\r\n                                        \"display\": \"Outpatient\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"requester\": {\r\n                            \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                        },\r\n                        \"groupIdentifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n                            \"value\": \"{{prescriptionID}}\",\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId\",\r\n                                    \"valueIdentifier\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/Id/prescription\",\r\n                                        \"value\": \"5174150a-ab48-4145-85ac-636a9c33fe73\"\r\n                                    }\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"courseOfTherapyType\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\",\r\n                                    \"code\": \"acute\",\r\n                                    \"display\": \"Short course (acute) therapy\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"dosageInstruction\": [\r\n                            {\r\n                                \"text\": \"2 times a day for 10 days\"\r\n                            }\r\n                        ],\r\n                        \"dispenseRequest\": {\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\",\r\n                                    \"valueCoding\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/dispensing-site-preference\",\r\n                                        \"code\": \"P1\"\r\n                                    }\r\n                                }\r\n                            ],\r\n                            \"numberOfRepeatsAllowed\": 0,\r\n                            \"quantity\": {\r\n                                \"value\": 20,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            },\r\n                            \"performer\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                    \"value\": \"VNE51\"\r\n                                }\r\n                            }\r\n                        },\r\n                        \"substitution\": {\r\n                            \"allowedBoolean\": false\r\n                        }\r\n                    }\r\n                ],\r\n                \"status\": \"unknown\",\r\n                \"medicationCodeableConcept\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"http://snomed.info/sct\",\r\n                            \"code\": \"39732311000001104\",\r\n                            \"display\": \"Amoxicillin 250mg capsules\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"subject\": {\r\n                    \"reference\": \"urn:uuid:04458512-dc08-4409-99a1-ae3d3b74cd59\",\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n                        \"value\": \"{{NHSNumber}}\"\r\n                    }\r\n                },\r\n                \"performer\": [\r\n                    {\r\n                        \"actor\": {\r\n                            \"reference\": \"#performer\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"authorizingPrescription\": [\r\n                    {\r\n                        \"reference\": \"#m1\"\r\n                    }\r\n                ],\r\n                \"type\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"code\": \"{{lineItem1StatusCode}}\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                            \"display\": \"{{line_item_1_status_display}}\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"quantity\": {\r\n                    \"value\": 20,\r\n                    \"unit\": \"tablet\",\r\n                    \"system\": \"http://snomed.info/sct\",\r\n                    \"code\": \"428673006\"\r\n                },\r\n                \"whenHandedOver\": \"2024-07-29T14:37:11.754Z\",\r\n                \"dosageInstruction\": [\r\n                    {\r\n                        \"text\": \"2 times a day for 10 days\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"fullUrl\": \"urn:uuid:aac82511-db64-4849-8dfb-a2dfbd5025cb\",\r\n            \"resource\": {\r\n                \"resourceType\": \"MedicationDispense\",\r\n                \"id\": \"aac82511-db64-4849-8dfb-a2dfbd5025cb\",\r\n                \"extension\": [\r\n                    {\r\n                        \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\",\r\n                        \"valueCoding\": {\r\n                            \"code\": \"0006\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\",\r\n                            \"display\": \"Dispensed\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/prescription-dispense-item-number\",\r\n                        \"value\": \"{{$guid}}\"\r\n                    }\r\n                ],\r\n                \"contained\": [\r\n                    {\r\n                        \"resourceType\": \"PractitionerRole\",\r\n                        \"id\": \"performer\",\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                                \"value\": \"555086415105\"\r\n                            }\r\n                        ],\r\n                        \"practitioner\": {\r\n                            \"identifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                                \"value\": \"3415870201\"\r\n                            },\r\n                            \"display\": \"Mr Peter Potion\"\r\n                        },\r\n                        \"organization\": {\r\n                            \"reference\": \"urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b\"\r\n                        },\r\n                        \"code\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                                        \"code\": \"S8000:G8000:R8000\",\r\n                                        \"display\": \"Clinical Practitioner Access Role\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"telecom\": [\r\n                            {\r\n                                \"system\": \"phone\",\r\n                                \"use\": \"work\",\r\n                                \"value\": \"0532567890\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"resourceType\": \"MedicationRequest\",\r\n                        \"id\": \"m1\",\r\n                        \"extension\": [\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner\",\r\n                                \"valueReference\": {\r\n                                    \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                                }\r\n                            },\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType\",\r\n                                \"valueCoding\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/prescription-type\",\r\n                                    \"code\": \"0101\"\r\n                                }\r\n                            }\r\n                        ],\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                \"value\": \"{{lineItem2OrderItemNumber}}\"\r\n                            }\r\n                        ],\r\n                        \"status\": \"active\",\r\n                        \"intent\": \"order\",\r\n                        \"medicationCodeableConcept\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://snomed.info/sct\",\r\n                                    \"code\": \"322341003\",\r\n                                    \"display\": \"Co-codamol 30mg/500mg tablets\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"subject\": {\r\n                            \"reference\": \"urn:uuid:ac46c48e-d7a8-4d6a-afb2-69e2daa1c75f\"\r\n                        },\r\n                        \"authoredOn\": \"2024-07-29T14:36:49+00:00\",\r\n                        \"category\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-category\",\r\n                                        \"code\": \"outpatient\",\r\n                                        \"display\": \"Outpatient\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"requester\": {\r\n                            \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                        },\r\n                        \"groupIdentifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n                            \"value\": \"{{prescriptionID}}\",\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId\",\r\n                                    \"valueIdentifier\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/Id/prescription\",\r\n                                        \"value\": \"5174150a-ab48-4145-85ac-636a9c33fe73\"\r\n                                    }\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"courseOfTherapyType\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\",\r\n                                    \"code\": \"acute\",\r\n                                    \"display\": \"Short course (acute) therapy\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"dosageInstruction\": [\r\n                            {\r\n                                \"text\": \"2 times a day for 10 days\"\r\n                            }\r\n                        ],\r\n                        \"dispenseRequest\": {\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\",\r\n                                    \"valueCoding\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/dispensing-site-preference\",\r\n                                        \"code\": \"P1\"\r\n                                    }\r\n                                }\r\n                            ],\r\n                            \"numberOfRepeatsAllowed\": 0,\r\n                            \"quantity\": {\r\n                                \"value\": 20,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            },\r\n                            \"performer\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                    \"value\": \"VNE51\"\r\n                                }\r\n                            }\r\n                        },\r\n                        \"substitution\": {\r\n                            \"allowedBoolean\": false\r\n                        }\r\n                    }\r\n                ],\r\n                \"status\": \"unknown\",\r\n                \"medicationCodeableConcept\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"http://snomed.info/sct\",\r\n                            \"code\": \"322341003\",\r\n                            \"display\": \"Co-codamol 30mg/500mg tablets\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"subject\": {\r\n                    \"reference\": \"urn:uuid:04458512-dc08-4409-99a1-ae3d3b74cd59\",\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n                        \"value\": \"{{NHSNumber}}\"\r\n                    }\r\n                },\r\n                \"performer\": [\r\n                    {\r\n                        \"actor\": {\r\n                            \"reference\": \"#performer\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"authorizingPrescription\": [\r\n                    {\r\n                        \"reference\": \"#m1\"\r\n                    }\r\n                ],\r\n                \"type\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"code\": \"{{lineItem2StatusCode}}\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                            \"display\": \"{{line_item_2_status_display}}\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"quantity\": {\r\n                    \"value\": 20,\r\n                    \"unit\": \"tablet\",\r\n                    \"system\": \"http://snomed.info/sct\",\r\n                    \"code\": \"428673006\"\r\n                },\r\n                \"whenHandedOver\": \"2024-07-29T14:37:11.754Z\",\r\n                \"dosageInstruction\": [\r\n                    {\r\n                        \"text\": \"2 times a day for 10 days\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"fullUrl\": \"urn:uuid:53ee68aa-16f4-4a17-9a5d-abdd079497f8\",\r\n            \"resource\": {\r\n                \"resourceType\": \"MedicationDispense\",\r\n                \"id\": \"53ee68aa-16f4-4a17-9a5d-abdd079497f8\",\r\n                \"extension\": [\r\n                    {\r\n                        \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\",\r\n                        \"valueCoding\": {\r\n                            \"code\": \"0006\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\",\r\n                            \"display\": \"Dispensed\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/prescription-dispense-item-number\",\r\n                        \"value\": \"{{$guid}}\"\r\n                    }\r\n                ],\r\n                \"contained\": [\r\n                    {\r\n                        \"resourceType\": \"PractitionerRole\",\r\n                        \"id\": \"performer\",\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                                \"value\": \"555086415105\"\r\n                            }\r\n                        ],\r\n                        \"practitioner\": {\r\n                            \"identifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                                \"value\": \"3415870201\"\r\n                            },\r\n                            \"display\": \"Mr Peter Potion\"\r\n                        },\r\n                        \"organization\": {\r\n                            \"reference\": \"urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b\"\r\n                        },\r\n                        \"code\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                                        \"code\": \"S8000:G8000:R8000\",\r\n                                        \"display\": \"Clinical Practitioner Access Role\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"telecom\": [\r\n                            {\r\n                                \"system\": \"phone\",\r\n                                \"use\": \"work\",\r\n                                \"value\": \"0532567890\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"resourceType\": \"MedicationRequest\",\r\n                        \"id\": \"m1\",\r\n                        \"extension\": [\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner\",\r\n                                \"valueReference\": {\r\n                                    \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                                }\r\n                            },\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType\",\r\n                                \"valueCoding\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/prescription-type\",\r\n                                    \"code\": \"0101\"\r\n                                }\r\n                            }\r\n                        ],\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                \"value\": \"{{lineItem3OrderItemNumber}}\"\r\n                            }\r\n                        ],\r\n                        \"status\": \"active\",\r\n                        \"intent\": \"order\",\r\n                        \"medicationCodeableConcept\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://snomed.info/sct\",\r\n                                    \"code\": \"321080004\",\r\n                                    \"display\": \"Pseudoephedrine hydrochloride 60mg tablets\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"subject\": {\r\n                            \"reference\": \"urn:uuid:ac46c48e-d7a8-4d6a-afb2-69e2daa1c75f\"\r\n                        },\r\n                        \"authoredOn\": \"2024-07-29T14:36:49+00:00\",\r\n                        \"category\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-category\",\r\n                                        \"code\": \"outpatient\",\r\n                                        \"display\": \"Outpatient\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"requester\": {\r\n                            \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                        },\r\n                        \"groupIdentifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n                            \"value\": \"{{prescriptionID}}\",\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId\",\r\n                                    \"valueIdentifier\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/Id/prescription\",\r\n                                        \"value\": \"5174150a-ab48-4145-85ac-636a9c33fe73\"\r\n                                    }\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"courseOfTherapyType\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\",\r\n                                    \"code\": \"acute\",\r\n                                    \"display\": \"Short course (acute) therapy\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"dosageInstruction\": [\r\n                            {\r\n                                \"text\": \"3 times a day for 10 days\"\r\n                            }\r\n                        ],\r\n                        \"dispenseRequest\": {\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\",\r\n                                    \"valueCoding\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/dispensing-site-preference\",\r\n                                        \"code\": \"P1\"\r\n                                    }\r\n                                }\r\n                            ],\r\n                            \"numberOfRepeatsAllowed\": 0,\r\n                            \"quantity\": {\r\n                                \"value\": 30,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            },\r\n                            \"performer\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                    \"value\": \"VNE51\"\r\n                                }\r\n                            }\r\n                        },\r\n                        \"substitution\": {\r\n                            \"allowedBoolean\": false\r\n                        }\r\n                    }\r\n                ],\r\n                \"status\": \"unknown\",\r\n                \"medicationCodeableConcept\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"http://snomed.info/sct\",\r\n                            \"code\": \"321080004\",\r\n                            \"display\": \"Pseudoephedrine hydrochloride 60mg tablets\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"subject\": {\r\n                    \"reference\": \"urn:uuid:04458512-dc08-4409-99a1-ae3d3b74cd59\",\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n                        \"value\": \"{{NHSNumber}}\"\r\n                    }\r\n                },\r\n                \"performer\": [\r\n                    {\r\n                        \"actor\": {\r\n                            \"reference\": \"#performer\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"authorizingPrescription\": [\r\n                    {\r\n                        \"reference\": \"#m1\"\r\n                    }\r\n                ],\r\n                \"type\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"code\": \"{{lineItem3StatusCode}}\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                            \"display\": \"{{line_item_3_status_display}}\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"quantity\": {\r\n                    \"value\": 30,\r\n                    \"unit\": \"tablet\",\r\n                    \"system\": \"http://snomed.info/sct\",\r\n                    \"code\": \"428673006\"\r\n                },\r\n                \"whenHandedOver\": \"2024-07-29T14:37:11.754Z\",\r\n                \"dosageInstruction\": [\r\n                    {\r\n                        \"text\": \"3 times a day for 10 days\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"fullUrl\": \"urn:uuid:cdb5d465-3823-4b7d-b298-1b8e0c2f6fc8\",\r\n            \"resource\": {\r\n                \"resourceType\": \"MedicationDispense\",\r\n                \"id\": \"cdb5d465-3823-4b7d-b298-1b8e0c2f6fc8\",\r\n                \"extension\": [\r\n                    {\r\n                        \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\",\r\n                        \"valueCoding\": {\r\n                            \"code\": \"0006\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\",\r\n                            \"display\": \"Dispensed\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/prescription-dispense-item-number\",\r\n                        \"value\": \"{{$guid}}\"\r\n                    }\r\n                ],\r\n                \"contained\": [\r\n                    {\r\n                        \"resourceType\": \"PractitionerRole\",\r\n                        \"id\": \"performer\",\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                                \"value\": \"555086415105\"\r\n                            }\r\n                        ],\r\n                        \"practitioner\": {\r\n                            \"identifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                                \"value\": \"3415870201\"\r\n                            },\r\n                            \"display\": \"Mr Peter Potion\"\r\n                        },\r\n                        \"organization\": {\r\n                            \"reference\": \"urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b\"\r\n                        },\r\n                        \"code\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                                        \"code\": \"S8000:G8000:R8000\",\r\n                                        \"display\": \"Clinical Practitioner Access Role\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"telecom\": [\r\n                            {\r\n                                \"system\": \"phone\",\r\n                                \"use\": \"work\",\r\n                                \"value\": \"0532567890\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    {\r\n                        \"resourceType\": \"MedicationRequest\",\r\n                        \"id\": \"m1\",\r\n                        \"extension\": [\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner\",\r\n                                \"valueReference\": {\r\n                                    \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                                }\r\n                            },\r\n                            {\r\n                                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType\",\r\n                                \"valueCoding\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/prescription-type\",\r\n                                    \"code\": \"0101\"\r\n                                }\r\n                            }\r\n                        ],\r\n                        \"identifier\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                \"value\": \"{{lineItem4OrderItemNumber}}\"\r\n                            }\r\n                        ],\r\n                        \"status\": \"active\",\r\n                        \"intent\": \"order\",\r\n                        \"medicationCodeableConcept\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://snomed.info/sct\",\r\n                                    \"code\": \"324252006\",\r\n                                    \"display\": \"Azithromycin 250mg capsules\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"subject\": {\r\n                            \"reference\": \"urn:uuid:ac46c48e-d7a8-4d6a-afb2-69e2daa1c75f\"\r\n                        },\r\n                        \"authoredOn\": \"2024-07-29T14:36:49+00:00\",\r\n                        \"category\": [\r\n                            {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-category\",\r\n                                        \"code\": \"outpatient\",\r\n                                        \"display\": \"Outpatient\"\r\n                                    }\r\n                                ]\r\n                            }\r\n                        ],\r\n                        \"requester\": {\r\n                            \"reference\": \"urn:uuid:f6d86f0f-66a2-4aa4-a436-f799afe1be89\"\r\n                        },\r\n                        \"groupIdentifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n                            \"value\": \"{{prescriptionID}}\",\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionId\",\r\n                                    \"valueIdentifier\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/Id/prescription\",\r\n                                        \"value\": \"5174150a-ab48-4145-85ac-636a9c33fe73\"\r\n                                    }\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"courseOfTherapyType\": {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"http://terminology.hl7.org/CodeSystem/medicationrequest-course-of-therapy\",\r\n                                    \"code\": \"acute\",\r\n                                    \"display\": \"Short course (acute) therapy\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        \"dosageInstruction\": [\r\n                            {\r\n                                \"text\": \"3 times a day for 10 days\"\r\n                            }\r\n                        ],\r\n                        \"dispenseRequest\": {\r\n                            \"extension\": [\r\n                                {\r\n                                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType\",\r\n                                    \"valueCoding\": {\r\n                                        \"system\": \"https://fhir.nhs.uk/CodeSystem/dispensing-site-preference\",\r\n                                        \"code\": \"P1\"\r\n                                    }\r\n                                }\r\n                            ],\r\n                            \"numberOfRepeatsAllowed\": 0,\r\n                            \"quantity\": {\r\n                                \"value\": 30,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            },\r\n                            \"performer\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                    \"value\": \"VNE51\"\r\n                                }\r\n                            }\r\n                        },\r\n                        \"substitution\": {\r\n                            \"allowedBoolean\": false\r\n                        }\r\n                    }\r\n                ],\r\n                \"status\": \"unknown\",\r\n                \"medicationCodeableConcept\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"http://snomed.info/sct\",\r\n                            \"code\": \"324252006\",\r\n                            \"display\": \"Azithromycin 250mg capsules\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"subject\": {\r\n                    \"reference\": \"urn:uuid:04458512-dc08-4409-99a1-ae3d3b74cd59\",\r\n                    \"identifier\": {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n                        \"value\": \"{{NHSNumber}}\"\r\n                    }\r\n                },\r\n                \"performer\": [\r\n                    {\r\n                        \"actor\": {\r\n                            \"reference\": \"#performer\"\r\n                        }\r\n                    }\r\n                ],\r\n                \"authorizingPrescription\": [\r\n                    {\r\n                        \"reference\": \"#m1\"\r\n                    }\r\n                ],\r\n                \"type\": {\r\n                    \"coding\": [\r\n                        {\r\n                            \"code\": \"{{lineItem4StatusCode}}\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                            \"display\": \"{{line_item_4_status_display}}\"\r\n                        }\r\n                    ]\r\n                },\r\n                \"quantity\": {\r\n                    \"value\": 30,\r\n                    \"unit\": \"tablet\",\r\n                    \"system\": \"http://snomed.info/sct\",\r\n                    \"code\": \"428673006\"\r\n                },\r\n                \"whenHandedOver\": \"2024-07-29T14:37:11.754Z\",\r\n                \"dosageInstruction\": [\r\n                    {\r\n                        \"text\": \"3 times a day for 10 days\"\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"fullUrl\": \"urn:uuid:04458512-dc08-4409-99a1-ae3d3b74cd59\",\r\n            \"resource\": {\r\n                \"resourceType\": \"Patient\",\r\n                \"id\": \"04458512-dc08-4409-99a1-ae3d3b74cd59\",\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n                        \"value\": \"{{NHSNumber}}\"\r\n                    }\r\n                ],\r\n                \"name\": [\r\n                    {\r\n                        \"use\": \"usual\",\r\n                        \"family\": \"TWITCHETT\",\r\n                        \"given\": [\r\n                            \"STACEY\",\r\n                            \"MARISA\"\r\n                        ],\r\n                        \"prefix\": [\r\n                            \"MS\"\r\n                        ]\r\n                    }\r\n                ],\r\n                \"gender\": \"female\",\r\n                \"birthDate\": \"1948-04-30\",\r\n                \"address\": [\r\n                    {\r\n                        \"use\": \"home\",\r\n                        \"line\": [\r\n                            \"10 HEATHFIELD\",\r\n                            \"COBHAM\",\r\n                            \"SURREY\"\r\n                        ],\r\n                        \"postalCode\": \"KT11 2QY\"\r\n                    }\r\n                ],\r\n                \"generalPractitioner\": [\r\n                    {\r\n                        \"identifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                            \"value\": \"A83008\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        },\r\n        {\r\n            \"fullUrl\": \"urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b\",\r\n            \"resource\": {\r\n                \"resourceType\": \"Organization\",\r\n                \"extension\": [\r\n                    {\r\n                        \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships\",\r\n                        \"extension\": [\r\n                            {\r\n                                \"url\": \"reimbursementAuthority\",\r\n                                \"valueIdentifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                    \"value\": \"T1450\"\r\n                                }\r\n                            }\r\n                        ]\r\n                    }\r\n                ],\r\n                \"identifier\": [\r\n                    {\r\n                        \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                        \"value\": \"VNE51\"\r\n                    }\r\n                ],\r\n                \"id\": \"2bf9f37c-d88b-4f86-ad5f-373c1416e04b\",\r\n                \"address\": [\r\n                    {\r\n                        \"city\": \"West Yorkshire\",\r\n                        \"use\": \"work\",\r\n                        \"line\": [\r\n                            \"17 Austhorpe Road\",\r\n                            \"Crossgates\",\r\n                            \"Leeds\"\r\n                        ],\r\n                        \"postalCode\": \"LS15 8BA\"\r\n                    }\r\n                ],\r\n                \"active\": true,\r\n                \"type\": [\r\n                    {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"https://fhir.nhs.uk/CodeSystem/organisation-role\",\r\n                                \"code\": \"182\",\r\n                                \"display\": \"PHARMACY\"\r\n                            }\r\n                        ]\r\n                    }\r\n                ],\r\n                \"name\": \"The Simple Pharmacy\",\r\n                \"telecom\": [\r\n                    {\r\n                        \"system\": \"phone\",\r\n                        \"use\": \"work\",\r\n                        \"value\": \"0113 3180277\"\r\n                    }\r\n                ]\r\n            }\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/$process-message#dispense-notification",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"$process-message"
+					],
+					"hash": "dispense-notification"
+				},
+				"description": "Send a dispense notification for a prescription using the `/$process-message#dispense-notification` endpoint.\n\n## Variables\n\n- `prescriptionID` - The shortform prescription ID of the prescription being dispensed.\n    \n- `NHSNumber` - The NHS Number of the Patient who's prescription is being dispensed.\n    \n- `nominatedODSCode` - The ODS code of the organization the prescription is nominated to, if applicable. Leave blank if dispensing a non-nominated prescription.\n    \n- `prescriptionStatusCode` - The desired status code of the prescription after this dispense notification.\n    \n- `lineItemCount` - The number of line items in the prescription (1-4).\n    \n- `lineItem{N}StatusCode` - The desired status codes of the line items of the prescription. Only 1<= N <= lineItemCount is mandatory.\n    \n- `lineItem{N{OrderItemNumber` - The IDs of the line items of the prescription. Only 1<= N <= lineItemCount is mandatory.\n    \n\n## Prescription Status\n\nThe following prescription status codes are supported\n\n| Status Code | Status Display |\n| --- | --- |\n| 0003 | With Dispenser - Active |\n| 0006 | Dispensed |\n| 0007 | Not Dispensed |\n\n## Line Item Status\n\nThe following line item status codes are supported\n\n| Status Code | Status Display |\n| --- | --- |\n| 0001 | Item fully dispensed |\n| 0002 | Item not dispensed |\n| 0003 | Item dispensed - partial |\n| 0004 | Item not dispensed owing |\n| 0005 | Item cancelled |\n| 0006 | Expired |\n| 0007 | Item to be dispensed |\n| 0008 | Item with dispenser |"
+			},
+			"response": []
+		},
+		{
+			"name": "Withdraw a Dispense Notification",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"var withdrawReasonMap = {\r",
+							"    \"QU\": \"Quantity Update\",\r",
+							"    \"MU\": \"Medication Update\",\r",
+							"    \"DA\": \"Dosage Amendments\",\r",
+							"    \"PA\": \"Patient Detail Amendments\",\r",
+							"    \"OC\": \"Other Clinical\",\r",
+							"    \"ONC\": \"Other Non-Clinical\"\r",
+							"}\r",
+							"\r",
+							"var withdrawReasonCode = pm.variables.get(\"withdrawReasonCode\")\r",
+							"var withdrawReasonDisplay = withdrawReasonMap[withdrawReasonCode]\r",
+							"\r",
+							"pm.environment.set('withdraw_reason_display', withdrawReasonDisplay)\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Task\",\r\n    \"id\": \"{{$guid}}\",\r\n    \"identifier\": [\r\n        {\r\n            \"system\": \"https://tools.ietf.org/html/rfc4122\",\r\n            \"value\": \"{{$guid}}\"\r\n        }\r\n    ],\r\n    \"status\": \"in-progress\",\r\n    \"intent\": \"order\",\r\n    \"groupIdentifier\": {\r\n        \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n        \"value\": \"{{prescriptionID}}\"\r\n    },\r\n    \"code\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://hl7.org/fhir/CodeSystem/task-code\",\r\n                \"code\": \"abort\",\r\n                \"display\": \"Mark the focal resource as no longer active\"\r\n            }\r\n        ]\r\n    },\r\n    \"contained\": [\r\n        {\r\n            \"resourceType\": \"PractitionerRole\",\r\n            \"id\": \"requester\",\r\n            \"identifier\": [\r\n                {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                    \"value\": \"555086415105\"\r\n                }\r\n            ],\r\n            \"practitioner\": {\r\n                \"identifier\": {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                    \"value\": \"3415870201\"\r\n                },\r\n                \"display\": \"Ms Lottie Maifeld\"\r\n            },\r\n            \"organization\": {\r\n                \"reference\": \"#organisation\"\r\n            },\r\n            \"code\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                            \"code\": \"S8000:G8000:R8000\",\r\n                            \"display\": \"Clinical Practitioner Access Role\"\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"telecom\": [\r\n                {\r\n                    \"system\": \"phone\",\r\n                    \"use\": \"work\",\r\n                    \"value\": \"01234567890\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"resourceType\": \"Organization\",\r\n            \"id\": \"organisation\",\r\n            \"identifier\": [\r\n                {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                    \"value\": \"{{requesterODSCode}}\"\r\n                }\r\n            ],\r\n            \"address\": [\r\n                {\r\n                    \"city\": \"West Yorkshire\",\r\n                    \"use\": \"work\",\r\n                    \"line\": [\r\n                        \"17 Austhorpe Road\",\r\n                        \"Crossgates\",\r\n                        \"Leeds\"\r\n                    ],\r\n                    \"postalCode\": \"LS15 8BA\"\r\n                }\r\n            ],\r\n            \"active\": true,\r\n            \"type\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/organisation-role\",\r\n                            \"code\": \"182\",\r\n                            \"display\": \"PHARMACY\"\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"name\": \"The Simple Pharmacy\",\r\n            \"telecom\": [\r\n                {\r\n                    \"system\": \"phone\",\r\n                    \"use\": \"work\",\r\n                    \"value\": \"0113 3180277\"\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"focus\": {\r\n        \"type\": \"Bundle\",\r\n        \"identifier\": {\r\n            \"system\": \"https://tools.ietf.org/html/rfc4122\",\r\n            \"value\": \"{{dispenseNotificationID}}\"\r\n        }\r\n    },\r\n    \"for\": {\r\n        \"identifier\": {\r\n            \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n            \"value\": \"{{NHSNumber}}\"\r\n        }\r\n    },\r\n    \"authoredOn\": \"2024-07-30T14:02:58+00:00\",\r\n    \"owner\": {\r\n        \"identifier\": {\r\n            \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n            \"value\": \"{{releaseODSCode}}\"\r\n        }\r\n    },\r\n    \"statusReason\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason\",\r\n                \"code\": \"{{withdrawReasonCode}}\",\r\n                \"display\": \"{{withdraw_reason_display}}\"\r\n            }\r\n        ]\r\n    },\r\n    \"requester\": {\r\n        \"reference\": \"#requester\"\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/Task#withdraw",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"Task"
+					],
+					"hash": "withdraw"
+				},
+				"description": "Withdraw a dispense notification using the `/Task#withdraw` endpoint.\n\n## Variables\n\n- `withdrawReasonCode` - The reason code for the withdrawal.\n    \n- `prescriptionID` - The shortform prescription ID of the prescription who's dispense notification is being withdrawn.\n    \n- `NHSNumber` - The NHS Number of the Patient who's prescription is being withdrawn.\n    \n- `requesterODSCode` - The ODS code of the organization which requested the prescription.\n    \n- `dispenseNotificationID` - The `rfc4122` ID of the dispense notification being withdrawn.\n    \n- `releaseODSCode` - The ODS code of the organization the prescription was released to.\n    \n\n## Withdraw Reasons\n\nThe following withdrawal reason codes are supported\n\n| Reason Code | Reason Display |\n| --- | --- |\n| QU | Quantity Update |\n| MU | Medication Update |\n| DA | Dosage Amendments |\n| PA | Patient Detail Amendments |\n| OC | Other Clinical |\n| ONC | Other Non-Clinical |"
+			},
+			"response": []
+		},
+		{
+			"name": "Claim for a Dispensed Prescription",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Set prescription Status\r",
+							"var prescriptionStatusMap = {\r",
+							"    \"0003\": \"With Dispenser - Active\",\r",
+							"    \"0006\": \"Dispensed\",\r",
+							"    \"0007\": \"Not Dispensed\"\r",
+							"}\r",
+							"\r",
+							"var prescriptionStatusCode = pm.variables.get(\"prescriptionStatusCode\")\r",
+							"var prescriptionStatusDisplay = prescriptionStatusMap[prescriptionStatusCode]\r",
+							"\r",
+							"pm.environment.set('prescription_status_display', prescriptionStatusDisplay)\r",
+							"\r",
+							"\r",
+							"var lineItemStatusMap = {\r",
+							"    \"0001\": \"Item fully dispensed\",\r",
+							"    \"0002\": \"Item not dispensed\",\r",
+							"    \"0003\": \"Item dispensed - partial\",\r",
+							"    \"0004\": \"Item not dispensed owing\",\r",
+							"    \"0005\": \"Item cancelled\",\r",
+							"    \"0006\": \"Expired\",\r",
+							"    \"0007\": \"Item to be dispensed\",\r",
+							"    \"0008\": \"Item with dispenser\"\r",
+							"}\r",
+							"\r",
+							"// Set line item statuses\r",
+							"var lineItemCount = pm.variables.get(\"lineItemCount\")\r",
+							"for(var lineItemIndex = 1; lineItemIndex <= lineItemCount; lineItemIndex++){\r",
+							"    var lineItemStatusCode = pm.variables.get(`lineItem${lineItemIndex}StatusCode`)\r",
+							"    var lineItemStatusDisplay = lineItemStatusMap[lineItemStatusCode]\r",
+							"\r",
+							"    pm.environment.set(`line_item_${lineItemIndex}_status_display`)\r",
+							"}\r",
+							"\r",
+							"var body = JSON.parse(pm.request.body.raw)\r",
+							"body.item[0].detail = body.item[0].detail.slice(0, lineItemCount)\r",
+							"\r",
+							"pm.request.body.update({\r",
+							"    mode: \"raw\",\r",
+							"    raw: JSON.stringify(body, space = 2)\r",
+							"})"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "X-Request-ID",
+						"value": "{{$guid}}",
+						"type": "text"
+					},
+					{
+						"key": "NHSD-Session-URID",
+						"value": "{{Session-URID}}",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resourceType\": \"Claim\",\r\n    \"contained\": [\r\n        {\r\n            \"resourceType\": \"PractitionerRole\",\r\n            \"id\": \"performer\",\r\n            \"identifier\": [\r\n                {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                    \"value\": \"555086415105\"\r\n                }\r\n            ],\r\n            \"practitioner\": {\r\n                \"identifier\": {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-user-id\",\r\n                    \"value\": \"3415870201\"\r\n                },\r\n                \"display\": \"Mr Peter Potion\"\r\n            },\r\n            \"organization\": {\r\n                \"reference\": \"#organizationId\"\r\n            },\r\n            \"code\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode\",\r\n                            \"code\": \"S8000:G8000:R8000\",\r\n                            \"display\": \"Clinical Practitioner Access Role\"\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"telecom\": [\r\n                {\r\n                    \"system\": \"phone\",\r\n                    \"use\": \"work\",\r\n                    \"value\": \"0532567890\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"resourceType\": \"Organization\",\r\n            \"extension\": [\r\n                {\r\n                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships\",\r\n                    \"extension\": [\r\n                        {\r\n                            \"url\": \"reimbursementAuthority\",\r\n                            \"valueIdentifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                                \"value\": \"T1450\"\r\n                            }\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"identifier\": [\r\n                {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                    \"value\": \"{{requesterODSCode}}\"\r\n                }\r\n            ],\r\n            \"id\": \"organizationId\",\r\n            \"address\": [\r\n                {\r\n                    \"city\": \"West Yorkshire\",\r\n                    \"use\": \"work\",\r\n                    \"line\": [\r\n                        \"17 Austhorpe Road\",\r\n                        \"Crossgates\",\r\n                        \"Leeds\"\r\n                    ],\r\n                    \"postalCode\": \"LS15 8BA\"\r\n                }\r\n            ],\r\n            \"active\": true,\r\n            \"type\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/organisation-role\",\r\n                            \"code\": \"182\",\r\n                            \"display\": \"PHARMACY\"\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"name\": \"The Simple Pharmacy\",\r\n            \"telecom\": [\r\n                {\r\n                    \"system\": \"phone\",\r\n                    \"use\": \"work\",\r\n                    \"value\": \"0113 3180277\"\r\n                }\r\n            ]\r\n        }\r\n    ],\r\n    \"created\": \"2024-07-31T12:38:03.487Z\",\r\n    \"extension\": [\r\n        {\r\n            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent\",\r\n            \"valueReference\": {\r\n                \"identifier\": {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/sds-role-profile-id\",\r\n                    \"value\": \"884562163557\"\r\n                },\r\n                \"display\": \"dummy full name\"\r\n            }\r\n        }\r\n    ],\r\n    \"identifier\": [\r\n        {\r\n            \"system\": \"https://tools.ietf.org/html/rfc4122\",\r\n            \"value\": \"{{$guid}}\"\r\n        }\r\n    ],\r\n    \"status\": \"active\",\r\n    \"type\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/claim-type\",\r\n                \"code\": \"pharmacy\",\r\n                \"display\": \"Pharmacy\"\r\n            }\r\n        ]\r\n    },\r\n    \"use\": \"claim\",\r\n    \"patient\": {\r\n        \"identifier\": {\r\n            \"system\": \"https://fhir.nhs.uk/Id/nhs-number\",\r\n            \"value\": \"{{NHSNumber}}\"\r\n        }\r\n    },\r\n    \"provider\": {\r\n        \"reference\": \"#performer\"\r\n    },\r\n    \"priority\": {\r\n        \"coding\": [\r\n            {\r\n                \"system\": \"http://terminology.hl7.org/CodeSystem/processpriority\",\r\n                \"code\": \"normal\"\r\n            }\r\n        ]\r\n    },\r\n    \"insurance\": [\r\n        {\r\n            \"sequence\": 1,\r\n            \"focal\": true,\r\n            \"coverage\": {\r\n                \"identifier\": {\r\n                    \"system\": \"https://fhir.nhs.uk/Id/ods-organization-code\",\r\n                    \"value\": \"T1450\"\r\n                },\r\n                \"display\": \"NHS BUSINESS SERVICES AUTHORITY\"\r\n            }\r\n        }\r\n    ],\r\n    \"payee\": {\r\n        \"type\": {\r\n            \"coding\": [\r\n                {\r\n                    \"system\": \"http://terminology.hl7.org/CodeSystem/payeetype\",\r\n                    \"code\": \"provider\",\r\n                    \"display\": \"Provider\"\r\n                }\r\n            ]\r\n        },\r\n        \"party\": {\r\n            \"reference\": \"#organizationId\"\r\n        }\r\n    },\r\n    \"prescription\": {\r\n        \"extension\": [\r\n            {\r\n                \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-DM-GroupIdentifier\",\r\n                \"extension\": [\r\n                    {\r\n                        \"url\": \"shortForm\",\r\n                        \"valueIdentifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/prescription-order-number\",\r\n                            \"value\": \"{{prescriptionID}}\"\r\n                        }\r\n                    },\r\n                    {\r\n                        \"url\": \"UUID\",\r\n                        \"valueIdentifier\": {\r\n                            \"system\": \"https://fhir.nhs.uk/Id/prescription\",\r\n                            \"value\": \"a35389b3-2355-4b48-b263-49b994352efaDMPRESCRIPTION\"\r\n                        }\r\n                    }\r\n                ]\r\n            }\r\n        ]\r\n    },\r\n    \"item\": [\r\n        {\r\n            \"extension\": [\r\n                {\r\n                    \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus\",\r\n                    \"valueCoding\": {\r\n                        \"code\": \"{{prescriptionStatusCode}}\",\r\n                        \"system\": \"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status\",\r\n                        \"display\": \"{{prescription_status_display}}\"\r\n                    }\r\n                }\r\n            ],\r\n            \"sequence\": 1,\r\n            \"productOrService\": {\r\n                \"coding\": [\r\n                    {\r\n                        \"system\": \"http://snomed.info/sct\",\r\n                        \"code\": \"16076005\",\r\n                        \"display\": \"Prescription\"\r\n                    }\r\n                ]\r\n            },\r\n            \"programCode\": [\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"code\": \"0001\",\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/prescription-charge-exemption\",\r\n                            \"display\": \"Patient has paid appropriate charges\"\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"coding\": [\r\n                        {\r\n                            \"system\": \"https://fhir.nhs.uk/CodeSystem/DM-exemption-evidence\",\r\n                            \"code\": \"no-evidence-seen\",\r\n                            \"display\": \"No Evidence Seen\"\r\n                        }\r\n                    ]\r\n                }\r\n            ],\r\n            \"detail\": [\r\n                {\r\n                    \"extension\": [\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier\",\r\n                            \"valueIdentifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/claim-sequence-identifier\",\r\n                                \"value\": \"568022e9-259b-44b8-87c5-e97683d27733\"\r\n                            }\r\n                        },\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference\",\r\n                            \"valueReference\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                    \"value\": \"{{lineItem1OrderItemNumber}}\"\r\n                                }\r\n                            }\r\n                        }\r\n                    ],\r\n                    \"sequence\": 1,\r\n                    \"productOrService\": {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"39732311000001104\",\r\n                                \"display\": \"Amoxicillin 250mg capsules\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    \"modifier\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"{{lineItem1StatusCode}}\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                                    \"display\": \"{{line_item_1_status_display}}\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"quantity\": {\r\n                        \"value\": 20,\r\n                        \"unit\": \"tablet\",\r\n                        \"system\": \"http://snomed.info/sct\",\r\n                        \"code\": \"428673006\"\r\n                    },\r\n                    \"programCode\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"NDEC\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement\",\r\n                                    \"display\": \"No Dispenser Endorsement Code\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/DM-prescription-charge\",\r\n                                    \"code\": \"not-paid\",\r\n                                    \"display\": \"Not Paid\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"subDetail\": [\r\n                        {\r\n                            \"sequence\": 1,\r\n                            \"productOrService\": {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://snomed.info/sct\",\r\n                                        \"code\": \"39732311000001104\",\r\n                                        \"display\": \"Amoxicillin 250mg capsules\"\r\n                                    }\r\n                                ]\r\n                            },\r\n                            \"quantity\": {\r\n                                \"value\": 20,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            }\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"extension\": [\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier\",\r\n                            \"valueIdentifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/claim-sequence-identifier\",\r\n                                \"value\": \"11b24354-88f4-41bf-8d4b-b2983e1f0cb8\"\r\n                            }\r\n                        },\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference\",\r\n                            \"valueReference\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                    \"value\": \"{{lineItem2OrderItemNumber}}\"\r\n                                }\r\n                            }\r\n                        }\r\n                    ],\r\n                    \"sequence\": 2,\r\n                    \"productOrService\": {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"322341003\",\r\n                                \"display\": \"Co-codamol 30mg/500mg tablets\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    \"modifier\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"{{lineItem2StatusCode}}\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                                    \"display\": \"{{line_item_2_status_display}}\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"quantity\": {\r\n                        \"value\": 20,\r\n                        \"unit\": \"tablet\",\r\n                        \"system\": \"http://snomed.info/sct\",\r\n                        \"code\": \"428673006\"\r\n                    },\r\n                    \"programCode\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"NDEC\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement\",\r\n                                    \"display\": \"No Dispenser Endorsement Code\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/DM-prescription-charge\",\r\n                                    \"code\": \"not-paid\",\r\n                                    \"display\": \"Not Paid\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"subDetail\": [\r\n                        {\r\n                            \"sequence\": 1,\r\n                            \"productOrService\": {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://snomed.info/sct\",\r\n                                        \"code\": \"322341003\",\r\n                                        \"display\": \"Co-codamol 30mg/500mg tablets\"\r\n                                    }\r\n                                ]\r\n                            },\r\n                            \"quantity\": {\r\n                                \"value\": 20,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            }\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"extension\": [\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier\",\r\n                            \"valueIdentifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/claim-sequence-identifier\",\r\n                                \"value\": \"b399721b-e4e3-4328-85ae-252067251a1b\"\r\n                            }\r\n                        },\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference\",\r\n                            \"valueReference\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                    \"value\": \"{{lineItem3OrderItemNumber}}\"\r\n                                }\r\n                            }\r\n                        }\r\n                    ],\r\n                    \"sequence\": 3,\r\n                    \"productOrService\": {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"321080004\",\r\n                                \"display\": \"Pseudoephedrine hydrochloride 60mg tablets\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    \"modifier\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"{{lineItem3StatusCode}}\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                                    \"display\": \"{{line_item_3_status_display}}\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"quantity\": {\r\n                        \"value\": 30,\r\n                        \"unit\": \"tablet\",\r\n                        \"system\": \"http://snomed.info/sct\",\r\n                        \"code\": \"428673006\"\r\n                    },\r\n                    \"programCode\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"NDEC\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement\",\r\n                                    \"display\": \"No Dispenser Endorsement Code\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/DM-prescription-charge\",\r\n                                    \"code\": \"not-paid\",\r\n                                    \"display\": \"Not Paid\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"subDetail\": [\r\n                        {\r\n                            \"sequence\": 1,\r\n                            \"productOrService\": {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://snomed.info/sct\",\r\n                                        \"code\": \"321080004\",\r\n                                        \"display\": \"Pseudoephedrine hydrochloride 60mg tablets\"\r\n                                    }\r\n                                ]\r\n                            },\r\n                            \"quantity\": {\r\n                                \"value\": 30,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            }\r\n                        }\r\n                    ]\r\n                },\r\n                {\r\n                    \"extension\": [\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimSequenceIdentifier\",\r\n                            \"valueIdentifier\": {\r\n                                \"system\": \"https://fhir.nhs.uk/Id/claim-sequence-identifier\",\r\n                                \"value\": \"cbc7033c-a05d-411c-9000-4695641c8da4\"\r\n                            }\r\n                        },\r\n                        {\r\n                            \"url\": \"https://fhir.nhs.uk/StructureDefinition/Extension-ClaimMedicationRequestReference\",\r\n                            \"valueReference\": {\r\n                                \"identifier\": {\r\n                                    \"system\": \"https://fhir.nhs.uk/Id/prescription-order-item-number\",\r\n                                    \"value\": \"{{lineItem4OrderItemNumber}}\"\r\n                                }\r\n                            }\r\n                        }\r\n                    ],\r\n                    \"sequence\": 4,\r\n                    \"productOrService\": {\r\n                        \"coding\": [\r\n                            {\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"324252006\",\r\n                                \"display\": \"Azithromycin 250mg capsules\"\r\n                            }\r\n                        ]\r\n                    },\r\n                    \"modifier\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"{{lineItem4StatusCode}}\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-type\",\r\n                                    \"display\": \"{{line_item_4_status_display}}\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"quantity\": {\r\n                        \"value\": 30,\r\n                        \"unit\": \"tablet\",\r\n                        \"system\": \"http://snomed.info/sct\",\r\n                        \"code\": \"428673006\"\r\n                    },\r\n                    \"programCode\": [\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"code\": \"NDEC\",\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/medicationdispense-endorsement\",\r\n                                    \"display\": \"No Dispenser Endorsement Code\"\r\n                                }\r\n                            ]\r\n                        },\r\n                        {\r\n                            \"coding\": [\r\n                                {\r\n                                    \"system\": \"https://fhir.nhs.uk/CodeSystem/DM-prescription-charge\",\r\n                                    \"code\": \"not-paid\",\r\n                                    \"display\": \"Not Paid\"\r\n                                }\r\n                            ]\r\n                        }\r\n                    ],\r\n                    \"subDetail\": [\r\n                        {\r\n                            \"sequence\": 1,\r\n                            \"productOrService\": {\r\n                                \"coding\": [\r\n                                    {\r\n                                        \"system\": \"http://snomed.info/sct\",\r\n                                        \"code\": \"324252006\",\r\n                                        \"display\": \"Azithromycin 250mg capsules\"\r\n                                    }\r\n                                ]\r\n                            },\r\n                            \"quantity\": {\r\n                                \"value\": 30,\r\n                                \"unit\": \"tablet\",\r\n                                \"system\": \"http://snomed.info/sct\",\r\n                                \"code\": \"428673006\"\r\n                            }\r\n                        }\r\n                    ]\r\n                }\r\n            ]\r\n        }\r\n    ]\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/Claim",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"Claim"
+					]
+				},
+				"description": "Claim for a prescription using the `/Claim` endpoint.\n\n## Variables\n\n- `prescriptionID` - The shortform prescription ID of the prescription being claimed for.\n    \n- `requesterODSCode` - The ODS code of the organization which requested the prescription.\n    \n- `NHSNumber` - The NHS Number of the Patient who's prescription is being withdrawn.\n    \n- `prescriptionStatusCode` - The current status code of the prescription being claimed.\n    \n- `lineItemCount` - The number of line items in the prescription (1-4).\n    \n- `lineItem{N}StatusCode` - The current status codes of the line items of the prescription. Only 1<= N <= lineItemCount is mandatory.\n    \n- `lineItem{N}OrderItemNumber` - The IDs of the line items of the prescription. Only 1<= N <= lineItemCount is mandatory.\n    \n\n## Prescription Status\n\nThe following prescription status codes are supported\n\n| Status Code | Status Display |\n| --- | --- |\n| 0003 | With Dispenser - Active |\n| 0006 | Dispensed |\n| 0007 | Not Dispensed |\n\n## Line Item Status\n\nThe following line item status codes are supported\n\n| Status Code | Status Display |\n| --- | --- |\n| 0001 | Item fully dispensed |\n| 0002 | Item not dispensed |\n| 0003 | Item dispensed - partial |\n| 0004 | Item not dispensed owing |\n| 0005 | Item cancelled |\n| 0006 | Expired |\n| 0007 | Item to be dispensed |\n| 0008 | Item with dispenser |"
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{accessToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "host",
+			"value": "https://int.api.service.nhs.uk/electronic-prescriptions/FHIR/R4",
+			"type": "string"
+		},
+		{
+			"key": "accessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "Session-URID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "prescriptionID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "NHSNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "returnReasonCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "withdrawReasonCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "prescriptionStatusCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItemCount",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem1StatusCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem1OrderItemNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem2StatusCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem2OrderItemNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem3StatusCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem3OrderItemNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem4StatusCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "lineItem4OrderItemNumber",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "requesterODSCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "nominatedODSCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "releaseODSCode",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "releaseResponseID",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "dispenseNotificationID",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

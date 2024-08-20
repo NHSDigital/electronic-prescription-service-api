@@ -2,6 +2,13 @@ name: sam package code
 
 on:
   workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
+      commit_id:
+        required: true
+        type: string
 
 jobs:
   sam_package_code:
@@ -42,8 +49,8 @@ jobs:
         run: |
           make install-api
 
-      - shell: bash
-        name: Package code
+      - name: Package code
+        shell: bash
         run: |
           cp .tool-versions ~/
           rm -rf .aws-sam
@@ -81,8 +88,8 @@ jobs:
             poetry.toml
             pyproject.toml
       
-      - shell: bash
-        name: Package sandbox
+      - name: Package sandbox
+        shell: bash
         run: |
           cp .tool-versions ~/
           rm -rf .aws-sam
@@ -99,3 +106,28 @@ jobs:
           path: |
             .aws-sam/build
             README.md
+
+      - name: Set ECR Repository
+        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+
+      - name: Set environment variables
+        run: |
+          echo "VERSION_NUMBER=${{ inputs.version }}" >> "$GITHUB_ENV"
+          echo "COMMIT_ID=${{ inputs.commit_id }}" >> "$GITHUB_ENV"
+
+      - name: Set Image Tag
+        run: echo "IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV"
+
+      - name: Build Docker image
+        id: build-image
+        run: |
+          docker build -t "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+          docker images
+          docker save "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" -o docker.img
+    
+      - uses: actions/upload-artifact@v4
+        name: Upload docker image
+        with:
+          name: docker_artifact
+          path: |
+            docker.img
