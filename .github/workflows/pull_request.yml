@@ -68,14 +68,14 @@ jobs:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
     with:
-      STACK_NAME: fhir-prescribing-and-dispensing-pr-${{needs.get_issue_number.outputs.issue_number}}
+      STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       # APIGEE_ENVIRONMENT: internal-dev
       # ENABLE_MUTUAL_TLS: false
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: ??-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       # LOG_RETENTION_DAYS: 30
@@ -87,14 +87,14 @@ jobs:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/sam_release_code.yml
     with:
-      STACK_NAME: fhir-prescribing-and-dispensing-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       # APIGEE_ENVIRONMENT: internal-dev-sandbox
       # ENABLE_MUTUAL_TLS: false
       BUILD_ARTIFACT: packaged_sandbox_code
       SPEC_ARTIFACT: specification_code
-      # TRUSTSTORE_FILE: ??-sandbox-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       # LOG_RETENTION_DAYS: 30
