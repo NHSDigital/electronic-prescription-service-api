@@ -21,7 +21,7 @@ jobs:
     needs: quality_checks
     outputs:
       issue_number: ${{steps.get_issue_number.outputs.result}}
-      version: ${{ steps.get_issue_number.outputs.version_number }} 
+      version: ${{ steps.get_latest_release.outputs.latest_version }} 
 
     steps:
       - uses: actions/github-script@v7
@@ -43,6 +43,18 @@ jobs:
               ).data[0].number;
             }
           result-encoding: string
+
+      - name: get latest release
+        id: get_latest_release
+        run: |
+          latest_version=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
+          echo "latest_version=${latest_version}" >> "$GITHUB_ENV"
+          echo "latest_version=${latest_version}" >> "$GITHUB_OUTPUT"
+
+      - name: Output Issue Number and Version
+        run: |
+          echo "Issue Number: ${{ steps.get_issue_number.outputs.result }}"
+          echo "Latest Version: ${{ steps.get_latest_release.outputs.latest_version }}"    
 
   get_commit_id:
    runs-on: ubuntu-latest
