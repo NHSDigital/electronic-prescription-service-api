@@ -1,14 +1,12 @@
 name: sam package code
 
-# on:
-#   workflow_call:
 on:
   workflow_call:
     inputs:
-      version:
+      VERSION_NUMBER:
         required: true
         type: string
-      commit_id:
+      COMMIT_ID:
         required: true
         type: string
 
@@ -113,24 +111,30 @@ jobs:
         run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
 
       - name: Set FHIR FACADE Image Tag
-        run: echo "FHIR_FACADE_IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV"
+        run: echo "FHIR_FACADE_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
 
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
         run: |
            docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
 
-      - name: Print inputs version
-        run: echo "version - ${{ inputs.version }}"
+      # - name: Print inputs version
+      #   run: echo "latest version - ${{ inputs.VERSION_NUMBER }}"
 
-      - name: Construct and print the Dockerfile URL
-        run: echo "URL - https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/Dockerfile"
+      # - name: Construct and print the Dockerfile URL
+      #   run: echo "URL - https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.VERSION_NUMBER }}/Dockerfile"
+
+      - name: get latest release
+        id: get_latest_release
+        run: |
+          latest_version=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
+          echo "latest_version=${latest_version}" >> "$GITHUB_ENV"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
         run: |
-          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/Dockerfile"
-          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/manifest.json"
-          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ inputs.version }}/fhir-validator.jar"
+          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/Dockerfile"
+          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/manifest.json"
+          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/fhir-validator.jar"
 
       - name: Display downloaded Dockerfile
         run: cat Dockerfile    
@@ -142,7 +146,7 @@ jobs:
         run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
 
       - name: Set Validator Image Tag
-        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV" 
+        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV" 
 
       - name: Build Validator Docker image
         id: build-validator-image
