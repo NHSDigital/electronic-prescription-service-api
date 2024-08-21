@@ -376,7 +376,7 @@ async function signPrescription(
     `<SignedInfo>`
   )
   const signature = crypto
-    .sign("rs256", Buffer.from(digest, "utf-8"), {
+    .sign(null, Buffer.from(digest, "utf-8"), {
       key: fs.readFileSync(privateKeyPath, "utf-8"),
       padding: crypto.constants.RSA_PKCS1_PADDING
     })
