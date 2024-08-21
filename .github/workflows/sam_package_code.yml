@@ -127,8 +127,8 @@ jobs:
       - name: get latest release
         id: get_latest_release
         run: |
-          latest_version=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
-          echo "latest_version=${latest_version}" >> "$GITHUB_ENV"
+          LATEST_VERSION=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
+          echo "LATEST_VERSION=${LATEST_VERSION}" >> "$GITHUB_ENV"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
         run: |
@@ -137,7 +137,9 @@ jobs:
           curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/fhir-validator.jar"
 
       - name: Display downloaded Dockerfile
-        run: cat Dockerfile    
+        run: |
+          cat Dockerfile    
+          cat manifest.json
 
       - name: List files in the current directory
         run: ls -la
