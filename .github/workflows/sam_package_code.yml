@@ -112,30 +112,36 @@ jobs:
       - name: Set FHIR FACADE ECR Repository
         run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
 
-      - name: Set Validator ECR Repository
-        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
-
       - name: Set FHIR FACADE Image Tag
         run: echo "FHIR_FACADE_IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV"
-
-      - name: Set Validator Image Tag
-        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV" 
 
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
         run: |
-           docker build --build-arg service=coordinator -t "${{ env.   FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/  coordinator/Dockerfile .
-           docker images
-           docker save "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -o FHIR_facade_docker.img
+           docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
 
-#docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
-#docker build -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+      - name: Download Dockerfile, manifest.json and JAR file for Validator
+        run: |
+          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/Dockerfile"
+          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/manifest.json"
+          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ inputs.version }}/validator.jar"
+
+      - name: List files in the current directory
+        run: ls -la
+
+      - name: Set Validator ECR Repository
+        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
+
+      - name: Set Validator Image Tag
+        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.version }}" >> "$GITHUB_ENV" 
+
       - name: Build Validator Docker image
         id: build-validator-image
         run: |
-           docker build --build-arg service=validator -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+           docker build -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f Dockerfile .
            docker images
-           docker save "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -o validator_docker.img       
+           docker save "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -o validator_docker.img   
+    
     
       - uses: actions/upload-artifact@v4
         name: Upload docker images
@@ -144,3 +150,6 @@ jobs:
           path: |
             FHIR_facade_docker.img
             validator_docker.img
+            
+
+      ##check current azure pipelines
