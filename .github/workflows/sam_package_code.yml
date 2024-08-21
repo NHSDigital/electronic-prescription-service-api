@@ -120,6 +120,12 @@ jobs:
         run: |
            docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
 
+      - name: Print inputs version
+        run: echo "version - ${{ inputs.version }}"
+
+      - name: Construct and print the Dockerfile URL
+        run: echo "URL - https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/Dockerfile"
+
       - name: Download Dockerfile, manifest.json and JAR file for Validator
         run: |
           curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/Dockerfile"
