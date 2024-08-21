@@ -124,7 +124,10 @@ jobs:
         run: |
           curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/Dockerfile"
           curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.version }}/manifest.json"
-          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ inputs.version }}/validator.jar"
+          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ inputs.version }}/fhir-validator.jar"
+
+      - name: Display downloaded Dockerfile
+        run: cat Dockerfile    
 
       - name: List files in the current directory
         run: ls -la
@@ -141,7 +144,6 @@ jobs:
            docker build -t "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -f Dockerfile .
            docker images
            docker save "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" -o validator_docker.img   
-    
     
       - uses: actions/upload-artifact@v4
         name: Upload docker images
