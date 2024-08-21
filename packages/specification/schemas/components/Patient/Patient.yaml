@@ -21,11 +21,10 @@ properties:
       $ref: ../_fragments/identifiers.yaml#/components/schemas/NhsNumber
   name:
     type: array
-    required:
-      - family
     description: The patient's name. A prescription must only contain a single name and address for the patient.
     items:
       type: object
+      required: [family]
       properties:
         use:
           type: string
