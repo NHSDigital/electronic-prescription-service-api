@@ -32,7 +32,7 @@ Parameters:
 
   ContainerPort:
     Type: Number
-    Default: 80
+    Default: 9000
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -172,8 +172,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub "${StackName}-task"
-      Cpu: "256"
-      Memory: "512"
+      Cpu: "1024"
+      Memory: "3072"
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
@@ -200,7 +200,7 @@ Resources:
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
-          AssignPublicIp: ENABLED
+          AssignPublicIp: DISABLED
           SecurityGroups:
             - !Ref ContainerSecurityGroup
           Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
