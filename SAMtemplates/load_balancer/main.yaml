@@ -32,7 +32,7 @@ Parameters:
 
   ContainerPort:
     Type: Number
-    Default: 443
+    Default: 9000
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -123,8 +123,8 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       UnhealthyThresholdCount: 2
       HealthyThresholdCount: 2
-      Port: 443
-      Protocol: HTTPS
+      Port: 80
+      Protocol: HTTP
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 60
