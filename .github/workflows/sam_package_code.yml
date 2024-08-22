@@ -138,9 +138,14 @@ jobs:
 
       - name: Verify the fhir-validator.jar file
         run: |
+          echo "File details:"
           ls -l fhir-validator.jar
+          echo "File type:"
           file fhir-validator.jar
-          jar tf fhir-validator.jar 
+          echo "First 20 lines of fhir-validator.jar (for debugging):"
+          head -n 20 fhir-validator.jar
+          echo "Attempting to list contents of the JAR file:"
+          jar tf fhir-validator.jar
 
       - name: Display downloaded Dockerfile
         run: |
