@@ -117,6 +117,7 @@ jobs:
         id: build-fhir-facade-image
         run: |
            docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
+           docker save "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -o FHIR_facade_docker.img   
 
       - name: get latest release
         id: get_latest_release
