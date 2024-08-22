@@ -118,12 +118,6 @@ jobs:
         run: |
            docker build -t "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" -f packages/coordinator/Dockerfile .
 
-      # - name: Print inputs version
-      #   run: echo "latest version - ${{ inputs.VERSION_NUMBER }}"
-
-      # - name: Construct and print the Dockerfile URL
-      #   run: echo "URL - https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ inputs.VERSION_NUMBER }}/Dockerfile"
-
       - name: get latest release
         id: get_latest_release
         run: |
@@ -135,25 +129,6 @@ jobs:
           curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/Dockerfile"
           curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/manifest.json"
           curl -L -o fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/fhir-validator.jar"
-
-      - name: Verify the fhir-validator.jar file
-        run: |
-          echo "File details:"
-          ls -l fhir-validator.jar
-          echo "File type:"
-          file fhir-validator.jar
-          echo "First 20 lines of fhir-validator.jar (for debugging):"
-          head -n 20 fhir-validator.jar
-          echo "Attempting to list contents of the JAR file:"
-          jar tf fhir-validator.jar
-
-      - name: Display downloaded Dockerfile
-        run: |
-          cat Dockerfile    
-          cat manifest.json
-
-      - name: List files in the current directory
-        run: ls -la
 
       - name: Set Validator ECR Repository
         run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
@@ -175,8 +150,3 @@ jobs:
           path: |
             FHIR_facade_docker.img
             validator_docker.img
-            
-
-      ##check current azure pipelines
-
-##### CHECK IF DOCKERFILE USED IN LINE 156 IS THE CORRECT ONE TO BE USED
