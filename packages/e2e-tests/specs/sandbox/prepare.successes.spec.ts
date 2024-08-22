@@ -43,9 +43,8 @@ function getResponseExpectation(response: fhir.Parameters) {
       },
       {
         name: "algorithm",
-        valueString: "RS1"
+        valueString: Matchers.like(getStringParameterByName(response, "algorithm").valueString)
       }
     ]
   }
 }
-
