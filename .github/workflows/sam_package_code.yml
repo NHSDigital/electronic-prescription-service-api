@@ -136,8 +136,11 @@ jobs:
           curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/manifest.json"
           curl -L -o fhir-validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/fhir-validator.jar"
 
-      - name: Print latest version
-        run: echo "latest version - ${{ env.LATEST_VERSION }}"     
+      - name: Verify the fhir-validator.jar file
+        run: |
+          ls -l fhir-validator.jar
+          file fhir-validator.jar
+          jar tf fhir-validator.jar 
 
       - name: Display downloaded Dockerfile
         run: |
