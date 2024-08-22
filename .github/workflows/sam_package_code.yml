@@ -132,9 +132,12 @@ jobs:
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
         run: |
-          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/Dockerfile"
-          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/manifest.json"
-          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/v${{ env.LATEST_VERSION }}/fhir-validator.jar"
+          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/Dockerfile"
+          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/manifest.json"
+          curl -L -o validator.jar "https://github.com/NHSDigitavalidation-service-fhir-r4/releases/download/${{ env.LATEST_VERSION }}/fhir-validator.jar"
+
+      - name: Print latest version
+        run: echo "latest version - ${{ env.LATEST_VERSION }}"     
 
       - name: Display downloaded Dockerfile
         run: |
@@ -167,3 +170,5 @@ jobs:
             
 
       ##check current azure pipelines
+
+##### CHECK IF DOCKERFILE USED IN LINE 156 IS THE CORRECT ONE TO BE USED
