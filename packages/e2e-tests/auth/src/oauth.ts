@@ -206,8 +206,8 @@ const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackRes
 
   const searchParams = new URLSearchParams(responsePath.substring(2)) // skip the leading `/?`
   return {
-    code: searchParams.get("code") as string,
-    state: searchParams.get("state") as string
+    code: searchParams.get("code"),
+    state: searchParams.get("state")
   }
 }
 // END-NOSCAN
