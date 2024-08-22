@@ -163,28 +163,31 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
         run: ./release_code.sh
 
-      - name: Set FHIR FACADE ECR Repository
-        run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
-
-      - name: Set Validator ECR Repository
-        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
-
-      - name: Set FHIR FACADE Image Tag
-        run: echo "FHIR_FACADE_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
-
-      - name: Set Validator Image Tag
-        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV" 
-
       - name: docker_artifact download
         uses: actions/download-artifact@v4
         with:
           name: docker_artifact
           path: .
 
+      - name: List files in the current directory
+        run: ls -la    
+
+      - name: Set FHIR FACADE ECR Repository
+        run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+
+      - name: Set FHIR FACADE Image Tag
+        run: echo "FHIR_FACADE_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
+
       - name: Extract FHIR Facade docker image
         id: extract-FHIR-facade-image
         run: |
            docker load -i FHIR_facade_docker.img
+
+      - name: Set Validator ECR Repository
+        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
+
+      - name: Set Validator Image Tag
+        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV" 
 
       - name: Extract validator docker image
         id: extract-validator-image
