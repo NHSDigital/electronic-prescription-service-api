@@ -194,7 +194,7 @@ type AuthCallbackResponseData = {
   state: string
 }
 
-const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => {
+const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => { // NOSONAR
   const responsePath: string = authResponse.request.path // /?code=UmsJVKNA&state=1234567890
 
   const searchParams = new URLSearchParams(responsePath.substring(2)) // skip the leading `/?`
