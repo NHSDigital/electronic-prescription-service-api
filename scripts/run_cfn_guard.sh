@@ -22,8 +22,8 @@ for ruleset in "${rulesets[@]}"
 
         # transform the SAM template to cloudformation and then run through cfn-guard
         sam validate -t "$file" --region eu-west-2 --debug 2>&1 | \
-        grep -Pazo '(?s)AWSTemplateFormatVersion.*\n\n' | \
-        tr -d '\0' | \
+        grep -Pazo '(?s)AWSTemplateFormatVersion.*\n\/' | \
+        tr -d '\/\0' | \
         ~/.guard/bin/cfn-guard validate \
             --rules "/tmp/ruleset/output/$ruleset.guard" \
             --show-summary fail \
