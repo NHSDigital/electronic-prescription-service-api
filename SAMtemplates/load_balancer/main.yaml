@@ -182,13 +182,20 @@ Resources:
         - Name: !Sub "${StackName}-container"
           Image: !Ref ImageUri
           PortMappings:
-            - ContainerPort: !Ref ContainerPort
+            - Name: eps-api
+              ContainerPort: !Ref ContainerPort
+              HostPort: !Ref ContainerPort
+              Protocol: tcp
+              AppProtocol: http
           LogConfiguration:
             LogDriver: awslogs
             Options:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
+          RuntimePlatform:
+            CpuArchitecture: X86_64
+            OperatingSystemFamily: LINUX
 
   # ECS Service
   ECSService:
