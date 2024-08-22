@@ -28,7 +28,6 @@ import axios, {AxiosInstance, AxiosResponse} from "axios"
 import {JSDOM} from "jsdom"
 import {wrapper} from "axios-cookiejar-support"
 import {CookieJar} from "tough-cookie"
-import queryString from "query-string"
 
 export const VALID_APIGEE_ENVIRONMENTS = ["internal-dev", "internal-qa", "int", "ref"]
 
@@ -197,10 +196,11 @@ type AuthCallbackResponseData = {
 
 const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => {
   const responsePath: string = authResponse.request.path // /?code=UmsJVKNA&state=1234567890
-  const params = queryString.parse(responsePath.substring(1)) // get rid of the / and parse as query string
+
+  const searchParams = new URLSearchParams(responsePath.substring(2)) // skip the leading `/?`
   return {
-    code: params.code as string,
-    state: params.state as string
+    code: searchParams.get("code") as string,
+    state: searchParams.get("state") as string
   }
 }
 
