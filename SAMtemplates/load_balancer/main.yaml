@@ -123,8 +123,8 @@ Resources:
       HealthCheckTimeoutSeconds: 5
       UnhealthyThresholdCount: 2
       HealthyThresholdCount: 2
-      Port: 80
-      Protocol: HTTP
+      Port: 443
+      Protocol: HTTPS
       TargetGroupAttributes:
         - Key: deregistration_delay.timeout_seconds
           Value: 60
