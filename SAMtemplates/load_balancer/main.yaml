@@ -203,7 +203,7 @@ Resources:
           AssignPublicIp: DISABLED
           SecurityGroups:
             - !Ref ContainerSecurityGroup
-          Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
+          Subnets: !Split [",", !ImportValue vpc-resources:PrivateSubnets]
       TaskDefinition: !Ref ECSTaskDefinition
       LoadBalancers:
         - ContainerName: !Sub "${StackName}-container"
