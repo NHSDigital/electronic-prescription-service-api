@@ -145,7 +145,7 @@ export PACT_BROKER_BASIC_AUTH_USERNAME=<SECRET>
 export PACT_BROKER_URL=https://nhsd-pact-broker.herokuapp.com
 # for api
 export SERVICE_BASE_PATH=electronic-prescriptions
-export USE_SHA256_PREPARE=false
+export USE_SHA256_PREPARE=true
 # for epsat
 export SERVICE_BASE_PATH=eps-api-tool
 export PACT_VERSION="$SERVICE_BASE_PATH"
@@ -277,6 +277,7 @@ These are mostly called from CI pipelines to build and deploy resources to our A
 - `lint-api` Lints the API components
 - `lint-epsat` Lints epsat components
 - `lint-all` Lints all components
+- `cfn-guard` runs cfn-guard for sam and cloudformation templates
 
 
 #### Check licenses and versions targets
