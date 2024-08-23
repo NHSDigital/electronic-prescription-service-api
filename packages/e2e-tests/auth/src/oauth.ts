@@ -200,7 +200,6 @@ type AuthCallbackResponseData = {
   state: string
 }
 
-// BEGIN-NOSCAN
 const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => {
   const responsePath: string = authResponse.request.path // /?code=UmsJVKNA&state=1234567890
 
@@ -210,7 +209,6 @@ const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackRes
     state: searchParams.get("state")
   }
 }
-// END-NOSCAN
 
 type TokenResponse = {
   access_token: string,
