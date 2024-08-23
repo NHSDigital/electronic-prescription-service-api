@@ -110,10 +110,10 @@ jobs:
           echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
 
   package_code:
-    needs: [get_version, get_commit_id]
+    needs: [get_version, get_commit_id, tag_release]
     uses: ./.github/workflows/sam_package_code.yml
     with:
-      VERSION_NUMBER: ${{ format('{0}-{1}', needs.get_commit_id.outputs.short_commit_id, needs.get_version.outputs.version) }}
+      VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
     
   release_dev:
