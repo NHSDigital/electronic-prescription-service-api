@@ -25,6 +25,10 @@ Parameters:
   CommitId:
     Type: String
 
+  KmsKey:
+    Type: String
+    Default: ""
+
   ImageUri:
     Type: String
     Description: The URI of the Docker image in ECR
@@ -36,6 +40,7 @@ Parameters:
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
+  UseKmsKey: !Not [!Equals [!Ref KmsKey, ""]]
 
 Resources:
   # Create Security Group for the Load Balancer
@@ -261,7 +266,10 @@ Resources:
     Properties:
       LogGroupName: !Sub "/ecs/${StackName}-logs"
       RetentionInDays: 7
-      KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
+      KmsKeyId: !If
+        - UseKmsKey
+        - !Ref KmsKey
+        - !Ref "AWS::NoValue"
 
   # Security Group for the ECS Container
   ContainerSecurityGroup:
