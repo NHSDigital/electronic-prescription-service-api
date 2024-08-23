@@ -59,6 +59,20 @@ jobs:
         env:
           USE_SHA256_PREPARE: ${{ inputs.USE_SHA256_PREPARE }}
 
+      - name: Run cfn-guard
+        run: make cfn-guard
+
+      - name: show cfn-guard output
+        if: failure()
+        run: find cfn_guard_output -type f -print0 | xargs -0 cat
+
+      - uses: actions/upload-artifact@v4
+        name: upload cfn_guard_output
+        if: failure()
+        with:
+          name: cfn_guard_output
+          path: cfn_guard_output
+
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
