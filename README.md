@@ -277,6 +277,7 @@ These are mostly called from CI pipelines to build and deploy resources to our A
 - `lint-api` Lints the API components
 - `lint-epsat` Lints epsat components
 - `lint-all` Lints all components
+- `cfn-guard` runs cfn-guard for sam and cloudformation templates
 
 
 #### Check licenses and versions targets
