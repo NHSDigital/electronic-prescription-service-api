@@ -261,6 +261,7 @@ Resources:
     Properties:
       LogGroupName: !Sub "/ecs/${StackName}-logs"
       RetentionInDays: 7
+      KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
   # Security Group for the ECS Container
   ContainerSecurityGroup:
