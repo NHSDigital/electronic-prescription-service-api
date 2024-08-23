@@ -263,7 +263,7 @@ Resources:
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
-      LogGroupName: !Sub aws/ecs/${StackName}
+      LogGroupName: !Sub /aws/ecs/${StackName}
       RetentionInDays: 7
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
