@@ -192,12 +192,12 @@ Resources:
               HostPort: !Ref ContainerPort
               Protocol: tcp
               AppProtocol: http
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-group: !Ref LogGroup
-              awslogs-region: !Ref AWS::Region
-              awslogs-stream-prefix: ecs
+          # LogConfiguration:
+          #   LogDriver: awslogs
+          #   Options:
+          #     awslogs-group: !Ref LogGroup
+          #     awslogs-region: !Ref AWS::Region
+          #     awslogs-stream-prefix: ecs
       RuntimePlatform:
         CpuArchitecture: X86_64
         OperatingSystemFamily: LINUX
@@ -208,7 +208,7 @@ Resources:
     DependsOn: ListenerHTTPS
     Properties:
       Cluster: !Ref ECSCluster
-      DesiredCount: 2
+      DesiredCount: 3
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -240,7 +240,7 @@ Resources:
   ECSServiceAutoScalingTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     Properties:
-      MinCapacity: 2
+      MinCapacity: 3
       MaxCapacity: 10
       ResourceId: !Join ["service/", [!Ref ECSCluster, "/", !GetAtt ECSService.Name]]
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
@@ -261,15 +261,15 @@ Resources:
         TargetValue: 50.0
 
   # CloudWatch Log Group
-  LogGroup:
-    Type: AWS::Logs::LogGroup
-    Properties:
-      LogGroupName: !Sub "/ecs/${StackName}-logs"
-      RetentionInDays: 7
-      KmsKeyId: !If
-        - UseKmsKey
-        - !Ref KmsKey
-        - !Ref "AWS::NoValue"
+  # LogGroup:
+  #   Type: AWS::Logs::LogGroup
+  #   Properties:
+  #     LogGroupName: !Sub "/ecs/${StackName}-logs"
+  #     RetentionInDays: 7
+  #     KmsKeyId: !If
+  #       - UseKmsKey
+  #       - !Ref KmsKey
+  #       - !Ref "AWS::NoValue"
 
   # Security Group for the ECS Container
   ContainerSecurityGroup:
