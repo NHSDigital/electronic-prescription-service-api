@@ -40,7 +40,6 @@ Parameters:
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
-  UseKmsKey: !Not [!Equals [!Ref KmsKey, ""]]
 
 Resources:
   # Create Security Group for the Load Balancer
@@ -192,12 +191,12 @@ Resources:
               HostPort: !Ref ContainerPort
               Protocol: tcp
               AppProtocol: http
-          # LogConfiguration:
-          #   LogDriver: awslogs
-          #   Options:
-          #     awslogs-group: !Ref LogGroup
-          #     awslogs-region: !Ref AWS::Region
-          #     awslogs-stream-prefix: ecs
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: !Sub "${StackName}-ecs"
       RuntimePlatform:
         CpuArchitecture: X86_64
         OperatingSystemFamily: LINUX
@@ -261,15 +260,12 @@ Resources:
         TargetValue: 50.0
 
   # CloudWatch Log Group
-  # LogGroup:
-  #   Type: AWS::Logs::LogGroup
-  #   Properties:
-  #     LogGroupName: !Sub "/ecs/${StackName}-logs"
-  #     RetentionInDays: 7
-  #     KmsKeyId: !If
-  #       - UseKmsKey
-  #       - !Ref KmsKey
-  #       - !Ref "AWS::NoValue"
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "aws/ecs/${StackName}"
+      RetentionInDays: 7
+      KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
   # Security Group for the ECS Container
   ContainerSecurityGroup:
