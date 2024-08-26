@@ -35,35 +35,6 @@ Parameters:
     Type: String
     Description: Docker Image Tag
 
-  LogRetentionDays:
-    Type: Number
-    Description: How long to keep logs for
-    AllowedValues:
-      [
-        1,
-        3,
-        5,
-        7,
-        14,
-        30,
-        60,
-        90,
-        120,
-        150,
-        180,
-        365,
-        400,
-        545,
-        731,
-        1096,
-        1827,
-        2192,
-        2557,
-        2922,
-        3288,
-        3653,
-      ]
-
 Resources:
   LoadBalancers:
     Type: AWS::Serverless::Application
@@ -78,7 +49,6 @@ Resources:
         CommitId: !Ref CommitId
         EcrRepository: !Ref EcrRepository
         ImageTag: !Ref ImageTag
-        LogRetentionDays: !Ref LogRetentionDays
 
 Outputs:
   LoadBalancerEndpoint:
