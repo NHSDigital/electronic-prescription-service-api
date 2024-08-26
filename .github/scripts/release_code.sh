@@ -24,21 +24,9 @@ if [ -z "${ZONE_ID_EXPORT}" ]; then
   export ZONE_ID_EXPORT="NOT_SET"
 fi
 
-# Retrieve the AWS Account ID and set the ECR repository and image tag
-ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-REGION="eu-west-2"
-ECR_REPOSITORY="fhir-facade-repo"
-IMAGE_TAG="${VERSION_NUMBER}"
-
-# Construct the ImageUri
-IMAGE_URI="${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPOSITORY}:${IMAGE_TAG}"
-export IMAGE_URI
-
 # Debugging: Print the values for verification
 echo "DOMAIN_NAME_EXPORT: $DOMAIN_NAME_EXPORT"
 echo "ZONE_ID_EXPORT: $ZONE_ID_EXPORT"
-echo "VERSION_NUMBER: $VERSION_NUMBER"
-echo "IMAGE_URI: $IMAGE_URI"
 
 # Change directory and invoke the make command
 cd ../../.aws-sam/build || exit
