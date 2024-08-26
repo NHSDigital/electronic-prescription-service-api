@@ -61,9 +61,6 @@ on:
       ZONE_ID_EXPORT:
         required: false
         type: string
-      ECR_REPOSITORY:
-        required: true
-        type: string
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -166,8 +163,6 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
-          ECRRepository: ${{ inputs.ECR_REPOSITORY }}
-          ImageTag: ${{ inputs.VERSION_NUMBER }}
         run: ./release_code.sh
 
       - name: Set ECR Repository

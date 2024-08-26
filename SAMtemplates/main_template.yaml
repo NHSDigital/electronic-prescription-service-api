@@ -27,14 +27,6 @@ Parameters:
     Type: String
     Default: "xxx"
 
-  ECRRepository:
-    Type: String
-    Description: Name of the ECR Repository
-
-  ImageTag:
-    Type: String
-    Description: Docker image tag/version
-
 Resources:
   LoadBalancers:
     Type: AWS::Serverless::Application
@@ -47,8 +39,6 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
-        ECRRepository: !Ref ECRRepository
-        ImageTag: !Ref ImageTag
 
 Outputs:
   LoadBalancerEndpoint:
