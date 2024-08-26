@@ -295,7 +295,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/ecs/${StackName}
-      RetentionInDays: !Ref LogRetentionDays
+      LogRetentionInDays: !Ref LogRetentionDays
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
   # Security Group for the ECS Container
