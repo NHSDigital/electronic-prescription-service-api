@@ -39,6 +39,35 @@ Parameters:
     Type: Number
     Default: 9000
 
+  LogRetentionDays:
+    Type: Number
+    Description: How long to keep logs for
+    AllowedValues:
+      [
+        1,
+        3,
+        5,
+        7,
+        14,
+        30,
+        60,
+        90,
+        120,
+        150,
+        180,
+        365,
+        400,
+        545,
+        731,
+        1096,
+        1827,
+        2192,
+        2557,
+        2922,
+        3288,
+        3653,
+      ]
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
@@ -265,7 +294,7 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/ecs/${StackName}
-      RetentionInDays: 7
+      RetentionInDays: !Ref LogRetentionDays
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
   # Security Group for the ECS Container
