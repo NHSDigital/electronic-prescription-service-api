@@ -163,6 +163,7 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
+          IMAGE_URI: ${{ env.IMAGE_URI }}
         run: ./release_code.sh
 
       - name: Set ECR Repository
