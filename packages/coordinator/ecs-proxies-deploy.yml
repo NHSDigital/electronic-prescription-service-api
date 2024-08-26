@@ -54,9 +54,9 @@ docker_service:
     health_check:
       matcher: "200"
       path: "/_healthcheck"
-  # - name: eps-validator
-  #   port: 9001
-  #   expose: false
-  #   health_check:
-  #     matcher: "200"
-  #     path: "/_status"
+  - name: eps-validator
+    port: 9001
+    expose: false
+    health_check:
+      matcher: "200"
+      path: "/_status"
