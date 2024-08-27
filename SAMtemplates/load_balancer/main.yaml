@@ -47,7 +47,7 @@ Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
 Resources:
-  # Create Security Group for the Load Balancer
+  # Security Group for the Load Balancer
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -62,7 +62,7 @@ Resources:
         - Key: Name
           Value: !Sub "${StackName}-lb-sg"
 
-  # Generate a new ACM certificate
+  # ACM Certificate Generation
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -80,7 +80,7 @@ Resources:
                 - !ImportValue eps-route53-resources:EPS-domain
           HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
-  # Create a new Application Load Balancer
+  # Application Load Balancer
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -92,16 +92,16 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Create Trust Store for mTLS
+  # Trust Store for mTLS (Conditional)
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Condition: CreateTruststore
     Properties:
       CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
-      CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
+      CaCertificatesBundleS3Key: !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
 
-  # Create Listener with optional mTLS Verify Mode
+  # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -123,7 +123,7 @@ Resources:
             }
           - !Ref "AWS::NoValue"
 
-  # Create Target Group
+  # Target Group Configuration
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
@@ -140,7 +140,7 @@ Resources:
       TargetType: ip
       VpcId: !ImportValue vpc-resources:VpcId
 
-  # DNS Record for Load Balancer
+  # Route 53 DNS Record for the Load Balancer
   DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -155,7 +155,7 @@ Resources:
         EvaluateTargetHealth: False
         HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
 
-  # ECS Cluster
+  # ECS Cluster Setup
   ECSCluster:
     Type: AWS::ECS::Cluster
     Properties:
@@ -189,7 +189,7 @@ Resources:
       ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
       ContainerDefinitions:
         - Name: !Sub "${StackName}-container"
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.eu-west-2.amazonaws.com/${EcrRepository}:${ImageTag}"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${EcrRepository}:${ImageTag}"
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
@@ -203,7 +203,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
         - Name: !Sub "${StackName}-validator"
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:PR-2617"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:PR-2617"
           PortMappings:
             - ContainerPort: !Ref ContainerPortValidator
               Protocol: tcp
@@ -217,7 +217,7 @@ Resources:
         CpuArchitecture: X86_64
         OperatingSystemFamily: LINUX
 
-  # ECS Service
+  # ECS Service Configuration
   ECSService:
     Type: AWS::ECS::Service
     DependsOn: ListenerHTTPS
@@ -237,7 +237,7 @@ Resources:
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
 
-  # ECS Service Auto Scaling
+  # ECS Service Auto Scaling Role
   ECSServiceAutoScalingRole:
     Type: AWS::IAM::Role
     Properties:
@@ -252,16 +252,18 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole
       RoleName: !Sub "${StackName}-ecsAutoScalingRole"
 
+  # ECS Service Auto Scaling Target
   ECSServiceAutoScalingTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
     Properties:
       MinCapacity: 3
-      MaxCapacity: 10
+      MaxCapacity: 4
       ResourceId: !Sub "service/${ECSCluster}/${ECSService}"
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
       ServiceNamespace: ecs
 
+  # ECS Service Auto Scaling Policy
   ECSServiceAutoScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
     Properties:
@@ -275,7 +277,7 @@ Resources:
         ScaleOutCooldown: 60
         TargetValue: 50.0
 
-  # CloudWatch Log Group
+  # CloudWatch Log Group for ECS
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
@@ -283,7 +285,7 @@ Resources:
       RetentionInDays: 30
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
-  # Security Group for the ECS Container
+  # Security Group for the ECS Containers
   ContainerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
