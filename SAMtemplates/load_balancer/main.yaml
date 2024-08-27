@@ -191,9 +191,11 @@ Resources:
         - Name: !Sub "${StackName}-container"
           Image: !Sub "${AWS::AccountId}.dkr.ecr.eu-west-2.amazonaws.com/${EcrRepository}:${ImageTag}"
           PortMappings:
-            - Name: eps-api
-              ContainerPort: !Ref ContainerPort
+            - ContainerPort: !Ref ContainerPort
               Protocol: tcp
+          Environment:
+            - Name: VALIDATOR_HOST
+              Value: !Sub "${StackName}-validator"
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -203,9 +205,9 @@ Resources:
         - Name: !Sub "${StackName}-validator"
           Image: !Sub "${AWS::AccountId}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:PR-2617"
           PortMappings:
-            - Name: eps-validator
-              ContainerPort: !Ref ContainerPortValidator
+            - ContainerPort: !Ref ContainerPortValidator
               Protocol: tcp
+          Hostname: !Sub "${StackName}-validator"
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -292,6 +294,10 @@ Resources:
         - IpProtocol: tcp
           FromPort: !Ref ContainerPort
           ToPort: !Ref ContainerPort
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+        - IpProtocol: tcp
+          FromPort: !Ref ContainerPortValidator
+          ToPort: !Ref ContainerPortValidator
           SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
       Tags:
         - Key: Name
