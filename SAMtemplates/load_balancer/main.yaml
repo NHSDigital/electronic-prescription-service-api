@@ -223,7 +223,7 @@ Resources:
     DependsOn: ListenerHTTPS
     Properties:
       Cluster: !Ref ECSCluster
-      ServiceName: !Sub "${StackName}-service"  # Explicitly setting the ECS service name
+      ServiceName: !Sub "${StackName}-service"
       DesiredCount: 3
       LaunchType: FARGATE
       NetworkConfiguration:
@@ -256,12 +256,11 @@ Resources:
   # ECS Service Auto Scaling Target
   ECSServiceAutoScalingTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
-    DependsOn: ECSService  # Ensuring ECSService is created before this resource
+    DependsOn: ECSService
     Properties:
       MinCapacity: 3
       MaxCapacity: 4
-      # ResourceId: !Sub "service/${ECSCluster}/${ECSService}"
-      ResourceId: !Sub "service/${ECSCluster}/${StackName}-service"  # Using the custom service name
+      ResourceId: !Sub "service/${ECSCluster}/${StackName}-service"
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
       ServiceNamespace: ecs
@@ -331,7 +330,6 @@ Outputs:
   ECSServiceName:
     Description: Name of the ECS Service
     Value: !GetAtt ECSService.Name
-    # Value: "prescribe-dispense-service"
 
   ECSTaskDefinitionArn:
     Description: ARN of the ECS Task Definition
