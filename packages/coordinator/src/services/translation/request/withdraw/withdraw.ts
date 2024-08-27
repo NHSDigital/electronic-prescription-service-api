@@ -8,7 +8,10 @@ import {
 } from "../../common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
-import {getContainedPractitionerRoleViaReference} from "../../common/getResourcesOfType"
+import {
+  getContainedOrganizationViaReference,
+  getContainedPractitionerRoleViaReference
+} from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {createAuthorForWithdraw} from "../agent-person"
 import {RepeatInstanceInfo} from "../../../../../../models/hl7-v3/withdraw"
@@ -34,6 +37,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
       'task.contained("PractitionerRole").organization'
     )
   }
+  const organization = getContainedOrganizationViaReference(task, organizationRef.reference)
 
   const repeatInformation = getExtensionForUrlOrNull(
     task.extension,
@@ -42,7 +46,7 @@ export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
 
   etpWithdraw.recordTarget = createRecordTarget(task.for.identifier)
-  etpWithdraw.author = createAuthorForWithdraw(practitionerRole)
+  etpWithdraw.author = createAuthorForWithdraw(practitionerRole, organization)
 
   etpWithdraw.pertinentInformation3 = createPertinentInformation3(task.groupIdentifier)
 
