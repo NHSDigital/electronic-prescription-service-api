@@ -256,6 +256,7 @@ Resources:
   # ECS Service Auto Scaling Target
   ECSServiceAutoScalingTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
+    DependsOn: ECSService  # Ensuring ECSService is created before this resource
     Properties:
       MinCapacity: 3
       MaxCapacity: 4
