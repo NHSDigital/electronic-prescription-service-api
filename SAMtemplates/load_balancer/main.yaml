@@ -181,8 +181,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub "${StackName}-task"
-      Cpu: "1024"
-      Memory: "3072"
+      Cpu: "2048"
+      Memory: "4096"
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
@@ -193,9 +193,7 @@ Resources:
           PortMappings:
             - Name: eps-api
               ContainerPort: !Ref ContainerPort
-              # HostPort: !Ref ContainerPort
               Protocol: tcp
-              AppProtocol: http
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -207,9 +205,7 @@ Resources:
           PortMappings:
             - Name: eps-validator
               ContainerPort: !Ref ContainerPortValidator
-              # HostPort: !Ref ContainerPortValidator
               Protocol: tcp
-              AppProtocol: http
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -260,7 +256,7 @@ Resources:
     Properties:
       MinCapacity: 3
       MaxCapacity: 10
-      ResourceId: !Join ["service/", [!Ref ECSCluster, "/", !GetAtt ECSService.Name]]
+      ResourceId: !Sub "service/${ECSCluster}/${ECSService}"
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
       ServiceNamespace: ecs
