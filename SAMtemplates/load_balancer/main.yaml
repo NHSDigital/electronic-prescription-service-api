@@ -193,7 +193,7 @@ Resources:
           PortMappings:
             - Name: eps-api
               ContainerPort: !Ref ContainerPort
-              HostPort: !Ref ContainerPort
+              # HostPort: !Ref ContainerPort
               Protocol: tcp
               AppProtocol: http
           LogConfiguration:
@@ -207,7 +207,7 @@ Resources:
           PortMappings:
             - Name: eps-validator
               ContainerPort: !Ref ContainerPortValidator
-              HostPort: !Ref ContainerPortValidator
+              # HostPort: !Ref ContainerPortValidator
               Protocol: tcp
               AppProtocol: http
           LogConfiguration:
