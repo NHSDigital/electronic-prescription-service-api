@@ -151,7 +151,7 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         env:
-          artifact_bucket_prefix: prescription_status_update/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
+          artifact_bucket_prefix: pelectronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
           COMMIT_ID: ${{ inputs.COMMIT_ID }}
           # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
           # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
@@ -161,6 +161,8 @@ jobs:
           template_file: template.yaml
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
+          ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
         run: ./release_code.sh
 
       - name: docker_artifact download
@@ -169,27 +171,15 @@ jobs:
           name: docker_artifact
           path: .
 
-      - name: Set FHIR FACADE ECR Repository
-        run: echo "FHIR_FACADE_ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
-
-      - name: Set FHIR FACADE Image Tag
-        run: echo "FHIR_FACADE_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
-
       - name: Extract FHIR Facade docker image
         id: extract-FHIR-facade-image
         run: |
-           docker load -i FHIR_facade_docker.img
-
-      - name: Set Validator ECR Repository
-        run: echo "VALIDATOR_ECR_REPOSITORY"="validator-repo" >> "$GITHUB_ENV"
-
-      - name: Set Validator Image Tag
-        run: echo "VALIDATOR_IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV" 
+         docker load -i FHIR_facade_docker.img
 
       - name: Extract validator docker image
         id: extract-validator-image
         run: |
-           docker load -i validator_docker.img
+         docker load -i validator_docker.img
 
       - name: Retrieve AWS Account ID
         id: retrieve-account-id
@@ -200,13 +190,12 @@ jobs:
         run: |
          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
 
-      - name: Push Fhir Facade image to Amazon ECR
+      - name: Push FHIR Facade image to Amazon ECR
         run: |
-          docker tag "${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.FHIR_FACADE_ECR_REPOSITORY }}:${{ env.FHIR_FACADE_IMAGE_TAG }}"  
-
+         docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
+         docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com      /fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
 
       - name: Push Validator image to Amazon ECR
         run: |
-          docker tag "${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.VALIDATOR_ECR_REPOSITORY }}:${{ env.VALIDATOR_IMAGE_TAG }}"      
+          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"      
