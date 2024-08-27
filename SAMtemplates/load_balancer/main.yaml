@@ -203,7 +203,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
         - Name: !Sub "${StackName}-validator"
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:PR-2617"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:PR-2617" #:${ImageTag}
           PortMappings:
             - ContainerPort: !Ref ContainerPortValidator
               Protocol: tcp
