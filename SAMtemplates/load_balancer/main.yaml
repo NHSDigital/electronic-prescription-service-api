@@ -207,7 +207,6 @@ Resources:
           PortMappings:
             - ContainerPort: !Ref ContainerPortValidator
               Protocol: tcp
-          Hostname: !Sub "${StackName}-validator"
           LogConfiguration:
             LogDriver: awslogs
             Options:
