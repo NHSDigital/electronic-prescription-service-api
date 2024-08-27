@@ -30,6 +30,15 @@ echo "ZONE_ID_EXPORT: $ZONE_ID_EXPORT"
 echo "ECR_REPOSITORY: $ECR_REPOSITORY"
 echo "IMAGE_TAG: $IMAGE_TAG"
 
+# Fetch the IP address of the validator container
+if [ -n "$ECS_CONTAINER_METADATA_URI_V4" ]; then
+  VALIDATOR_IP=$(curl -s "$ECS_CONTAINER_METADATA_URI_V4" | jq -r '.Networks[0].IPv4Addresses[0]')
+  export VALIDATOR_IP
+  echo "Validator IP: $VALIDATOR_IP"
+else
+  echo "ECS_CONTAINER_METADATA_URI_V4 is not set. Unable to fetch Validator IP."
+fi
+
 # Change directory and invoke the make command
 cd ../../.aws-sam/build || exit
 make sam-deploy-package
