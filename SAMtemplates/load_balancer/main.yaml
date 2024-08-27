@@ -39,6 +39,10 @@ Parameters:
     Type: Number
     Default: 9000
 
+  ContainerPortValidator:
+    Type: Number
+    Default: 9001
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
@@ -190,6 +194,20 @@ Resources:
             - Name: eps-api
               ContainerPort: !Ref ContainerPort
               HostPort: !Ref ContainerPort
+              Protocol: tcp
+              AppProtocol: http
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+        - Name: !Sub "${StackName}-validator"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:PR-2617"
+          PortMappings:
+            - Name: eps-validator
+              ContainerPort: !Ref ContainerPortValidator
+              HostPort: !Ref ContainerPortValidator
               Protocol: tcp
               AppProtocol: http
           LogConfiguration:
