@@ -81,12 +81,12 @@ describe("convertOrganization", () => {
 
 describe("createAuthorForWithdraw", () => {
   test("Creates an AuthorPersonSDS with correct values.", () => {
-    const result = createAuthorForWithdraw(testData.practitionerRole)
+    const result = createAuthorForWithdraw(testData.practitionerRole, testData.organization)
 
     expect(result).toBeInstanceOf(hl7V3.AuthorPersonSds)
 
     expect(result.AgentPersonSDS.id).toStrictEqual(new hl7V3.SdsRoleProfileIdentifier("555086415105"))
 
-    expect(result.AgentPersonSDS.agentPersonSDS.id).toStrictEqual(new hl7V3.ProfessionalCode("3415870201"))
+    expect(result.AgentPersonSDS.agentPersonSDS.id).toStrictEqual(new hl7V3.SdsUniqueIdentifier("VNE51"))
   })
 })
