@@ -17,7 +17,8 @@ export function createAuthor(
 }
 
 export function createAuthorForWithdraw(
-  practitionerRole: fhir.PractitionerRole
+  practitionerRole: fhir.PractitionerRole,
+  organization: fhir.Organization
 ): hl7V3.AuthorPersonSds {
   const sdsRoleProfileId = getIdentifierValueForSystem(
     practitionerRole.identifier,
@@ -32,16 +33,16 @@ export function createAuthorForWithdraw(
     )
   }
 
-  const sdsUserUniqueId = getIdentifierValueForSystem(
-    [practitionerRole.practitioner.identifier],
-    "https://fhir.nhs.uk/Id/sds-user-id",
-    'Task.contained("PractitionerRole").practitioner("value")'
+  const organizationODS = getIdentifierValueForSystem(
+    organization.identifier,
+    "https://fhir.nhs.uk/Id/ods-organization-code",
+    'Task.contained("Organization").identifier("value")'
   )
 
   const agentPersonSds = new hl7V3.AgentPersonSds()
   agentPersonSds.id = new hl7V3.SdsRoleProfileIdentifier(sdsRoleProfileId)
   agentPersonSds.agentPersonSDS = new hl7V3.AgentPersonPersonSds(
-    new hl7V3.ProfessionalCode(sdsUserUniqueId) //we want OID ending in 1.54 because of decision D011
+    new hl7V3.SdsUniqueIdentifier(organizationODS)
   )
 
   return new hl7V3.AuthorPersonSds(agentPersonSds)
