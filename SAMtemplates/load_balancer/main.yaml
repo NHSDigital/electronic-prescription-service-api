@@ -223,7 +223,7 @@ Resources:
     DependsOn: ListenerHTTPS
     Properties:
       Cluster: !Ref ECSCluster
-      ServiceName: "prescribe-dispense-service"  # Explicitly setting the ECS service name
+      # ServiceName: "prescribe-dispense-service"  # Explicitly setting the ECS service name
       DesiredCount: 3
       LaunchType: FARGATE
       NetworkConfiguration:
@@ -260,8 +260,8 @@ Resources:
     Properties:
       MinCapacity: 3
       MaxCapacity: 4
-      # ResourceId: !Sub "service/${ECSCluster}/${ECSService}"
-      ResourceId: !Sub "service/${ECSCluster}/prescribe-dispense-service"  # Using the custom service name
+      ResourceId: !Sub "service/${ECSCluster}/${ECSService}"
+      # ResourceId: !Sub "service/${ECSCluster}/prescribe-dispense-service"  # Using the custom service name
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
       ServiceNamespace: ecs
@@ -330,8 +330,8 @@ Outputs:
 
   ECSServiceName:
     Description: Name of the ECS Service
-    # Value: !GetAtt ECSService.Name
-    Value: "prescribe-dispense-service"
+    Value: !GetAtt ECSService.Name
+    # Value: "prescribe-dispense-service"
 
   ECSTaskDefinitionArn:
     Description: ARN of the ECS Task Definition
