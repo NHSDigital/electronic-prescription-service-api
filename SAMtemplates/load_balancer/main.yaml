@@ -181,8 +181,8 @@ Resources:
     Type: AWS::ECS::TaskDefinition
     Properties:
       Family: !Sub "${StackName}-task"
-      Cpu: "2048"
-      Memory: "4096"
+      Cpu: "1024"
+      Memory: "3072"
       NetworkMode: awsvpc
       RequiresCompatibilities:
         - FARGATE
@@ -260,7 +260,7 @@ Resources:
     Properties:
       MinCapacity: 3
       MaxCapacity: 10
-      ResourceId: !Sub "service/${ECSCluster}/${ECSService}"
+      ResourceId: !Join ["service/", [!Ref ECSCluster, "/", !GetAtt ECSService.Name]]
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
       ServiceNamespace: ecs
