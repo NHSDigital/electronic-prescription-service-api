@@ -151,7 +151,7 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         env:
-          artifact_bucket_prefix: pelectronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
+          artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
           COMMIT_ID: ${{ inputs.COMMIT_ID }}
           # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
           # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
