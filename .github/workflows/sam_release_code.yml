@@ -147,6 +147,12 @@ jobs:
           echo "Specification location: $SPEC_PATH"
           echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
       
+      - name: Set ECR Repository
+        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
+
+      - name: Set Image Tag
+        run: echo "IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
+
       - name: release code
         shell: bash
         working-directory: .github/scripts
@@ -163,13 +169,9 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
+          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: ./release_code.sh
-
-      - name: Set ECR Repository
-        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
-
-      - name: Set Image Tag
-        run: echo "IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
 
       - name: docker_artifact download
         uses: actions/download-artifact@v4
@@ -194,4 +196,4 @@ jobs:
       - name: Push image to Amazon ECR
         run: |
           docker tag "${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"  
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}"

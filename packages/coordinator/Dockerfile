@@ -24,6 +24,8 @@ COPY --from=build /build/packages/coordinator/package.json /app/packages/coordin
 COPY --from=build /build/packages/coordinator/dist/ /app/packages/coordinator/dist
 RUN npm ci --ignore-scripts --only=production --workspace packages/coordinator
 
-RUN chmod -R a+x /app
+RUN mkdir -p /.npm && chown -R nobody:nogroup /.npm
+RUN chown -R nobody:nogroup /app
 USER nobody
+ENV npm_config_cache=/.npm
 CMD ["npm", "run", "start", "--workspace", "packages/coordinator"]

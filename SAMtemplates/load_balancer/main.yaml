@@ -1,7 +1,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
 Description: |
-  Main template for Load Balancer with all resources included, supporting mutual TLS
+  Main template for Load Balancer with all resources included, supporting mutual TLS and ECS Fargate deployment
 
 Parameters:
   StackName:
@@ -25,11 +25,29 @@ Parameters:
   CommitId:
     Type: String
 
+  KmsKey:
+    Type: String
+    Default: ""
+
+  EcrRepository:
+    Type: String
+
+  ImageTag:
+    Type: String
+
+  ContainerPort:
+    Type: Number
+    Default: 9000
+
+  ContainerPortValidator:
+    Type: Number
+    Default: 9001
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
 
 Resources:
-  # Create Security Group for the Load Balancer
+  # Security Group for the Load Balancer
   LoadBalancerSecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
@@ -44,7 +62,7 @@ Resources:
         - Key: Name
           Value: !Sub "${StackName}-lb-sg"
 
-  # Generate a new ACM certificate
+  # ACM Certificate Generation
   GenerateCertificate:
     Type: AWS::CertificateManager::Certificate
     Properties:
@@ -62,7 +80,7 @@ Resources:
                 - !ImportValue eps-route53-resources:EPS-domain
           HostedZoneId: !ImportValue eps-route53-resources:EPS-ZoneID
 
-  # Create a new Application Load Balancer
+  # Application Load Balancer
   LoadBalancer:
     Type: AWS::ElasticLoadBalancingV2::LoadBalancer
     Properties:
@@ -74,16 +92,16 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Create Trust Store for mTLS
+  # Trust Store for mTLS (Conditional)
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Condition: CreateTruststore
     Properties:
       CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
-      CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
+      CaCertificatesBundleS3Key: !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
 
-  # Create Listener with optional mTLS Verify Mode
+  # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -105,12 +123,12 @@ Resources:
             }
           - !Ref "AWS::NoValue"
 
-  # Create Target Group
+  # Target Group Configuration
   TargetGroup:
     Type: AWS::ElasticLoadBalancingV2::TargetGroup
     Properties:
       HealthCheckIntervalSeconds: 10
-      HealthCheckPath: /
+      HealthCheckPath: /_healthcheck
       HealthCheckTimeoutSeconds: 5
       UnhealthyThresholdCount: 2
       HealthyThresholdCount: 2
@@ -122,7 +140,7 @@ Resources:
       TargetType: ip
       VpcId: !ImportValue vpc-resources:VpcId
 
-  # DNS Record for Load Balancer
+  # Route 53 DNS Record for the Load Balancer
   DNSRecord:
     Type: AWS::Route53::RecordSet
     Properties:
@@ -136,6 +154,157 @@ Resources:
         DNSName: !GetAtt LoadBalancer.DNSName
         EvaluateTargetHealth: False
         HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+
+  # ECS Cluster Setup
+  ECSCluster:
+    Type: AWS::ECS::Cluster
+    Properties:
+      ClusterName: !Sub "${StackName}-cluster"
+
+  # IAM Role for ECS Task Execution
+  ECSTaskExecutionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+      RoleName: !Sub "${StackName}-ecsTaskExecutionRole"
+
+  # ECS Task Definition
+  ECSTaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Family: !Sub "${StackName}-task"
+      Cpu: "2048"
+      Memory: "4096"
+      NetworkMode: awsvpc
+      RequiresCompatibilities:
+        - FARGATE
+      ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
+      ContainerDefinitions:
+        - Name: !Sub "${StackName}-container"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${EcrRepository}:${ImageTag}"
+          PortMappings:
+            - ContainerPort: !Ref ContainerPort
+              Protocol: tcp
+          Environment:
+            - Name: VALIDATOR_HOST
+              Value: !Sub "${StackName}-validator"
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+        - Name: !Sub "${StackName}-validator"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:PR-2617" #:${ImageTag}
+          PortMappings:
+            - ContainerPort: !Ref ContainerPortValidator
+              Protocol: tcp
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
+      RuntimePlatform:
+        CpuArchitecture: X86_64
+        OperatingSystemFamily: LINUX
+
+  # ECS Service Configuration
+  ECSService:
+    Type: AWS::ECS::Service
+    DependsOn: ListenerHTTPS
+    Properties:
+      Cluster: !Ref ECSCluster
+      ServiceName: !Sub "${StackName}-service"
+      DesiredCount: 3
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          AssignPublicIp: DISABLED
+          SecurityGroups:
+            - !Ref ContainerSecurityGroup
+          Subnets: !Split [",", !ImportValue vpc-resources:PrivateSubnets]
+      TaskDefinition: !Ref ECSTaskDefinition
+      LoadBalancers:
+        - ContainerName: !Sub "${StackName}-container"
+          ContainerPort: !Ref ContainerPort
+          TargetGroupArn: !Ref TargetGroup
+
+  # ECS Service Auto Scaling Role
+  ECSServiceAutoScalingRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: application-autoscaling.amazonaws.com
+            Action: sts:AssumeRole
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceAutoscaleRole
+      RoleName: !Sub "${StackName}-ecsAutoScalingRole"
+
+  # ECS Service Auto Scaling Target
+  ECSServiceAutoScalingTarget:
+    Type: AWS::ApplicationAutoScaling::ScalableTarget
+    DependsOn: ECSService
+    Properties:
+      MinCapacity: 3
+      MaxCapacity: 4
+      ResourceId: !Sub "service/${ECSCluster}/${StackName}-service"
+      RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
+      ScalableDimension: ecs:service:DesiredCount
+      ServiceNamespace: ecs
+
+  # ECS Service Auto Scaling Policy
+  ECSServiceAutoScalingPolicy:
+    Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Properties:
+      PolicyName: !Sub "${StackName}-ecsAutoScalingPolicy"
+      PolicyType: TargetTrackingScaling
+      ScalingTargetId: !Ref ECSServiceAutoScalingTarget
+      TargetTrackingScalingPolicyConfiguration:
+        PredefinedMetricSpecification:
+          PredefinedMetricType: ECSServiceAverageCPUUtilization
+        ScaleInCooldown: 60
+        ScaleOutCooldown: 60
+        TargetValue: 50.0
+
+  # CloudWatch Log Group for ECS
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub /aws/ecs/${StackName}
+      RetentionInDays: 30
+      KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
+
+  # Security Group for the ECS Containers
+  ContainerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      VpcId: !ImportValue vpc-resources:VpcId
+      GroupDescription: Security group for ECS containers
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: !Ref ContainerPort
+          ToPort: !Ref ContainerPort
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+        - IpProtocol: tcp
+          FromPort: !Ref ContainerPortValidator
+          ToPort: !Ref ContainerPortValidator
+          SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+      Tags:
+        - Key: Name
+          Value: !Sub "${StackName}-ecs-sg"
 
 Outputs:
   Endpoint:
@@ -153,3 +322,15 @@ Outputs:
   SecurityGroupIds:
     Description: Security Group IDs associated with the Load Balancer
     Value: !Join [",", [!Ref LoadBalancerSecurityGroup]]
+
+  ECSClusterName:
+    Description: Name of the ECS Cluster
+    Value: !Ref ECSCluster
+
+  ECSServiceName:
+    Description: Name of the ECS Service
+    Value: !GetAtt ECSService.Name
+
+  ECSTaskDefinitionArn:
+    Description: ARN of the ECS Task Definition
+    Value: !Ref ECSTaskDefinition
