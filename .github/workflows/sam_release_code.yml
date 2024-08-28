@@ -174,12 +174,12 @@ jobs:
       - name: Extract FHIR Facade docker image
         id: extract-FHIR-facade-image
         run: |
-         docker load -i FHIR_facade_docker.img
+          docker load -i FHIR_facade_docker.img
 
       - name: Extract validator docker image
         id: extract-validator-image
         run: |
-         docker load -i validator_docker.img
+          docker load -i validator_docker.img
 
       - name: Retrieve AWS Account ID
         id: retrieve-account-id
@@ -188,14 +188,14 @@ jobs:
       - name: Login to Amazon ECR
         id: login-ecr
         run: |
-         aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
 
       - name: Push FHIR Facade image to Amazon ECR
         run: |
-         docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
-         docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
+          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
 
       - name: Push Validator image to Amazon ECR
         run: |
-          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"      
+           docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
+           docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"      
