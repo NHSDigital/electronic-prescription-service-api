@@ -16,7 +16,7 @@ PULL_REQUEST_STACK_REGEX=prescribe-dispense-pr-
 CNAME_QUERY=prescribe-dispense-pr-
 
 main() {
-  #delete_cloudformation_stacks
+  delete_cloudformation_stacks
   delete_cname_records
 }
 
