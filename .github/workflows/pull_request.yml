@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: quality_checks
     outputs:
-      issue_number: ${{steps.get_issue_number.outputs.result}}
+      issue_number: ${{ steps.get_issue_number.outputs.result }}
       version: ${{ steps.get_issue_number.outputs.version_number }} 
 
     steps:
@@ -62,8 +62,8 @@ jobs:
     needs: [get_issue_number, get_commit_id]
     uses: ./.github/workflows/sam_package_code.yml
     with:
-      version: PR-${{ needs.get_issue_number.outputs.issue_number }}
-      commit_id: ${{ needs.get_commit_id.outputs.commit_id }}
+      VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
+      COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
 
 
   release_code:
