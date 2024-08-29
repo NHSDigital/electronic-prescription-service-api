@@ -1,4 +1,4 @@
-name: 'Delete old cloudformation stacks'
+name: "Delete old cloudformation stacks"
 
 on:
   workflow_dispatch:
@@ -9,8 +9,8 @@ jobs:
   delete-old-cloudformation-stacks:
     runs-on: ubuntu-latest
     permissions:
-        id-token: write
-        contents: read
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout local github scripts
@@ -31,3 +31,5 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         run: ./delete_stacks.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
