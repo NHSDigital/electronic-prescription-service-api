@@ -117,6 +117,7 @@ jobs:
         id: get_latest_validator_release
         run: |
           LATEST_VALIDATOR_VERSION=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
+          LATEST_VALIDATOR_VERSION=ab_test
           echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_ENV"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
