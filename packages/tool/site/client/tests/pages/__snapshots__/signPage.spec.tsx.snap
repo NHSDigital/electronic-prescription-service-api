@@ -21,7 +21,7 @@ exports[`Displays error message if prepare errors present 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button sc-iKTcqh idbeZb" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iKTcqh idbeZb" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%0A%7D" download="message">Download</a></div><pre class="sc-dsLQwm ftUxth">{
+      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*",
   "Content-Type": "application/x-www-form-urlencoded",
   "nhsd-identity-authentication-method": "N3_SMARTCARD"
@@ -40,13 +40,13 @@ exports[`Displays error message if prepare errors present 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button sc-iKTcqh idbeZb" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iKTcqh idbeZb" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dsLQwm ftUxth">{}</pre>
+      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
     </div>
   </details>
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button sc-iKTcqh idbeZb" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iKTcqh idbeZb" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-dsLQwm ftUxth">{
+      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22prepareErrors%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%20%20%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%5D%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "prepareErrors": [
     {
       "resourceType": "OperationOutcome",
@@ -63,7 +63,7 @@ exports[`Displays error message if prepare errors present 1`] = `
     </div>
   </details>
 </fieldset>
-<div class="sc-elDIKY jDXWZk"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-egkSDF hcqWyj"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays error message if redirect URI not present 1`] = `
@@ -87,7 +87,7 @@ exports[`Displays error message if redirect URI not present 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button sc-iKTcqh idbeZb" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iKTcqh idbeZb" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%0A%7D" download="message">Download</a></div><pre class="sc-dsLQwm ftUxth">{
+      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*",
   "Content-Type": "application/x-www-form-urlencoded",
   "nhsd-identity-authentication-method": "N3_SMARTCARD"
@@ -106,13 +106,13 @@ exports[`Displays error message if redirect URI not present 1`] = `
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button sc-iKTcqh idbeZb" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iKTcqh idbeZb" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dsLQwm ftUxth">{}</pre>
+      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
     </div>
   </details>
   <details class="nhsuk-details nhsuk-expander">
     <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
     <div class="nhsuk-details__text">
-      <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button sc-iKTcqh idbeZb" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-iKTcqh idbeZb" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-dsLQwm ftUxth">{
+      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Some%20error%20message%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "resourceType": "OperationOutcome",
   "meta": {
     "lastUpdated": "2022-10-21T13:47:00+00:00"
@@ -128,19 +128,19 @@ exports[`Displays error message if redirect URI not present 1`] = `
     </div>
   </details>
 </fieldset>
-<div class="sc-elDIKY jDXWZk"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
+<div class="sc-egkSDF hcqWyj"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
 exports[`Displays loading text while prescription data is being requested 1`] = `
 "<div style="text-align: center;">
-  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gnpbhQ fBpfuc">Loading</label></h1>
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-ghWlax fUgEhG">Loading</label></h1>
   <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Retrieving prescription details.</span></div>
 </div>"
 `;
 
 exports[`Displays loading text while prescription is being sent 1`] = `
 "<div style="text-align: center;">
-  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-gnpbhQ fBpfuc">Loading</label></h1>
+  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl sc-ghWlax fUgEhG">Loading</label></h1>
   <div class="nhsuk-loader"><span class="nhsuk-loader__spinner"></span><span class="nhsuk-loader__text">Sending signature request.</span></div>
 </div>"
 `;
@@ -148,9 +148,9 @@ exports[`Displays loading text while prescription is being sent 1`] = `
 exports[`Displays prescription summary if prescription details are retrieved successfully 1`] = `
 "<form>
   <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl"><span>Prescription Summary</span>
-      <figure class="nhsuk-image"><img class="nhsuk-image__img sc-fQpRED gpNKQE" id="editPrescription" srcset="baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
+      <figure class="nhsuk-image"><img class="nhsuk-image__img sc-fAUdSK hfgWJb" id="editPrescription" srcset="baseUrl/static/BlackTie_Bold_full_set_Pencil_SVG_Blue.svg" sizes="50px"></figure>
     </label></h1>
-  <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
+  <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
   <dl class="nhsuk-summary-list">
     <div class="nhsuk-summary-list__row">
       <dt class="nhsuk-summary-list__key">ID</dt>
@@ -266,7 +266,7 @@ exports[`Displays prescription summary if prescription details are retrieved suc
       <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-3" name="signingOptions" aria-labelledby="signingOptions-3--label" type="radio" value="FIDO2"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-3--label" for="signingOptions-3">FIDO2</label></div>
     </div>
   </div>
-  <div class="sc-elDIKY jDXWZk"><button class="nhsuk-button" aria-disabled="false" type="submit">Sign &amp; Send</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button" aria-disabled="false" type="submit">Sign &amp; Send</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
