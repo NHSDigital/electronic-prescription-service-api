@@ -44,7 +44,7 @@ function return_error() {
 
 function analyze_scan_results() {
   if [[ $critical -gt 0 ]]; then
-    echo "ERROR: There are HIGH vulnerabilties. Stopping build."
+    echo "ERROR: There are CRITICAL vulnerabilties. Stopping build."
     return_scan_results
     return_error
   elif [[ $high -gt 0 ]]; then

@@ -204,12 +204,14 @@ jobs:
         env:
           REPOSITORY_NAME: fhir-facade-repo
           IMAGE_TAG: ${{ inputs.VERSION_NUMBER }}
+        working-directory: .github/scripts
         run: |
-          ./scripts/check_ecr_image_scan_results.sh
+          ./check_ecr_image_scan_results.sh
 
       - name: Check validator scan results
         env:
           REPOSITORY_NAME: validator-repo
           IMAGE_TAG: ${{ inputs.VERSION_NUMBER }}
+        working-directory: .github/scripts
         run: |
-          ./scripts/check_ecr_image_scan_results.sh
+          ./check_ecr_image_scan_results.sh
