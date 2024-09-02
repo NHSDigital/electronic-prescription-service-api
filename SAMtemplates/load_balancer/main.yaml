@@ -25,10 +25,6 @@ Parameters:
   CommitId:
     Type: String
 
-  KmsKey:
-    Type: String
-    Default: ""
-
   EcrRepository:
     Type: String
 
