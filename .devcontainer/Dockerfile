@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1.4
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-ARG VALIDATOR_VERSION_TAG=ab_test
+ARG VALIDATOR_VERSION_TAG=v1.0.195-alpha
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
