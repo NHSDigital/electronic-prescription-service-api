@@ -10,8 +10,6 @@ API_RELEASE_PIPELINE_FILE='azure/templates/run_tests.yml'
 EPSAT_DOCKER_FILE='packages/tool/site/Dockerfile'
 EPSAT_BUILD_PIPELINE_FILE='packages/tool/azure/azure-build-pipeline.yml'
 EPSAT_RELEASE_PIPELINE_FILE='packages/tool/azure/azure-release-template.yml'
-DEVCONTAINER_DOCKERFILE='.devcontainer/Dockerfile'
-
 
 TOOL_VERSIONS_NODE_VERSION=$(grep nodejs "${ROOT_DIR}/${TOOL_VERSION_FILE}" | awk '{ print $NF }')
 API_DOCKER_NODE_BASE_VERSION=$(grep "FROM node.* AS base" "${ROOT_DIR}/${API_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
@@ -23,10 +21,6 @@ API_BUILD_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' 
 API_RELEASE_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${API_RELEASE_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
 EPSAT_BUILD_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${EPSAT_BUILD_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
 EPSAT_RELEASE_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${EPSAT_RELEASE_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
-
-DEVCONTAINER_VALIDATOR_VERSION=$(grep "ARG VALIDATOR_VERSION_TAG" "${ROOT_DIR}/${DEVCONTAINER_DOCKERFILE}" |cut -d = -f 2)
-API_BUILD_PIPELINE_VALIDATOR_VERSION=$(awk '/validation-service-fhir-r4/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${API_BUILD_PIPELINE_FILE}" | awk '{ print $NF }')
-EPSAT_VALIDATOR_VERSION=$(grep VALIDATOR_VERSION= "${ROOT_DIR}/${EPSAT_BUILD_PIPELINE_FILE}" |cut -d = -f 2)
 
 FAILED_CHECK=0
 
@@ -75,15 +69,7 @@ if [[ "$TOOL_VERSIONS_NODE_VERSION" != "$EPSAT_RELEASE_PIPELINE_NODE_VERSION" ]]
     FAILED_CHECK=1
 fi
 
-if [[ "$DEVCONTAINER_VALIDATOR_VERSION" != "$API_BUILD_PIPELINE_VALIDATOR_VERSION" ]]; then
-    echo "validator version in ${DEVCONTAINER_DOCKERFILE} and ${API_BUILD_PIPELINE_FILE} do not match"
-    FAILED_CHECK=1
-fi
 
-if [[ "$DEVCONTAINER_VALIDATOR_VERSION" != "$EPSAT_VALIDATOR_VERSION" ]]; then
-    echo "validator version in ${DEVCONTAINER_DOCKERFILE} and ${EPSAT_BUILD_PIPELINE_FILE} do not match"
-    FAILED_CHECK=1
-fi
 
 if [[ ${FAILED_CHECK} == 1 ]]; then
     echo "Failed validation"
@@ -97,9 +83,6 @@ if [[ ${FAILED_CHECK} == 1 ]]; then
     echo "API_RELEASE_PIPELINE_NODE_VERSION: ${API_RELEASE_PIPELINE_NODE_VERSION}"
     echo "EPSAT_BUILD_PIPELINE_NODE_VERSION: ${EPSAT_BUILD_PIPELINE_NODE_VERSION}"
     echo "EPSAT_RELEASE_PIPELINE_NODE_VERSION: ${EPSAT_RELEASE_PIPELINE_NODE_VERSION}"
-    echo "DEVCONTAINER_VALIDATOR_VERSION: ${DEVCONTAINER_VALIDATOR_VERSION}"
-    echo "API_BUILD_PIPELINE_VALIDATOR_VERSION: ${API_BUILD_PIPELINE_VALIDATOR_VERSION}"
-    echo "EPSAT_VALIDATOR_VERSION: ${EPSAT_VALIDATOR_VERSION}"
 
     exit 1
 fi

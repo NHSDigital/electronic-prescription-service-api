@@ -36,7 +36,7 @@ extends:
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: "**"
           defaultVersionType: specificTag
-          version: v1.0.196-alpha
+          version: $(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
           downloadPath: "validator"
       - task: NodeTool@0
         displayName: Use Node v20.10.0
