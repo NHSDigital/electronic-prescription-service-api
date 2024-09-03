@@ -230,6 +230,7 @@ Resources:
           - IsRefOrProd
           - 2
           - 1
+      HealthCheckGracePeriodSeconds: 300
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
