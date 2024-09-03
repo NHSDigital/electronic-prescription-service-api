@@ -40,6 +40,7 @@ Parameters:
       - test
       - ref
       - prod
+    Default: dev
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
