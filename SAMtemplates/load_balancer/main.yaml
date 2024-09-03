@@ -44,8 +44,9 @@ Parameters:
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
-  IsRefOrProd: !Or [!Equals [!Ref Environment, ref], !Equals [!Ref Environment, prod]]
-  IsNotDevOrTest: !Or [!Equals [!Ref Environment, ref], !Equals [!Ref Environment, prod]]
+  IsRefOrProd: !Or
+    - !Equals [!Ref Environment, ref]
+    - !Equals [!Ref Environment, prod]
 
 Resources:
   # Security Group for the Load Balancer
@@ -225,11 +226,10 @@ Resources:
     Properties:
       Cluster: !Ref ECSCluster
       ServiceName: !Sub "${StackName}-service"
-      DesiredCount:
-        !If
-          - IsRefOrProd
-          - 2
-          - 1
+      DesiredCount: !If
+        - IsRefOrProd
+        - 2
+        - 1
       HealthCheckGracePeriodSeconds: 300
       LaunchType: FARGATE
       NetworkConfiguration:
@@ -266,16 +266,8 @@ Resources:
     Condition: IsRefOrProd
     DependsOn: ECSService
     Properties:
-      MinCapacity:
-        !If
-          - IsRefOrProd
-          - 2
-          - 1
-      MaxCapacity:
-        !If
-          - IsRefOrProd
-          - 10
-          - 6
+      MinCapacity: 2
+      MaxCapacity: 10
       ResourceId: !Sub "service/${ECSCluster}/${StackName}-service"
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
@@ -292,21 +284,9 @@ Resources:
       TargetTrackingScalingPolicyConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ECSServiceAverageCPUUtilization
-        ScaleInCooldown:
-          !If
-            - IsRefOrProd
-            - 300
-            - 60
-        ScaleOutCooldown:
-          !If
-            - IsRefOrProd
-            - 300
-            - 60
-        TargetValue:
-          !If
-            - IsRefOrProd
-            - 70.0
-            - 50.0
+        ScaleInCooldown: 300
+        ScaleOutCooldown: 60
+        TargetValue: 70.0
 
   # CloudWatch Log Group for ECS
   LogGroup:
