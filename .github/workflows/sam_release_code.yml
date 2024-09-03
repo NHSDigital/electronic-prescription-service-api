@@ -146,12 +146,6 @@ jobs:
           SPEC_PATH="$(pwd)/eps-prescription-status-update-api.resolved.json"
           echo "Specification location: $SPEC_PATH"
           echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
-      
-      - name: Set ECR Repository
-        run: echo "ECR_REPOSITORY=fhir-facade-repo" >> "$GITHUB_ENV"
-
-      - name: Set Image Tag
-        run: echo "IMAGE_TAG=${{ inputs.VERSION_NUMBER }}" >> "$GITHUB_ENV"
 
       - name: release code
         shell: bash
@@ -169,8 +163,6 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
-          ECR_REPOSITORY: ${{ env.ECR_REPOSITORY }}
-          IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: ./release_code.sh
 
       - name: docker_artifact download

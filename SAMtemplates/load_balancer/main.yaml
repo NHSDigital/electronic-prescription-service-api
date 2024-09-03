@@ -22,15 +22,6 @@ Parameters:
   VersionNumber:
     Type: String
 
-  CommitId:
-    Type: String
-
-  EcrRepository:
-    Type: String
-
-  ImageTag:
-    Type: String
-
   ContainerPort:
     Type: Number
     Default: 9000
@@ -185,7 +176,7 @@ Resources:
       ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
       ContainerDefinitions:
         - Name: !Sub "${StackName}-container"
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${EcrRepository}:${ImageTag}"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/fhir-facade-repo:${VersionNumber}"
           PortMappings:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
@@ -199,7 +190,7 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
         - Name: !Sub "${StackName}-validator"
-          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:${ImageTag}"
+          Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:${VersionNumber}"
           PortMappings:
             - ContainerPort: !Ref ContainerPortValidator
               Protocol: tcp

@@ -27,8 +27,6 @@ fi
 # Debugging: Print the values for verification
 echo "DOMAIN_NAME_EXPORT: $DOMAIN_NAME_EXPORT"
 echo "ZONE_ID_EXPORT: $ZONE_ID_EXPORT"
-echo "ECR_REPOSITORY: $ECR_REPOSITORY"
-echo "IMAGE_TAG: $IMAGE_TAG"
 
 # Change directory and invoke the make command
 cd ../../.aws-sam/build || exit
