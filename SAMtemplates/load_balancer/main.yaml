@@ -33,8 +33,18 @@ Parameters:
     Type: Number
     Default: 9001
 
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - test
+      - ref
+      - prod
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
+  IsRefOrProd: !Or [!Equals [!Ref Environment, ref], !Equals [!Ref Environment, prod]]
+  IsNotDevOrTest: !Or [!Equals [!Ref Environment, ref], !Equals [!Ref Environment, prod]]
 
 Resources:
   # Security Group for the Load Balancer
@@ -214,7 +224,11 @@ Resources:
     Properties:
       Cluster: !Ref ECSCluster
       ServiceName: !Sub "${StackName}-service"
-      DesiredCount: 3
+      DesiredCount:
+        !If
+          - IsRefOrProd
+          - 2
+          - 1
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
@@ -231,6 +245,7 @@ Resources:
   # ECS Service Auto Scaling Role
   ECSServiceAutoScalingRole:
     Type: AWS::IAM::Role
+    Condition: IsRefOrProd
     Properties:
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
@@ -246,10 +261,19 @@ Resources:
   # ECS Service Auto Scaling Target
   ECSServiceAutoScalingTarget:
     Type: AWS::ApplicationAutoScaling::ScalableTarget
+    Condition: IsRefOrProd
     DependsOn: ECSService
     Properties:
-      MinCapacity: 3
-      MaxCapacity: 4
+      MinCapacity:
+        !If
+          - IsRefOrProd
+          - 2
+          - 1
+      MaxCapacity:
+        !If
+          - IsRefOrProd
+          - 10
+          - 6
       ResourceId: !Sub "service/${ECSCluster}/${StackName}-service"
       RoleARN: !GetAtt ECSServiceAutoScalingRole.Arn
       ScalableDimension: ecs:service:DesiredCount
@@ -258,6 +282,7 @@ Resources:
   # ECS Service Auto Scaling Policy
   ECSServiceAutoScalingPolicy:
     Type: AWS::ApplicationAutoScaling::ScalingPolicy
+    Condition: IsRefOrProd
     Properties:
       PolicyName: !Sub "${StackName}-ecsAutoScalingPolicy"
       PolicyType: TargetTrackingScaling
@@ -265,9 +290,21 @@ Resources:
       TargetTrackingScalingPolicyConfiguration:
         PredefinedMetricSpecification:
           PredefinedMetricType: ECSServiceAverageCPUUtilization
-        ScaleInCooldown: 60
-        ScaleOutCooldown: 60
-        TargetValue: 50.0
+        ScaleInCooldown:
+          !If
+            - IsRefOrProd
+            - 300
+            - 60
+        ScaleOutCooldown:
+          !If
+            - IsRefOrProd
+            - 300
+            - 60
+        TargetValue:
+          !If
+            - IsRefOrProd
+            - 70.0
+            - 50.0
 
   # CloudWatch Log Group for ECS
   LogGroup:
