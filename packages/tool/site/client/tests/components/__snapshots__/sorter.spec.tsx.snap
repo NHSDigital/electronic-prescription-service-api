@@ -5,7 +5,7 @@ exports[`Table Clicking a column header which is not the current sort key change
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
       <th class="nhsuk-table__header" scope="col">String</th>
-      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-left sc-braxZu bQOZiP" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-left sc-blHHSb KqCoj" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M8.5 12c0-.3.1-.5.3-.7l5-5c.4-.4 1-.4 1.4 0s.4 1 0 1.4L10.9 12l4.3 4.3c.4.4.4 1 0 1.4s-1 .4-1.4 0l-5-5c-.2-.2-.3-.4-.3-.7z"></path>
         </svg>Date</th>
       <th class="nhsuk-table__header" scope="col">Number</th>
@@ -36,7 +36,7 @@ exports[`Table Clicking a column header which is the current sort key toggles th
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
       <th class="nhsuk-table__header" scope="col">String</th>
-      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-gJhJTp cLMiOu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-gtLWhw goaonf" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Date</th>
       <th class="nhsuk-table__header" scope="col">Number</th>
@@ -68,7 +68,7 @@ exports[`Table Table renders with initial sort config 1`] = `
     <tr class="nhsuk-table__row">
       <th class="nhsuk-table__header" scope="col">String</th>
       <th class="nhsuk-table__header" scope="col">Date</th>
-      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-gJhJTp cLMiOu" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
+      <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-gtLWhw goaonf" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
         </svg>Number</th>
     </tr>
