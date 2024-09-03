@@ -41,7 +41,7 @@ extends:
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: "**"
           defaultVersionType: specificTag
-          version: "${{ variables.VALIDATOR_VERSION }}"
+          version: $(VALIDATOR_VERSION)
           downloadPath: "validator"
       - task: NodeTool@0
         displayName: Use Node v20.10.0
