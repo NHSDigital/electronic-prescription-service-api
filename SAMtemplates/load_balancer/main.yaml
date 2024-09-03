@@ -22,6 +22,9 @@ Parameters:
   VersionNumber:
     Type: String
 
+  CommitId:
+    Type: String
+
   ContainerPort:
     Type: Number
     Default: 9000
