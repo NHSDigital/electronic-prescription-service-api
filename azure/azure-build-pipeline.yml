@@ -29,6 +29,11 @@ extends:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     cache_steps:
+      - bash: |
+          VALIDATOR_VERSION=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
+          echo "Using validator version ${VALIDATOR_VERSION}"
+          echo "##vso[task.setvariable variable=VALIDATOR_VERSION]$VALIDATOR_VERSION"          
+        displayName: get validator version
       - task: DownloadGitHubRelease@0
         displayName: Download Validator
         inputs:
@@ -36,7 +41,7 @@ extends:
           userRepository: NHSDigital/validation-service-fhir-r4
           itemPattern: "**"
           defaultVersionType: specificTag
-          version: v1.0.187-alpha
+          version: $(VALIDATOR_VERSION)
           downloadPath: "validator"
       - task: NodeTool@0
         displayName: Use Node v20.10.0

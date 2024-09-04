@@ -182,6 +182,22 @@ jobs:
           docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
           docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
 
+      - name: Check fhir facade scan results
+        env:
+          REPOSITORY_NAME: fhir-facade-repo
+          IMAGE_TAG: ${{ inputs.VERSION_NUMBER }}
+        working-directory: .github/scripts
+        run: |
+          ./check_ecr_image_scan_results.sh
+
+      - name: Check validator scan results
+        env:
+          REPOSITORY_NAME: validator-repo
+          IMAGE_TAG: ${{ inputs.VERSION_NUMBER }}
+        working-directory: .github/scripts
+        run: |
+          ./check_ecr_image_scan_results.sh
+
       - name: release code
         shell: bash
         working-directory: .github/scripts

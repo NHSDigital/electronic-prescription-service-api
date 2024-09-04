@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1.4
 FROM mcr.microsoft.com/devcontainers/base:ubuntu
 
-ARG VALIDATOR_VERSION_TAG=v1.0.187-alpha
+# this should be regularly updated to the latest version from https://github.com/NHSDigital/validation-service-fhir-r4/releases
+ARG VALIDATOR_VERSION_TAG=v1.0.196-alpha
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \

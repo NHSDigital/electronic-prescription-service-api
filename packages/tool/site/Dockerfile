@@ -3,10 +3,15 @@
 # --- Dependencies ---
 FROM node:20.10.0-alpine AS base
 WORKDIR /app
+RUN apk update; \
+    apk upgrade
+
 
 # --- Build Client ---
 FROM node:20.10.0-alpine AS build-client
 WORKDIR /build
+RUN apk update; \
+    apk upgrade
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
 RUN npm ci --ignore-scripts --workspace packages/tool/site/client --include-workspace-root
@@ -16,6 +21,8 @@ RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 # --- Build Server ---
 FROM node:20.10.0-alpine AS build-server
 WORKDIR /build
+RUN apk update; \
+    apk upgrade
 COPY package*.json ./
 COPY packages/tool/site/server ./packages/tool/site/server
 RUN npm ci --ignore-scripts --workspace packages/tool/site/server --include-workspace-root
