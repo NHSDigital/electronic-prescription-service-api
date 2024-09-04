@@ -147,24 +147,6 @@ jobs:
           echo "Specification location: $SPEC_PATH"
           echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
 
-      - name: release code
-        shell: bash
-        working-directory: .github/scripts
-        env:
-          artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
-          COMMIT_ID: ${{ inputs.COMMIT_ID }}
-          # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
-          # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
-          # LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
-          stack_name: ${{ inputs.STACK_NAME }}
-          TARGET_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
-          template_file: template.yaml
-          TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
-          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
-          ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
-        run: ./release_code.sh
-
       - name: docker_artifact download
         uses: actions/download-artifact@v4
         with:
@@ -199,3 +181,21 @@ jobs:
         run: |
           docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
           docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
+
+      - name: release code
+        shell: bash
+        working-directory: .github/scripts
+        env:
+          artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
+          COMMIT_ID: ${{ inputs.COMMIT_ID }}
+          # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
+          # LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
+          stack_name: ${{ inputs.STACK_NAME }}
+          TARGET_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          template_file: template.yaml
+          TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
+          ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
+        run: ./release_code.sh
