@@ -457,6 +457,7 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			TruststoreFile=$$TRUSTSTORE_FILE \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
+			LogRetentionInDays=$$LOG_RETENTION_DAYS \
 			Env=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
 			ZoneIDExport=$$ZONE_ID_EXPORT

@@ -80,7 +80,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-      # LOG_RETENTION_DAYS: 30
+      LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
@@ -99,7 +99,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-      # LOG_RETENTION_DAYS: 30
+      LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}

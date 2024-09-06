@@ -42,6 +42,9 @@ Parameters:
       - prod
     Default: dev
 
+  LogRetentionInDays:
+    Type: Number
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
   IsRefOrProd: !Or
@@ -214,7 +217,6 @@ Resources:
             Options:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
-              awslogs-stream-prefix: ecs
       RuntimePlatform:
         CpuArchitecture: X86_64
         OperatingSystemFamily: LINUX
@@ -293,8 +295,16 @@ Resources:
     Type: AWS::Logs::LogGroup
     Properties:
       LogGroupName: !Sub /aws/ecs/${StackName}
-      RetentionInDays: 30
+      RetentionInDays: !Ref LogRetentionInDays
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
+
+  LambdaSplunkSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      RoleArn: !ImportValue lambda-resources:SplunkSubscriptionFilterRole
+      LogGroupName: !Ref LogGroup
+      FilterPattern: ""
+      DestinationArn: !ImportValue lambda-resources:SplunkDeliveryStream
 
   # Security Group for the ECS Containers
   ContainerSecurityGroup:
