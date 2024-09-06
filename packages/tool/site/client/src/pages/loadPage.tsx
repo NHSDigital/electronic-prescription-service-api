@@ -127,26 +127,6 @@ const LoadPage: React.FC = () => {
                     value: "primary-care/acute/nominated-pharmacy/medical-prescriber",
                     text: "Primary Care - Acute (nominated)"
                   },
-                  // {
-                  //   value: "primary-care/repeat-prescribing",
-                  //   text: "Primary Care - Repeat Prescribing (nominated)"
-                  // },
-                  // {
-                  //   value: "primary-care/repeat-dispensing/nominated-pharmacy/medical-prescriber/author/gmc/responsible-party/medication-list/din",
-                  //   text: "Primary Care - Repeat Dispensing (nominated)"
-                  // },
-                  // {
-                  //   value: "secondary-care/community/acute/nominated-pharmacy/clinical-practitioner",
-                  //   text: "Secondary Care - Acute (nominated)"
-                  // },
-                  // {
-                  //   value: "secondary-care/community/acute/no-nominated-pharmacy/clinical-practitioner",
-                  //   text: "Secondary Care - Acute"
-                  // },
-                  // {
-                  //   value: "secondary-care/community/repeat-dispensing/nominated-pharmacy/clinical-practitioner/single-medication-request",
-                  //   text: "Secondary Care - Repeat Dispensing (nominated)"
-                  // },
                   {
                     value: "custom",
                     text: "Custom"
