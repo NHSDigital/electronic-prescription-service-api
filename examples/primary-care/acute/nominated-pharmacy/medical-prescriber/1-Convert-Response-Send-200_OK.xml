@@ -87,7 +87,7 @@
             <performer contextControlCode="OP" typeCode="PRF">
               <AgentOrgSDS classCode="AGNT">
                 <agentOrganizationSDS classCode="ORG" determinerCode="INSTANCE">
-                  <id extension="VNE51" root="1.2.826.0.1285.0.1.10"/>
+                  <id extension="FLE79" root="1.2.826.0.1285.0.1.10"/>
                 </agentOrganizationSDS>
               </AgentOrgSDS>
             </performer>

@@ -174,20 +174,21 @@ const organisation: fhir.Organization = {
   identifier: [
     {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",
-      value: "VNE51"
+      value: "FLE79"
     }
   ],
   id: "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
   address: [
     {
-      city: "West Yorkshire",
+      city: "Shrewsbury",
       use: "work",
       line: [
-        "17 Austhorpe Road",
-        "Crossgates",
-        "Leeds"
+        "OLD POTTS WAY",
+        "SHREWSBURY",
+        "SHROPSHIRE",
+        "CLEVELAND"
       ],
-      postalCode: "LS15 8BA"
+      postalCode: "SY3 7ET"
     }
   ],
   active: true,
@@ -202,7 +203,7 @@ const organisation: fhir.Organization = {
       ]
     }
   ],
-  name: "The Simple Pharmacy",
+  name: "ASDA INSTORE PHARMACY",
   telecom: [
     {
       system: "phone",
