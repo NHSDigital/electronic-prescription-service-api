@@ -180,7 +180,7 @@ const organisation: fhir.Organization = {
   id: "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
   address: [
     {
-      city: "West Yorkshire",
+      city: "Shrewsbury",
       use: "work",
       line: [
         "OLD POTTS WAY",
