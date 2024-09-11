@@ -30,12 +30,7 @@ describe("verifyClaim", () => {
 
   test("accepts a claim against NHS BSA (T1450)", () => {
     const claim = {...validClaim}
-    claim.insurance[0].coverage = {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "T1450"
-      }
-    }
+    claim.insurance[0].coverage = coverageWithValue("T1450")
 
     const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
     expect(result).toHaveLength(0)
@@ -43,12 +38,7 @@ describe("verifyClaim", () => {
 
   test("accepts a claim against NWSSP (RQFZ1)", () => {
     const claim = {...validClaim}
-    claim.insurance[0].coverage = {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "RQFZ1"
-      }
-    }
+    claim.insurance[0].coverage = coverageWithValue("RQFZ1")
 
     const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
     expect(result).toHaveLength(0)
@@ -56,12 +46,7 @@ describe("verifyClaim", () => {
 
   test("raise an error if the claim is not against NHS BSA or NWSSP", () => {
     const claim = {...validClaim}
-    claim.insurance[0].coverage = {
-      identifier: {
-        system: "https://fhir.nhs.uk/Id/ods-organization-code",
-        value: "invalid"
-      }
-    }
+    claim.insurance[0].coverage = coverageWithValue("invalid")
 
     const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
     expect(result[0]).toEqual({
@@ -77,11 +62,7 @@ describe("verifyClaim", () => {
     claim.insurance = []
 
     const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    expect(result[0]).toEqual({
-      severity: "error",
-      code: "invalid",
-      diagnostics: "Expected 1 item(s) in Claim.insurance, but received 0."
-    })
+    expect(result[0]).toEqual(arrayLengthError(0))
   })
 
   test("raise an error if more than one insurance is provided in the claim", () => {
@@ -89,10 +70,19 @@ describe("verifyClaim", () => {
     claim.insurance.push(claim.insurance[0])
 
     const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    expect(result[0]).toEqual({
-      severity: "error",
-      code: "invalid",
-      diagnostics: "Expected 1 item(s) in Claim.insurance, but received 2."
-    })
+    expect(result[0]).toEqual(arrayLengthError(2))
   })
+})
+
+const arrayLengthError = (length: number) => ({
+  severity: "error",
+  code: "invalid",
+  diagnostics: `Expected 1 item(s) in Claim.insurance, but received ${length}.`
+})
+
+const coverageWithValue = (value: string) => ({
+  identifier: {
+    system: "https://fhir.nhs.uk/Id/ods-organization-code",
+    value: value
+  }
 })
