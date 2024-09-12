@@ -15,9 +15,9 @@ on:
       # APIGEE_ENVIRONMENT:
       #   required: true
       #   type: string
-      # ENABLE_MUTUAL_TLS:
-      #   required: true
-      #   type: boolean
+      ENABLE_MUTUAL_TLS:
+        required: true
+        type: boolean
       BUILD_ARTIFACT:
         required: true
         type: string
@@ -204,7 +204,7 @@ jobs:
         env:
           artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
           COMMIT_ID: ${{ inputs.COMMIT_ID }}
-          # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
           # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
           # LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
           stack_name: ${{ inputs.STACK_NAME }}
