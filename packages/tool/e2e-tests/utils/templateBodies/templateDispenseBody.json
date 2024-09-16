@@ -1072,11 +1072,12 @@
               "city": "West Yorkshire",
               "use": "work",
               "line": [
-                "17 Austhorpe Road",
-                "Crossgates",
-                "Leeds"
+                "OLD POTTS WAY",
+                "SHREWSBURY",
+                "SHROPSHIRE",
+                "CLEVELAND"
               ],
-              "postalCode": "LS15 8BA"
+              "postalCode": "SY3 7ET"
             }
           ],
           "active": true,
@@ -1091,7 +1092,7 @@
               ]
             }
           ],
-          "name": "The Simple Pharmacy",
+          "name": "ASDA INSTORE PHARMACY",
           "telecom": [
             {
               "system": "phone",
