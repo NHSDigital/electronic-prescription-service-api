@@ -24,7 +24,7 @@
     "pact_do_not_track": true
   },
   "devDependencies": {
-    "@pact-foundation/pact": "^13.1.2",
+    "@pact-foundation/pact": "^13.1.3",
     "@pact-foundation/pact-core": "^15.2.1",
     "@pact-foundation/pact-node": "^10.17.7",
     "@types/jsdom": "^21.1.7",
