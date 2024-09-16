@@ -46,7 +46,7 @@
         <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
         <recordTarget typeCode="RCT">
           <Patient classCode="PAT">
-            <id extension="9449304130" root="2.16.840.1.113883.2.1.4.1"/>
+            <id extension="5839945242" root="2.16.840.1.113883.2.1.4.1"/>
             <addr use="H">
               <streetAddressLine>10 HEATHFIELD</streetAddressLine>
               <streetAddressLine>COBHAM</streetAddressLine>
