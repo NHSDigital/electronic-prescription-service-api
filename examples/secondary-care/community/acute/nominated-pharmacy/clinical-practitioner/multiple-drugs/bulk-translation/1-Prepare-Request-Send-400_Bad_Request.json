@@ -664,7 +664,7 @@
         ],
         "name": [
           {
-            "use": "official",
+            "use": "usual",
             "family": "Lewington",
             "given": ["TRACE"],
             "prefix": ["MR"]
