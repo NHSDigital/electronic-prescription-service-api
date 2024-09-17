@@ -47,7 +47,7 @@ export function getSignedSignature(digest, valid) {
     // eslint-disable-next-line max-len
     const digestWithoutNamespace = digestBuffer.replace(`<SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">`, `<SignedInfo>`)
     const signedSignature = crypto
-      .sign(null, Buffer.from(digestBuffer, "utf-8"), {
+      .sign("sha1", Buffer.from(digestBuffer, "utf-8"), {
         key: fs.readFileSync(privateKeyPath, "utf-8"),
         padding: crypto.constants.RSA_PKCS1_PADDING
       })
