@@ -455,6 +455,7 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--parameter-overrides \
 			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
 			TruststoreFile=$$TRUSTSTORE_FILE \
+			EnableMutualTLS=$$enable_mutual_tls \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
 			Env=$$TARGET_ENVIRONMENT \
