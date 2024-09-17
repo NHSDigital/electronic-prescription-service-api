@@ -22,7 +22,7 @@
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-                "value": "FLE79"
+                "value": "FA565"
               },
               "display": "ASDA INSTORE PHARMACY"
             }
@@ -179,7 +179,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FLE79"
+              "value": "FA565"
             }
           }
         },
@@ -307,7 +307,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FLE79"
+              "value": "FA565"
             }
           }
         },
@@ -435,7 +435,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FLE79"
+              "value": "FA565"
             }
           }
         },
@@ -563,7 +563,7 @@
           "performer": {
             "identifier": {
               "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-              "value": "FLE79"
+              "value": "FA565"
             }
           }
         },
