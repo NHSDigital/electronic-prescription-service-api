@@ -40,7 +40,6 @@ Parameters:
     Default: dev
 
 Conditions:
-  CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
   IsRefOrProd: !Or
     - !Equals [!Ref Environment, ref]
     - !Equals [!Ref Environment, prod]
@@ -91,10 +90,9 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Trust Store for mTLS (Conditional)
+  # Trust Store for mTLS
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
-    Condition: CreateTruststore
     Properties:
       CaCertificatesBundleS3Bucket: 
         !Select
@@ -113,11 +111,7 @@ Resources:
                   - !ImportValue account-resources:TrustStoreBucket
             - !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
-      TruststoreVersion: 
-        !If
-          - CreateTruststore
-          - !Ref TruststoreVersion
-          - !Ref AWS::NoValue
+      TruststoreVersion: !Ref TruststoreVersion
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
