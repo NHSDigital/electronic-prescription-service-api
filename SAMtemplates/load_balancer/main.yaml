@@ -96,9 +96,28 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Condition: CreateTruststore
     Properties:
-      CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
-      CaCertificatesBundleS3Key: !Ref TruststoreFile
+      CaCertificatesBundleS3Bucket: 
+        !Select
+          - 5
+          - !Split
+            - ":"
+            - !ImportValue account-resources:TrustStoreBucket
+      CaCertificatesBundleS3Key: 
+        !Join
+          - /
+          - - s3:/
+            - !Select
+                - 5
+                - !Split
+                  - ":"
+                  - !ImportValue account-resources:TrustStoreBucket
+            - !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
+      TruststoreVersion: 
+        !If
+          - CreateTruststore
+          - !Ref TruststoreVersion
+          - !Ref AWS::NoValue
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
