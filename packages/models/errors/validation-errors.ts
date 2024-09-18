@@ -296,3 +296,27 @@ export function createMissingDosageSequenceInstructions(): fhir.OperationOutcome
     }
   }
 }
+
+export function invalidArrayLengthIssue(
+  fhirPath: string,
+  actualLength: number,
+  expectedLength: number
+): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.INVALID,
+    diagnostics: `Expected ${expectedLength} item(s) in ${fhirPath}, but received ${actualLength}.`
+  }
+}
+
+export function createClaimInvalidValueIssue(
+  fieldName: string,
+  ...allowedFieldValues: Array<string>
+): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.VALUE,
+    diagnostics: `Claim.${fieldName} must be one of: ${allowedFieldValues.map(v => "'" + v + "'").join(", ")}.`,
+    expression: [`Claim.${fieldName}`]
+  }
+}
