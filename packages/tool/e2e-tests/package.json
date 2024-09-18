@@ -20,10 +20,10 @@
         "@types/lodash": "^4.17.7",
         "@types/selenium-webdriver": "^4.1.26",
         "@types/uuid": "^10.0.0",
-        "chromedriver": "^128.0.1",
+        "chromedriver": "^128.0.3",
         "geckodriver": "^4.4.4",
         "lodash": "^4.17.21",
-        "selenium-webdriver": "^4.24.0",
+        "selenium-webdriver": "^4.24.1",
         "uuid": "^10.0.0"
     }
 }
