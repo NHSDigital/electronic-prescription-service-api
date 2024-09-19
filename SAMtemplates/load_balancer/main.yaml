@@ -91,27 +91,19 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Trust Store for mTLS Authentication
-  Truststore:
-    Type: AWS::ElasticLoadBalancingV2::TrustStore
-    Condition: CreateTruststore
-    Properties:
-      CaCertificatesBundleS3Bucket: 
-        !Select
-          - 5
-          - !Split
-            - ":"
-            - !ImportValue account-resources:TrustStoreBucket
-      CaCertificatesBundleS3Key: 
-        !Join
-          - /
-          - - !Select
-                - 5
-                - !Split
-                  - ":"
-                  - !ImportValue account-resources:TrustStoreBucket
-            - !Ref TruststoreFile
-      Name: !Sub "${StackName}-trst"
+    # Trust Store for mTLS Authentication
+    Truststore:
+      Type: AWS::ElasticLoadBalancingV2::TrustStore
+      Condition: CreateTruststore
+      Properties:
+        CaCertificatesBundleS3Bucket: 
+          !ImportValue account-resources:TrustStoreBucket  # Ensure this is correctly set in your stack
+        CaCertificatesBundleS3Key: 
+          !Join
+            - /
+            - - !ImportValue account-resources:TrustStoreBucket
+              - !Ref TruststoreFile  # Make sure this parameter matches your trust store file
+        Name: !Sub "${StackName}-trst"
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
