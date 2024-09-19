@@ -97,7 +97,7 @@ Resources:
     Condition: CreateTruststore
     Properties:
       CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
-      CaCertificatesBundleS3Key: !Ref TruststoreFile
+      CaCertificatesBundleS3Key: "fhirfacade-truststore.pem"
       Name: !Sub "${StackName}-trst"
 
   # HTTPS Listener with Optional mTLS
