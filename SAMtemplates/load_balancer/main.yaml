@@ -40,6 +40,7 @@ Parameters:
     Default: dev
 
 Conditions:
+  CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
   IsRefOrProd: !Or
     - !Equals [!Ref Environment, ref]
     - !Equals [!Ref Environment, prod]
@@ -90,30 +91,16 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Trust Store for mTLS
+  # Trust Store for mTLS (Conditional)
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
+    Condition: CreateTruststore
     Properties:
-      CaCertificatesBundleS3Bucket: 
-        !Select
-          - 5
-          - !Split
-            - ":"
-            - !ImportValue account-resources:TrustStoreBucket
-      CaCertificatesBundleS3Key: 
-        !Join
-          - /
-          - - s3:/
-            - !Select
-                - 5
-                - !Split
-                  - ":"
-                  - !ImportValue account-resources:TrustStoreBucket
-            - !Ref TruststoreFile
+      CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
+      CaCertificatesBundleS3Key: !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
-      TruststoreVersion: !Ref TruststoreVersion
 
-  # HTTPS Listener with mTLS
+  # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
     Type: AWS::ElasticLoadBalancingV2::Listener
     Properties:
@@ -126,9 +113,14 @@ Resources:
       Certificates:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
-      AuthenticationRequestPolicy:
-        Mode: verify
-        TrustStoreArn: !GetAtt Truststore.TrustStoreArn
+      MutualAuthentication:
+        !If
+          - CreateTruststore
+          - {
+              Mode: verify,
+              TrustStoreArn: !GetAtt Truststore.TrustStoreArn
+            }
+          - !Ref "AWS::NoValue"
 
   # Target Group Configuration
   TargetGroup:
