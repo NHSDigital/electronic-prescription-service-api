@@ -132,7 +132,7 @@ Resources:
       Certificates:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
-      MutualAuthentication:
+      AuthenticationRequestPolicy:
         !If
           - CreateTruststore
           - {
