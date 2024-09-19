@@ -105,14 +105,18 @@ Resources:
       CaCertificatesBundleS3Key: 
         !Join
           - /
-          - - s3:/
-            - !Select
+          - - !Select
                 - 5
                 - !Split
                   - ":"
                   - !ImportValue account-resources:TrustStoreBucket
             - !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
+      TruststoreVersion: 
+        !If
+          - CreateTruststore
+          - !Ref TruststoreVersion
+          - !Ref AWS::NoValue
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
