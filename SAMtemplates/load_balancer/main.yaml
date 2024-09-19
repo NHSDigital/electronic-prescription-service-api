@@ -13,6 +13,9 @@ Parameters:
   TruststoreVersion:
     Type: String
 
+  TruststoreBucketName:
+    Type: String
+
   TruststoreFile:
     Type: String
 
@@ -97,12 +100,9 @@ Resources:
     Condition: CreateTruststore
     Properties:
       CaCertificatesBundleS3Bucket: 
-        !ImportValue account-resources:TrustStoreBucket
+        !Ref TruststoreBucketName
       CaCertificatesBundleS3Key: 
-        !Join
-          - /
-          - - !ImportValue account-resources:TrustStoreBucket
-            - !Ref TruststoreFile
+        !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
 
   # HTTPS Listener with Optional mTLS
