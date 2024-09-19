@@ -6,10 +6,6 @@ Description: |
 Parameters:
   EnableMutualTLS:
     Type: String
-    Default: true
-    AllowedValues:
-      - true
-      - false
 
   TruststoreVersion:
     Type: String
