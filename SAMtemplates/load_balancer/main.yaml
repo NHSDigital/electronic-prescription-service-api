@@ -112,11 +112,6 @@ Resources:
                   - !ImportValue account-resources:TrustStoreBucket
             - !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
-      TruststoreVersion: 
-        !If
-          - CreateTruststore
-          - !Ref TruststoreVersion
-          - !Ref AWS::NoValue
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
