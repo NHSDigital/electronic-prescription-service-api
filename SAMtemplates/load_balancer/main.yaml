@@ -10,10 +10,10 @@ Parameters:
   EnableMutualTLS:
     Type: String
 
-  TruststoreVersion:
+  TruststoreBucketName:
     Type: String
 
-  TruststoreBucketName:
+  TruststoreVersion:
     Type: String
 
   TruststoreFile:

@@ -453,8 +453,8 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--force-upload \
 		--tags "version=$$VERSION_NUMBER" \
 		--parameter-overrides \
-			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
 			TruststoreBucketName=$$TRUSTSTORE_BUCKET_NAME \
+			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
 			TruststoreFile=$$TRUSTSTORE_FILE \
 			EnableMutualTLS=$$enable_mutual_tls \
 			VersionNumber=$$VERSION_NUMBER \

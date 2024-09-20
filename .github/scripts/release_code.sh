@@ -14,8 +14,8 @@ export cloud_formation_execution_role
 TRUSTSTORE_BUCKET_ARN=$(aws cloudformation describe-stacks --stack-name account-resources --query "Stacks[0].Outputs[?OutputKey=='TrustStoreBucket'].OutputValue" --output text)
 TRUSTSTORE_BUCKET_NAME=$(echo "${TRUSTSTORE_BUCKET_ARN}" | cut -d ":" -f 6)
 LATEST_TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKET_NAME}" --prefix "${TRUSTSTORE_FILE}" --query 'Versions[?IsLatest].[VersionId]' --output text)
-export LATEST_TRUSTSTORE_VERSION
 export TRUSTSTORE_BUCKET_NAME
+export LATEST_TRUSTSTORE_VERSION
 
 if [ -z "${DOMAIN_NAME_EXPORT}" ]; then
   export DOMAIN_NAME_EXPORT="NOT_SET"
@@ -25,7 +25,7 @@ if [ -z "${ZONE_ID_EXPORT}" ]; then
   export ZONE_ID_EXPORT="NOT_SET"
 fi
 
-# Debugging: Print the values for verification
+# Print the values for verification
 echo "DOMAIN_NAME_EXPORT: $DOMAIN_NAME_EXPORT"
 echo "ZONE_ID_EXPORT: $ZONE_ID_EXPORT"
 echo "TRUSTSTORE_BUCKET_NAME: $TRUSTSTORE_BUCKET_NAME"
