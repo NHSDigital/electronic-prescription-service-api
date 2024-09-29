@@ -23,7 +23,7 @@
         "chromedriver": "^129.0.1",
         "geckodriver": "^4.5.0",
         "lodash": "^4.17.21",
-        "selenium-webdriver": "^4.24.1",
+        "selenium-webdriver": "^4.25.0",
         "uuid": "^10.0.0"
     }
 }
