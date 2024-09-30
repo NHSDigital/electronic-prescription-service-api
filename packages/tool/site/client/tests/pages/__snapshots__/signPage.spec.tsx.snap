@@ -261,9 +261,9 @@ exports[`Displays prescription summary if prescription details are retrieved suc
   </dl>
   <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="signingOptions--label" for="signingOptions">Choose a sign in option</label>
     <div class="nhsuk-radios" id="signingOptions" value="N3_SMARTCARD" aria-label="Choose a sign in option">
-      <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-1" name="signingOptions" aria-labelledby="signingOptions-1--label" type="radio" value="N3_SMARTCARD" checked=""><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-1--label" for="signingOptions-1">N3 Smartcard</label></div>
-      <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-2" name="signingOptions" aria-labelledby="signingOptions-2--label" type="radio" value="IOS"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-2--label" for="signingOptions-2">IOS</label></div>
-      <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-3" name="signingOptions" aria-labelledby="signingOptions-3--label" type="radio" value="FIDO2"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-3--label" for="signingOptions-3">FIDO2</label></div>
+      <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-1" name="signingOptions" type="radio" value="N3_SMARTCARD" checked=""><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-1--label" for="signingOptions-1">N3 Smartcard</label></div>
+      <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-2" name="signingOptions" type="radio" value="IOS"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-2--label" for="signingOptions-2">IOS</label></div>
+      <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="signingOptions-3" name="signingOptions" type="radio" value="FIDO2"><label class="nhsuk-label nhsuk-radios__label" id="signingOptions-3--label" for="signingOptions-3">FIDO2</label></div>
     </div>
   </div>
   <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button" aria-disabled="false" type="submit">Sign &amp; Send</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
