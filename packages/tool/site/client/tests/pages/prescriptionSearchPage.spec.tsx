@@ -135,7 +135,7 @@ test("Displays a message if summary search returns no results", async () => {
     total: 0,
     entry: []
   }
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(200, emptyBundle)
+  mock.onAny(taskTrackerBaseUrl).reply(200, emptyBundle)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -157,7 +157,7 @@ test("Displays an error message if summary search returns an error", async () =>
       diagnostics: "Invalid query parameters."
     }]
   }
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(400, errorResponse)
+  mock.onAny(taskTrackerBaseUrl).reply(400, errorResponse)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -168,7 +168,7 @@ test("Displays an error message if summary search returns an error", async () =>
 })
 
 test("Displays an error message if summary search returns invalid response", async () => {
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(500, null)
+  mock.onAny(taskTrackerBaseUrl).reply(500, null)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -179,7 +179,7 @@ test("Displays an error message if summary search returns invalid response", asy
 })
 
 test("Clicking back from the summary search results returns to the form", async () => {
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl).reply(200, summarySearchResult)
+  mock.onAny(taskTrackerBaseUrl).reply(200, summarySearchResult)
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -203,7 +203,7 @@ test("Displays loading text while performing a detail search", async () => {
 })
 
 test("Displays results if detail search completes successfully without previous dispenses", async () => {
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl)
+  mock.onAny(taskTrackerBaseUrl)
     .replyOnce(200, summarySearchResult)
     .onAny(taskTrackerBaseUrl)
     .reply(200, detailSearchResult)
@@ -223,7 +223,7 @@ test("Displays results if detail search completes successfully without previous 
 })
 
 test("Displays results if detail search completes successfully with previous dispenses", async () => {
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl)
+  mock.onAny(taskTrackerBaseUrl)
     .replyOnce(200, summarySearchResult)
     .onAny(taskTrackerBaseUrl)
     .reply(200, detailSearchResult)
@@ -243,7 +243,7 @@ test("Displays results if detail search completes successfully with previous dis
 })
 
 test("Clicking back from the detail search results returns to the summary search", async () => {
-  mock.onAny(taskTrackerBaseUrl, taskTrackerBaseUrl)
+  mock.onAny(taskTrackerBaseUrl)
     .replyOnce(200, summarySearchResult)
     .onAny(taskTrackerBaseUrl)
     .reply(200, detailSearchResult)
