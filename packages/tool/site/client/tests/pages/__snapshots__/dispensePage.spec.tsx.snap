@@ -103,8 +103,8 @@ exports[`Displays dispense form if prescription details are retrieved successful
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
         <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group">
@@ -165,8 +165,8 @@ exports[`Displays dispense form if prescription details are retrieved successful
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
         <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group">
