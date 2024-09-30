@@ -2,11 +2,6 @@ name: quality checks
 
 on:
   workflow_call:
-    inputs:
-      USE_SHA256_PREPARE:
-        type: boolean
-        required: false
-        default: true
     secrets:
       SONAR_TOKEN:
         required: true
@@ -56,8 +51,6 @@ jobs:
 
       - name: run unit tests
         run: make test
-        env:
-          USE_SHA256_PREPARE: ${{ inputs.USE_SHA256_PREPARE }}
 
       - name: Run cfn-guard
         run: make cfn-guard

@@ -457,13 +457,14 @@ exports[`Produces expected result when status full dispense is done on a partial
         "active": true,
         "address": [
           {
-            "city": "West Yorkshire",
+            "city": "Shrewsbury",
             "line": [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds",
+              "OLD POTTS WAY",
+              "SHREWSBURY",
+              "SHROPSHIRE",
+              "CLEVELAND",
             ],
-            "postalCode": "LS15 8BA",
+            "postalCode": "SY3 7ET",
             "use": "work",
           },
         ],
@@ -485,10 +486,10 @@ exports[`Produces expected result when status full dispense is done on a partial
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
-        "name": "The Simple Pharmacy",
+        "name": "ASDA INSTORE PHARMACY",
         "resourceType": "Organization",
         "telecom": [
           {
@@ -978,13 +979,14 @@ exports[`Produces expected result when status fully dispensed 1`] = `
         "active": true,
         "address": [
           {
-            "city": "West Yorkshire",
+            "city": "Shrewsbury",
             "line": [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds",
+              "OLD POTTS WAY",
+              "SHREWSBURY",
+              "SHROPSHIRE",
+              "CLEVELAND",
             ],
-            "postalCode": "LS15 8BA",
+            "postalCode": "SY3 7ET",
             "use": "work",
           },
         ],
@@ -1006,10 +1008,10 @@ exports[`Produces expected result when status fully dispensed 1`] = `
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
-        "name": "The Simple Pharmacy",
+        "name": "ASDA INSTORE PHARMACY",
         "resourceType": "Organization",
         "telecom": [
           {
@@ -1499,13 +1501,14 @@ exports[`Produces expected result when status partial dispense is done on a part
         "active": true,
         "address": [
           {
-            "city": "West Yorkshire",
+            "city": "Shrewsbury",
             "line": [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds",
+              "OLD POTTS WAY",
+              "SHREWSBURY",
+              "SHROPSHIRE",
+              "CLEVELAND",
             ],
-            "postalCode": "LS15 8BA",
+            "postalCode": "SY3 7ET",
             "use": "work",
           },
         ],
@@ -1527,10 +1530,10 @@ exports[`Produces expected result when status partial dispense is done on a part
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
-        "name": "The Simple Pharmacy",
+        "name": "ASDA INSTORE PHARMACY",
         "resourceType": "Organization",
         "telecom": [
           {
@@ -2020,13 +2023,14 @@ exports[`Produces expected result when status partially dispensed 1`] = `
         "active": true,
         "address": [
           {
-            "city": "West Yorkshire",
+            "city": "Shrewsbury",
             "line": [
-              "17 Austhorpe Road",
-              "Crossgates",
-              "Leeds",
+              "OLD POTTS WAY",
+              "SHREWSBURY",
+              "SHROPSHIRE",
+              "CLEVELAND",
             ],
-            "postalCode": "LS15 8BA",
+            "postalCode": "SY3 7ET",
             "use": "work",
           },
         ],
@@ -2048,10 +2052,10 @@ exports[`Produces expected result when status partially dispensed 1`] = `
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "VNE51",
+            "value": "FA565",
           },
         ],
-        "name": "The Simple Pharmacy",
+        "name": "ASDA INSTORE PHARMACY",
         "resourceType": "Organization",
         "telecom": [
           {
