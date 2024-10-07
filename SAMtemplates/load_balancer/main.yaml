@@ -10,6 +10,9 @@ Parameters:
   EnableMutualTLS:
     Type: String
 
+  TruststoreBucketName:
+    Type: String
+
   TruststoreVersion:
     Type: String
 
@@ -91,13 +94,15 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Trust Store for mTLS (Conditional)
+  # Trust Store for mTLS Authentication
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Condition: CreateTruststore
     Properties:
-      CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
-      CaCertificatesBundleS3Key: !Ref TruststoreFile
+      CaCertificatesBundleS3Bucket: 
+        !Ref TruststoreBucketName
+      CaCertificatesBundleS3Key: 
+        !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
 
   # HTTPS Listener with Optional mTLS
