@@ -6,10 +6,10 @@ Description: |
 Parameters:
   EnableMutualTLS:
     Type: String
-    Default: false
-    AllowedValues:
-      - true
-      - false
+
+  TruststoreBucketName:
+    Type: String
+    Default: none
 
   TruststoreVersion:
     Type: String
@@ -35,6 +35,7 @@ Resources:
       Parameters:
         StackName: !Ref AWS::StackName
         EnableMutualTLS: !Ref EnableMutualTLS
+        TruststoreBucketName: !Ref TruststoreBucketName
         TruststoreVersion: !Ref TruststoreVersion
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
