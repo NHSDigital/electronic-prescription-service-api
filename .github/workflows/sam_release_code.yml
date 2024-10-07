@@ -72,7 +72,7 @@ on:
         required: false
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
         required: false
-  
+
 jobs:
   sam_release_code:
     runs-on: ubuntu-latest
@@ -95,7 +95,7 @@ jobs:
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
-          role-session-name: github-actions
+          role-session-name: fhir-facade_deployment
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -114,13 +114,13 @@ jobs:
         with:
           name: python_dependency_files
           path: .
-  
+
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
         uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
         with:
           asdf_branch: v0.11.3
-  
+
       - name: Cache asdf
         uses: actions/cache@v4
         with:
@@ -140,7 +140,7 @@ jobs:
       - name: Run make install-python
         run: |
           make install-python
-  
+
       - name: Export specification paths
         run: |
           SPEC_PATH="$(pwd)/eps-prescription-status-update-api.resolved.json"
@@ -166,7 +166,7 @@ jobs:
       - name: Retrieve AWS Account ID
         id: retrieve-account-id
         run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
-       
+
       - name: Login to Amazon ECR
         id: login-ecr
         run: |

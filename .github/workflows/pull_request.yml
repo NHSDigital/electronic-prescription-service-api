@@ -21,7 +21,7 @@ jobs:
     needs: quality_checks
     outputs:
       issue_number: ${{ steps.get_issue_number.outputs.result }}
-      version: ${{ steps.get_issue_number.outputs.version_number }} 
+      version: ${{ steps.get_issue_number.outputs.version_number }}
 
     steps:
       - uses: actions/github-script@v7
@@ -45,16 +45,16 @@ jobs:
           result-encoding: string
 
   get_commit_id:
-   runs-on: ubuntu-latest
-   outputs:
-     commit_id: ${{ steps.commit_id.outputs.commit_id }}
+    runs-on: ubuntu-latest
+    outputs:
+      commit_id: ${{ steps.commit_id.outputs.commit_id }}
 
-   steps:
-     - name: Get Commit ID
-       id: commit_id
-       run: |
-        #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
-         echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+    steps:
+      - name: Get Commit ID
+        id: commit_id
+        run: |
+          #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
+           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
 
   package_code:
     needs: [get_issue_number, get_commit_id]
@@ -62,7 +62,6 @@ jobs:
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-
 
   release_code:
     needs: [get_issue_number, package_code, get_commit_id]
@@ -72,7 +71,7 @@ jobs:
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       # APIGEE_ENVIRONMENT: internal-dev
-      ENABLE_MUTUAL_TLS: false
+      ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
