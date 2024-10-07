@@ -15,9 +15,7 @@ export function verifyClaim(
     return [errors.createResourceTypeIssue("Claim")]
   }
 
-  const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
-
-  validateReimbursementAuthority(claim, incorrectValueErrors)
+  const incorrectValueErrors = []
 
   const practitionerRole = getContainedPractitionerRoleViaReference(
     claim,
@@ -70,23 +68,4 @@ export function verifyClaim(
   }
 
   return incorrectValueErrors
-}
-
-function validateReimbursementAuthority(claim: fhir.Claim, incorrectValueErrors: Array<fhir.OperationOutcomeIssue>) {
-  const insurance = claim.insurance
-  if (insurance.length !== 1) {
-    incorrectValueErrors.push(
-      errors.invalidArrayLengthIssue("Claim.insurance", insurance.length, 1)
-    )
-    return
-  }
-
-  const authority = insurance[0].coverage.identifier.value
-
-  const approvedAuthorities = ["T1450", "RQFZ1"]
-  if (!approvedAuthorities.includes(authority)) {
-    incorrectValueErrors.push(
-      errors.createClaimInvalidValueIssue("insurance[0].coverage.identifier.value", ...approvedAuthorities)
-    )
-  }
 }
