@@ -451,7 +451,7 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--role-arn $$cloud_formation_execution_role \
 		--no-confirm-changeset \
 		--force-upload \
-		--tags "version=new-$$VERSION_NUMBER" \
+		--tags "version=$$VERSION_NUMBER" \
 		--parameter-overrides \
 			TruststoreBucketName=$$TRUSTSTORE_BUCKET_NAME \
 			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
