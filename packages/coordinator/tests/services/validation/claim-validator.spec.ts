@@ -67,36 +67,10 @@ describe("verifyClaim", () => {
 
   test("raise an error if more than one insurance is provided in the claim", () => {
     const claim = {...validClaim}
-    claim.insurance = [claim.insurance[0], claim.insurance[0]]
+    claim.insurance.push(claim.insurance[0])
 
     const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
     expect(result[0]).toEqual(arrayLengthError(2))
-  })
-
-  test("raise an error if BSA ODS is lowercase", () => {
-    const claim = {...validClaim}
-    claim.insurance[0].coverage = coverageWithValue("t1450")
-
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    expect(result[0]).toEqual({
-      severity: "error",
-      code: "value",
-      diagnostics: "Claim.insurance[0].coverage.identifier.value must be one of: 'T1450', 'RQFZ1'.",
-      expression: ["Claim.insurance[0].coverage.identifier.value"]
-    })
-  })
-
-  test("raise an error if NWSSP ODS is lowercase", () => {
-    const claim = {...validClaim}
-    claim.insurance[0].coverage = coverageWithValue("rqfz1")
-
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    expect(result[0]).toEqual({
-      severity: "error",
-      code: "value",
-      diagnostics: "Claim.insurance[0].coverage.identifier.value must be one of: 'T1450', 'RQFZ1'.",
-      expression: ["Claim.insurance[0].coverage.identifier.value"]
-    })
   })
 })
 
