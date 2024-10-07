@@ -99,12 +99,11 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Condition: CreateTruststore
     Properties:
-      CaCertificatesBundleS3Bucket: !Ref TruststoreBucketName
-      CaCertificatesBundleS3Key: !Ref TruststoreFile
+      CaCertificatesBundleS3Bucket: 
+        !Ref TruststoreBucketName
+      CaCertificatesBundleS3Key: 
+        !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
-      Tags:
-        - Key: "StackName"
-          Value: !Ref StackName
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
@@ -119,10 +118,14 @@ Resources:
       Certificates:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
-      MutualAuthentication: !If
-        - CreateTruststore
-        - { Mode: verify, TrustStoreArn: !GetAtt Truststore.TrustStoreArn }
-        - !Ref "AWS::NoValue"
+      MutualAuthentication:
+        !If
+          - CreateTruststore
+          - {
+              Mode: verify,
+              TrustStoreArn: !GetAtt Truststore.TrustStoreArn
+            }
+          - !Ref "AWS::NoValue"
 
   # Target Group Configuration
   TargetGroup:
