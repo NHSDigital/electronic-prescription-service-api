@@ -5,7 +5,7 @@
 openapi: 3.0.0
 x-nhs-api-spec-guid: 5ead5713-9d2b-46eb-8626-def5fd2a2350
 info:
-  title: Electronic Prescription Service (FHIR) API
+  title: Anthony really good Electronic Prescription Service (FHIR) API
   version: "{VERSION}"
   contact:
     name: Electronic Prescription Service FHIR API Support
