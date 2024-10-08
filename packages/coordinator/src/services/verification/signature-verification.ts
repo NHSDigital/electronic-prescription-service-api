@@ -109,8 +109,8 @@ function verifyCertificateValidWhenSigned(signatureDate: Date, certificate: cryp
 }
 
 function getCertificateFromPrescriptionCrypto(signatureRoot: ElementCompact): crypto.X509Certificate {
-  const x509CertificateText = signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text
-  const x509Certificate = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
+  const x509CertificateText: string = signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text
+  const x509Certificate = `-----BEGIN CERTIFICATE-----\n${x509CertificateText.trim()}\n-----END CERTIFICATE-----`
   return new crypto.X509Certificate(x509Certificate)
 }
 
