@@ -82,6 +82,12 @@ describe("verifyParameters returns errors", () => {
       groupIdentifierParameter
     ]
   }
+  const missingGroupIdentifierParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter
+    ]
+  }
 
   afterEach(() => {
     process.env.DISPENSE_ENABLED = "true"
@@ -201,10 +207,22 @@ describe("verifyParameters returns errors", () => {
     })
   })
 
-  test("rejects when the agent parameter is missing", () => {
+  test("rejects when group identifier is present and agent parameter is missing", () => {
     expect(() => {
-      verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    }).toThrow("Parameter with name agent not found")
+      const result = verifyParameters(
+        missingAgentParameters,
+        DISPENSING_USER_SCOPE,
+        "test_sds_user_id",
+        "test_sds_role_id"
+      )
+      expect(result).toEqual([errors.missingRequiredParameter("agent")])
+    })
+  })
+
+  test("accepts request if no group identifier and agent parameter is missing", () => {
+    expect(() => {
+      verifyParameters(missingGroupIdentifierParameters, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    }).not.toThrow()
   })
 
   test("accepts valid unattended agent param", () => {
