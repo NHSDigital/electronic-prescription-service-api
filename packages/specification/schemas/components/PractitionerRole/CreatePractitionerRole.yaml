@@ -3,8 +3,8 @@ required:
 - practitioner
 - organization
 description: |
-  Role-specific details of the author or responsible party of a prescription.
-  If for a responsible party, at least one of the practitionerRole, referenced practitioner,
+  Role-specific details of the requester or responsible practitioner of a prescription.
+  If for a responsible practitioner, at least one of the practitionerRole, referenced practitioner,
   or referenced organization must have a telecom field. Note that PractitionerRole level
   NHS BSA spurious code will take priority over supplier practitioner identifier, if present.
 properties:
