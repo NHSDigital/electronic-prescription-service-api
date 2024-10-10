@@ -95,7 +95,7 @@ properties:
   requester:
     type: object
     description: |
-      Reference object to identify the author of a prescription. 
+      Reference object to identify the requester of a prescription. 
       A PractitionerRole resource within the Bundle must be referenced.
     properties:
       reference:
