@@ -1,5 +1,5 @@
 type: object
-description: A reference to the responsible practitioner of a prescription, where they are distinct to the prescriber who authored the prescription.
+description: A reference to the responsible practitioner of a prescription, where they are distinct to the prescriber who requested the prescription.
 properties:
   url:
     type: string
