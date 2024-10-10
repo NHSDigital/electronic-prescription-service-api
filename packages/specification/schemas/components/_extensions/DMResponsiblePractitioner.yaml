@@ -1,5 +1,5 @@
 type: object
-description: A reference to the responsible party of a prescription, where they are distinct to the prescriber who authored the prescription.
+description: A reference to the responsible practitioner of a prescription, where they are distinct to the prescriber who authored the prescription.
 properties:
   url:
     type: string
@@ -14,5 +14,5 @@ properties:
         example: urn:uuid:a5acefc1-f8ca-4989-a5ac-34ae36741466
       display: 
         type: string
-        description: The name of the responsible party.
+        description: The name of the responsible practitioner.
         example: Dr. James Smith
