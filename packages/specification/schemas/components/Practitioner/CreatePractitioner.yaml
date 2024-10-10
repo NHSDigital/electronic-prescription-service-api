@@ -1,6 +1,6 @@
 type: object
 required: [resourceType, identifier, name]
-description: Details of the author or responsible party of a prescription.
+description: Details of the author or responsible practitioner of a prescription.
 properties:
   resourceType:
     type: string
