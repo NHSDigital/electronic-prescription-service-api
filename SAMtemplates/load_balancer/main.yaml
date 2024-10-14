@@ -195,14 +195,29 @@ Resources:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
           Environment:
-            - Name: VALIDATOR_HOST
-              Value: !Sub "${StackName}-validator"
-            - Name: SpinePrivateKeyARN
-              Value: !ImportValue account-resources:SpinePrivateKey
-            - Name: SpinePublicCertificateARN
-              Value: !ImportValue account-resources:SpinePublicCertificate
-            - Name: SpineCAChainARN
-              Value: !ImportValue account-resources:SpineCAChain
+            # - Name: VALIDATOR_HOST
+            #   Value: !Sub "${StackName}-validator"
+            # - Name: SpinePrivateKeyARN
+            #   Value: !ImportValue account-resources:SpinePrivateKey
+            # - Name: SpinePublicCertificateARN
+            #   Value: !ImportValue account-resources:SpinePublicCertificate
+            # - Name: SpineCAChainARN
+            #   Value: !ImportValue account-resources:SpineCAChain
+            - Name: SpinePublicCertificate
+              ValueFrom: 
+                SecretsManagerSecret: 
+                  SecretId: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-Mt3qmTweyaIJ-ZwxcSb
+                  VersionStage: AWSCURRENT
+            - Name: SpinePrivateKey
+              ValueFrom: 
+                SecretsManagerSecret: 
+                  SecretId: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-3bPxarwh2ouJ-YAl8Hj
+                  VersionStage: AWSCURRENT
+            - Name: SpineCAChain
+              ValueFrom: 
+                SecretsManagerSecret: 
+                  SecretId: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-8wB0EFsRBYUM-dsPrHf
+                  VersionStage: AWSCURRENT
           LogConfiguration:
             LogDriver: awslogs
             Options:

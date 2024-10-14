@@ -4,7 +4,7 @@ import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
-import {spineClientConfig} from "./spine-client"
+// import {spineClientConfig} from "./spine-client"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
@@ -173,11 +173,11 @@ export class LiveSpineClient implements SpineClient {
   }
 }
 
-function initializeSpineClient() {
-  console.log("Initializing Spine Client with the following configuration:")
-  console.log(`Private Key ARN: ${spineClientConfig.privateKeyArn}`)
-  console.log(`Public Certificate ARN: ${spineClientConfig.publicCertificateArn}`)
-  console.log(`CA Chain ARN: ${spineClientConfig.caChainArn}`)
-}
+// function initializeSpineClient() {
+//   console.log("Initializing Spine Client with the following configuration:")
+//   console.log(`Private Key ARN: ${spineClientConfig.privateKeyArn}`)
+//   console.log(`Public Certificate ARN: ${spineClientConfig.publicCertificateArn}`)
+//   console.log(`CA Chain ARN: ${spineClientConfig.caChainArn}`)
+// }
 
-initializeSpineClient()
+// initializeSpineClient()
