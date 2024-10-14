@@ -195,14 +195,16 @@ Resources:
             - ContainerPort: !Ref ContainerPort
               Protocol: tcp
           Environment:
-            # - Name: VALIDATOR_HOST
-            #   Value: !Sub "${StackName}-validator"
+            - Name: VALIDATOR_HOST
+              Value: !Sub "${StackName}-validator"
             # - Name: SpinePrivateKeyARN
             #   Value: !ImportValue account-resources:SpinePrivateKey
             # - Name: SpinePublicCertificateARN
             #   Value: !ImportValue account-resources:SpinePublicCertificate
             # - Name: SpineCAChainARN
             #   Value: !ImportValue account-resources:SpineCAChain
+            # - Name: SpinePublicCertificate
+          Secrets:
             - Name: SpinePublicCertificate
               ValueFrom: 
                 SecretsManagerSecret: 
