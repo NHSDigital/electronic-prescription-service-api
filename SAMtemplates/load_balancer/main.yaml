@@ -197,6 +197,12 @@ Resources:
           Environment:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
+            - Name: SpinePrivateKeyARN
+              Value: !ImportValue account-resources:SpinePrivateKey
+            - Name: SpinePublicCertificateARN
+              Value: !ImportValue account-resources:SpinePublicCertificate
+            - Name: SpineCAChainARN
+              Value: !ImportValue account-resources:SpineCAChain
           LogConfiguration:
             LogDriver: awslogs
             Options:
