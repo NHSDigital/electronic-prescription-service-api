@@ -199,11 +199,17 @@ Resources:
               Value: !Sub "${StackName}-validator"
           Secrets:
             - Name: SpinePrivateKey
-              ValueFrom: !ImportValue account-resources:SpinePublicCertificate
-            - Name: SpinePublicCertificate
               ValueFrom: !ImportValue account-resources:SpinePrivateKey
+            - Name: SpinePublicCertificate
+              ValueFrom: !ImportValue account-resources:SpinePublicCertificate
             - Name: SpineCAChain
               ValueFrom: !ImportValue account-resources:SpineCAChain
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
         - Name: !Sub "${StackName}-validator"
           Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:${VersionNumber}"
           PortMappings:
