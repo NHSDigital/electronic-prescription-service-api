@@ -197,35 +197,13 @@ Resources:
           Environment:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
-            # - Name: SpinePrivateKeyARN
-            #   Value: !ImportValue account-resources:SpinePrivateKey
-            # - Name: SpinePublicCertificateARN
-            #   Value: !ImportValue account-resources:SpinePublicCertificate
-            # - Name: SpineCAChainARN
-            #   Value: !ImportValue account-resources:SpineCAChain
-            # - Name: SpinePublicCertificate
           Secrets:
             - Name: SpinePublicCertificate
-              ValueFrom: 
-                SecretsManagerSecret: 
-                  SecretId: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-Mt3qmTweyaIJ-ZwxcSb
-                  VersionStage: AWSCURRENT
+              ValueFrom: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-Mt3qmTweyaIJ-ZwxcSb
             - Name: SpinePrivateKey
-              ValueFrom: 
-                SecretsManagerSecret: 
-                  SecretId: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-3bPxarwh2ouJ-YAl8Hj
-                  VersionStage: AWSCURRENT
+              ValueFrom: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-3bPxarwh2ouJ-YAl8Hj
             - Name: SpineCAChain
-              ValueFrom: 
-                SecretsManagerSecret: 
-                  SecretId: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-8wB0EFsRBYUM-dsPrHf
-                  VersionStage: AWSCURRENT
-          LogConfiguration:
-            LogDriver: awslogs
-            Options:
-              awslogs-group: !Ref LogGroup
-              awslogs-region: !Ref AWS::Region
-              awslogs-stream-prefix: ecs
+              ValueFrom: arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-8wB0EFsRBYUM-dsPrHf
         - Name: !Sub "${StackName}-validator"
           Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:${VersionNumber}"
           PortMappings:
