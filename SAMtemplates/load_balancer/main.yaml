@@ -197,13 +197,13 @@ Resources:
           Environment:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
-          # Secrets:
-          #   - Name: SpinePublicCertificate
-          #     ValueFrom: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-Mt3qmTweyaIJ-ZwxcSb"
-          #   - Name: SpinePrivateKey
-          #     ValueFrom: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-3bPxarwh2ouJ-YAl8Hj"
-          #   - Name: SpineCAChain
-          #     ValueFrom: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-8wB0EFsRBYUM-dsPrHf"
+          Secrets:
+            - Name: SpinePrivateKey
+              ValueFrom: !ImportValue account-resources:SpinePublicCertificate
+            - Name: SpinePublicCertificate
+              ValueFrom: !ImportValue account-resources:SpinePrivateKey
+            - Name: SpineCAChain
+              ValueFrom: !ImportValue account-resources:SpineCAChain
         - Name: !Sub "${StackName}-validator"
           Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/validator-repo:${VersionNumber}"
           PortMappings:
