@@ -58,14 +58,14 @@ Outputs:
     Description: ARN of the Spine CA Chain
     Value: !ImportValue account-resources:SpineCAChain
 
-  HCSpinePrivateKeyARN:
-    Description: ARN of the Hardcoded Spine Private Key
-    Value: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-Mt3qmTweyaIJ-ZwxcSb"
+  # HCSpinePrivateKeyARN:
+  #   Description: ARN of the Hardcoded Spine Private Key
+  #   Value: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-Mt3qmTweyaIJ-ZwxcSb"
 
-  HCSpinePublicCertificateARN:
-    Description: ARN of the Hardcoded Spine Public Certificate
-    Value: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-3bPxarwh2ouJ-YAl8Hj"
+  # HCSpinePublicCertificateARN:
+  #   Description: ARN of the Hardcoded Spine Public Certificate
+  #   Value: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-3bPxarwh2ouJ-YAl8Hj"
 
-  HCSpineCAChainARN:
-    Description: ARN of the Hardcoded Spine CA Chain
-    Value: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-8wB0EFsRBYUM-dsPrHf"
+  # HCSpineCAChainARN:
+  #   Description: ARN of the Hardcoded Spine CA Chain
+  #   Value: !Sub "arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-8wB0EFsRBYUM-dsPrHf"
