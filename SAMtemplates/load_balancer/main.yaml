@@ -178,30 +178,6 @@ Resources:
         - !ImportValue account-resources-LambdaAccessSecretsPolicy
         - !ImportValue account-resources-LambdaDecryptSecretsKMSPolicy
       RoleName: !Sub "${StackName}-ecsTaskExecutionRole"
-      Policies:
-        - PolicyName: AccessSecretsPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - secretsmanager:GetSecretValue
-                Resource:
-                  - !ImportValue account-resources:SpinePrivateKey
-                  - !ImportValue account-resources:SpinePublicCertificate
-                  - !ImportValue account-resources:SpineCAChain
-                  - arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePrivateKey-*
-                  - arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpinePublicCertificate-*
-                  - arn:aws:secretsmanager:${AWS::Region}:${AWS::AccountId}:secret:SpineCAChain-*
-        - PolicyName: KMSDecryptSecretsPolicy
-          PolicyDocument:
-            Version: "2012-10-17"
-            Statement:
-              - Effect: Allow
-                Action:
-                  - kms:Decrypt
-                Resource: 
-                  - !ImportValue account-resources:LambdaDecryptSecretsKMSPolicy
 
   # ECS Task Definition
   ECSTaskDefinition:
