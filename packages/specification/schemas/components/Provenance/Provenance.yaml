@@ -29,7 +29,7 @@ properties:
   agent:
     type: array
     description: | 
-      A reference to the prescriber who signed the prescription, i.e. the author of the prescription.
+      A reference to the prescriber who signed the prescription, i.e. the requester of the prescription.
       A PractitionerRole resource within the Bundle must be referenced. 
     items:
       type: object
