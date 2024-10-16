@@ -202,7 +202,7 @@ Resources:
           Environment:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
-            - Name: SPINE_URL_TEST
+            - Name: TARGET_SPINE_SERVER
               Value: !Ref SpineUrl
           Secrets:
             - Name: SpinePrivateKey

@@ -61,7 +61,7 @@ on:
       ZONE_ID_EXPORT:
         required: false
         type: string
-      SPINE_URL:
+      TARGET_SPINE_SERVER:
         required: true
         type: string
     secrets:
@@ -217,5 +217,5 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
-          SPINE_URL: ${{ inputs.SPINE_URL }}
+          TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
         run: ./release_code.sh

@@ -135,7 +135,7 @@ jobs:
       # CREATE_PROD_RELEASE_NOTES: true
       DOMAIN_NAME_EXPORT: eps-route53-resources:EPS-domain
       ZONE_ID_EXPORT: eps-route53-resources:EPS-ZoneID
-      SPINE_URL: veit07.devspineservices.nhs.uk
+      TARGET_SPINE_SERVER: veit07.devspineservices.nhs.uk
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -156,7 +156,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      SPINE_URL: sandbox
+      TARGET_SPINE_SERVER: sandbox
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
       DOMAIN_NAME_EXPORT: eps-route53-resources:EPS-domain
@@ -184,7 +184,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      SPINE_URL: prescriptions.refspineservices.nhs.uk
+      TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
     secrets:
@@ -210,7 +210,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      SPINE_URL: msg.intspineservices.nhs.uk
+      TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
     secrets:
@@ -229,7 +229,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      SPINE_URL: msg.intspineservices.nhs.uk
+      TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
       # CREATE_INT_RELEASE_NOTES: true
@@ -254,7 +254,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      SPINE_URL: sandbox
+      TARGET_SPINE_SERVER: sandbox
       # LOG_LEVEL: DEBUG
       # LOG_RETENTION_DAYS: 30
     secrets:
@@ -274,7 +274,7 @@ jobs:
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-      SPINE_URL: prescriptions.spineservices.nhs.uk
+      TARGET_SPINE_SERVER: prescriptions.spineservices.nhs.uk
       # LOG_LEVEL: INFO
       # LOG_RETENTION_DAYS: 731
       # MARK_JIRA_RELEASED: true
