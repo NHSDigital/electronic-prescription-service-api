@@ -37,7 +37,7 @@
     "license-checker": "^25.0.1",
     "lossless-json": "^4.0.2",
     "moment": "^2.30.1",
-    "pino": "^9.4.0",
+    "pino": "^9.5.0",
     "tough-cookie": "^4.1.4",
     "tsconfig-paths": "^4.2.0",
     "uuid": "^10.0.0",
