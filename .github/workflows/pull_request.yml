@@ -80,7 +80,7 @@ jobs:
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       # LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
-      SPINE_URL: "https://test-spine-url.com"
+      SPINE_URL: veit07.devspineservices.nhs.uk
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
 
@@ -100,6 +100,6 @@ jobs:
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       # LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
-      SPINE_URL: "https://test-spine-url.com"
+      SPINE_URL: sandbox
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
