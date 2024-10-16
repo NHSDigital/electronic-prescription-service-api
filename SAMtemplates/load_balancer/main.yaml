@@ -175,8 +175,8 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
-        - !ImportValue account-resources-LambdaAccessSecretsPolicy
-        - !ImportValue account-resources-LambdaDecryptSecretsKMSPolicy
+        - !ImportValue account-resources:LambdaAccessSecretsPolicy
+        - !ImportValue account-resources:LambdaDecryptSecretsKMSPolicy
       RoleName: !Sub "${StackName}-ecsTaskExecutionRole"
 
   # ECS Task Definition
