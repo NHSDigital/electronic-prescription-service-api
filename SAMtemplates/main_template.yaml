@@ -45,15 +45,3 @@ Outputs:
   LoadBalancerEndpoint:
     Description: Load Balancer Endpoint
     Value: !GetAtt LoadBalancers.Outputs.Endpoint
-
-  SpinePrivateKeyARN:
-    Description: ARN of the Spine Private Key
-    Value: !ImportValue account-resources:SpinePrivateKey
-
-  SpinePublicCertificateARN:
-    Description: ARN of the Spine Public Certificate
-    Value: !ImportValue account-resources:SpinePublicCertificate
-
-  SpineCAChainARN:
-    Description: ARN of the Spine CA Chain
-    Value: !ImportValue account-resources:SpineCAChain
