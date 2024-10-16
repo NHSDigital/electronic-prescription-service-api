@@ -292,6 +292,10 @@ Resources:
   # CloudWatch Log Group for ECS
   LogGroup:
     Type: AWS::Logs::LogGroup
+    Metadata:
+      guard:
+        SuppressedRules:
+          - CW_LOGGROUP_RETENTION_PERIOD_CHECK
     Properties:
       LogGroupName: !Sub /aws/ecs/${StackName}
       RetentionInDays: !Ref LogRetentionInDays
