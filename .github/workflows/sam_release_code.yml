@@ -61,6 +61,9 @@ on:
       ZONE_ID_EXPORT:
         required: false
         type: string
+      SPINE_URL:
+        required: true
+        type: string
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -72,7 +75,7 @@ on:
         required: false
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
         required: false
-  
+
 jobs:
   sam_release_code:
     runs-on: ubuntu-latest
@@ -214,4 +217,5 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
+          SPINE_URL: ${{ inputs.SPINE_URL }}
         run: ./release_code.sh

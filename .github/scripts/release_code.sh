@@ -30,6 +30,7 @@ echo "DOMAIN_NAME_EXPORT: $DOMAIN_NAME_EXPORT"
 echo "ZONE_ID_EXPORT: $ZONE_ID_EXPORT"
 echo "TRUSTSTORE_BUCKET_NAME: $TRUSTSTORE_BUCKET_NAME"
 echo "LATEST_TRUSTSTORE_VERSION: $LATEST_TRUSTSTORE_VERSION"
+echo "SPINE_URL: $SPINE_URL"  
 
 # Change directory and invoke the make command
 cd ../../.aws-sam/build || exit

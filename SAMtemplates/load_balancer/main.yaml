@@ -42,6 +42,9 @@ Parameters:
       - prod
     Default: dev
 
+  SpineUrl:
+    Type: String
+
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
   IsRefOrProd: !Or
@@ -199,6 +202,8 @@ Resources:
           Environment:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
+            - Name: SPINE_URL_TEST
+              Value: !Ref SpineUrl
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey

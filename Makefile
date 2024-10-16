@@ -461,7 +461,8 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			CommitId=$$COMMIT_ID \
 			Env=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
-			ZoneIDExport=$$ZONE_ID_EXPORT
+			ZoneIDExport=$$ZONE_ID_EXPORT \
+			SpineUrl=$$SPINE_URL
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
