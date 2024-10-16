@@ -7,7 +7,9 @@ import {SpineClient} from "./spine-client"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
-console.log("SPINE_ENDPOINT_SPINE_URL:", SPINE_ENDPOINT)
+const SPINE_ENDPOINT_TEST = process.env.SPINE_URL_TEST
+console.log("SPINE_ENDPOINT:", SPINE_ENDPOINT)
+console.log("SPINE_ENDPOINT_TEST:", SPINE_ENDPOINT_TEST)
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
