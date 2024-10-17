@@ -6,7 +6,7 @@ import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 
 const SPINE_URL_SCHEME = "https"
-const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER || process.env.SPINE_URL || undefined
+const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER || process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
