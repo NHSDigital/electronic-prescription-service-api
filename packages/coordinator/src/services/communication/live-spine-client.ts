@@ -1,17 +1,38 @@
 import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
-import pino from "pino"
+import pino, {Logger} from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 
 const SPINE_URL_SCHEME = "https"
-const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER || process.env.SPINE_URL
+const SPINE_ENDPOINT = process.env.SPINE_URL
+const SPINE_ENDPOINT_TARGET_SPINE_SERVER = process.env.TARGET_SPINE_SERVER
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
-const logger = pino()
-logger.info(`SPINE_ENDPOINT set to: ${SPINE_ENDPOINT}`)
+console.log(`SPINE_ENDPOINT set to: ${SPINE_ENDPOINT}`)
+console.log(`SPINE_ENDPOINT_TARGET_SPINE_SERVER set to: ${SPINE_ENDPOINT_TARGET_SPINE_SERVER}`)
+
+const logger: Logger = pino({
+  level: process.env.LOG_LEVEL || "info",
+  transport: {
+    target: "pino-pretty",
+    options: {
+      colorize: true,
+      translateTime: true,
+      ignore: "pid,hostname"
+    }
+  }
+})
+
+function logBlueBold(message: string) {
+  const styledMessage = `\x1b[1m\x1b[34m${message}\x1b[0m`
+  logger.info(styledMessage)
+}
+
+logBlueBold(`SPINE_ENDPOINT set to: ${SPINE_ENDPOINT}`)
+logBlueBold(`SPINE_ENDPOINT_TARGET_SPINE_SERVER set to: ${SPINE_ENDPOINT_TARGET_SPINE_SERVER}`)
 
 const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   return {
