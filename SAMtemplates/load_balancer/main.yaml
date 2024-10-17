@@ -64,8 +64,8 @@ Conditions:
     - !Equals [!Ref Environment, prod]
   UseSpineSecrets: !And
     - !Not [!Equals ["", !Ref SpinePrivateKeyArn]]
-    - !Not [!Equals ["", !Ref SpinePrivateKeySpinePublicCertificateArn]]
-    - !Not [!Equals ["", !Ref SpinePrivateKeySpineCAChainArn]]
+    - !Not [!Equals ["", !Ref SpinePublicCertificateArn]]
+    - !Not [!Equals ["", !Ref SpineCAChainArn]]
 
 Resources:
   # Security Group for the Load Balancer
@@ -223,9 +223,12 @@ Resources:
           Secrets: !If
             - UseSpineSecrets
             - 
-              - { Name: SpinePrivateKey, !Ref SpinePrivateKeyArn }
-              - { Name: SpinePublicCertificate, ValueFrom: !Ref SpinePublicCertificateArn }
-              - { Name: SpineCAChain, ValueFrom: !Ref SpineCAChainArn }
+              - Name: SpinePrivateKey
+                ValueFrom: !Ref SpinePrivateKeyArn
+              - Name: SpinePublicCertificate
+                ValueFrom: !Ref SpinePublicCertificateArn
+              - Name: SpineCAChain
+                ValueFrom: !Ref SpineCAChainArn
             - !Ref "AWS::NoValue"
           LogConfiguration:
             LogDriver: awslogs
