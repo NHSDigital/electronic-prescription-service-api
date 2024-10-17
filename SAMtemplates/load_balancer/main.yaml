@@ -219,7 +219,11 @@ Resources:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
             - Name: TARGET_SPINE_SERVER
-              Value: !Ref TargetSpineServer
+            - !If
+              - UseSpineSecrets
+              - Name: TARGET_SPINE_SERVER
+                Value: !Ref TargetSpineServer
+              - !Ref AWS::NoValue
           Secrets: !If
             - UseSpineSecrets
             - 
