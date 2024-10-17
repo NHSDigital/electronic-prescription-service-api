@@ -191,6 +191,7 @@ steps:
       export API_CLIENT_ID=$(API_CLIENT_ID)
       export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+      export USE_SHA256_PREPARE=true
 
       cd packages/e2e-tests
 
@@ -215,6 +216,7 @@ steps:
       export API_CLIENT_ID=$(API_CLIENT_ID)
       export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+      export USE_SHA256_PREPARE=true
 
       cd packages/e2e-tests
 
