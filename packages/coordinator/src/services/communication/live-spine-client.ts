@@ -10,6 +10,9 @@ const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER || process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
+const logger = pino()
+logger.info(`SPINE_ENDPOINT set to: ${SPINE_ENDPOINT}`)
+
 const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   return {
     "Content-Type": "multipart/related;" +
