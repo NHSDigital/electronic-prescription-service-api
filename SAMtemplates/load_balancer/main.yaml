@@ -45,18 +45,6 @@ Parameters:
   TargetSpineServer:
     Type: String
 
-  SpinePrivateKeyArn:
-    Type: String
-    Default: ""
-
-  SpinePublicCertificateArn:
-    Type: String
-    Default: ""
-
-  SpineCAChainArn:
-    Type: String
-    Default: ""
-
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
   IsRefOrProd: !Or
