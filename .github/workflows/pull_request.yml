@@ -9,7 +9,7 @@ env:
 
 jobs:
   quality_checks:
-    uses: ./.github/workflows/quality_checks.yml
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@aea-4506-update-sbom
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
