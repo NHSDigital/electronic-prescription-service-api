@@ -50,6 +50,10 @@ Conditions:
   IsRefOrProd: !Or
     - !Equals [!Ref Environment, ref]
     - !Equals [!Ref Environment, prod]
+  UseSpineSecrets: !And
+    - !Not [!Equals ["", !ImportValue account-resources:SpinePrivateKey]]
+    - !Not [!Equals ["", !ImportValue account-resources:SpinePublicCertificate]]
+    - !Not [!Equals ["", !ImportValue account-resources:SpineCAChain]]
 
 Resources:
   # Security Group for the Load Balancer
@@ -204,13 +208,13 @@ Resources:
               Value: !Sub "${StackName}-validator"
             - Name: TARGET_SPINE_SERVER
               Value: !Ref TargetSpineServer
-          Secrets:
-            - Name: SpinePrivateKey
-              ValueFrom: !ImportValue account-resources:SpinePrivateKey
-            - Name: SpinePublicCertificate
-              ValueFrom: !ImportValue account-resources:SpinePublicCertificate
-            - Name: SpineCAChain
-              ValueFrom: !ImportValue account-resources:SpineCAChain
+          Secrets: !If
+            - UseSpineSecrets
+            - 
+              - { Name: SpinePrivateKey, ValueFrom: !ImportValue account-resources:SpinePrivateKey }
+              - { Name: SpinePublicCertificate, ValueFrom: !ImportValue account-resources:SpinePublicCertificate }
+              - { Name: SpineCAChain, ValueFrom: !ImportValue account-resources:SpineCAChain }
+            - !Ref "AWS::NoValue"
           LogConfiguration:
             LogDriver: awslogs
             Options:
