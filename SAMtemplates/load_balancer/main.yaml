@@ -204,6 +204,8 @@ Resources:
               Value: !Sub "${StackName}-validator"
             - Name: TARGET_SPINE_SERVER
               Value: !Ref TargetSpineServer
+            - Name: MTLS_SPINE_CLIENT
+              Value: True
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey
