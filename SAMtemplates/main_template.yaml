@@ -27,7 +27,7 @@ Parameters:
     Type: String
     Default: "xxx"
 
-  SpineUrl:
+  TargetSpineServer:
     Type: String
     Default: "xxx"
 
@@ -44,7 +44,7 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
-        SpineUrl: !Ref SpineUrl
+        TargetSpineServer: !Ref TargetSpineServer
 
 Outputs:
   LoadBalancerEndpoint:

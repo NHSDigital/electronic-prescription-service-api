@@ -42,7 +42,7 @@ Parameters:
       - prod
     Default: dev
 
-  SpineUrl:
+  TargetSpineServer:
     Type: String
 
 Conditions:
@@ -203,7 +203,7 @@ Resources:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
             - Name: TARGET_SPINE_SERVER
-              Value: !Ref SpineUrl
+              Value: !Ref TargetSpineServer
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey
