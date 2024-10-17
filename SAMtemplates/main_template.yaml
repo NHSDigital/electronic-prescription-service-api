@@ -44,10 +44,6 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
-        TargetSpineServer: !Ref TargetSpineServer
-        SpinePrivateKeyArn: !ImportValue account-resources:SpinePrivateKey
-        SpinePublicCertificateArn: !ImportValue account-resources:SpinePublicCertificate
-        SpineCAChainArn: !ImportValue account-resources:SpineCAChain
 
 Outputs:
   LoadBalancerEndpoint:
