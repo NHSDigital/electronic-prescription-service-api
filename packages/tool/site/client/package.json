@@ -18,9 +18,9 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.25.7",
+    "@babel/core": "^7.25.8",
     "@babel/plugin-transform-runtime": "^7.25.7",
-    "@babel/preset-env": "^7.25.7",
+    "@babel/preset-env": "^7.25.8",
     "@babel/preset-react": "^7.25.7",
     "@babel/preset-typescript": "^7.25.7",
     "@testing-library/dom": "^10.4.0",
@@ -30,14 +30,14 @@
     "@types/fhir": "^0.0.41",
     "@types/pretty": "^2.0.3",
     "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.0",
+    "@types/react-dom": "^18.3.1",
     "@types/uuid": "^10.0.0",
     "@types/webpack": "^5.28.5",
     "axios-mock-adapter": "^2.1.0",
     "babel-loader": "^9.2.1",
     "css-loader": "^7.1.2",
     "eslint-plugin-react": "^7.37.1",
-    "eslint-plugin-react-hooks": "^4.6.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
     "formik": "^2.4.6",
     "identity-obj-proxy": "^3.0.0",
     "jest-environment-jsdom": "^29.7.0",
@@ -68,7 +68,7 @@
     "jszip": "^3.10.0",
     "react-cookie": "^7.2.1",
     "react-diff-viewer-continued": "^3.4.0",
-    "react-router-dom": "^6.26.2",
+    "react-router-dom": "^6.27.0",
     "react18-json-view": "^0.2.8"
   }
 }
