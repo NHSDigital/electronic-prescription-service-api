@@ -3,6 +3,7 @@ import pino from "pino"
 import {StatusCheckResponse} from "../../utils/status"
 import {LiveSpineClient} from "./live-spine-client"
 import {SandboxSpineClient} from "./sandbox-spine-client"
+import {MtlsSpineClient} from "./mtls-spine-client"
 
 export interface SpineClient {
   send(request: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
@@ -10,10 +11,15 @@ export interface SpineClient {
   getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
 
-function getSpineClient(liveMode: boolean): SpineClient {
-  return liveMode
-    ? new LiveSpineClient()
-    : new SandboxSpineClient()
+function getSpineClient(useMtlsSpineClient: boolean, liveMode: boolean): SpineClient {
+  if (useMtlsSpineClient) {
+    return new MtlsSpineClient()
+  }
+
+  return liveMode ? new LiveSpineClient() : new SandboxSpineClient()
 }
 
-export const spineClient = getSpineClient(process.env.SANDBOX !== "1")
+const useMtlsSpineClient = process.env.MTLS_SPINE_CLIENT === "1"
+const liveMode = process.env.SANDBOX !== "1"
+
+export const spineClient = getSpineClient(useMtlsSpineClient, liveMode)
