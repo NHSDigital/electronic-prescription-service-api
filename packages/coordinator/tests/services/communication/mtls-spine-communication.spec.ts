@@ -116,6 +116,23 @@ describe("MtlsSpineClient communication", () => {
 
     loggerSpy.mockRestore()
   })
+
+  test("Logs error for polling failure", async () => {
+    const path = "test-path"
+    const errorMessage = "Network Error"
+    mock.onGet().networkError()
+
+    const loggerSpy = jest.spyOn(logger, "error")
+    const spineResponse = await requestHandler.poll(path, "test-asid", logger)
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.stringContaining(`Failed polling request for polling path ${path}. Error: Error: ${errorMessage}`)
+    )
+
+    expect(spineResponse.statusCode).toBe(500)
+
+    loggerSpy.mockRestore()
+  })
 })
 
 describe("Spine responses", () => {
