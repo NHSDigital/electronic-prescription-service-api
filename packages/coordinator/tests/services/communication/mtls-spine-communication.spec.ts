@@ -1,8 +1,10 @@
 import "jest"
 import MockAdapter from "axios-mock-adapter"
 import axios from "axios"
+import fs from "fs"
 import {spine} from "@models"
 import {MtlsSpineClient} from "../../../src/services/communication/mtls-spine-client"
+import path from "path"
 import pino from "pino"
 
 const mock = new MockAdapter(axios)
@@ -21,8 +23,8 @@ describe("MtlsSpineClient communication", () => {
   const logger = pino()
 
   const mockRequest: spine.SpineRequest = {
-    message: "<request>test</request>",
-    interactionId: "testInteraction",
+    message: "test",
+    interactionId: "test2",
     messageId: "DEAD-BEEF",
     conversationId: "DEAD-BEEF",
     fromPartyKey: "test3"
@@ -64,8 +66,8 @@ describe("MtlsSpineClient communication", () => {
   })
 
   test("Async success messages returned from spine return a 200 response", async () => {
-    const asyncSuccess = "<hl7:acknowledgement typeCode=\"AA\"></hl7:acknowledgement>"
-    mock.onPost().reply(200, asyncSuccess)
+    const asyncSuccess = readFileAsString("async_success.xml")
+    mock.onPost().reply(200, `statusText: "OK", responseText: ${asyncSuccess}`)
 
     const spineResponse = await requestHandler.send(mockRequest, logger)
 
@@ -74,8 +76,8 @@ describe("MtlsSpineClient communication", () => {
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toContain("<hl7:acknowledgement typeCode=\"AA\">")
   })
 
-  test("Successful polling complete response returns non-pollable result", async () => {
-    mock.onGet().reply(200, {statusText: "OK", responseText: '<hl7:acknowledgement typeCode="AA"/>'})
+  test("Successful polling complete response returns non pollable result", async () => {
+    mock.onGet().reply(200, {statusText: "OK", responseText: 'acknowledgement typeCode="AA"'})
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
@@ -88,8 +90,8 @@ describe("MtlsSpineClient communication", () => {
 
     const statusResponse = await requestHandler.getStatus(logger)
 
-    expect(statusResponse).toHaveProperty("status", "pass")
-    expect(statusResponse).toHaveProperty("responseCode", 200)
+    expect(statusResponse.status).toBe("pass")
+    expect(statusResponse.responseCode).toBe(200)
   })
 
   test("Spine communication failure returns a 500 error result", async () => {
@@ -138,7 +140,7 @@ describe("MtlsSpineClient communication", () => {
 describe("Spine responses", () => {
   test("Messages should be correctly identified as pollable", () => {
     const message = {
-      statusCode: 202,
+      statusCode: 200,
       pollingUrl: "http://test.com"
     }
 
@@ -154,3 +156,7 @@ describe("Spine responses", () => {
     expect(spine.isPollable(message)).toBe(false)
   })
 })
+
+function readFileAsString(filename: string): string {
+  return fs.readFileSync(path.join(__dirname, `../../resources/spine-responses/${filename}`), "utf-8")
+}
