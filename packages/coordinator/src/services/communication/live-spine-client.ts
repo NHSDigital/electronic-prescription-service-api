@@ -50,7 +50,6 @@ export class LiveSpineClient implements SpineClient {
 
     if (!privateKey || !publicCert || !caChain) {
       logger.error("One or more required environment variables for mTLS are missing.")
-      throw Error("One or more required environment variables for mTLS are missing.")
     }
 
     this.httpsAgent = new Agent({
