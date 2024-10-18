@@ -6,13 +6,18 @@ import {spine} from "@models"
 import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
 import path from "path"
 import pino from "pino"
+import {Agent} from "https"
 
 const mock = new MockAdapter(axios)
 
 describe("Spine communication", () => {
-
   afterEach(() => {
     mock.reset()
+    jest.resetModules()
+    delete process.env.MTLS_SPINE_CLIENT
+    delete process.env.SpinePrivateKey
+    delete process.env.SpinePublicCertificate
+    delete process.env.SpineCAChain
   })
 
   const requestHandler = new LiveSpineClient(
@@ -102,6 +107,33 @@ describe("Spine communication", () => {
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
+  })
+
+  test("mTLS client initializes HTTPS agent when environment variables are set", () => {
+    process.env.MTLS_SPINE_CLIENT = "1"
+    process.env.SpinePrivateKey = "mock-private-key"
+    process.env.SpinePublicCertificate = "mock-public-cert"
+    process.env.SpineCAChain = "mock-ca-chain"
+
+    const client = new LiveSpineClient("localhost", "Prescription")
+
+    expect(client["httpsAgent"]).toBeInstanceOf(Agent)
+  })
+
+  test("mTLS client throws error when mTLS is enabled but environment variables are missing", () => {
+    process.env.MTLS_SPINE_CLIENT = "1"
+
+    const errorMessage = "One or more required environment variables for mTLS are missing."
+
+    expect(() => new LiveSpineClient("localhost", "Prescription")).toThrow(errorMessage)
+  })
+
+  test("Non-mTLS client does not initialize HTTPS agent", () => {
+    process.env.MTLS_SPINE_CLIENT = "0"
+
+    const client = new LiveSpineClient("localhost", "Prescription")
+
+    expect(client["httpsAgent"]).toBeNull()
   })
 })
 
