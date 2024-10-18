@@ -11,9 +11,6 @@ const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
 
-const logger = pino()
-logger.info(`SPINE_ENDPOINT set to: ${SPINE_ENDPOINT}`)
-
 const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   return {
     "Content-Type": "multipart/related;" +
@@ -47,11 +44,6 @@ export class MtlsSpineClient implements SpineClient {
     const privateKey = process.env.SpinePrivateKey
     const publicCert = process.env.SpinePublicCertificate
     const caChain = process.env.SpineCAChain
-
-    if (!privateKey || !publicCert || !caChain) {
-      logger.error("One or more required environment variables for mTLS are missing.")
-
-    }
 
     this.httpsAgent = new Agent({
       key: privateKey,
