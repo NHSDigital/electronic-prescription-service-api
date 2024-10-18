@@ -167,7 +167,8 @@ export class MtlsSpineClient implements SpineClient {
   }
 
   private getSpineEndpoint(requestPath?: string) {
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${requestPath}`
+    const sanitizedPath = requestPath ? encodeURIComponent(requestPath) : ""
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${sanitizedPath}`
   }
 
   private getSpineUrlForPrescription() {
@@ -179,7 +180,8 @@ export class MtlsSpineClient implements SpineClient {
   }
 
   private getSpineUrlForPolling(path: string) {
-    return this.getSpineEndpoint(`_poll/${path}`)
+    const sanitizedPath = encodeURIComponent(path)
+    return this.getSpineEndpoint(`_poll/${sanitizedPath}`)
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
