@@ -1,9 +1,9 @@
-// src/services/communication/spine-client.ts
 import {spine} from "@models"
 import pino from "pino"
 import {StatusCheckResponse} from "../../utils/status"
 import {LiveSpineClient} from "./live-spine-client"
 import {SandboxSpineClient} from "./sandbox-spine-client"
+import {MtlsSpineClient} from "./mtls-spine-client"
 
 export interface SpineClient {
   send(request: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
@@ -12,6 +12,10 @@ export interface SpineClient {
 }
 
 function getSpineClient(useMtlsSpineClient: boolean, liveMode: boolean): SpineClient {
+  if (useMtlsSpineClient) {
+    return new MtlsSpineClient()
+  }
+
   return liveMode ? new LiveSpineClient() : new SandboxSpineClient()
 }
 

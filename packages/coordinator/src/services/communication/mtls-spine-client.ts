@@ -4,11 +4,15 @@ import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
+import {Agent} from "https"
 
 const SPINE_URL_SCHEME = "https"
-const SPINE_ENDPOINT = process.env.SPINE_URL
+const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER
 const SPINE_PATH = "Prescription"
 const BASE_PATH = process.env.BASE_PATH
+
+const logger = pino()
+logger.info(`SPINE_ENDPOINT set to: ${SPINE_ENDPOINT}`)
 
 const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   return {
@@ -21,10 +25,11 @@ const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   }
 }
 
-export class LiveSpineClient implements SpineClient {
+export class MtlsSpineClient implements SpineClient {
   private readonly spineEndpoint: string
   private readonly spinePath: string
   private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest) => string
+  private httpsAgent: Agent
 
   constructor(
     spineEndpoint: string = null,
@@ -34,6 +39,26 @@ export class LiveSpineClient implements SpineClient {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
+
+    this.initHttpsAgent()
+  }
+
+  private initHttpsAgent() {
+    const privateKey = process.env.SpinePrivateKey
+    const publicCert = process.env.SpinePublicCertificate
+    const caChain = process.env.SpineCAChain
+
+    if (!privateKey || !publicCert || !caChain) {
+      logger.error("One or more required environment variables for mTLS are missing.")
+
+    }
+
+    this.httpsAgent = new Agent({
+      key: privateKey,
+      cert: publicCert,
+      ca: caChain,
+      rejectUnauthorized: true
+    })
   }
 
   private prepareSpineRequest(req: spine.ClientRequest): {
@@ -66,16 +91,14 @@ export class LiveSpineClient implements SpineClient {
         address,
         body,
         {
-          headers: headers
+          headers: headers,
+          httpsAgent: this.httpsAgent
         }
       )
-      return LiveSpineClient.handlePollableOrImmediateResponse(response, logger)
+      return MtlsSpineClient.handlePollableOrImmediateResponse(response, logger)
     } catch (error) {
-      // todo: this log line is req.name for tracker request but not for spine client request
-      // to work out how to log both, request.name maps to the wrong object
-      //logger.error(`Failed post request for ${request.name}. Error: ${error}`)
       logger.error(`Failed post request for spine client send. Error: ${error}`)
-      return LiveSpineClient.handleError(error)
+      return MtlsSpineClient.handleError(error)
     }
   }
 
@@ -90,13 +113,14 @@ export class LiveSpineClient implements SpineClient {
         {
           headers: {
             "nhsd-asid": fromAsid
-          }
+          },
+          httpsAgent: this.httpsAgent
         }
       )
-      return LiveSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
+      return MtlsSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
     } catch (error) {
       logger.error(`Failed polling request for polling path ${path}. Error: ${error}`)
-      return LiveSpineClient.handleError(error)
+      return MtlsSpineClient.handleError(error)
     }
   }
 

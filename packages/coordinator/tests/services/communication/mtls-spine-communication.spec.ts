@@ -1,31 +1,28 @@
 import "jest"
 import MockAdapter from "axios-mock-adapter"
 import axios from "axios"
-import fs from "fs"
 import {spine} from "@models"
-import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
-import path from "path"
+import {MtlsSpineClient} from "../../../src/services/communication/mtls-spine-client"
 import pino from "pino"
 
 const mock = new MockAdapter(axios)
 
-describe("Spine communication", () => {
-
+describe("MtlsSpineClient communication", () => {
   afterEach(() => {
     mock.reset()
   })
 
-  const requestHandler = new LiveSpineClient(
+  const requestHandler = new MtlsSpineClient(
     "localhost",
-    "Prescribe",
+    "Prescription",
     (spineRequest: spine.SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
   )
 
   const logger = pino()
 
-  const mockRequest = {
-    message: "test",
-    interactionId: "test2",
+  const mockRequest: spine.SpineRequest = {
+    message: "<request>test</request>",
+    interactionId: "testInteraction",
     messageId: "DEAD-BEEF",
     conversationId: "DEAD-BEEF",
     fromPartyKey: "test3"
@@ -67,8 +64,8 @@ describe("Spine communication", () => {
   })
 
   test("Async success messages returned from spine return a 200 response", async () => {
-    const asyncSuccess = readFileAsString("async_success.xml")
-    mock.onPost().reply(200, `statusText: "OK", responseText: ${asyncSuccess}`)
+    const asyncSuccess = "<hl7:acknowledgement typeCode=\"AA\"></hl7:acknowledgement>"
+    mock.onPost().reply(200, asyncSuccess)
 
     const spineResponse = await requestHandler.send(mockRequest, logger)
 
@@ -77,8 +74,8 @@ describe("Spine communication", () => {
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toContain("<hl7:acknowledgement typeCode=\"AA\">")
   })
 
-  test("Successful polling complete response returns non pollable result", async () => {
-    mock.onGet().reply(200, {statusText: "OK", responseText: 'acknowledgement typeCode="AA"'})
+  test("Successful polling complete response returns non-pollable result", async () => {
+    mock.onGet().reply(200, {statusText: "OK", responseText: '<hl7:acknowledgement typeCode="AA"/>'})
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
@@ -91,8 +88,8 @@ describe("Spine communication", () => {
 
     const statusResponse = await requestHandler.getStatus(logger)
 
-    expect(statusResponse.status).toBe("pass")
-    expect(statusResponse.responseCode).toBe(200)
+    expect(statusResponse).toHaveProperty("status", "pass")
+    expect(statusResponse).toHaveProperty("responseCode", 200)
   })
 
   test("Spine communication failure returns a 500 error result", async () => {
@@ -108,7 +105,7 @@ describe("Spine communication", () => {
 describe("Spine responses", () => {
   test("Messages should be correctly identified as pollable", () => {
     const message = {
-      statusCode: 200,
+      statusCode: 202,
       pollingUrl: "http://test.com"
     }
 
@@ -124,7 +121,3 @@ describe("Spine responses", () => {
     expect(spine.isPollable(message)).toBe(false)
   })
 })
-
-function readFileAsString(filename: string): string {
-  return fs.readFileSync(path.join(__dirname, `../../resources/spine-responses/${filename}`), "utf-8")
-}
