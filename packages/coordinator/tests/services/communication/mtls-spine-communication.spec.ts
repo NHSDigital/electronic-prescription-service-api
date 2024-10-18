@@ -100,6 +100,22 @@ describe("MtlsSpineClient communication", () => {
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
   })
+
+  test("Logs error for unsupported status response", async () => {
+    const errorMessage = "Internal Server Error"
+    mock.onPost().reply(500, errorMessage)
+
+    const loggerSpy = jest.spyOn(logger, "error")
+    const spineResponse = await requestHandler.send(mockRequest, logger)
+
+    expect(spineResponse.statusCode).toBe(500)
+
+    const expectedError = `Failed post request for spine client send. Error: Error: Request failed with status code 500`
+
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(expectedError))
+
+    loggerSpy.mockRestore()
+  })
 })
 
 describe("Spine responses", () => {
