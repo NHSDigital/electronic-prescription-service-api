@@ -11,7 +11,7 @@ export interface SpineClient {
   getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }
 
-function getSpineClient(useMtlsSpineClient: boolean, liveMode: boolean): SpineClient {
+export function getSpineClient(useMtlsSpineClient: boolean, liveMode: boolean): SpineClient {
   if (useMtlsSpineClient) {
     return new MtlsSpineClient()
   }
