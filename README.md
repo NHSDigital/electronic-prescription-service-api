@@ -380,7 +380,6 @@ Workflows are in the `/.github/workflows` folder
 - `pull_request.yml` Workflow for building, testing and deploying resources to AWS from a pull request
 - `pr_title_check.yml` Checks that pull requests title matches the desired format
 - `pr-link.yml` Links the raised PR with the associated Jira ticket
-- `quality_checks.yml` Performs, linting, validation and testing of the codebase
 - `release.yml` Runs on demand to create a release and deploy to all environments
 - `sam_package_code.yml` Builds and packages the code ready for deployment
 - `sam_release_code.yml` Deploys Cloudformation stacks for resources defined in the SAM templates
