@@ -89,18 +89,21 @@ Resources:
     Properties:
       SubnetId: !Select [0, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
       NetworkAclId: !Ref CustomNetworkAcl
+    DependsOn: CustomNetworkAcl
 
   PrivateSubnetAclAssociation2:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     Properties:
       SubnetId: !Select [1, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
       NetworkAclId: !Ref CustomNetworkAcl
+    DependsOn: CustomNetworkAcl
 
   PrivateSubnetAclAssociation3:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     Properties:
       SubnetId: !Select [2, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
       NetworkAclId: !Ref CustomNetworkAcl
+    DependsOn: CustomNetworkAcl
 
   # Security Group for the Load Balancer
   LoadBalancerSecurityGroup:
