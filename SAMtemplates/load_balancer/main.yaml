@@ -83,12 +83,23 @@ Resources:
       Egress: true
       CidrBlock: 0.0.0.0/0
 
-  # Associate the custom NACL with each public subnet
-  PublicSubnetAclAssociations:
+  # Associate the custom NACL with each private subnet
+  PrivateSubnetAclAssociation1:
     Type: AWS::EC2::SubnetNetworkAclAssociation
     Properties:
-      # Associating the NACL with all public subnets imported
-      SubnetId: !Select [0, !Split [",", !ImportValue vpc-resources:PublicSubnets]]
+      SubnetId: !Select [0, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
+      NetworkAclId: !Ref CustomNetworkAcl
+
+  PrivateSubnetAclAssociation2:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Select [1, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
+      NetworkAclId: !Ref CustomNetworkAcl
+
+  PrivateSubnetAclAssociation3:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Select [2, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
       NetworkAclId: !Ref CustomNetworkAcl
 
   # Security Group for the Load Balancer
