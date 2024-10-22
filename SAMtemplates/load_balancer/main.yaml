@@ -356,26 +356,26 @@ Resources:
       CidrBlock: 0.0.0.0/0
 
   # Associate the default NACL with each subnet
-  # PrivateSubnetAclAssociation1:
-  #   Type: AWS::EC2::SubnetNetworkAclAssociation
-  #   Properties:
-  #     SubnetId: !Select [0, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
-  #     NetworkAclId: !Ref DefaultNetworkAcl
-  #   DependsOn: DefaultNetworkAcl
+  PrivateSubnetAclAssociation1:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Select [0, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
+      NetworkAclId: !Ref DefaultNetworkAcl
+    DependsOn: DefaultNetworkAcl
 
-  # PrivateSubnetAclAssociation2:
-  #   Type: AWS::EC2::SubnetNetworkAclAssociation
-  #   Properties:
-  #     SubnetId: !Select [1, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
-  #     NetworkAclId: !Ref DefaultNetworkAcl
-  #   DependsOn: DefaultNetworkAcl
+  PrivateSubnetAclAssociation2:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Select [1, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
+      NetworkAclId: !Ref DefaultNetworkAcl
+    DependsOn: DefaultNetworkAcl
 
-  # PrivateSubnetAclAssociation3:
-  #   Type: AWS::EC2::SubnetNetworkAclAssociation
-  #   Properties:
-  #     SubnetId: !Select [2, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
-  #     NetworkAclId: !Ref DefaultNetworkAcl
-  #   DependsOn: DefaultNetworkAcl
+  PrivateSubnetAclAssociation3:
+    Type: AWS::EC2::SubnetNetworkAclAssociation
+    Properties:
+      SubnetId: !Select [2, !Split [",", !ImportValue vpc-resources:PrivateSubnets]]
+      NetworkAclId: !Ref DefaultNetworkAcl
+    DependsOn: DefaultNetworkAcl
 
 Outputs:
   Endpoint:
