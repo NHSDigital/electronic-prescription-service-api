@@ -10,6 +10,8 @@ env:
 jobs:
   quality_checks:
     uses: ./.github/workflows/quality_checks.yml
+    with:
+      USE_SHA256_PREPARE: true
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 

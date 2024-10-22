@@ -68,7 +68,7 @@ extends:
       - bash: "make check-language-versions"
         displayName: Check consistent language version
         workingDirectory: "${{ variables.service_name }}"
-      - bash: "make test"
+      - bash: "USE_SHA256_PREPARE=true make test"
         displayName: Run Quality Checks
         workingDirectory: "${{ variables.service_name }}"
       - task: PublishTestResults@2
