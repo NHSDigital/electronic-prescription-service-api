@@ -216,6 +216,7 @@ Resources:
             Options:
               awslogs-group: !Ref LogGroup
               awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: ecs
       RuntimePlatform:
         CpuArchitecture: X86_64
         OperatingSystemFamily: LINUX
