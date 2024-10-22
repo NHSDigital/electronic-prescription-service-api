@@ -323,7 +323,7 @@ Resources:
         - Key: Name
           Value: !Sub "${StackName}-nacl"
 
-  # Inbound rule: Allow HTTPS (port 443) with Rule Number 50
+  # Inbound rule: Allow HTTPS (port 443)
   NetworkAclInboundAllowHTTPS:
     Type: AWS::EC2::NetworkAclEntry
     Properties:
@@ -337,7 +337,21 @@ Resources:
         From: 443
         To: 443
 
-  # Inbound rule: Deny all other traffic with Rule Number 99
+  # Inbound rule: Allow HTTP (port 80) for service communication
+  NetworkAclInboundAllowHTTP:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref NetworkAcl
+      RuleNumber: 51
+      Protocol: 6 # TCP
+      RuleAction: allow
+      Egress: false
+      CidrBlock: 0.0.0.0/0
+      PortRange:
+        From: 80
+        To: 80
+
+  # Inbound rule: Deny all other traffic
   NetworkAclInboundDenyAll:
     Type: AWS::EC2::NetworkAclEntry
     Properties:
