@@ -99,7 +99,7 @@ properties:
     example: "2021-05-07T14:47:29+00:00"
   requester:
     type: object
-    description: Reference object to identify the author of a prescription.
+    description: Reference object to identify the requester of a prescription.
     properties:
       reference:
         type: string
