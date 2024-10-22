@@ -221,7 +221,11 @@ Resources:
   # ECS Service Configuration
   ECSService:
     Type: AWS::ECS::Service
-    DependsOn: ListenerHTTPS
+    DependsOn: 
+      - ListenerHTTPS
+      - PrivateSubnetAclAssociation1
+      - PrivateSubnetAclAssociation2
+      - PrivateSubnetAclAssociation3
     Properties:
       Cluster: !Ref ECSCluster
       ServiceName: !Sub "${StackName}-service"
