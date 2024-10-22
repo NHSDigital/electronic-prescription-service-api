@@ -21,8 +21,8 @@ function wait_for_scan() {
 
 function check_for_high_critical_vuln() {
   scan_results=$(aws ecr describe-image-scan-findings --repository-name "${REPOSITORY_NAME}" --image-id imageTag="${IMAGE_TAG}")
-  high=$(echo $scan_results | jq .imageScanFindings.findingSeverityCounts.HIGH)
-  critical=$(echo $scan_results | jq .imageScanFindings.findingSeverityCounts.CRITICAL)
+  high=$(echo "$scan_results" | jq .imageScanFindings.findingSeverityCounts.HIGH)
+  critical=$(echo "$scan_results" | jq .imageScanFindings.findingSeverityCounts.CRITICAL)
 }
 
 function return_scan_results() {
