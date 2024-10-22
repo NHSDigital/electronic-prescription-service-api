@@ -67,6 +67,7 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
+        LogRetentionInDays: !Ref LogRetentionInDays
 
 Outputs:
   LoadBalancerEndpoint:
