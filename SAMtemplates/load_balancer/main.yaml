@@ -351,6 +351,20 @@ Resources:
         From: 80
         To: 80
 
+  # Inbound rule: Allow ephemeral ports for internal ECS communication
+  NetworkAclInboundAllowEphemeral:
+    Type: AWS::EC2::NetworkAclEntry
+    Properties:
+      NetworkAclId: !Ref NetworkAcl
+      RuleNumber: 52
+      Protocol: 6 # TCP
+      RuleAction: allow
+      Egress: false
+      CidrBlock: 0.0.0.0/0
+      PortRange:
+        From: 1024
+        To: 65535
+
   # Inbound rule: Deny all other traffic
   NetworkAclInboundDenyAll:
     Type: AWS::EC2::NetworkAclEntry
