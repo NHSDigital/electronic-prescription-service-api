@@ -27,6 +27,10 @@ Parameters:
     Type: String
     Default: "xxx"
 
+  TargetSpineServer:
+    Type: String
+    Default: "xxx"
+
 Resources:
   LoadBalancers:
     Type: AWS::Serverless::Application
@@ -40,6 +44,7 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
+        TargetSpineServer: !Ref TargetSpineServer
 
 Outputs:
   LoadBalancerEndpoint:
