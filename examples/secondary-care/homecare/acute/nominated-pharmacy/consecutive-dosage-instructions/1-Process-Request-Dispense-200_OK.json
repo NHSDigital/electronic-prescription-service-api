@@ -361,33 +361,6 @@
                     }
                   }
                 ]
-              },
-              {
-                "sequence": 8,
-                "text": "ONE (1) tablet to be taken DAILY for two days. Take these tablets with or after food.",
-                "timing": {
-                  "repeat": {
-                    "boundsDuration": {
-                      "value": 2,
-                      "unit": "day",
-                      "system": "http://unitsofmeasure.org",
-                      "code": "d"
-                    },
-                    "frequency": 1,
-                    "period": 1,
-                    "periodUnit": "d"
-                  }
-                },
-                "doseAndRate": [
-                  {
-                    "doseQuantity": {
-                      "value": 5,
-                      "unit": "milligram",
-                      "system": "http://unitsofmeasure.org",
-                      "code": "mg"
-                    }
-                  }
-                ]
               }
             ],
             "dispenseRequest": {
