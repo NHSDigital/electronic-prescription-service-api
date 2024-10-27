@@ -40,13 +40,14 @@ def generate_timestamp():
 
 def trigger_test_run():
     body = {
-        "ref": "main",
+        "ref": "fix_tests_take_2",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
             "environment": arguments.env,
             "pull_request_id": arguments.pr_label,
             "product": "EPS-FHIR",
+            "github_tag": "fix_tests_take_2"
         },
     }
 
