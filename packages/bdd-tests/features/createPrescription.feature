@@ -76,7 +76,7 @@ Feature: Creating a prescription
       | removeBlock         | message                                                                                                                                                         |
       | dosageInstructions  | MedicationRequest.dosageInstruction: minimum required = 1, but only found 0 (from https://fhir.nhs.uk/StructureDefinition/NHSDigital-MedicationRequest-Message) |
       | quantity            | MedicationRequest.dispenseRequest.quantity: minimum required = 1, but only found 0 (from https://fhir.nhs.uk/StructureDefinition/NHSDigital-MedicationRequest-Message) |
-      | dm+d                | MedicationRequest.medication[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/MedicationRequest|4.0.1)                        |
+      | dm+d                | MedicationRequest.medication[x]: minimum required = 1, but only found 0 (from http://hl7.org/fhir/StructureDefinition/MedicationRequest\|4.0.1)                        |
 
   Scenario Outline: Create line item prescription with additional instructions
     When I prepare 1 prescription(s) for FGC1 with details
