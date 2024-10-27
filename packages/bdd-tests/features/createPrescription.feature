@@ -62,7 +62,7 @@ Feature: Creating a prescription
       | 322341003 | High-strength Co-codamol 30mg | 20       | 2 times a day for 10 days | addEndorsement | ACBSET              | Advisory Committee on Borderline Substances |
     Then I get an error response 400
       | message                                                                                                                                                                                                                                                                                            |
-      | None of the codings provided are in the value set 'NHS Digital Medication Code' (https://fhir.nhs.uk/ValueSet/NHSDigital-MedicationCode\|2.1.0), and a coding should come from this value set unless it has no suitable code (note that the validator cannot judge what is suitable) (codes = http://snomed.info/sct#99999999) |
+      | None of the codings provided are in the value set 'NHSBSAPrescriptionEndorsement' (https://fhir.nhs.uk/ValueSet/DM-prescription-endorsement\|4.0.2), and a coding from this value set is required) (codes = https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement#ACBSET) |
 
   Scenario Outline: Create 1 line item prescription - when missing required info
     When I prepare 1 prescription(s) for FGC1 with details
