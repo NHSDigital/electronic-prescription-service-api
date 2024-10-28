@@ -2,7 +2,7 @@
 
 ![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
-This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
+This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API.
 
 - `azure/` Defines CI/CD pipeline for the API
 - `packages/bdd-tests/` Jest-Cucumber BDD Test Suite. See [README](./packages/bdd-tests/README.md) for more details.
