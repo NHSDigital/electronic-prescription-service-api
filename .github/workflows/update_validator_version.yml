@@ -2,8 +2,9 @@ name: Update Validator Versions
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [master]
+  # runs daily at 08:00
+  schedule:
+    - cron: "0 8 * * *"
 
 jobs:
   update-validator:
@@ -29,7 +30,7 @@ jobs:
 
       - name: Create pull request
         if: env.HAS_VALIDATOR_CHANGED == 'true'
-        uses: peter-evans/create-pull-request@v7.0.5
+        uses: peter-evans/create-pull-request@5e914681df9dc83aa4e4905692ca88beb2f9e91f # v7.0.5
         with:
           base: master
           branch: ${{ env.NEW_BRANCH_NAME }}
