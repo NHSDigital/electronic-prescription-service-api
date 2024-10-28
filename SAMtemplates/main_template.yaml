@@ -53,6 +53,9 @@ Parameters:
       - 2922
       - 3288
       - 3653
+  TargetSpineServer:
+    Type: String
+    Default: "xxx"
 
 Resources:
   LoadBalancers:
@@ -68,6 +71,7 @@ Resources:
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
         LogRetentionInDays: !Ref LogRetentionInDays
+        TargetSpineServer: !Ref TargetSpineServer
 
 Outputs:
   LoadBalancerEndpoint:
