@@ -32,7 +32,7 @@ jobs:
         run: ./scripts/update_validator_version.sh
 
       - name: Create pull request
-        if: ${{ env.HAS_VALIDATOR_CHANGED == true }}
+        if: env.HAS_VALIDATOR_CHANGED == 'true'
         uses: peter-evans/create-pull-request@v7.0.5
         with:
           base: master
