@@ -38,21 +38,8 @@ jobs:
             exit 0
           fi
 
-      - name: Configure git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit changes
-        run: |
-          git add .
-          git commit -m "Update validator versions on $BRANCH_NAME"
-
-      - name: Push new branch to repository
-        run: |
-          git push origin "$BRANCH_NAME"
-
       - name: Create pull request
+        if: ${{ env.HAS_VALIDATOR_CHANGED == true }}
         uses: peter-evans/create-pull-request@v7.0.5
         with:
           base: master
@@ -61,3 +48,4 @@ jobs:
           body: "This PR was automatically created by GitHub Actions to update validator versions."
           commit-message: "Update validator versions on $BRANCH_NAME"
           sign-commits: true
+          token: ${{ secrets.VALIDATOR_UPGRADE_PAT }}
