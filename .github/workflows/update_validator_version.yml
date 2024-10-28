@@ -1,0 +1,63 @@
+name: Update Validator Versions
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [master]
+
+jobs:
+  update-validator:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - name: Checkout master branch
+        uses: actions/checkout@v3
+        with:
+          ref: master
+
+      - name: Set up date-time branch name
+        id: datetime
+        run: |
+          # shellcheck disable=SC2086
+          echo "BRANCH_NAME=update-validator-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+
+      - name: Create and switch to new branch
+        run: |
+          git checkout -b "$BRANCH_NAME"
+
+      - name: Run update script
+        run: ./scripts/update_validator_versions.sh
+
+      - name: Check for changes
+        run: |
+          if git diff --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Commit changes
+        run: |
+          git add .
+          git commit -m "Update validator versions on $BRANCH_NAME"
+
+      - name: Push new branch to repository
+        run: |
+          git push origin "$BRANCH_NAME"
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7.0.5
+        with:
+          base: master
+          branch: "$BRANCH_NAME"
+          title: "Upgrade: [dependabot] - bump fhir validator to <NEW VERSION>"
+          body: "This PR was automatically created by GitHub Actions to update validator versions."
+          commit-message: "Update validator versions on $BRANCH_NAME"
+          sign-commits: true
