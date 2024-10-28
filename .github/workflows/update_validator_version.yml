@@ -44,7 +44,7 @@ jobs:
         with:
           base: master
           branch: "$BRANCH_NAME"
-          title: "Upgrade: [dependabot] - bump fhir validator to <NEW VERSION>"
+          title: "Upgrade: [dependabot] - bump fhir validator from $CURRENT_VALIDATOR_VERSION to $NEW_VALIDATOR_VERSION"
           body: "This PR was automatically created by GitHub Actions to update validator versions."
           commit-message: "Update validator versions on $BRANCH_NAME"
           sign-commits: true
