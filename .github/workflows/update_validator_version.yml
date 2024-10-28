@@ -36,7 +36,7 @@ jobs:
         uses: peter-evans/create-pull-request@v7.0.5
         with:
           base: master
-          branch: "$BRANCH_NAME"
+          branch: env.BRANCH_NAME
           title: "Upgrade: [dependabot] - bump fhir validator from ${{ env.CURRENT_VALIDATOR_VERSION }} to ${{ env.NEW_VALIDATOR_VERSION }}"
           body: "This PR was automatically created by GitHub Actions to update validator versions."
           commit-message: "Update validator versions on $BRANCH_NAME"
