@@ -111,14 +111,14 @@ jobs:
 
   package_code:
     needs: [get_version, get_commit_id, tag_release]
-    uses: ./.github/workflows/sam_package_code.yml
+    uses: ./.github/workflows/run_package_code_and_api.yml
     with:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
     
   release_dev:
     needs: [tag_release, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense
@@ -145,7 +145,7 @@ jobs:
 
   release_dev_sandbox:
     needs: [tag_release, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense-sandbox
@@ -173,7 +173,7 @@ jobs:
         package_code,
         get_commit_id,
       ]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense
@@ -199,7 +199,7 @@ jobs:
         package_code,
         get_commit_id,
       ]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense
@@ -218,7 +218,7 @@ jobs:
 
   release_int:
     needs: [tag_release, release_qa, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense
@@ -243,7 +243,7 @@ jobs:
 
   release_sandbox:
     needs: [tag_release, release_qa, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense-sandox
@@ -263,7 +263,7 @@ jobs:
   release_prod:
     needs:
       [tag_release, release_int, release_sandbox, package_code, get_commit_id]
-    uses: ./.github/workflows/sam_release_code.yml
+    uses: ./.github/workflows/run_release_code_and_api.yml
     with:
       ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
       STACK_NAME: prescribe-dispense

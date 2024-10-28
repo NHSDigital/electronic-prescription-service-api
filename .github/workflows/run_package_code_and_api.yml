@@ -1,4 +1,4 @@
-name: sam package code
+name: package code and api
 
 on:
   workflow_call:
@@ -11,7 +11,7 @@ on:
         type: string
 
 jobs:
-  sam_package_code:
+  package_code_and_api:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
