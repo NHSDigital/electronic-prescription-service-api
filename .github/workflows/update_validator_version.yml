@@ -22,11 +22,11 @@ jobs:
         id: datetime
         run: |
           # shellcheck disable=SC2086
-          echo "BRANCH_NAME=update-validator-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
+          echo "NEW_BRANCH_NAME=update-validator-$(date +'%Y%m%d-%H%M%S')" >> $GITHUB_ENV
 
       - name: Create and switch to new branch
         run: |
-          git checkout -b "$BRANCH_NAME"
+          git checkout -b "$NEW_BRANCH_NAME"
 
       - name: Run update script
         run: ./scripts/update_validator_version.sh
@@ -35,7 +35,7 @@ jobs:
         if: env.HAS_VALIDATOR_CHANGED == 'true'
         uses: peter-evans/create-pull-request@v7.0.5
         with:
-          branch: ${{ env.BRANCH_NAME }}
+          branch: ${{ env.NEW_BRANCH_NAME }}
           title: "Upgrade: [dependabot] - bump fhir validator from ${{ env.CURRENT_VALIDATOR_VERSION }} to ${{ env.NEW_VALIDATOR_VERSION }}"
           body: "This PR was automatically created by GitHub Actions to update validator versions."
           commit-message: "Update validator versions on ${{ env.BRANCH_NAME }}"
