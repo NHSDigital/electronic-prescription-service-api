@@ -200,7 +200,7 @@
           "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
-            "end": "2021-06-04"
+            "end": "2021-06-04T23:59:59Z"
           },
           "quantity": {
             "value": 63,
@@ -377,7 +377,7 @@
           "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
-            "end": "2021-06-04"
+            "end": "2021-06-04T23:59:59Z"
           },
           "quantity": {
             "value": 63,
@@ -554,7 +554,7 @@
           "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
-            "end": "2021-06-04"
+            "end": "2021-06-04T23:59:59Z"
           },
           "quantity": {
             "value": 63,
@@ -731,7 +731,7 @@
           "numberOfRepeatsAllowed": 5,
           "validityPeriod": {
             "start": "2021-05-07",
-            "end": "2021-06-04"
+            "end": "2021-06-04T23:59:59Z"
           },
           "quantity": {
             "value": 63,
