@@ -1,11 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-NEW_VALIDATOR_VERSION=v1.0.200-alpha
-
-
-# $(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
-
+NEW_VALIDATOR_VERSION=$(curl -s "https://api.github.com/repos/NHSDigital/validation-service-fhir-r4/releases/latest" | jq -r .tag_name)
 
 sed -i "s/^ARG VALIDATOR_VERSION_TAG=.*/ARG VALIDATOR_VERSION_TAG=${NEW_VALIDATOR_VERSION}/" .devcontainer/Dockerfile
 sed -i "s/^          VALIDATOR_VERSION=.*/          VALIDATOR_VERSION=${NEW_VALIDATOR_VERSION}/" azure/azure-build-pipeline.yml
