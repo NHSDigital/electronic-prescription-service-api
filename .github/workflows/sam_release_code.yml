@@ -146,7 +146,7 @@ jobs:
   
       - name: Export specification paths
         run: |
-          SPEC_PATH="$(pwd)/eps-prescription-status-update-api.resolved.json"
+          SPEC_PATH="$(pwd)/electronic-prescription-service-api.resolved.json"
           echo "Specification location: $SPEC_PATH"
           echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
 
