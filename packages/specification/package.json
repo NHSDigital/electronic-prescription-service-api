@@ -4,7 +4,11 @@
   "description": "OAS (Swagger v3) API Definition for Electronic Prescription Service API",
   "scripts": {
     "lint": "swagger-cli validate electronic-prescription-service-api.yaml",
+    "lint-prescribing": "swagger-cli validate fhir-prescribing.yaml",
+    "lint-dispensing": "swagger-cli validate fhir-dispensing.yaml",
     "resolve": "swagger-cli bundle electronic-prescription-service-api.yaml -r -o dist/electronic-prescription-service-api.resolved.json",
+    "resolve-prescribing": "swagger-cli bundle fhir-prescribing.yaml -r -o dist/fhir-prescribing.resolved.json",
+    "resolve-dispensing": "swagger-cli bundle fhir-dispensing.yaml -r -o dist/fhir-dispensing.resolved.json",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
   },
   "author": "NHS Digital",
