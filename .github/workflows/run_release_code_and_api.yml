@@ -219,3 +219,12 @@ jobs:
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
           TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
         run: ./release_code.sh
+
+      - name: get mtls secrets
+        shell: bash
+        run: |
+          mkdir -p ~/.proxygen/tmp
+          client_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:FhirFacadeClientKeySecret'].Value" --output text)
+          client_cert_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:FhirFacadeClientCertSecret'].Value" --output text)
+          aws secretsmanager get-secret-value --secret-id "${client_private_key_arn}" --query SecretString --output text > ~/.proxygen/tmp/client_private_key
+          aws secretsmanager get-secret-value --secret-id "${client_cert_arn}" --query SecretString --output text > ~/.proxygen/tmp/client_cert
