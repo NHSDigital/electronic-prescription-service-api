@@ -19,7 +19,7 @@
         "display": "Jackie Clark"
       },
       "organization": {
-        "reference": "#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+        "reference": "#2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
       },
       "code": [
         {
@@ -42,7 +42,7 @@
     },
     {
       "resourceType": "Organization",
-      "id": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+      "id": "2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
