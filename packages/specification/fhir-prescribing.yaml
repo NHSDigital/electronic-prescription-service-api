@@ -2,7 +2,7 @@ openapi: 3.0.0
 x-nhs-api-spec-guid: 5ead5713-9d2b-46eb-8626-def5fd2a2350
 info:
   title: FHIR Prescribing Service API
-  version: '{VERSION}'
+  version: 0.0.1
   contact:
     name: Electronic Prescription Service FHIR API Support
     url: "https://digital.nhs.uk/developer/help-and-support"
