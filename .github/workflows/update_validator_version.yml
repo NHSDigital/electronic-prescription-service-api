@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   # runs daily at 08:00
   schedule:
-    - cron: "0 8 * * *"
+    - cron: "0 8 * * 3"
 
 jobs:
   update-validator:
@@ -39,3 +39,4 @@ jobs:
           commit-message: "Update validator versions on ${{ env.BRANCH_NAME }}"
           sign-commits: true
           token: ${{ secrets.VALIDATOR_UPGRADE_PAT }}
+          labels: dependencies
