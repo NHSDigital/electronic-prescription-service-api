@@ -114,7 +114,11 @@ build-epsat:
 build-all: build-api build-epsat
 
 build-specification:
-	$(MAKE) --directory=packages/specification build 
+	$(MAKE) --directory=packages/specification build
+
+compile-specification:
+	npm run resolve-prescribing --workspace packages/specification/
+	npm run resolve-dispensing --workspace packages/specification/
 
 build-coordinator:
 	npm run --workspace=packages/coordinator/ build
