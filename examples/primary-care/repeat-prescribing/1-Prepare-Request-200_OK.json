@@ -38,7 +38,6 @@
         "source": {
           "endpoint": "https://directory.spineservices.nhs.uk/STU3/Organization/A83008"
         },
-
         "focus": [
           {
             "reference": "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
@@ -130,7 +129,7 @@
                 "extension": [
                   {
                     "url": "numberOfRepeatsAllowed",
-                    "valueUnsignedInt": 5
+                    "valueInteger": 5
                   }
                 ]
               }
@@ -280,7 +279,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -292,7 +290,7 @@
                 "extension": [
                   {
                     "url": "numberOfRepeatsAllowed",
-                    "valueUnsignedInt": 5
+                    "valueInteger": 5
                   }
                 ]
               }
@@ -442,7 +440,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -454,7 +451,7 @@
                 "extension": [
                   {
                     "url": "numberOfRepeatsAllowed",
-                    "valueUnsignedInt": 5
+                    "valueInteger": 5
                   }
                 ]
               }
@@ -604,7 +601,6 @@
         "subject": {
           "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
         },
-
         "requester": {
           "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
         },
@@ -616,7 +612,7 @@
                 "extension": [
                   {
                     "url": "numberOfRepeatsAllowed",
-                    "valueUnsignedInt": 5
+                    "valueInteger": 5
                   }
                 ]
               }
@@ -722,8 +718,13 @@
           {
             "use": "usual",
             "family": "TWITCHETT",
-            "given": ["STACEY", "MARISA"],
-            "prefix": ["MS"]
+            "given": [
+              "STACEY",
+              "MARISA"
+            ],
+            "prefix": [
+              "MS"
+            ]
           }
         ],
         "gender": "female",
@@ -731,7 +732,11 @@
         "address": [
           {
             "use": "home",
-            "line": ["10 HEATHFIELD", "COBHAM", "SURREY"],
+            "line": [
+              "10 HEATHFIELD",
+              "COBHAM",
+              "SURREY"
+            ],
             "postalCode": "KT11 2QY"
           }
         ],
@@ -807,8 +812,12 @@
         "name": [
           {
             "family": "BOIN",
-            "given": ["C"],
-            "prefix": ["DR"]
+            "given": [
+              "C"
+            ],
+            "prefix": [
+              "DR"
+            ]
           }
         ]
       }
@@ -846,7 +855,10 @@
           {
             "use": "work",
             "type": "both",
-            "line": ["HALLGARTH SURGERY", "CHEAPSIDE"],
+            "line": [
+              "HALLGARTH SURGERY",
+              "CHEAPSIDE"
+            ],
             "city": "SHILDON",
             "district": "COUNTY DURHAM",
             "postalCode": "DL4 2HP"
