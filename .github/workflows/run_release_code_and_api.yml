@@ -12,9 +12,9 @@ on:
       AWS_ENVIRONMENT:
         required: true
         type: string
-      # APIGEE_ENVIRONMENT:
-      #   required: true
-      #   type: string
+      APIGEE_ENVIRONMENT:
+        required: true
+        type: string
       ENABLE_MUTUAL_TLS:
         required: true
         type: boolean
@@ -52,9 +52,9 @@ on:
       # MARK_JIRA_RELEASED:
       #   type: boolean
       #   default: false
-      # DEPLOY_APIGEE:
-      #   type: boolean
-      #   default: true
+      DEPLOY_APIGEE:
+        type: boolean
+        default: true
       DOMAIN_NAME_EXPORT:
         required: false
         type: string
@@ -245,3 +245,19 @@ jobs:
           aws-region: eu-west-2
           # role-to-assume: ${{ secrets.PROXYGEN_ROLE }}
           role-session-name: proxygen-ptl
+
+      - name: Deploy fhir-prescribing API
+        shell: bash
+        working-directory: .github/scripts
+        if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
+          SPEC_PATH: ${{ env.SPEC_PATH }}
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+          PROXYGEN_PRIVATE_KEY_NAME: DispensingProxygenPrivateKey
+          PROXYGEN_KID: fhir-prescribing
+          DRY_RUN: false
+        run: ./deploy_api.sh
