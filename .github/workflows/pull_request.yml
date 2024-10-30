@@ -83,6 +83,7 @@ jobs:
       TARGET_SPINE_SERVER: veit07.devspineservices.nhs.uk
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
 
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
@@ -103,3 +104,4 @@ jobs:
       TARGET_SPINE_SERVER: sandbox
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}

@@ -142,6 +142,7 @@ jobs:
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
 
   release_dev_sandbox:
     needs: [tag_release, package_code, get_commit_id]
@@ -163,6 +164,7 @@ jobs:
       ZONE_ID_EXPORT: eps-route53-resources:EPS-ZoneID
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
 
   release_ref:
     needs:
@@ -189,6 +191,7 @@ jobs:
       # LOG_RETENTION_DAYS: 30
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
 
   release_qa:
     needs:
@@ -215,6 +218,7 @@ jobs:
       # LOG_RETENTION_DAYS: 30
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
 
   release_int:
     needs: [tag_release, release_qa, package_code, get_commit_id]
@@ -240,6 +244,7 @@ jobs:
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
 
   release_sandbox:
     needs: [tag_release, release_qa, package_code, get_commit_id]
@@ -259,6 +264,7 @@ jobs:
       # LOG_RETENTION_DAYS: 30
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
 
   release_prod:
     needs:
@@ -285,3 +291,4 @@ jobs:
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
