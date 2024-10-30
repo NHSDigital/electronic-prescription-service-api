@@ -216,7 +216,7 @@
               "numberOfRepeatsAllowed": 5,
               "validityPeriod": {
                 "start": "2021-09-03",
-                "end": "2021-10-03"
+                "end": "2021-10-03T23:59:59Z"
               },
               "quantity": {
                 "value": 63,

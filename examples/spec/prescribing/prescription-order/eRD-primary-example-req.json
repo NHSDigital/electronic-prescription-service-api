@@ -173,7 +173,7 @@
           ],
           "validityPeriod": {
             "start": "2022-10-21",
-            "end": "2022-11-21"
+            "end": "2022-11-21T23:59:59Z"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
@@ -313,7 +313,7 @@
           ],
           "validityPeriod": {
             "start": "2022-10-21",
-            "end": "2022-11-21"
+            "end": "2022-11-21T23:59:59Z"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
@@ -453,7 +453,7 @@
           ],
           "validityPeriod": {
             "start": "2022-10-21",
-            "end": "2022-11-21"
+            "end": "2022-11-21T23:59:59Z"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
@@ -593,7 +593,7 @@
           ],
           "validityPeriod": {
             "start": "2022-10-21",
-            "end": "2022-11-21"
+            "end": "2022-11-21T23:59:59Z"
           },
           "numberOfRepeatsAllowed": 6,
           "quantity": {
