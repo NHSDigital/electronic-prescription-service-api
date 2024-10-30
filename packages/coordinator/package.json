@@ -23,9 +23,9 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
-    "@peculiar/x509": "^1.12.2",
     "@hapi/hapi": "^21.3.10",
-    "@xmldom/xmldom": "^0.9.3",
+    "@peculiar/x509": "^1.12.2",
+    "@xmldom/xmldom": "^0.9.5",
     "axios": "^1.7.7",
     "crypto-js": "^4.2.0",
     "fhirpath": "3.10.1",
