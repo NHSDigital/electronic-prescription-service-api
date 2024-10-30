@@ -149,8 +149,16 @@ jobs:
       - name: Export specification paths
         run: |
           SPEC_PATH="$(pwd)/electronic-prescription-service-api.resolved.json"
-          echo "Specification location: $SPEC_PATH"
+          echo "EPS FHIR specification location: $SPEC_PATH"
           echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
+
+          SPEC_PATH_PRESCRIBING="$(pwd)/fhir-prescribing.resolved.json"
+          echo "FHIR Prescribing specification location: $SPEC_PATH_PRESCRIBING"
+          echo "SPEC_PATH_PRESCRIBING=${SPEC_PATH_PRESCRIBING}" >> "$GITHUB_ENV"
+
+          SPEC_PATH_DISPENSING="$(pwd)/fhir-dispensing.resolved.json"
+          echo "FHIR Dispensing specification location: $SPEC_PATH_DISPENSING"
+          echo "SPEC_PATH_DISPENSING=${SPEC_PATH_DISPENSING}" >> "$GITHUB_ENV"
 
       - name: docker_artifact download
         uses: actions/download-artifact@v4
@@ -222,10 +230,10 @@ jobs:
           TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
         run: ./release_code.sh
 
-      # - name: Get mtls secrets
-      #   shell: bash
-      #   run: |
-      #     mkdir -p ~/.proxygen/tmp
+      - name: Get mtls secrets
+        shell: bash
+        run: |
+          mkdir -p ~/.proxygen/tmp
       #     client_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:FhirFacadeClientKeySecret'].Value" --output text)
       #     client_cert_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:FhirFacadeClientCertSecret'].Value" --output text)
       #     aws secretsmanager get-secret-value --secret-id "${client_private_key_arn}" --query SecretString --output text > ~/.proxygen/tmp/client_private_key
@@ -235,5 +243,5 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-2
-          role-to-assume: ${{ secrets.PROXYGEN_ROLE }}
+          # role-to-assume: ${{ secrets.PROXYGEN_ROLE }}
           role-session-name: proxygen-ptl
