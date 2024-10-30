@@ -80,9 +80,3 @@ extends:
           mergeTestResults: true
           testRunTitle: "EPS Tests"
           failTaskOnFailedTests: true
-      - task: PublishCodeCoverageResults@1
-        inputs:
-          codeCoverageTool: "Cobertura"
-          summaryFileLocation: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/coverage/cobertura-coverage.xml"
-          pathToSources: "$(Pipeline.Workspace)/s/electronic-prescription-service-api/packages/coordinator/"
-        condition: always()
