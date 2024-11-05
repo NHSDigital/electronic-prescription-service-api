@@ -15,42 +15,46 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">200 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{}</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">200 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{}</pre>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
@@ -60,42 +64,46 @@ exports[`Displays an error if previous claim not found for amend 1`] = `
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/claim/7A9089-A83008-56A03J</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/claim/7A9089-A83008-56A03J</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">200 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{}</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">200 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{}</pre>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
@@ -105,42 +113,46 @@ exports[`Displays an error on invalid response 1`] = `
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">500 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{}</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">500 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{}</pre>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
