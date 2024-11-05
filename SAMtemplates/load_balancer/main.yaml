@@ -42,6 +42,8 @@ Parameters:
       - prod
     Default: dev
 
+  LogRetentionInDays:
+    Type: Number
   TargetSpineServer:
     Type: String
 
@@ -306,10 +308,22 @@ Resources:
   # CloudWatch Log Group for ECS
   LogGroup:
     Type: AWS::Logs::LogGroup
+    Metadata:
+      guard:
+        SuppressedRules:
+          - CW_LOGGROUP_RETENTION_PERIOD_CHECK
     Properties:
       LogGroupName: !Sub /aws/ecs/${StackName}
-      RetentionInDays: 30
+      RetentionInDays: !Ref LogRetentionInDays
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
+
+  LambdaSplunkSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      RoleArn: !ImportValue lambda-resources:SplunkSubscriptionFilterRole
+      LogGroupName: !Ref LogGroup
+      FilterPattern: ""
+      DestinationArn: !ImportValue lambda-resources:SplunkDeliveryStream
 
   # Security Group for the ECS Containers
   ContainerSecurityGroup:
