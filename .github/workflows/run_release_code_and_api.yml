@@ -263,18 +263,18 @@ jobs:
           DRY_RUN: false
         run: ./deploy_api.sh
 
-      # - name: Deploy fhir-dispensing API
-      #   shell: bash
-      #   working-directory: .github/scripts
-      #   if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
-      #   env:
-      #     VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-      #     PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
-      #     SPEC_PATH: ${{ env.SPEC_PATH }}
-      #     STACK_NAME: ${{ inputs.STACK_NAME }}
-      #     AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
-      #     APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
-      #     PROXYGEN_PRIVATE_KEY_NAME: DispensingProxygenPrivateKey
-      #     PROXYGEN_KID: fhir-dispensing
-      #     DRY_RUN: false
-      #   run: ./deploy_api.sh
+      - name: Deploy fhir-dispensing API
+        shell: bash
+        working-directory: .github/scripts
+        if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          PROXYGEN_PATH: ${{ env.PROXYGEN_PATH }}
+          SPEC_PATH: ${{ env.SPEC_PATH }}
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+          PROXYGEN_PRIVATE_KEY_NAME: DispensingProxygenPrivateKey
+          PROXYGEN_KID: fhir-dispensing
+          DRY_RUN: false
+        run: ./deploy_api.sh
