@@ -7,9 +7,10 @@ export function writeXmlStringCanonicalized(
   canonicalizationMethod: string
 ): Promise<string> {
   const xmlString = writeXml(tag, 0, true)
-  const xmlDocument = (new xmldom.DOMParser()).parseFromString(xmlString)
+  const xmlDocument = (new xmldom.DOMParser()).parseFromString(xmlString, "application/xml")
   const canonicaliser = c14n().createCanonicaliser(canonicalizationMethod)
   return new Promise((resolve, reject) => {
+    // @ts-expect-error misssing Node properties are not needed
     canonicaliser.canonicalise(xmlDocument.documentElement, function(err, result) {
       if (err) {
         reject(err)

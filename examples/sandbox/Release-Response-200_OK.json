@@ -723,7 +723,7 @@
                     },
                     "validityPeriod": {
                       "start": "2022-02-17",
-                      "end": "2022-03-17"
+                      "end": "2022-03-17T23:59:59Z"
                     },
                     "expectedSupplyDuration": {
                       "value": 30,
@@ -853,7 +853,7 @@
                     },
                     "validityPeriod": {
                       "start": "2022-02-17",
-                      "end": "2022-03-17"
+                      "end": "2022-03-17T23:59:59Z"
                     },
                     "expectedSupplyDuration": {
                       "value": 30,

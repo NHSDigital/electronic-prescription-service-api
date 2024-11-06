@@ -666,7 +666,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
             </select></div>
         </fieldset>
       </div>
-      <div class="nhsuk-form-group">
+      <div class="">
         <fieldset class="nhsuk-fieldset">
           <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Paracetamol 500mg soluble tablets</legend>
           <dl class="nhsuk-summary-list nhsuk-summary-list--no-border">

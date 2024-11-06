@@ -142,9 +142,13 @@ properties:
           start:
             type: string
             description: The start date of a prescription.
+            format: date
+            example: "2022-10-21"
           end:
             type: string
             description: For eRD prescriptions only. The end date of a prescription.
+            format: date-time
+            example: "2022-10-21T23:59:59Z"
       expectedSupplyDuration:
         type: object
         description: |
