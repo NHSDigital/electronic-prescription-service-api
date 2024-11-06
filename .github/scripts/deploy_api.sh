@@ -63,7 +63,7 @@ fi
 jq --arg version "${VERSION_NUMBER}" '.info.version = $version' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 
 # Find and replace the x-nhsd-apim.target.url value
-jq --arg stack_name "${STACK_NAME}" --arg aws_env "${TARGET_ENVIRONMENT}" '.["x-nhsd-apim"].target.url = "https://\($stack_name).\($aws_env).eps.national.nhs.uk"' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+jq --arg stack_name "${STACK_NAME}" --arg aws_env "${AWS_ENVIRONMENT}" '.["x-nhsd-apim"].target.url = "https://\($stack_name).\($aws_env).eps.national.nhs.uk"' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 
 # Find and replace the servers object
 if [[ "${APIGEE_ENVIRONMENT}" == "prod" ]]; then
