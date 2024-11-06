@@ -35,10 +35,10 @@ fi
 
 is_pull_request=false
 instance_suffix=""
-if [[ ${STACK_NAME} == cpt-pr-* ]]; then
+if [[ ${STACK_NAME} == prescribe-dispense-pr-* ]]; then
     is_pull_request=true
     # Extracting the PR ID from $STACK_NAME
-    pr_id=$(echo "${STACK_NAME}" | cut -d'-' -f3)
+    pr_id=$(echo "${STACK_NAME}" | cut -d'-' -f4)
     instance_suffix=-"pr-${pr_id}"
 fi
 
