@@ -51,11 +51,6 @@ echo "Apigee api: ${apigee_api}"
 
 echo
 
-# Print the OAS before modifications
-echo "Printing OAS before fixing the spec:"
-cat "${SPEC_PATH}"
-echo
-
 echo "Fixing the spec"
 # Find and replace the title
 title=$(jq -r '.info.title' "${SPEC_PATH}")
@@ -94,10 +89,6 @@ if [[ "${APIGEE_ENVIRONMENT}" == *"sandbox"* ]]; then
     echo "Removing target attributes for sandbox environment"
     jq 'del(."x-nhsd-apim"."target-attributes")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
 fi
-
-# Print the OAS after modifications
-echo "Printing OAS after fixing the spec:"
-cat "${SPEC_PATH}"
 
 echo
 

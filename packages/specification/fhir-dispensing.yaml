@@ -1,5 +1,4 @@
-openapi: 3.0.0
-x-nhs-api-spec-guid: 5ead5713-9d2b-46eb-8626-def5fd2a2350
+openapi: 3.0.3
 info:
   title: FHIR Dispensing Service API
   version: 0.0.1
@@ -316,6 +315,8 @@ paths:
                     An error response due to the prescription being released by another dispenser.
                   value:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
+      security:
+        - app-level0: []
   /FHIR/R4/Task#return:
     post:
       operationId: return
@@ -404,6 +405,8 @@ paths:
                     An error response to a return request.
                   value:
                     $ref: examples/spec/errors/release/not-found-error.json
+      security:
+        - app-level0: []
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
@@ -506,6 +509,8 @@ paths:
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
+      security:
+        - app-level0: []
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
@@ -586,6 +591,8 @@ paths:
                     An error response to a withdraw request.
                   value:
                     $ref: examples/spec/errors/release/not-found-error.json
+      security:
+        - app-level0: []
   /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
@@ -657,6 +664,8 @@ paths:
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
+      security:
+        - app-level0: []
 
 components:
   parameters:
