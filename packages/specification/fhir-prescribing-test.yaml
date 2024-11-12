@@ -1,0 +1,177 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/)
+# for the Clinical Prescription Tracker API
+# owned by NHS Digital (https://digital.nhs.uk/)
+
+openapi: 3.0.3
+info:
+  title: Clinical Prescription Tracker API
+  version: "0.0.1"
+  contact:
+    name: Clinical Prescription Tracker API Support
+    url: https://digital.nhs.uk/developer/help-and-support
+    email: api.management@nhs.net
+  description: |
+    ## Overview
+    The Clinical Prescription Tracker API
+
+    ## Who can use this API
+    The Clinical Prescription Tracker query API is intended for NHS England internal use only.
+        
+    ## Related APIs
+    * [Electronic Prescriptions Service](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir): The national service for creating and dispensing prescriptions across health and social care.
+    * [Prescriptions for Patients](https://digital.nhs.uk/developer/api-catalogue/prescriptions-for-patients): the national service to retrieve prescriptions data for individual patients from the Electronic Prescription Service (EPS), for use in patient-facing applications.
+
+    ## API Status and Roadmap
+    This API is [in development](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses), meaning the API will soon be available for testing via a sandbox service or an integration environment - but we expect to make breaking changes based on developer feedback.
+
+    ## Service Level
+    This API will be a platinum service, meaning it is operational and supported 24 hours a day, 365 days a year.
+    See [service levels](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#service-levels) for more details.
+
+    ## Technology
+    This API is [RESTful](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#basic-rest).
+
+    It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/).
+
+    It includes some country-specific FHIR extensions, which are built against FHIR UK Core, specifically [UK Core R4 (v4.0.1)](https://simplifier.net/HL7FHIRUKCoreR4/).
+
+    You do not need to know much about FHIR to use this API. The API only supports POST requests containing FHIR messages.
+
+    FHIR APIs are just RESTful APIs that follow specific rules.
+    These rules mean:
+    * resource names are capitalised and singular, for example `/Bundle` not `/bundle`
+    * array names are singular, for example `line` not `lines` for address lines
+    * data items that are country specific and not included in the FHIR global base resources are usually wrapped in an `extension` object
+
+    There are [libraries and software development kits](https://digital.nhs.uk/developer/guides-and-documentation/api-technologies-at-nhs-digital#fhir-libraries-and-sdks) available to help with FHIR API integration.
+
+    ## Network Access
+    This API is available on the internet.
+
+    For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
+
+    ## Security and Authorisation
+    This API only supports application-restricted access, meaning we authenticate the calling application but not the end user.
+
+    The end user could be:
+    a healthcare worker - in which case you must ensure they are authenticated and suitably authorised locally
+    not present at all - for example as part of a back end process integrated with a shipping system
+
+    To use this access mode, use the following security pattern:
+    * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
+
+    ## Environment and testing
+    | Environment      | Base URL                                                            |
+    |------------------|---------------------------------------------------------------------|
+    | Sandbox          | `https://sandbox.api.service.nhs.uk/clinical-prescription-tracker`     |
+    | Integration test | `https://int.api.service.nhs.uk/clinical-prescription-tracker`         |
+    | Production       | `https://api.service.nhs.uk/clinical-prescription-tracker`             |
+
+    ### Sandbox testing
+    Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
+
+    * is for early developer testing
+    * only covers a limited set of scenarios
+    * is stateless, so it does not actually persist any updates
+    * is open access, so does not allow you to test authorisation
+
+    For details of sandbox testing, or to try out the sandbox using our "Try this API" feature, see the documentation for each endpoint.
+
+    ### Integration testing
+    Our [integration test environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing):
+
+    * is for formal integration testing
+    * is stateful, so persists updates
+    * includes authorisation, with [smartcard](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/nhs-smartcards-for-developers) and non-smartcard options
+
+    For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
+
+    ## Onboarding
+    All dispenser suppliers are being asked to integrate with this new service.
+
+    ## Errors
+    We use standard HTTP status codes to show whether an API request succeeded or not.
+    They are usually in the range:
+
+    * 200 to 299 if it succeeded, including code 202 if it was accepted by an API that needs to wait for further action
+    * 400 to 499 if it failed because of a client error by your application
+    * 500 to 599 if it failed because of an error on our server
+
+    Errors specific to each API are shown in the Endpoints section, under Response. See our [reference guide](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes) for more on errors.
+
+x-spec-publication:
+  operation-order:
+    - operations:
+        - method: GET
+          path: /
+
+servers:
+  - url: "https://sandbox.api.service.nhs.uk/clinical-prescription-tracker"
+    description: Sandbox
+  - url: "https://int.api.service.nhs.uk/clinical-prescription-tracker"
+    description: Integration
+  - url: "https://api.service.nhs.uk/clinical-prescription-tracker"
+    description: Production
+
+paths:
+  /:
+    get:
+      operationId: clinical-prescription-tracker-bundle
+      summary: Get prescriptions
+      description: |
+        ## Overview
+        Use this endpoint to search for EPS prescriptions and find out what the status of the prescription is.
+      parameters:
+        - $ref: "#/components/parameters/ApiKey"
+      responses:
+        "200":
+          description: Successful retrieval.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: schemas/resources/ResponseBundle.json
+        "4XX":
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code          | Description                                                                                                                               |
+            | ----------- | ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+            | 400         | `value`             | Missing values or invalid JSON in request                                                                                                 |
+            | 401         | `processing`        | Missing or invalid OAuth 2.0 bearer token in request                                                                                      |
+            | 408         | `timeout`           | Request timed out                                                                                                                         |
+
+            The error code will be included in the returned OperationOutcome (below).
+          content:
+            application/fhir+json:
+              schema:
+                $ref: schemas/resources/OperationOutcome.json
+      security:
+        - app-level0: []
+components:
+  securitySchemes:
+    app-level0:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
+  parameters:
+    ApiKey:
+      in: header
+      name: API-KEY
+      required: true
+      description: |
+        API Key used to authenticate with the system
+      schema:
+        type: string
+        example: 11C46F5F-CDEF-4865-94B2-0EE0EDCC26DA
+x-nhsd-apim:
+  temporary: false
+  monitoring: false
+  access:
+  - title: Application Restricted
+    grants:
+      app-level0: []
+  target:
+    type: hosted
+    healthcheck: /_status
+    url: https://cpt.dev.eps.national.nhs.uk
+    security:
+      type: mtls
+      secret: clinical-tracker-mtls-1

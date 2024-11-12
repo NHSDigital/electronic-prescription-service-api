@@ -134,6 +134,10 @@ if [[ "${DRY_RUN}" == "false" ]]; then
         --arg proxygenSecretName "${proxygen_private_key_arn}" \
         '{apiName: $apiName, environment: $environment, specDefinition: $spec, instance: $instance, kid: $kid, proxygenSecretName: $proxygenSecretName}' > payload.json
 
+    # Print the generated payload
+    echo "Payload being sent to Lambda:"
+    cat payload.json
+
     aws lambda invoke --function-name "${instance_put_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
 
     if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
