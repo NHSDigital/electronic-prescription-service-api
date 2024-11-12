@@ -95,7 +95,8 @@ echo
 echo "Retrieving proxygen credentials"
 
 # Retrieve the proxygen private key and client private key and cert from AWS Secrets Manager
-proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='secrets:${PROXYGEN_PRIVATE_KEY_NAME}'].Value" --output text)
+# proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='secrets:${PROXYGEN_PRIVATE_KEY_NAME}'].Value" --output text)
+proxygen_private_key_arn="arn:aws:secretsmanager:eu-west-2:591291862413:secret:secrets-Prescribing-ProxygenPrivateKey-jcCcMO"
 
 if [[ "${is_pull_request}" == "false" ]]; then
     echo
