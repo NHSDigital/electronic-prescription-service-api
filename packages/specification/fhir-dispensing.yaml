@@ -1267,7 +1267,7 @@ x-nhsd-apim:
     grants:
       app-level0: []
   target:
-    type: hosted
+    type: external
     healthcheck: /_status
     url: https://prescribe-dispense.dev.eps.national.nhs.uk
     security:
