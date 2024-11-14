@@ -24,23 +24,22 @@
     "pact_do_not_track": true
   },
   "devDependencies": {
-    "@pact-foundation/pact": "^13.1.2",
+    "@pact-foundation/pact": "^13.1.4",
     "@pact-foundation/pact-core": "^15.2.1",
-    "@pact-foundation/pact-node": "^10.17.7",
     "@types/jsdom": "^21.1.7",
-    "@types/jsonwebtoken": "^9.0.6",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/lossless-json": "1.0.4",
     "axios": "^1.7.7",
-    "axios-cookiejar-support": "^5.0.2",
-    "jsdom": "^25.0.0",
+    "axios-cookiejar-support": "^5.0.3",
+    "jsdom": "^25.0.1",
     "jsonwebtoken": "^9.0.2",
     "license-checker": "^25.0.1",
-    "lossless-json": "^4.0.1",
+    "lossless-json": "^4.0.2",
     "moment": "^2.30.1",
-    "pino": "^9.4.0",
-    "tough-cookie": "^4.1.4",
+    "pino": "^9.5.0",
+    "tough-cookie": "^5.0.0",
     "tsconfig-paths": "^4.2.0",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.2",
     "xml-js": "^1.6.11"
   }
 }

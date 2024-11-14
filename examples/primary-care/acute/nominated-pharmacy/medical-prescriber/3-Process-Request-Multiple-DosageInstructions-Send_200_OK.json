@@ -184,7 +184,7 @@
                     ],
                     "validityPeriod": {
                         "start": "2024-03-05",
-                        "end": "2024-04-05"
+                        "end": "2024-04-05T23:59:59Z"
                     },
                     "quantity": {
                         "value": 20,
@@ -313,7 +313,7 @@
                     ],
                     "validityPeriod": {
                         "start": "2024-03-05",
-                        "end": "2024-04-05"
+                        "end": "2024-04-05T23:59:59Z"
                     },
                     "quantity": {
                         "value": 20,
@@ -442,7 +442,7 @@
                     ],
                     "validityPeriod": {
                         "start": "2024-03-05",
-                        "end": "2024-04-05"
+                        "end": "2024-04-05T23:59:59Z"
                     },
                     "quantity": {
                         "value": 30,
@@ -571,7 +571,7 @@
                     ],
                     "validityPeriod": {
                         "start": "2024-03-05",
-                        "end": "2024-04-05"
+                        "end": "2024-04-05T23:59:59Z"
                     },
                     "quantity": {
                         "value": 30,

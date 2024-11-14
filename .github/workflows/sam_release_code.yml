@@ -15,9 +15,9 @@ on:
       # APIGEE_ENVIRONMENT:
       #   required: true
       #   type: string
-      # ENABLE_MUTUAL_TLS:
-      #   required: true
-      #   type: boolean
+      ENABLE_MUTUAL_TLS:
+        required: true
+        type: boolean
       BUILD_ARTIFACT:
         required: true
         type: string
@@ -37,9 +37,9 @@ on:
       #   required: false
       #   type: string
       #   default: INFO
-      # LOG_RETENTION_DAYS:
-      #   required: true
-      #   type: string
+      LOG_RETENTION_DAYS:
+        required: true
+        type: string
       # CREATE_INT_RELEASE_NOTES:
       #   type: boolean
       #   default: false
@@ -61,6 +61,9 @@ on:
       ZONE_ID_EXPORT:
         required: false
         type: string
+      TARGET_SPINE_SERVER:
+        required: true
+        type: string
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -72,7 +75,7 @@ on:
         required: false
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
         required: false
-  
+
 jobs:
   sam_release_code:
     runs-on: ubuntu-latest
@@ -204,7 +207,7 @@ jobs:
         env:
           artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
           COMMIT_ID: ${{ inputs.COMMIT_ID }}
-          # enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
           # LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
           # LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
           stack_name: ${{ inputs.STACK_NAME }}
@@ -214,4 +217,6 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
+          LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
+          TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
         run: ./release_code.sh

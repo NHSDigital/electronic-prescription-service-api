@@ -167,7 +167,7 @@ exports[`Produces expected result when status full dispense is done on a partial
                 "value": 63,
               },
               "validityPeriod": {
-                "end": "2021-10-03",
+                "end": "2021-10-03T23:59:59Z",
                 "start": "2021-09-03",
               },
             },
@@ -486,7 +486,7 @@ exports[`Produces expected result when status full dispense is done on a partial
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FLE79",
+            "value": "FA565",
           },
         ],
         "name": "ASDA INSTORE PHARMACY",
@@ -689,7 +689,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
                 "value": 63,
               },
               "validityPeriod": {
-                "end": "2021-10-03",
+                "end": "2021-10-03T23:59:59Z",
                 "start": "2021-09-03",
               },
             },
@@ -1008,7 +1008,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FLE79",
+            "value": "FA565",
           },
         ],
         "name": "ASDA INSTORE PHARMACY",
@@ -1211,7 +1211,7 @@ exports[`Produces expected result when status partial dispense is done on a part
                 "value": 63,
               },
               "validityPeriod": {
-                "end": "2021-10-03",
+                "end": "2021-10-03T23:59:59Z",
                 "start": "2021-09-03",
               },
             },
@@ -1530,7 +1530,7 @@ exports[`Produces expected result when status partial dispense is done on a part
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FLE79",
+            "value": "FA565",
           },
         ],
         "name": "ASDA INSTORE PHARMACY",
@@ -1733,7 +1733,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
                 "value": 63,
               },
               "validityPeriod": {
-                "end": "2021-10-03",
+                "end": "2021-10-03T23:59:59Z",
                 "start": "2021-09-03",
               },
             },
@@ -2052,7 +2052,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
-            "value": "FLE79",
+            "value": "FA565",
           },
         ],
         "name": "ASDA INSTORE PHARMACY",

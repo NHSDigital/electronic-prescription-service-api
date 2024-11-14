@@ -145,7 +145,7 @@ export PACT_BROKER_BASIC_AUTH_USERNAME=<SECRET>
 export PACT_BROKER_URL=https://nhsd-pact-broker.herokuapp.com
 # for api
 export SERVICE_BASE_PATH=electronic-prescriptions
-export USE_SHA256_PREPARE=true
+export USE_SHA256_PREPARE=false
 # for epsat
 export SERVICE_BASE_PATH=eps-api-tool
 export PACT_VERSION="$SERVICE_BASE_PATH"
@@ -380,7 +380,6 @@ Workflows are in the `/.github/workflows` folder
 - `pull_request.yml` Workflow for building, testing and deploying resources to AWS from a pull request
 - `pr_title_check.yml` Checks that pull requests title matches the desired format
 - `pr-link.yml` Links the raised PR with the associated Jira ticket
-- `quality_checks.yml` Performs, linting, validation and testing of the codebase
 - `release.yml` Runs on demand to create a release and deploy to all environments
 - `sam_package_code.yml` Builds and packages the code ready for deployment
 - `sam_release_code.yml` Deploys Cloudformation stacks for resources defined in the SAM templates

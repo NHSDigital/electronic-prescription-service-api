@@ -9,9 +9,7 @@ env:
 
 jobs:
   quality_checks:
-    uses: ./.github/workflows/quality_checks.yml
-    with:
-      USE_SHA256_PREPARE: true
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v3.0.0
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -74,14 +72,15 @@ jobs:
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       # APIGEE_ENVIRONMENT: internal-dev
-      # ENABLE_MUTUAL_TLS: false
+      ENABLE_MUTUAL_TLS: false
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-      # LOG_RETENTION_DAYS: 30
+      LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: veit07.devspineservices.nhs.uk
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
 
@@ -93,13 +92,14 @@ jobs:
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       # APIGEE_ENVIRONMENT: internal-dev-sandbox
-      # ENABLE_MUTUAL_TLS: false
+      ENABLE_MUTUAL_TLS: false
       BUILD_ARTIFACT: packaged_sandbox_code
       SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-      # LOG_RETENTION_DAYS: 30
+      LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: sandbox
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}

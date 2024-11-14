@@ -99,7 +99,7 @@ properties:
     example: "2021-05-07T14:47:29+00:00"
   requester:
     type: object
-    description: Reference object to identify the author of a prescription.
+    description: Reference object to identify the requester of a prescription.
     properties:
       reference:
         type: string
@@ -160,8 +160,8 @@ properties:
             description: |
               End date of an issue; capped at 12 months and cannot exceed the prescription's end date.
               Overall validity of the drug.
-            format: date
-            example: "2022-10-21"
+            format: date-time
+            example: "2022-10-21T23:59:59Z"
       expectedSupplyDuration:
         type: object
         description: |

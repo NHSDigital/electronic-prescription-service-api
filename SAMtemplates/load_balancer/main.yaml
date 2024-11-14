@@ -9,9 +9,9 @@ Parameters:
 
   EnableMutualTLS:
     Type: String
-    AllowedValues:
-      - true
-      - false
+
+  TruststoreBucketName:
+    Type: String
 
   TruststoreVersion:
     Type: String
@@ -41,6 +41,11 @@ Parameters:
       - ref
       - prod
     Default: dev
+
+  LogRetentionInDays:
+    Type: Number
+  TargetSpineServer:
+    Type: String
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -94,14 +99,17 @@ Resources:
         - !Ref LoadBalancerSecurityGroup
       Subnets: !Split [",", !ImportValue vpc-resources:PublicSubnets]
 
-  # Trust Store for mTLS (Conditional)
+  # Trust Store for mTLS Authentication
   Truststore:
     Type: AWS::ElasticLoadBalancingV2::TrustStore
     Condition: CreateTruststore
     Properties:
-      CaCertificatesBundleS3Bucket: "ci-resources-truststorebucket-1emm0xo65wil5"
+      CaCertificatesBundleS3Bucket: !Ref TruststoreBucketName
       CaCertificatesBundleS3Key: !Ref TruststoreFile
       Name: !Sub "${StackName}-trst"
+      Tags:
+        - Key: "StackName"
+          Value: !Ref StackName
 
   # HTTPS Listener with Optional mTLS
   ListenerHTTPS:
@@ -116,14 +124,10 @@ Resources:
       Certificates:
         - CertificateArn: !Ref GenerateCertificate
       SslPolicy: ELBSecurityPolicy-TLS13-1-2-2021-06
-      MutualAuthentication:
-        !If
-          - CreateTruststore
-          - {
-              Mode: verify,
-              TrustStoreArn: !GetAtt Truststore.TrustStoreArn
-            }
-          - !Ref "AWS::NoValue"
+      MutualAuthentication: !If
+        - CreateTruststore
+        - { Mode: verify, TrustStoreArn: !GetAtt Truststore.TrustStoreArn }
+        - !Ref "AWS::NoValue"
 
   # Target Group Configuration
   TargetGroup:
@@ -176,6 +180,8 @@ Resources:
             Action: sts:AssumeRole
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        - !ImportValue account-resources:LambdaAccessSecretsPolicy
+        - !ImportValue account-resources:LambdaDecryptSecretsKMSPolicy
       RoleName: !Sub "${StackName}-ecsTaskExecutionRole"
 
   # ECS Task Definition
@@ -198,6 +204,17 @@ Resources:
           Environment:
             - Name: VALIDATOR_HOST
               Value: !Sub "${StackName}-validator"
+            - Name: TARGET_SPINE_SERVER
+              Value: !Ref TargetSpineServer
+            - Name: MTLS_SPINE_CLIENT
+              Value: True
+          Secrets:
+            - Name: SpinePrivateKey
+              ValueFrom: !ImportValue account-resources:SpinePrivateKey
+            - Name: SpinePublicCertificate
+              ValueFrom: !ImportValue account-resources:SpinePublicCertificate
+            - Name: SpineCAChain
+              ValueFrom: !ImportValue account-resources:SpineCAChain
           LogConfiguration:
             LogDriver: awslogs
             Options:
@@ -291,10 +308,22 @@ Resources:
   # CloudWatch Log Group for ECS
   LogGroup:
     Type: AWS::Logs::LogGroup
+    Metadata:
+      guard:
+        SuppressedRules:
+          - CW_LOGGROUP_RETENTION_PERIOD_CHECK
     Properties:
       LogGroupName: !Sub /aws/ecs/${StackName}
-      RetentionInDays: 30
+      RetentionInDays: !Ref LogRetentionInDays
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
+
+  LambdaSplunkSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      RoleArn: !ImportValue lambda-resources:SplunkSubscriptionFilterRole
+      LogGroupName: !Ref LogGroup
+      FilterPattern: ""
+      DestinationArn: !ImportValue lambda-resources:SplunkDeliveryStream
 
   # Security Group for the ECS Containers
   ContainerSecurityGroup:

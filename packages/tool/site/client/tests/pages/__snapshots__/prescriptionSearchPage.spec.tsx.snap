@@ -138,51 +138,54 @@ exports[`Displays an error message if summary search returns an error 1`] = `
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/taskTracker</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Query Params</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">"patient:identifier": "9449304106"</pre>
-    </div>
-  </details>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/taskTracker</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Query Params</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">"patient:identifier": "9449304106"</pre>
+      </div>
+    </details>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">400 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
-    </div>
-  </details>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">400 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
+      </div>
+    </details>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22resourceType%22%3A%20%22OperationOutcome%22%2C%0A%20%20%22meta%22%3A%20%7B%0A%20%20%20%20%22lastUpdated%22%3A%20%222022-10-21T13%3A47%3A00%2B00%3A00%22%0A%20%20%7D%2C%0A%20%20%22issue%22%3A%20%5B%0A%20%20%20%20%7B%0A%20%20%20%20%20%20%22severity%22%3A%20%22fatal%22%2C%0A%20%20%20%20%20%20%22code%22%3A%20%22invalid%22%2C%0A%20%20%20%20%20%20%22diagnostics%22%3A%20%22Invalid%20query%20parameters.%22%0A%20%20%20%20%7D%0A%20%20%5D%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "resourceType": "OperationOutcome",
   "meta": {
     "lastUpdated": "2022-10-21T13:47:00+00:00"
@@ -195,9 +198,10 @@ exports[`Displays an error message if summary search returns an error 1`] = `
     }
   ]
 }</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="submit">Back</button></div>"
 `;
 
@@ -207,48 +211,52 @@ exports[`Displays an error message if summary search returns invalid response 1`
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/taskTracker</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Query Params</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">"patient:identifier": "9449304106"</pre>
-    </div>
-  </details>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/taskTracker</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Query Params</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%22patient%3Aidentifier%22%3A%20%229449304106%22" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">"patient:identifier": "9449304106"</pre>
+      </div>
+    </details>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">500 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">500 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="submit">Back</button></div>"
 `;
 

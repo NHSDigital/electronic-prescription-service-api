@@ -6,42 +6,46 @@ exports[`Displays an error if prescription-order not found 1`] = `
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">200 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">200 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
@@ -51,48 +55,52 @@ exports[`Displays an error on invalid response 1`] = `
   <h2 class="nhsuk-error-summary__title" id="error-summary-title">Something went wrong while processing your request:</h2>
   <div class="nhsuk-error-summary__body">Unexpected response from server.</div>
 </div>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Method</dt>
-      <dd class="nhsuk-summary-list__value">GET</dd>
-    </div>
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">URL</dt>
-      <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Request Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Method</dt>
+        <dd class="nhsuk-summary-list__value">GET</dd>
+      </div>
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">URL</dt>
+        <dd class="nhsuk-summary-list__value">baseUrl/dispense/release/7A9089-A83008-56A03J</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*"
 }</pre>
-    </div>
-  </details>
-</fieldset>
-<fieldset class="nhsuk-fieldset">
-  <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
-  <dl class="nhsuk-summary-list">
-    <div class="nhsuk-summary-list__row">
-      <dt class="nhsuk-summary-list__key">Status</dt>
-      <dd class="nhsuk-summary-list__value">500 undefined</dd>
-    </div>
-  </dl>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
-    </div>
-  </details>
-  <details class="nhsuk-details nhsuk-expander">
-    <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
-    <div class="nhsuk-details__text">
-      <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
-    </div>
-  </details>
-</fieldset>
+      </div>
+    </details>
+  </fieldset>
+</div>
+<div class="">
+  <fieldset class="nhsuk-fieldset">
+    <legend class="nhsuk-fieldset__legend nhsuk-fieldset__legend--m">Response Details</legend>
+    <dl class="nhsuk-summary-list">
+      <div class="nhsuk-summary-list__row">
+        <dt class="nhsuk-summary-list__key">Status</dt>
+        <dd class="nhsuk-summary-list__value">500 undefined</dd>
+      </div>
+    </dl>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Headers</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
+      </div>
+    </details>
+    <details class="nhsuk-details nhsuk-expander">
+      <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Response Body</span></summary>
+      <div class="nhsuk-details__text">
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{}</pre>
+      </div>
+    </details>
+  </fieldset>
+</div>
 <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>"
 `;
 
@@ -103,8 +111,8 @@ exports[`Displays dispense form if prescription details are retrieved successful
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
         <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group">
@@ -165,8 +173,8 @@ exports[`Displays dispense form if prescription details are retrieved successful
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="dispenseType--label" for="dispenseType">Choose how you want to dispense this prescription</label>
         <div class="nhsuk-radios" id="dispenseType" value="form" aria-label="Choose how you want to dispense this prescription">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" aria-labelledby="dispenseType-1--label" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" aria-labelledby="dispenseType-2--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-1" name="dispenseType" type="radio" value="form" checked=""><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-1--label" for="dispenseType-1">Use the dispense prescription form</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="dispenseType-2" name="dispenseType" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="dispenseType-2--label" for="dispenseType-2">With a FHIR dispense message</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group">

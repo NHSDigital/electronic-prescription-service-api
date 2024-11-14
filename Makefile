@@ -453,13 +453,17 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--force-upload \
 		--tags "version=$$VERSION_NUMBER" \
 		--parameter-overrides \
+			TruststoreBucketName=$$TRUSTSTORE_BUCKET_NAME \
 			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
 			TruststoreFile=$$TRUSTSTORE_FILE \
+			EnableMutualTLS=$$enable_mutual_tls \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
+			LogRetentionInDays=$$LOG_RETENTION_DAYS \
 			Env=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
-			ZoneIDExport=$$ZONE_ID_EXPORT
+			ZoneIDExport=$$ZONE_ID_EXPORT \
+			TargetSpineServer=$$TARGET_SPINE_SERVER
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh

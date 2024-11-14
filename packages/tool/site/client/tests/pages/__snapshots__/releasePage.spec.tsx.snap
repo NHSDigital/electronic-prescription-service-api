@@ -51,17 +51,17 @@ exports[`Displays release form 1`] = `
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="releaseType--label" for="releaseType">Choose how you want to release prescription(s)</label>
         <div class="nhsuk-radios" id="releaseType" value="prescriptionId" aria-label="Choose how you want to release prescription(s)">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-1" name="releaseType" aria-labelledby="releaseType-1--label" type="radio" value="all"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-1--label" for="releaseType-1">All nominated prescriptions for the below pharmacy</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-2" name="releaseType" aria-labelledby="releaseType-2--label" type="radio" value="prescriptionId" checked=""><label class="nhsuk-label nhsuk-radios__label" id="releaseType-2--label" for="releaseType-2">A single prescription by ID</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-3" name="releaseType" aria-labelledby="releaseType-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-3--label" for="releaseType-3">With a FHIR release message</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-1" name="releaseType" type="radio" value="all"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-1--label" for="releaseType-1">All nominated prescriptions for the below pharmacy</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-2" name="releaseType" type="radio" value="prescriptionId" checked=""><label class="nhsuk-label nhsuk-radios__label" id="releaseType-2--label" for="releaseType-2">A single prescription by ID</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="releaseType-3" name="releaseType" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="releaseType-3--label" for="releaseType-3">With a FHIR release message</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label><input class="nhsuk-input nhsuk-input--width-30" type="text" name="prescriptionId" id="prescriptionId" value="7A9089-A83008-56A03J"></div>
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy to release prescriptions to</label>
         <div class="nhsuk-radios" id="pharmacy" value="" aria-label="Pharmacy to release prescriptions to">
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" aria-labelledby="pharmacy-1--label" type="radio" value="VNFKT"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-2" name="pharmacy" aria-labelledby="pharmacy-2--label" type="radio" value="YGM1E"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-2--label" for="pharmacy-2">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
-          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-3" name="pharmacy" aria-labelledby="pharmacy-3--label" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-3--label" for="pharmacy-3">Other</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-1" name="pharmacy" type="radio" value="VNFKT"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-1--label" for="pharmacy-1">VNFKT - FIVE STAR HOMECARE LEEDS LTD</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-2" name="pharmacy" type="radio" value="YGM1E"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-2--label" for="pharmacy-2">YGM1E - MBBM HEALTHCARE TECHNOLOGIES LTD</label></div>
+          <div class="nhsuk-radios__item"><input class="nhsuk-radios__input" id="pharmacy-3" name="pharmacy" type="radio" value="custom"><label class="nhsuk-label nhsuk-radios__label" id="pharmacy-3--label" for="pharmacy-3">Other</label></div>
         </div>
       </div>
     </fieldset>

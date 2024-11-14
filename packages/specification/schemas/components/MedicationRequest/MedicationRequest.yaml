@@ -95,7 +95,7 @@ properties:
   requester:
     type: object
     description: |
-      Reference object to identify the author of a prescription. 
+      Reference object to identify the requester of a prescription. 
       A PractitionerRole resource within the Bundle must be referenced.
     properties:
       reference:
@@ -156,8 +156,8 @@ properties:
             description: |
               End date of an issue; capped at 12 months and cannot exceed the prescription's end date.
               Overall validity of the drug.
-            format: date
-            example: "2022-10-21"
+            format: date-time
+            example: "2022-10-21T23:59:59Z"
       expectedSupplyDuration:
         type: object
         description: |
