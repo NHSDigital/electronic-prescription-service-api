@@ -79,7 +79,7 @@ class EpsClient {
 
   async makePingRequest(): Promise<Ping> {
     const basePath = this.getBasePath()
-    const url = `${CONFIG.apigeeEgressHost}/${basePath}/_ping`
+    const url = `${CONFIG.apigeeEgressHost}/${basePath}/_ping_`
     return (await axios.get<Ping>(url)).data
   }
 
