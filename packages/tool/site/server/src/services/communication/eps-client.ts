@@ -80,7 +80,9 @@ class EpsClient {
   async makePingRequest(): Promise<Ping> {
     const basePath = this.getBasePath()
     const url = `${CONFIG.apigeeEgressHost}/${basePath}/_ping`
-    return (await axios.get<Ping>(url)).data
+    const response = await axios.get<Ping>(url)
+    response.status = 500
+    return response.data
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
