@@ -99,13 +99,13 @@ Resources:
         - Key: access_logs.s3.bucket
           Value: !ImportValue account-resources:ALBLoggingBucket
         - Key: access_logs.s3.prefix
-          Value: prescribe-dispense/access
+          Value: !Sub "${StackName}/access"
         - Key: connection_logs.s3.enabled
           Value: true
         - Key: connection_logs.s3.bucket
           Value: !ImportValue account-resources:ALBLoggingBucket
         - Key: connection_logs.s3.prefix
-          Value: prescribe-dispense/connection
+          Value: !Sub "${StackName}/connection"
       Scheme: internet-facing
       SecurityGroups:
         - !Ref LoadBalancerSecurityGroup
