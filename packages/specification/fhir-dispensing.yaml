@@ -1261,14 +1261,15 @@ components:
           example: "urn:uuid:a54219b8-f741-4c47-b662-e4f8dfa49ab6"
         resource:
           $ref: "schemas/components/Location/CreateLocation.yaml"
-
+security:
+  - app-level3: []
 x-nhsd-apim:
   temporary: false
   monitoring: false
   access:
   - title: FHIR Dispensing Service API Application Restricted
     grants:
-      app-level0: []
+      app-level3: []
   target:
     type: external
     healthcheck: /_status
