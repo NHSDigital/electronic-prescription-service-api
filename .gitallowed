@@ -1,0 +1,5 @@
+^[a-f0-9]{40}:examples\/.*\.xml:\d+:
+^[a-f0-9]{40}:examples\/.*\.json:\d+:
+[a-f0-9]{40}:packages\/coordinator\/tests.*\/[^\s:]+\.xml
+[a-f0-9]{40}:packages\/coordinator\/src\/resources.*\/[^\s:]+\.mustache
+./nhsd-rules-deny.txt:10
