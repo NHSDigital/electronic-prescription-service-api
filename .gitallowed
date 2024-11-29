@@ -361,6 +361,7 @@ super\(\"1\.2
 ^[a-f0-9]{40}:SAMtemplates\/load_balancer\/main\.yaml:78
 ^[a-f0-9]{40}:SAMtemplates\/load_balancer\/main\.yaml:79
 ^[a-f0-9]{40}:SAMtemplates\/load_balancer\/main\.yaml:74
+^[a-f0-9]{40}:SAMtemplates\/load_balancer\/main\.yaml:67
 ^[a-f0-9]{40}:scripts\/deploy_spec\.sh:7
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:27
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:11
