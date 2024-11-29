@@ -50,7 +50,7 @@ jobs:
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
-          role-session-name: github-actions
+          role-session-name: fhir-facade-execute-release-notes-lambda
 
       - shell: bash
         name: create release notes
