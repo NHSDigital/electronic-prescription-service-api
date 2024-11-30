@@ -98,7 +98,7 @@ jobs:
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
-          role-session-name: github-actions
+          role-session-name: fhir-facade-cloud-formation-deploy
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
