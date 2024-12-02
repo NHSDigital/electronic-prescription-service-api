@@ -324,6 +324,27 @@ function getResourceParameterByName<R extends fhir.Resource>(
   return resourceParameterWithCorrectName
 }
 
+function getResourceParameterByNameOrNull<R extends fhir.Resource>(
+  parameters: fhir.Parameters,
+  name: string,
+  resourceTypeGuard: (body: unknown) => body is fhir.ResourceParameter<R>
+): fhir.ResourceParameter<R> {
+  const resourceParameters = parameters.parameter.filter(isResourceParameter)
+
+  const resourceParameterWithCorrectName = resourceParameters.find(parameter => parameter.name === name)
+  if (!resourceParameterWithCorrectName) {
+    return null
+  }
+
+  if (!resourceTypeGuard(resourceParameterWithCorrectName)) {
+    throw new errors.InvalidValueError(
+      `Parameter with name ${name} has wrong resourceType`
+    )
+  }
+
+  return resourceParameterWithCorrectName
+}
+
 const isPractitionerRoleParameter = (
   resourceParameter: fhir.ResourceParameter<fhir.Resource>
 ): resourceParameter is fhir.ResourceParameter<fhir.PractitionerRole> => {
@@ -332,6 +353,14 @@ const isPractitionerRoleParameter = (
 
 export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.PractitionerRole> {
   return getResourceParameterByName(
+    parameters,
+    "agent",
+    isPractitionerRoleParameter
+  )
+}
+
+export function getAgentParameterOrNull(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.PractitionerRole> {
+  return getResourceParameterByNameOrNull(
     parameters,
     "agent",
     isPractitionerRoleParameter
