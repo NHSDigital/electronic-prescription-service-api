@@ -25,7 +25,7 @@ jobs:
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
-          role-session-name: github-actions
+          role-session-name: fhir-facade-delete-old-stacks
 
       - name: delete stacks
         shell: bash
