@@ -203,7 +203,7 @@ export class MtlsSpineClient implements SpineClient {
         links: url
       }
     } catch (error) {
-      logger.error("Error calling external service for status check: " + error.message)
+      logger.error("Error calling external service for status check from mtls-spine-client: " + error.message)
       const axiosError = error as AxiosError
       return {
         status: "error",

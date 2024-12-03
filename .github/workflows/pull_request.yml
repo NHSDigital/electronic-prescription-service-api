@@ -51,12 +51,17 @@ jobs:
      sha_short: ${{ steps.commit_id.outputs.sha_short }}
 
    steps:
-     - name: Get Commit ID
-       id: commit_id
-       run: |
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ env.BRANCH_NAME }}
+
+    - name: Get Commit ID
+      id: commit_id
+      run: |
         #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
-         echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-         echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+        echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   package_code:
     needs: [get_issue_number, get_commit_id]
