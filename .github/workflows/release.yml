@@ -135,7 +135,7 @@ jobs:
       # CREATE_PROD_RELEASE_NOTES: true
       DOMAIN_NAME_EXPORT: eps-route53-resources:EPS-domain
       ZONE_ID_EXPORT: eps-route53-resources:EPS-ZoneID
-      TARGET_SPINE_SERVER: veit07.devspineservices.nhs.uk
+      TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
