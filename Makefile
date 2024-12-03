@@ -471,3 +471,6 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
+
+aws-login:
+	aws sso login --sso-session sso-session
