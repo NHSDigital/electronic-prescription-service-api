@@ -1,7 +1,7 @@
 import {spine} from "@models"
 import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
 import pino from "pino"
-import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
+import {StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {Agent} from "https"
@@ -186,6 +186,34 @@ export class MtlsSpineClient implements SpineClient {
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
     const url = this.getSpineEndpoint(`healthcheck`)
-    return serviceHealthCheck(url, logger)
+    return this.serviceHealthCheck(url, logger)
+  }
+
+  private async serviceHealthCheck(url: string, logger: pino.Logger): Promise<StatusCheckResponse> {
+    try {
+      const response = await axios.get<string>(url, {
+        timeout: 20000,
+        httpAgent: this.httpsAgent
+      })
+      return {
+        status: response.status === 200 ? "pass" : "error",
+        timeout: "false",
+        responseCode: response.status,
+        outcome: response.data,
+        links: url
+      }
+    } catch (error) {
+      logger.error("Error calling external service for status check: " + error.message)
+      const axiosError = error as AxiosError
+      return {
+        status: "error",
+        timeout: axiosError.code === "ECONNABORTED" ? "true" : "false",
+        responseCode: axiosError.response?.status,
+        outcome: typeof axiosError.response?.data === "string"
+          ? axiosError.response?.data
+          : undefined,
+        links: url
+      }
+    }
   }
 }
