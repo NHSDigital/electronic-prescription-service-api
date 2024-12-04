@@ -56,6 +56,9 @@ Parameters:
   TargetSpineServer:
     Type: String
     Default: "xxx"
+  DockerImageTag:
+    Type: String
+    Default: "xxx"
 
 Resources:
   LoadBalancers:
@@ -72,6 +75,7 @@ Resources:
         CommitId: !Ref CommitId
         LogRetentionInDays: !Ref LogRetentionInDays
         TargetSpineServer: !Ref TargetSpineServer
+        DockerImageTag: !Ref DockerImageTag
 
 Outputs:
   LoadBalancerEndpoint:
