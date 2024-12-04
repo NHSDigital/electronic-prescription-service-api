@@ -80,6 +80,8 @@ on:
         required: false
       PROXYGEN_ROLE:
         required: false
+      REGRESSION_TESTS_PEM:
+        required: false
 
 jobs:
   release_code_and_api:
@@ -280,3 +282,25 @@ jobs:
           PROXYGEN_KID: fhir-dispensing
           DRY_RUN: false
         run: ./deploy_api.sh
+
+  prescribing_regression_tests:
+    name: Prescribing Regression Tests
+    uses: ./.github/workflows/run_regression_tests.yml
+    needs: release_code_and_api
+    with:
+      ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      PRODUCT: EPS-FHIR-PRESCRIBING
+    secrets:
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+
+  dispensing_regression_tests:
+    name: Dispensing Regression Tests
+    uses: ./.github/workflows/run_regression_tests.yml
+    needs: release_code_and_api
+    with:
+      ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      PRODUCT: EPS-FHIR-DISPENSING
+    secrets:
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
