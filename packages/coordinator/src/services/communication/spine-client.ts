@@ -19,7 +19,7 @@ export function getSpineClient(useMtlsSpineClient: boolean, liveMode: boolean): 
   return liveMode ? new LiveSpineClient() : new SandboxSpineClient()
 }
 
-const useMtlsSpineClient = process.env.MTLS_SPINE_CLIENT === "1"
+const useMtlsSpineClient = process.env.MTLS_SPINE_CLIENT === "true"
 const liveMode = process.env.SANDBOX !== "1"
 
 export const spineClient = getSpineClient(useMtlsSpineClient, liveMode)

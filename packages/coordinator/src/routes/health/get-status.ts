@@ -34,7 +34,7 @@ export default [
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(200, {
-        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)],
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger, undefined)],
         "spine:status": [await spineClient.getStatus(request.logger)]
       }, h)
     }
@@ -44,7 +44,7 @@ export default [
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(500, {
-        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger)]
+        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger, undefined)]
       }, h)
     }
   },
