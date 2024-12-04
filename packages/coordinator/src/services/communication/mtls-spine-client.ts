@@ -203,6 +203,7 @@ export class MtlsSpineClient implements SpineClient {
         links: url
       }
     } catch (error) {
+      logger.error({httpsAgent: this.httpsAgent}, "This is the http agent")
       logger.error("Error calling external service for status check from mtls-spine-client: " + error.message)
       const axiosError = error as AxiosError
       return {
