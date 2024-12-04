@@ -222,6 +222,10 @@ Resources:
               Value: !Ref TargetSpineServer
             - Name: MTLS_SPINE_CLIENT
               Value: True
+            - Name: PRESCRIBE_ENABLED
+              Value: true
+            - Name: DISPENSE_ENABLED
+              Value: true
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey
