@@ -193,7 +193,7 @@ export class MtlsSpineClient implements SpineClient {
     try {
       const response = await axios.get<string>(url, {
         timeout: 20000,
-        httpAgent: this.httpsAgent
+        httpsAgent: this.httpsAgent
       })
       return {
         status: response.status === 200 ? "pass" : "error",
@@ -203,7 +203,6 @@ export class MtlsSpineClient implements SpineClient {
         links: url
       }
     } catch (error) {
-      logger.error({httpsAgent: this.httpsAgent}, "This is the http agent")
       logger.error("Error calling external service for status check from mtls-spine-client: " + error.message)
       const axiosError = error as AxiosError
       return {
