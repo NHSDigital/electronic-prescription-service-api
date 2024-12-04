@@ -226,8 +226,8 @@ Resources:
               Value: true
             - Name: DISPENSE_ENABLED
               Value: true
-            - Name: BASE_PATH
-              Value: https://internal-dev.api.service.nhs.uk/fhir-prescribing-pr-2884/
+            #- Name: BASE_PATH
+            #  Value: https://internal-dev.api.service.nhs.uk/fhir-prescribing-pr-2884/
             - Name: COMMIT_ID
               Value: foo
             - Name: CRL_DISTRIBUTION_DOMAIN
