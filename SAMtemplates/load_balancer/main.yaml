@@ -271,7 +271,7 @@ Resources:
           Subnets: !Split [",", !ImportValue vpc-resources:PrivateSubnets]
       TaskDefinition: !Ref ECSTaskDefinition
       LoadBalancers:
-        - ContainerName: !Sub "${StackName}-container"
+        - ContainerName: !Sub "${StackName}-coordinator"
           ContainerPort: !Ref ContainerPort
           TargetGroupArn: !Ref TargetGroup
 
