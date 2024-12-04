@@ -313,7 +313,7 @@ paths:
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
-        - app-level0: []
+        - app-level3: []
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
@@ -422,7 +422,7 @@ paths:
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
-        - app-level0: []
+        - app-level3: []
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
@@ -526,12 +526,12 @@ paths:
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
-        - app-level0: []
+        - app-level3: []
 
 components:
   securitySchemes:
-    app-level0:
-      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
+    app-level3:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
   parameters:
     BearerAuthorization:
       in: header
