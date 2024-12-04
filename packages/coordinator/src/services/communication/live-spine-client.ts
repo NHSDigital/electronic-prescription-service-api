@@ -74,7 +74,15 @@ export class LiveSpineClient implements SpineClient {
       // todo: this log line is req.name for tracker request but not for spine client request
       // to work out how to log both, request.name maps to the wrong object
       //logger.error(`Failed post request for ${request.name}. Error: ${error}`)
-      logger.error(`Failed post request for spine client send. Error: ${error}`)
+      let responseToLog
+      if (error.response) {
+        responseToLog = {
+          data: error.response.data,
+          status: error.response.status,
+          headers: error.response.headers
+        }
+      }
+      logger.error({error, response: responseToLog}, `Failed post request for spine client send. Error: ${error}`)
       return LiveSpineClient.handleError(error)
     }
   }
@@ -95,7 +103,15 @@ export class LiveSpineClient implements SpineClient {
       )
       return LiveSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
     } catch (error) {
-      logger.error(`Failed polling request for polling path ${path}. Error: ${error}`)
+      let responseToLog
+      if (error.response) {
+        responseToLog = {
+          data: error.response.data,
+          status: error.response.status,
+          headers: error.response.headers
+        }
+      }
+      logger.error({error, response: responseToLog}, `Failed polling request for polling path ${path}. Error: ${error}`)
       return LiveSpineClient.handleError(error)
     }
   }

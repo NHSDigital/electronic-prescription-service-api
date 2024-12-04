@@ -119,7 +119,15 @@ export class MtlsSpineClient implements SpineClient {
       )
       return MtlsSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
     } catch (error) {
-      logger.error({error}, `Failed polling request for polling path ${path}. Error: ${error}`)
+      let responseToLog
+      if (error.response) {
+        responseToLog = {
+          data: error.response.data,
+          status: error.response.status,
+          headers: error.response.headers
+        }
+      }
+      logger.error({error, response: responseToLog}, `Failed polling request for polling path ${path}. Error: ${error}`)
       return MtlsSpineClient.handleError(error)
     }
   }
