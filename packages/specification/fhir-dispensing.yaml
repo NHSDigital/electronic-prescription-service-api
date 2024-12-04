@@ -1277,3 +1277,15 @@ x-nhsd-apim:
     security:
       type: mtls
       secret: fhir-facade-mtls-1
+  target-identity:
+    - name: cis2-uuid
+      header: "nhsd-identity-uuid"
+    - name: cis2-urid
+      header: "nhsd-session-urid"
+  target-attributes:
+    - name: party-key
+      required: false
+      header: nhsd-party-key
+    - name: asid
+      required: false
+      header: nhsd-asid

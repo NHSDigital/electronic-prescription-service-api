@@ -51,8 +51,11 @@ export function getSdsRoleProfileId(headers: Hapi.Utils.Dictionary<string>): str
   return process.env.SANDBOX === "1" ? DEFAULT_RPID : headers[RequestHeaders.SDS_ROLE_PROFILE_ID]
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function getScope(headers: Hapi.Utils.Dictionary<string>): string {
-  return process.env.SANDBOX === "1" ? DEFAULT_SCOPE : headers[RequestHeaders.SCOPE]
+  // eslint-disable-next-line max-len
+  return "urn:nhsd:apim:user-nhs-id:aal3:fhir-dispensing urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker urn:nhsd:apim:user-nhs-id:aal3:fhir-prescribing urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing urn:nhsd:apim:user-nhs-id:aal3:nhs-app urn:nhsd:apim:user-nhs-id:aal3:signing-service urn:nhsd:apim:user-nhs-cis2:aal3:fhir-dispensing urn:nhsd:apim:user-nhs-cis2:aal3:fhir-prescribing urn:nhsd:apim:user-nhs-cis2:aal3:nhs-app urn:nhsd:apim:user-nhs-cis2:aal3:mock-jwks urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:prescribing urn:nhsd:apim:user-nhs-id:aal3:personal-demographics-service urn:nhsd:apim:user-nhs-id:aal3:eps-api-tool urn:nhsd:apim:user-nhs-id:aal3:canary-api"
+  //return process.env.SANDBOX === "1" ? DEFAULT_SCOPE : headers[RequestHeaders.SCOPE]
 }
 
 export function getShowValidationWarnings(headers: Hapi.Utils.Dictionary<string>): string {
