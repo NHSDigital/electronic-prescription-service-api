@@ -89,7 +89,7 @@ export class MtlsSpineClient implements SpineClient {
       )
       return MtlsSpineClient.handlePollableOrImmediateResponse(response, logger)
     } catch (error) {
-      logger.error(`Failed post request for spine client send. Error: ${error}`)
+      logger.error({error}, `Failed post request for spine client send. Error: ${error}`)
       return MtlsSpineClient.handleError(error)
     }
   }
@@ -111,7 +111,7 @@ export class MtlsSpineClient implements SpineClient {
       )
       return MtlsSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
     } catch (error) {
-      logger.error(`Failed polling request for polling path ${path}. Error: ${error}`)
+      logger.error({error}, `Failed polling request for polling path ${path}. Error: ${error}`)
       return MtlsSpineClient.handleError(error)
     }
   }
