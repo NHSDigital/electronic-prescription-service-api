@@ -186,6 +186,6 @@ export class MtlsSpineClient implements SpineClient {
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
     const url = this.getSpineEndpoint(`healthcheck`)
-    return serviceHealthCheck(url, logger)
+    return serviceHealthCheck(url, logger, this.httpsAgent)
   }
 }
