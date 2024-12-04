@@ -89,7 +89,7 @@ export class MtlsSpineClient implements SpineClient {
       )
       return MtlsSpineClient.handlePollableOrImmediateResponse(response, logger)
     } catch (error) {
-      logger.error({error}, `Failed post request for spine client send. Error: ${error}`)
+      logger.error({error, response: error.response.data}, `Failed post request for spine client send. Error: ${error}`)
       return MtlsSpineClient.handleError(error)
     }
   }
