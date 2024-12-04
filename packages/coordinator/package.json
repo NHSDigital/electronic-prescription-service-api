@@ -7,7 +7,7 @@
     "build": "tsc --build --clean && tsc --alwaysStrict --project tsconfig-build.json",
     "copy-resources": "cp -r ./src/resources/ ./dist/coordinator/src/",
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
-    "start": "node dist/coordinator/src/app.js --use_strict",
+    "start": "node --enable-source-maps dist/coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "jest --reporters=default --reporters=jest-junit --coverage",
