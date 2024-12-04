@@ -15,6 +15,7 @@ import time
 REGRESSION_TESTS_REPO_TAG = "prescribe_dispense_seperate_tests"
 
 GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
+GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs"
 
 
 def get_headers():
@@ -144,7 +145,8 @@ def check_job():
 
     assert (
         job["conclusion"] == "success"
-    ), f"The regressions test step failed! There are likely test failures. See https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs/{workflow_id}/ for details"
+    ), f"The regressions test step failed! There are likely test failures. \
+         See {GITHUB_RUN_URL}/{workflow_id}/ for details"
 
 
 if __name__ == "__main__":

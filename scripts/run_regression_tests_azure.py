@@ -84,7 +84,6 @@ def get_jobs_for_workflow(jobs_url):
     return response.json()["jobs"]
 
 
-
 def find_workflow():
     max_attempts = 5
     current_attempt = 0
