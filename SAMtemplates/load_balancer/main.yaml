@@ -210,7 +210,7 @@ Resources:
         - FARGATE
       ExecutionRoleArn: !GetAtt ECSTaskExecutionRole.Arn
       ContainerDefinitions:
-        - Name: !Sub "${StackName}-container"
+        - Name: !Sub "${StackName}-coordinator"
           Image: !Sub "${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/fhir-facade-repo:${DockerImageTag}"
           PortMappings:
             - ContainerPort: !Ref ContainerPort
@@ -232,7 +232,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: !Ref LogGroup
+              awslogs-group: !Ref CoordinatorLogGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
         - Name: !Sub "${StackName}-validator"
@@ -243,7 +243,7 @@ Resources:
           LogConfiguration:
             LogDriver: awslogs
             Options:
-              awslogs-group: !Ref LogGroup
+              awslogs-group: !Ref ValidatorLogGroup
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: ecs
       RuntimePlatform:
@@ -320,22 +320,41 @@ Resources:
         TargetValue: 70.0
 
   # CloudWatch Log Group for ECS
-  LogGroup:
+  CoordinatorLogGroup:
     Type: AWS::Logs::LogGroup
     Metadata:
       guard:
         SuppressedRules:
           - CW_LOGGROUP_RETENTION_PERIOD_CHECK
     Properties:
-      LogGroupName: !Sub /aws/ecs/${StackName}
+      LogGroupName: !Sub /aws/ecs/${StackName}-coordinator
       RetentionInDays: !Ref LogRetentionInDays
       KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
 
-  LambdaSplunkSubscriptionFilter:
+  CoordinatorSplunkSubscriptionFilter:
     Type: AWS::Logs::SubscriptionFilter
     Properties:
       RoleArn: !ImportValue lambda-resources:SplunkSubscriptionFilterRole
-      LogGroupName: !Ref LogGroup
+      LogGroupName: !Ref CoordinatorLogGroup
+      FilterPattern: ""
+      DestinationArn: !ImportValue lambda-resources:SplunkDeliveryStream
+
+  ValidatorLogGroup:
+    Type: AWS::Logs::LogGroup
+    Metadata:
+      guard:
+        SuppressedRules:
+          - CW_LOGGROUP_RETENTION_PERIOD_CHECK
+    Properties:
+      LogGroupName: !Sub /aws/ecs/${StackName}-validator
+      RetentionInDays: !Ref LogRetentionInDays
+      KmsKeyId: !ImportValue account-resources:CloudwatchLogsKmsKeyArn
+
+  ValidatorSplunkSubscriptionFilter:
+    Type: AWS::Logs::SubscriptionFilter
+    Properties:
+      RoleArn: !ImportValue lambda-resources:SplunkSubscriptionFilterRole
+      LogGroupName: !Ref ValidatorLogGroup
       FilterPattern: ""
       DestinationArn: !ImportValue lambda-resources:SplunkDeliveryStream
 
