@@ -91,7 +91,11 @@ export class MtlsSpineClient implements SpineClient {
     } catch (error) {
       let responseToLog
       if (error.response) {
-        responseToLog = error.response.data
+        responseToLog = {
+          data: error.response.data,
+          status: error.response.status,
+          headers: error.response.headers
+        }
       }
       logger.error({error, response: responseToLog}, `Failed post request for spine client send. Error: ${error}`)
       return MtlsSpineClient.handleError(error)

@@ -1161,8 +1161,8 @@ x-nhsd-apim:
       header: "nhsd-session-urid"
   target-attributes:
     - name: party-key
-      required: false
+      required: true
       header: nhsd-party-key
     - name: asid
-      required: false
+      required: true
       header: nhsd-asid
