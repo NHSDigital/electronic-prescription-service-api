@@ -1,5 +1,6 @@
 import pino from "pino"
 import axios, {AxiosError} from "axios"
+import {Agent} from "https"
 
 export interface StatusCheckResponse {
   status: "pass" | "warn" | "error"
@@ -9,9 +10,16 @@ export interface StatusCheckResponse {
   links?: string
 }
 
-export async function serviceHealthCheck(url: string, logger: pino.Logger): Promise<StatusCheckResponse> {
+export async function serviceHealthCheck(
+  url: string,
+  logger: pino.Logger,
+  agent: Agent | undefined
+): Promise<StatusCheckResponse> {
   try {
-    const response = await axios.get<string>(url, {timeout: 20000})
+    const response = await axios.get<string>(url, {
+      timeout: 20000,
+      httpsAgent: agent
+    })
     return {
       status: response.status === 200 ? "pass" : "error",
       timeout: "false",
