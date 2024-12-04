@@ -313,7 +313,7 @@ paths:
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
-        - app-level3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
@@ -422,7 +422,7 @@ paths:
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
-        - app-level3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
@@ -526,12 +526,12 @@ paths:
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
-        - app-level3: []
+        - nhs-cis2-aal3: []
 
 components:
   securitySchemes:
-    app-level3:
-      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
+    nhs-cis2-aal3:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
   parameters:
     BearerAuthorization:
       in: header
@@ -1123,14 +1123,14 @@ components:
         resource:
           $ref: "schemas/components/Location/CreateLocation.yaml"
 security:
-  - app-level3: []
+  - nhs-cis2-aal3: []
 x-nhsd-apim:
   temporary: false
   monitoring: false
   access:
   - title: FHIR Prescribing Service API Application Restricted
     grants:
-      app-level3: []
+      nhs-cis2-aal3: []
   target:
     type: external
     healthcheck: /_status
