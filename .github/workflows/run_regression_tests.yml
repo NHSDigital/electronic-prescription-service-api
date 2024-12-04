@@ -78,4 +78,3 @@ jobs:
                 --pr_label="$VERSION_NUMBER" \
                 --token=${{ steps.generate-token.outputs.token }} \
                 --product=${{ inputs.PRODUCT }}
-              

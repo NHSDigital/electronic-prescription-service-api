@@ -144,7 +144,7 @@ def check_job():
 
     assert (
         job["conclusion"] == "success"
-    ), "The regressions test step failed! There are likely test failures."
+    ), f"The regressions test step failed! There are likely test failures. See https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs/{workflow_id}/ for details"
 
 
 if __name__ == "__main__":

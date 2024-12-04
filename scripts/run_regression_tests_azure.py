@@ -5,12 +5,15 @@
   check the status of the regression test run to be reported to the CI.
 """
 import argparse
-import datetime
+from datetime import datetime, timedelta, timezone
 import random
 import string
 import requests
 import time
 from requests.auth import HTTPBasicAuth
+
+# This should be set to a known good version of regression test repo
+REGRESSION_TESTS_REPO_TAG = "prescribe_dispense_seperate_tests"
 
 GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
 
@@ -22,18 +25,13 @@ def get_headers():
     }
 
 
-def get_auth_header():
-    user_credentials = arguments.user.split(":")
-    return HTTPBasicAuth(user_credentials[0], user_credentials[1])
-
-
 def generate_unique_run_id(length=15):
     return "".join(random.choices(string.ascii_uppercase + string.digits, k=length))
 
 
 def generate_timestamp():
-    delta_time = datetime.timedelta(minutes=2)
-    date_time = (datetime.datetime.utcnow() - delta_time).strftime("%Y-%m-%dT%H:%M")
+    delta_time = timedelta(minutes=2)
+    date_time = (datetime.now(timezone.utc) - delta_time).strftime("%Y-%m-%dT%H:%M")
     print(f"Generated Date as: {date_time}")
     return date_time
 
@@ -47,10 +45,9 @@ def trigger_test_run():
             "environment": arguments.env,
             "pull_request_id": arguments.pr_label,
             "product": "EPS-FHIR",
+            "github_tag": REGRESSION_TESTS_REPO_TAG
         },
     }
-
-    print(f"Here's the body of the request: {body}")
 
     response = requests.post(
         url=f"{GITHUB_API_URL}/workflows/regression_tests.yml/dispatches",
@@ -62,7 +59,7 @@ def trigger_test_run():
     print(f"Dispatch workflow. Unique workflow identifier: {run_id}")
     assert (
         response.status_code == 204
-    ), f"Failed to trigger test run. Expected 204, got {response.status_code}"
+    ), f"Failed to trigger test run. Expected 204, got {response.status_code}. Response: {response.text}"
 
 
 def get_workflow_runs():
@@ -85,6 +82,7 @@ def get_jobs_for_workflow(jobs_url):
         response.status_code == 200
     ), f"Unable to get workflow jobs. Expected 200, got {response.status_code}"
     return response.json()["jobs"]
+
 
 
 def find_workflow():
@@ -120,6 +118,11 @@ def find_workflow():
         print(
             "Processed all available workflows but no jobs were matching the Unique ID were found!"
         )
+
+
+def get_auth_header():
+    user_credentials = arguments.user.split(":")
+    return HTTPBasicAuth(user_credentials[0], user_credentials[1])
 
 
 def get_job():
