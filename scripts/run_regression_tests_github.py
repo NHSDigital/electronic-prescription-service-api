@@ -143,10 +143,13 @@ def check_job():
         job = get_job()
         job_status = job["status"]
 
-    assert (
-        job["conclusion"] == "success"
-    ), f"The regressions test step failed! There are likely test failures. \
-         See {GITHUB_RUN_URL}/{workflow_id}/ for details"
+    if job["conclusion"] != "success":
+        pr_label = arguments.pr_label.lower()
+        env = f"PULL_REQUEST/{pr_label}" if arguments.env == "dev-pr" else arguments.env.upper()
+        print("The regressions test step failed! There are likely test failures.")
+        print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details)")
+        print(f"See https://ubiquitous-adventure-p8885yq.pages.github.io/{arguments.product}/{env}/ for allure report")
+        raise Exception("Regression test failed")
 
 
 if __name__ == "__main__":
