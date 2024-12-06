@@ -3,6 +3,7 @@ import * as uuid from "uuid"
 import {DISPENSING_USER_SCOPE, PRESCRIBING_USER_SCOPE, TRACKER_USER_SCOPE} from "../services/validation/scope-validator"
 
 export enum RequestHeaders {
+  APPLICATION_ID = "nhsd-application-id",
   ASID = "nhsd-asid",
   AUTH_LEVEL = "nhsd-identity-authentication-level",
   PARTY_KEY = "nhsd-party-key",
@@ -59,4 +60,8 @@ export function getShowValidationWarnings(headers: Hapi.Utils.Dictionary<string>
   return process.env.SANDBOX === "1"
     ? DEFAULT_SHOW_VALIDATION_WARNINGS
     : headers[RequestHeaders.SHOW_VALIDATION_WARNINGS]
+}
+
+export function getApplicationId(headers: Hapi.Utils.Dictionary<string>): string {
+  return headers[RequestHeaders.APPLICATION_ID]
 }
