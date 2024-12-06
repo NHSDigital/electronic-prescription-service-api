@@ -180,7 +180,10 @@ if __name__ == "__main__":
         "--user", required=False, help="Please provide the user credentials."
     )
     parser.add_argument(
-        "--is_called_from_github", required=True, help="If this is being called from github actions rather than azure"
+        '--is_called_from_github', 
+        default=False,
+        type=lambda x: (str(x).lower() == 'true'),
+        help="If this is being called from github actions rather than azure"
     )
     parser.add_argument(
         "--product", required=True, help="Please provide the product to run the tests for."
@@ -190,6 +193,11 @@ if __name__ == "__main__":
     )
 
     arguments = parser.parse_args()
+
+    print(f"pr_label: {arguments.pr_label}")
+    print(f"env: {arguments.env}")
+    print(f"is_called_from_github: {arguments.is_called_from_github}")
+    print(f"product: {arguments.product}")
 
     run_id = generate_unique_run_id()
     run_date_filter = generate_timestamp()

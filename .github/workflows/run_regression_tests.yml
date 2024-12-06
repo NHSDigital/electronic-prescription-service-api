@@ -77,5 +77,5 @@ jobs:
                 --env="$TARGET_ENVIRONMENT" \
                 --pr_label="$VERSION_NUMBER" \
                 --token=${{ steps.generate-token.outputs.token }} \
-                --is_called_from_github=true \
+                --is_called_from_github true \
                 --product=${{ inputs.PRODUCT }}

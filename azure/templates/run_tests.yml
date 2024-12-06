@@ -262,7 +262,7 @@ steps:
           --env=$(APIGEE_ENVIRONMENT) \
           --pr_label=${PR_LABEL} \
           --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
-          --is_called_from_github false \
+          --is_called_from_github=false \
           --product EPS_FHIR
       fi
     displayName: Regression Tests
