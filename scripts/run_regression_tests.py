@@ -191,6 +191,9 @@ if __name__ == "__main__":
     parser.add_argument(
         "--product", required=True, help="Please provide the product to run the tests for."
     )
+    parser.add_argument(
+        "--token", required=True, help="Please provide the authentication token."
+    )
 
     arguments = parser.parse_args()
 
@@ -198,7 +201,7 @@ if __name__ == "__main__":
     run_date_filter = generate_timestamp()
 
     pr_label = arguments.pr_label.lower()
-    trigger_test_run(arguments.env, pr_label, arguments.products, arguments.is_called_from_github)
+    trigger_test_run(arguments.env, pr_label, arguments.product, arguments.is_called_from_github)
 
     workflow_id = find_workflow(arguments.is_called_from_github)
     check_job(arguments.is_called_from_github)
