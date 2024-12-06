@@ -157,7 +157,7 @@ def check_job(is_called_from_github):
     while job_status != "completed":
         print(job_status)
         time.sleep(10)
-        job = get_job()
+        job = get_job(is_called_from_github)
         job_status = job["status"]
 
     if job["conclusion"] != "success":
