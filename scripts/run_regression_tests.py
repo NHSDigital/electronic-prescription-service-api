@@ -192,7 +192,7 @@ if __name__ == "__main__":
         "--product", required=True, help="Please provide the product to run the tests for."
     )
     parser.add_argument(
-        "--token", required=True, help="Please provide the authentication token."
+        "--token", required=False, help="Please provide the authentication token."
     )
 
     arguments = parser.parse_args()
