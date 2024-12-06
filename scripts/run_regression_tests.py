@@ -208,7 +208,7 @@ if __name__ == "__main__":
     if job_status != "success":
         if arguments.pr_label:
             pr_label = arguments.pr_label.lower()
-            env = f"PULL_REQUEST/{pr_label}"
+            env = f"PULL-REQUEST/{pr_label}"
         else:
             env = arguments.env.upper()
         print("The regressions test step failed! There are likely test failures.")
