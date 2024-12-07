@@ -180,7 +180,7 @@ if __name__ == "__main__":
         "--user", required=False, help="Please provide the user credentials."
     )
     parser.add_argument(
-        '--is_called_from_github', 
+        '--is_called_from_github',
         default=False,
         type=lambda x: (str(x).lower() == 'true'),
         help="If this is being called from github actions rather than azure"
