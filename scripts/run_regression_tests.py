@@ -198,6 +198,7 @@ if __name__ == "__main__":
     print(f"env: {arguments.env}")
     print(f"is_called_from_github: {arguments.is_called_from_github}")
     print(f"product: {arguments.product}")
+    print(f"regression_tests_repo_tag: {REGRESSION_TESTS_REPO_TAG}")
 
     run_id = generate_unique_run_id()
     run_date_filter = generate_timestamp()
