@@ -222,7 +222,7 @@ if __name__ == "__main__":
             env = arguments.env.upper()
         print("The regressions test step failed! There are likely test failures.")
         print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details)")
-        print(f"See https://ubiquitous-adventure-p8885yq.pages.github.io/{arguments.product}/{env}/ for allure report")
+        print(f"See https://nhsdigital.github.io/eps-test-reports/{arguments.product}/{env}/ for allure report")
         raise Exception("Regression test failed")
 
     print("Success!")
