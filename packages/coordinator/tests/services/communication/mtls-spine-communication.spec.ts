@@ -114,7 +114,7 @@ describe("MtlsSpineClient communication", () => {
 
     const expectedError = `Failed post request for spine client send. Error: Error: Request failed with status code 500`
 
-    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(expectedError))
+    expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), expect.stringContaining(expectedError))
 
     loggerSpy.mockRestore()
   })
@@ -128,6 +128,7 @@ describe("MtlsSpineClient communication", () => {
     const spineResponse = await requestHandler.poll(path, "test-asid", logger)
 
     expect(loggerSpy).toHaveBeenCalledWith(
+      expect.anything(),
       expect.stringContaining(`Failed polling request for polling path ${path}. Error: Error: ${errorMessage}`)
     )
 
