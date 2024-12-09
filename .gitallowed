@@ -367,4 +367,4 @@ super\(\"1\.2
 ^[a-f0-9]{40}:scripts\/deploy_spec\.sh:7
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:27
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:11
-^[a-f0-9]{40}::Makefile:371:# make env=internal-dev pr=333 token=.* run-smoke-tests
+^[a-f0-9]{40}::Makefile:371:
