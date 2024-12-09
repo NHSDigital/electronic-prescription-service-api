@@ -10,6 +10,7 @@ export function writeXmlStringCanonicalized(
   const xmlDocument = (new xmldom.DOMParser()).parseFromString(xmlString, "application/xml")
   const canonicaliser = c14n().createCanonicaliser(canonicalizationMethod)
   return new Promise((resolve, reject) => {
+    // @ts-expect-error misssing Node properties are not needed
     canonicaliser.canonicalise(xmlDocument.documentElement, function(err, result) {
       if (err) {
         reject(err)
