@@ -114,7 +114,11 @@ build-epsat:
 build-all: build-api build-epsat
 
 build-specification:
-	$(MAKE) --directory=packages/specification build 
+	$(MAKE) --directory=packages/specification build
+
+compile-specification:
+	npm run resolve-prescribing --workspace packages/specification/
+	npm run resolve-dispensing --workspace packages/specification/
 
 build-coordinator:
 	npm run --workspace=packages/coordinator/ build
@@ -468,3 +472,6 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
+
+aws-login:
+	aws sso login --sso-session sso-session

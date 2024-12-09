@@ -10,6 +10,7 @@ import {
   TrackerErrorString
 } from "./tracker-response-builder"
 import {extractPrescriptionDocumentKey} from "./spine-response-parser"
+import {isSandbox} from "../../../utils/feature-flags"
 
 interface TrackerResponse {
     statusCode: number
@@ -116,10 +117,9 @@ class SandboxTrackerClient implements TrackerClient {
   }
 }
 
-function getTrackerClient(liveMode: boolean): TrackerClient {
-  return liveMode
-    ? new LiveTrackerClient()
-    : new SandboxTrackerClient()
+function getTrackerClient(): TrackerClient {
+  return isSandbox()
+    ? new SandboxTrackerClient() : new LiveTrackerClient()
 }
 
-export const trackerClient = getTrackerClient(process.env.SANDBOX !== "1")
+export const trackerClient = getTrackerClient()
