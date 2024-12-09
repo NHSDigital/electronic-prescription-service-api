@@ -12,6 +12,8 @@ id-token: write
 .*\.venv.*
 .*node_modules.*
 poetry.lock
+self.token = token
+CidrIp: 0.0.0.0\/0
 
 # ignore all xml and json examples, tests, resources
 ^[a-f0-9]{40}:examples\/.*\.xml:\d+:
@@ -365,3 +367,4 @@ super\(\"1\.2
 ^[a-f0-9]{40}:scripts\/deploy_spec\.sh:7
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:27
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:11
+^[a-f0-9]{40}::Makefile:371:# make env=internal-dev pr=333 token=.* run-smoke-tests
