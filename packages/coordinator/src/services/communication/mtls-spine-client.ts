@@ -102,7 +102,7 @@ export class MtlsSpineClient implements SpineClient {
   }
 
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    const address = this.getSpineEndpoint(path)
+    const address = this.getSpineUrlForPolling(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
 
@@ -197,6 +197,10 @@ export class MtlsSpineClient implements SpineClient {
 
   private getSpineUrlForTracker() {
     return this.getSpineEndpoint("syncservice-mm/mm")
+  }
+
+  private getSpineUrlForPolling(requestPath: string) {
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${requestPath}`
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
