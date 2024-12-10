@@ -102,7 +102,7 @@ export class MtlsSpineClient implements SpineClient {
   }
 
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    const address = this.getSpineUrlForPolling(path)
+    const address = this.getSpineEndpoint(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
 
@@ -151,8 +151,8 @@ export class MtlsSpineClient implements SpineClient {
       }, "pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
-      logger.info(`Got content location ${contentLocation}. Using polling URL ${relativePollingUrl}`)
-      await delay(1000)
+      logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl} after 5 seconds`)
+      await delay(5000)
       return await this.poll(relativePollingUrl, fromAsid, logger)
     }
 
@@ -197,11 +197,6 @@ export class MtlsSpineClient implements SpineClient {
 
   private getSpineUrlForTracker() {
     return this.getSpineEndpoint("syncservice-mm/mm")
-  }
-
-  private getSpineUrlForPolling(path: string) {
-    const sanitizedPath = encodeURIComponent(path)
-    return this.getSpineEndpoint(`_poll/${sanitizedPath}`)
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
