@@ -77,7 +77,7 @@ export class MtlsSpineClient implements SpineClient {
     const {address, body, headers} = this.prepareSpineRequest(req)
 
     try {
-      logger.info(`Attempting to send message to ${address}`)
+      logger.info({headers}, `Attempting to send message to ${address}`)
 
       const response = await axios.post<string>(
         address,
@@ -87,7 +87,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return MtlsSpineClient.handlePollableOrImmediateResponse(response, logger)
+      return this.handlePollableOrImmediateResponse(response, logger)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -117,7 +117,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return MtlsSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
+      return this.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -132,7 +132,7 @@ export class MtlsSpineClient implements SpineClient {
     }
   }
 
-  private static handlePollableOrImmediateResponse(
+  private handlePollableOrImmediateResponse(
     result: AxiosResponse,
     logger: pino.Logger,
     previousPollingUrl?: string
@@ -143,6 +143,12 @@ export class MtlsSpineClient implements SpineClient {
 
     if (result.status === 202) {
       logger.info("Successful request, returning SpinePollableResponse")
+      logger.info({
+        response: {
+          data: result.data,
+          headers: result.headers
+        }
+      }, "pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Using polling URL ${relativePollingUrl}`)
@@ -156,7 +162,7 @@ export class MtlsSpineClient implements SpineClient {
     throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
   }
 
-  private static handleImmediateResponse(
+  private handleImmediateResponse(
     result: AxiosResponse,
     logger: pino.Logger
   ) {
