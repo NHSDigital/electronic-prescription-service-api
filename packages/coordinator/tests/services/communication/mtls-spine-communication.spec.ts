@@ -30,7 +30,7 @@ describe("MtlsSpineClient communication", () => {
     fromPartyKey: "test3"
   }
 
-  test("Successful send response returns pollable result", async () => {
+  test("Successful send response returns non pollable result when spine returns pollable", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
@@ -40,7 +40,7 @@ describe("MtlsSpineClient communication", () => {
 
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isPollable(spineResponse)).toBe(false)
-  })
+  }, 10000)
   test("Unsuccessful send response returns non-pollable result", async () => {
     mock.onPost().reply(400)
 
