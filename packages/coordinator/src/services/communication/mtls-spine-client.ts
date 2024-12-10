@@ -9,7 +9,6 @@ import {Agent} from "https"
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER
 const SPINE_PATH = "Prescription"
-const BASE_PATH = process.env.BASE_PATH
 
 const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   return {
@@ -73,7 +72,7 @@ export class MtlsSpineClient implements SpineClient {
     }
   }
 
-  async send(req: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+  async send(req: spine.ClientRequest, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const {address, body, headers} = this.prepareSpineRequest(req)
 
     try {
@@ -87,7 +86,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return this.handlePollableOrImmediateResponse(response, logger)
+      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -117,7 +116,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return this.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
+      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, `/_poll/${path}`)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -132,9 +131,10 @@ export class MtlsSpineClient implements SpineClient {
     }
   }
 
-  private handlePollableOrImmediateResponse(
+  private async handlePollableOrImmediateResponse(
     result: AxiosResponse,
     logger: pino.Logger,
+    fromAsid: string,
     previousPollingUrl?: string
   ) {
     if (result.status === 200) {
@@ -152,10 +152,8 @@ export class MtlsSpineClient implements SpineClient {
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Using polling URL ${relativePollingUrl}`)
-      return {
-        pollingUrl: `${BASE_PATH}${relativePollingUrl}`,
-        statusCode: result.status
-      }
+      await delay(1000)
+      return await this.poll(relativePollingUrl, fromAsid, logger)
     }
 
     logger.error(`Got the following response from spine:\n${result.data}`)
@@ -210,4 +208,8 @@ export class MtlsSpineClient implements SpineClient {
     const url = this.getSpineEndpoint(`healthcheck`)
     return serviceHealthCheck(url, logger, this.httpsAgent)
   }
+}
+
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) )
 }

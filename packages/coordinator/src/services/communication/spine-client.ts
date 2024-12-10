@@ -7,7 +7,7 @@ import {MtlsSpineClient} from "./mtls-spine-client"
 import {isEpsHostedContainer, isSandbox} from "../../utils/feature-flags"
 
 export interface SpineClient {
-  send(request: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
+  send(request: spine.ClientRequest, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
   poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>>
   getStatus(logger: pino.Logger): Promise<StatusCheckResponse>
 }

@@ -34,42 +34,27 @@ describe("MtlsSpineClient communication", () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
+    mock.onGet().reply(200, "foo")
 
-    const spineResponse = await requestHandler.send(mockRequest, logger)
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
-    expect(spineResponse.statusCode).toBe(202)
-    expect(spine.isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as spine.SpinePollableResponse).pollingUrl)
-      .toBe("example.com/eps/_poll/test-content-location")
+    expect(spineResponse.statusCode).toBe(200)
+    expect(spine.isPollable(spineResponse)).toBe(false)
   })
-
   test("Unsuccessful send response returns non-pollable result", async () => {
     mock.onPost().reply(400)
 
-    const spineResponse = await requestHandler.send(mockRequest, logger)
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(400)
-  })
-
-  test("Successful polling pending response returns pollable result", async () => {
-    mock.onGet().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location"
-    })
-
-    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
-
-    expect(spineResponse.statusCode).toBe(202)
-    expect(spine.isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as spine.SpinePollableResponse).pollingUrl)
-      .toBe("example.com/eps/_poll/test-content-location")
   })
 
   test("Async success messages returned from spine return a 200 response", async () => {
     const asyncSuccess = readFileAsString("async_success.xml")
     mock.onPost().reply(200, `statusText: "OK", responseText: ${asyncSuccess}`)
 
-    const spineResponse = await requestHandler.send(mockRequest, logger)
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isDirect(spineResponse)).toBe(true)
@@ -97,7 +82,7 @@ describe("MtlsSpineClient communication", () => {
   test("Spine communication failure returns a 500 error result", async () => {
     mock.onPost().timeout()
 
-    const spineResponse = await requestHandler.send(mockRequest, logger)
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
@@ -108,7 +93,7 @@ describe("MtlsSpineClient communication", () => {
     mock.onPost().reply(500, errorMessage)
 
     const loggerSpy = jest.spyOn(logger, "error")
-    const spineResponse = await requestHandler.send(mockRequest, logger)
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spineResponse.statusCode).toBe(500)
 

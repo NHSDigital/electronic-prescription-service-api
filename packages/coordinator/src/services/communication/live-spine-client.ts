@@ -56,7 +56,7 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
-  async send(req: spine.ClientRequest, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+  async send(req: spine.ClientRequest, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const {address, body, headers} = this.prepareSpineRequest(req)
 
     try {
