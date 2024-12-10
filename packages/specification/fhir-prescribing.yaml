@@ -222,7 +222,7 @@ paths:
   /FHIR/R4/$prepare:
     post:
       operationId: prepare-prescription
-      summary: Encode prescription data so it's ready to sign
+      summary: Encode prescription data so it's ready to sign - Prescribing
       description: |
         ## Overview
         Use this endpoint to convert an unsigned FHIR prescription into the piece of data that needs to be digitally signed.
@@ -230,6 +230,8 @@ paths:
         This action is done by the prescribing system and API, not the prescriber.
 
         To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
+      tags:
+        - prescribing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
@@ -333,7 +335,7 @@ paths:
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
-      summary: Create a new prescription
+      summary: Create a new prescription - Prescribing
       description: |
         ## Overview
         Use this endpoint to create a new prescription in EPS.
@@ -346,6 +348,8 @@ paths:
         The only difference between the prepare requests and create request should be the inclusion of the provenance resource.
 
         To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
+      tags:
+        - prescribing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
@@ -442,7 +446,7 @@ paths:
   /FHIR/R4/$process-message#prescription-order-update:
     post:
       operationId: send-prescription-order-update-message
-      summary: Cancel a prescription
+      summary: Cancel a prescription - Prescribing
       description: |
         ## Overview
         Use this endpoint to cancel a prescription.
@@ -452,6 +456,8 @@ paths:
 
         The `#prescription-order-update` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
+      tags:
+        - prescribing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"

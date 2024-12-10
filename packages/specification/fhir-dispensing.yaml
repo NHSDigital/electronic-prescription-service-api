@@ -234,7 +234,7 @@ paths:
   /FHIR/R4/Task/$release:
     post:
       operationId: release
-      summary: Download prescriptions
+      summary: Download prescriptions - Dispensing
       description: |
         ## Overview
         Use this endpoint to download prescriptions from EPS that are available for dispensing.
@@ -242,6 +242,8 @@ paths:
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
         Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) to this endpoint to download the prescription.
+      tags:
+        - dispensing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
@@ -336,7 +338,7 @@ paths:
   /FHIR/R4/Task#return:
     post:
       operationId: return
-      summary: Return a downloaded prescription
+      summary: Return a downloaded prescription - Dispensing
       description: |
         ## Overview
         Use this endpoint to return a downloaded prescription to EPS, so that another dispensing system can download it.
@@ -347,6 +349,8 @@ paths:
 
         Note that the `#return` in the URL has been added to distinguish this from the other operations which
         can be performed using the `Task` endpoint. It is not required in requests to the API.
+      tags:
+        - dispensing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
@@ -442,7 +446,7 @@ paths:
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
-      summary: Mark a prescription as dispensed
+      summary: Mark a prescription as dispensed - Dispensing
       description: |
         ## Overview
         ### Dispense notification
@@ -459,6 +463,8 @@ paths:
         referencing the identifier of the previous dispense notification to be amended. Only the most recent dispense notification can be amended. To amend other dispense notifications please use the Withdraw endpoint, to withdraw all dispense notifications issued after the amend target, and then amend if necessary.
 
         More information can be found on the fhir [documentation](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/Profiles/NHSDigital-MessageHeader).
+      tags:
+        - dispensing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
@@ -546,7 +552,7 @@ paths:
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
-      summary: Withdraw a dispense notification
+      summary: Withdraw a dispense notification - Dispensing
       description: |
         ## Overview
         Use this endpoint to withdraw a dispense notification, for example in the case that a prescription was marked as dispensed erroneously.
@@ -559,6 +565,8 @@ paths:
         can be performed using the `Task` endpoint. It is not required in requests to the API.
 
         This interaction is only available in the sandbox environment.
+      tags:
+        - dispensing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
@@ -628,11 +636,13 @@ paths:
   /FHIR/R4/Claim:
     post:
       operationId: send-dispense-claim-message
-      summary: Claim for a dispensed prescription
+      summary: Claim for a dispensed prescription - Dispensing
       description: |
         ## Overview
         ### Claim
         Use this endpoint to submit or amend a reimbursement claim for a dispensed prescription.
+      tags:
+        - dispensing
       parameters:
         - $ref: "#/components/parameters/BearerAuthorization"
         - $ref: "#/components/parameters/RoleId"
