@@ -48,8 +48,6 @@ Parameters:
     Type: String
   DockerImageTag:
     Type: String
-  SUBCACC_CERT:
-    Type: String
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -198,6 +196,7 @@ Resources:
         - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
         - !ImportValue account-resources:LambdaAccessSecretsPolicy
         - !ImportValue account-resources:LambdaDecryptSecretsKMSPolicy
+        - !ImportValue secrets:epsSigningCertChainManagedPolicy
       RoleName: !Sub "${StackName}-ecsTaskExecutionRole"
 
   # ECS Task Definition
@@ -265,6 +264,8 @@ Resources:
               ValueFrom: !ImportValue account-resources:SpinePublicCertificate
             - Name: SpineCAChain
               ValueFrom: !ImportValue account-resources:SpineCAChain
+            - Name: SUBCACC_CERT
+              ValueFrom: !ImportValue secrets:epsSigningCertChain
           LogConfiguration:
             LogDriver: awslogs
             Options:
