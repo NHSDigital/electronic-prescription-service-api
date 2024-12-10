@@ -48,6 +48,8 @@ Parameters:
     Type: String
   DockerImageTag:
     Type: String
+  SUBCACC_CERT:
+    Type: String
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -244,12 +246,12 @@ Resources:
               Value: debug
             - Name: NODE_ENV
               Value: production
+            - Name: SUBCACC_CERT
+              Value: !Ref SUBCACC_CERT
             #- Name: ODS_URL
             #  Value: /ptl/platform-common/egress/hosts/directory-spineservices
             - Name: SANDBOX
               Value: 0
-            #- Name: SUBCACC_CERT
-            #  Value: foo
             - Name: TO_ASID
               Value: 567456789789
             - Name: TO_PARTY_KEY

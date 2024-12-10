@@ -235,6 +235,7 @@ jobs:
           LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
           TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
           DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          SUBCACC_CERT-id: ${{ vars.SUBCACC_CERT }}
         run: ./release_code.sh
 
       - name: Get mtls secrets

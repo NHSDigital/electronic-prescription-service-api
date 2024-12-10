@@ -59,6 +59,8 @@ Parameters:
   DockerImageTag:
     Type: String
     Default: "xxx"
+  SUBCACC_CERT:
+    Type: String
 
 Resources:
   LoadBalancers:
@@ -76,6 +78,7 @@ Resources:
         LogRetentionInDays: !Ref LogRetentionInDays
         TargetSpineServer: !Ref TargetSpineServer
         DockerImageTag: !Ref DockerImageTag
+        SUBCACC_CERT: !Ref SUBCACC_CERT
 
 Outputs:
   LoadBalancerEndpoint:

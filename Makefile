@@ -468,7 +468,8 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
 			ZoneIDExport=$$ZONE_ID_EXPORT \
 			TargetSpineServer=$$TARGET_SPINE_SERVER \
-			DockerImageTag=$$DOCKER_IMAGE_TAG
+			DockerImageTag=$$DOCKER_IMAGE_TAG \
+			SUBCACC_CERT=$$SUBCACC_CERT
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
