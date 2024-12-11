@@ -142,13 +142,7 @@ export class MtlsSpineClient implements SpineClient {
     }
 
     if (result.status === 202) {
-      logger.info("Successful request, returning SpinePollableResponse")
-      logger.info({
-        response: {
-          data: result.data,
-          headers: result.headers
-        }
-      }, "pollable response")
+      logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
@@ -157,12 +151,14 @@ export class MtlsSpineClient implements SpineClient {
         await delay(5000)
       } else {
         logger.info("First call so delay 0.5 seconds before checking result")
-        //await delay(500)
+        await delay(500)
       }
       return await this.poll(relativePollingUrl, fromAsid, logger)
     }
 
-    logger.error(`Got the following response from spine:\n${result.data}`)
+    logger.error({
+      result: {headers: result.headers, data: result.data}
+    }, "Received unexpected result from spine")
     throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
   }
 
