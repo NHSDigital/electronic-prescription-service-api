@@ -16,21 +16,6 @@ const OLD_SPEC='./electronic-prescription-service-api.new.yaml'
 // these are in the source specs to allow correct paths to be corrected in Apigee
 const exclusionList = ['/FHIR/R4/$process-message', '/FHIR/R4/Task']
 
-// helper function to get diffs
-function getObjectDiff(obj1, obj2) {
-    const diff = Object.keys(obj1).reduce((result, key) => {
-        if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
-            result.push(key);
-        } else if (isEqual(obj1[key], obj2[key])) {
-            const resultKeyIndex = result.indexOf(key);
-            result.splice(resultKeyIndex, 1);
-        }
-        return result;
-    }, Object.keys(obj2));
-
-    return diff;
-}
-
 const rawPrescribing = readFileSync(PRESCRIBING_SPEC, 'utf8')
 const rawDispensing = readFileSync(DISPENSING_SPEC, 'utf8')
 const rawTemplate = readFileSync(TEMPLATE_SPEC, 'utf8')
@@ -107,19 +92,36 @@ for (const [key, value] of Object.entries(dispensing.components.schemas)) {
 
 writeFileSync(COMBINED_SPEC, stringify(template))
 
-
+// this is used to compare new and old spec
+// leaving this in for now in case there are further changes to existing spec
+// but it should be removed before merging and old spec deleting
 const oldRawSpec = readFileSync(OLD_SPEC, 'utf8')
 let oldSpec = parse(oldRawSpec)
 
-const areTheyTheSame = getObjectDiff(
+// helper function to get diffs
+function getObjectDiff(obj1, obj2) {
+    const diff = Object.keys(obj1).reduce((result, key) => {
+        if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
+            result.push(key);
+        } else if (isEqual(obj1[key], obj2[key])) {
+            const resultKeyIndex = result.indexOf(key);
+            result.splice(resultKeyIndex, 1);
+        }
+        return result;
+    }, Object.keys(obj2));
+
+    return diff;
+}
+
+const oldNewDifferences = getObjectDiff(
     oldSpec.paths, 
     template.paths
 )
-console.log(`are they the same: ${areTheyTheSame}`)
+console.log(`These keys are different between old and new spec: ${oldNewDifferences}`)
 
 
-const areTheyTheSameDetails = getObjectDiff(
+const differenceDetails = getObjectDiff(
     oldSpec.paths["/FHIR/R4/Task#withdraw"]["post"], 
     template.paths["/FHIR/R4/Task#withdraw"]["post"]
 )
-console.log(`are they the same: ${areTheyTheSameDetails}`)
+console.log(`difference details: ${differenceDetails}`)

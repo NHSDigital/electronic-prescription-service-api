@@ -1,4 +1,4 @@
-import {spine} from "@models"
+import {fhir, spine} from "@models"
 import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
 import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
@@ -86,7 +86,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid)
+      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid, 0)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -101,7 +101,16 @@ export class MtlsSpineClient implements SpineClient {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+    return notSupportedOperationOutcomePromise()
+  }
+
+  private async handlePollableResponse(
+    path: string,
+    fromAsid: string,
+    pollCount: number,
+    logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
@@ -116,7 +125,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, path)
+      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, pollCount + 1, path)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -135,25 +144,34 @@ export class MtlsSpineClient implements SpineClient {
     result: AxiosResponse,
     logger: pino.Logger,
     fromAsid: string,
+    pollCount: number,
     previousPollingUrl?: string
   ) {
     if (result.status === 200) {
       return this.handleImmediateResponse(result, logger)
     }
 
+    if (pollCount > 6) {
+      const errorMessage = "No response to poll after 6 attempts"
+      logger.error(errorMessage)
+      return {
+        body: timeoutOperationOutcome,
+        statusCode: 500
+      }
+    }
     if (result.status === 202) {
       logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
       if (previousPollingUrl) {
-        logger.info("Waiting 5 seconds before polling again")
+        logger.info(`Waiting 5 seconds before polling again. Attempt ${pollCount}`)
         await delay(5000)
       } else {
         logger.info("First call so delay 0.5 seconds before checking result")
         await delay(500)
       }
-      return await this.poll(relativePollingUrl, fromAsid, logger)
+      return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, logger)
     }
 
     logger.error({
@@ -213,4 +231,50 @@ export class MtlsSpineClient implements SpineClient {
 
 function delay(ms: number) {
   return new Promise( resolve => setTimeout(resolve, ms) )
+}
+
+const notSupportedOperationOutcome: fhir.OperationOutcome = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: fhir.IssueCodes.INFORMATIONAL,
+      severity: "information",
+      details: {
+        coding: [
+          {
+            code: "INTERACTION_NOT_SUPPORTED_BY_MTLS_CLIENT",
+            display: "Interaction not supported by mtls client",
+            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            version: "1"
+          }
+        ]
+      }
+    }
+  ]
+}
+
+const timeoutOperationOutcome: fhir.OperationOutcome = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: fhir.IssueCodes.EXCEPTION,
+      severity: "error",
+      details: {
+        coding: [
+          {
+            code: "TIMEOUT",
+            display: "Timeout waiting for response",
+            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            version: "1"
+          }
+        ]
+      }
+    }
+  ]
+}
+function notSupportedOperationOutcomePromise(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
+  return Promise.resolve({
+    statusCode: 400,
+    body: notSupportedOperationOutcome
+  })
 }

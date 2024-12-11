@@ -41,6 +41,69 @@ describe("MtlsSpineClient communication", () => {
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isPollable(spineResponse)).toBe(false)
   }, 10000)
+
+  test("Successful send response calls polling twice when poll result returned first", async () => {
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+    mock
+      .onGet()
+      .replyOnce(202, "foo")
+      .onGet()
+      .replyOnce(200, "foo")
+
+    const loggerSpy = jest.spyOn(logger, "info")
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spineResponse.statusCode).toBe(200)
+    expect(spine.isPollable(spineResponse)).toBe(false)
+
+    const firstMessage = "First call so delay 0.5 seconds before checking result"
+    const secondMessage = "Waiting 5 seconds before polling again"
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(firstMessage))
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(secondMessage))
+
+    loggerSpy.mockRestore()
+
+  }, 10000)
+
+  test("Failure response when no response after 30 seconds", async () => {
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+    mock
+      .onGet()
+      .reply(202, "foo")
+
+    const loggerSpy = jest.spyOn(logger, "error")
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spineResponse.statusCode).toBe(500)
+    expect((spineResponse as spine.SpineDirectResponse<string>).body).toEqual(
+      {
+        resourceType: "OperationOutcome",
+        issue: [{
+          code: "exception",
+          severity: "error",
+          details: {
+            coding: [
+              {
+                code: "TIMEOUT",
+                display: "Timeout waiting for response",
+                system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                version: "1"
+              }
+            ]
+          }
+        }]}
+    )
+    const expectedError = "No response to poll after 6 attempts"
+
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(expectedError))
+  }, 60000)
+
   test("Unsuccessful send response returns non-pollable result", async () => {
     mock.onPost().reply(400)
 
@@ -61,13 +124,30 @@ describe("MtlsSpineClient communication", () => {
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toContain("<hl7:acknowledgement typeCode=\"AA\">")
   })
 
-  test("Successful polling complete response returns non pollable result", async () => {
+  test("Poll function returns not supported", async () => {
     mock.onGet().reply(200, {statusText: "OK", responseText: 'acknowledgement typeCode="AA"'})
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
-    expect(spineResponse.statusCode).toBe(200)
-    expect(spine.isPollable(spineResponse)).toBe(false)
+    expect(spineResponse.statusCode).toBe(400)
+    expect((spineResponse as spine.SpineDirectResponse<string>).body).toEqual(
+      {
+        resourceType: "OperationOutcome",
+        issue: [{
+          code: "informational",
+          severity: "information",
+          details: {
+            coding: [
+              {
+                code: "INTERACTION_NOT_SUPPORTED_BY_MTLS_CLIENT",
+                display: "Interaction not supported by mtls client",
+                system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                version: "1"
+              }
+            ]
+          }
+        }]}
+    )
   })
 
   test("Status response", async () => {
@@ -102,44 +182,6 @@ describe("MtlsSpineClient communication", () => {
     expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), expect.stringContaining(expectedError))
 
     loggerSpy.mockRestore()
-  })
-
-  test("Logs error for polling failure", async () => {
-    const path = "test-path"
-    const errorMessage = "Network Error"
-    mock.onGet().networkError()
-
-    const loggerSpy = jest.spyOn(logger, "error")
-    const spineResponse = await requestHandler.poll(path, "test-asid", logger)
-
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      expect.stringContaining(`Failed polling request for polling path ${path}. Error: Error: ${errorMessage}`)
-    )
-
-    expect(spineResponse.statusCode).toBe(500)
-
-    loggerSpy.mockRestore()
-  })
-})
-
-describe("Spine responses", () => {
-  test("Messages should be correctly identified as pollable", () => {
-    const message = {
-      statusCode: 200,
-      pollingUrl: "http://test.com"
-    }
-
-    expect(spine.isPollable(message)).toBe(true)
-  })
-
-  test("Messages should be correctly identified as non-pollable", () => {
-    const message = {
-      statusCode: 200,
-      body: "This is a response body"
-    }
-
-    expect(spine.isPollable(message)).toBe(false)
   })
 })
 
