@@ -151,8 +151,13 @@ export class MtlsSpineClient implements SpineClient {
       }, "pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
-      logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl} after 5 seconds`)
-      await delay(5000)
+      logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
+      if (previousPollingUrl) {
+        logger.info("Waiting 5 seconds before polling again")
+        await delay(5000)
+      } else {
+        logger.info("Firs call so no delay before checking result")
+      }
       return await this.poll(relativePollingUrl, fromAsid, logger)
     }
 
