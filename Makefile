@@ -117,8 +117,8 @@ build-specification:
 	mkdir -p packages/specification/dist
 	npm run lint --workspace packages/specification
 	npm run resolve --workspace packages/specification
-	npm run resolve-prescribing --workspace packages/specification/
-	npm run resolve-dispensing --workspace packages/specification/
+	## npm run resolve-prescribing --workspace packages/specification/
+	## npm run resolve-dispensing --workspace packages/specification/
 	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
 
 combine-specification:
