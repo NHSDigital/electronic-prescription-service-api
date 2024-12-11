@@ -67,6 +67,9 @@ on:
       DOCKER_IMAGE_TAG:
         required: true
         type: string
+      RUN_REGRESSION_TEST:
+        required: true
+        type: boolean
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -285,6 +288,7 @@ jobs:
         run: ./deploy_api.sh
 
   prescribing_regression_tests:
+    if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Prescribing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
@@ -296,6 +300,7 @@ jobs:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
   dispensing_regression_tests:
+    if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Dispensing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api

@@ -89,6 +89,7 @@ jobs:
       # DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
+      RUN_REGRESSION_TEST: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
@@ -112,6 +113,7 @@ jobs:
       # DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: sandbox
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
+      RUN_REGRESSION_TEST: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
