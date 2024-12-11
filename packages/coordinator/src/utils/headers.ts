@@ -28,7 +28,7 @@ export const DEFAULT_ASID = "200000001285"
 export const DEFAULT_UUID = "555254239107"
 export const DEFAULT_RPID = "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
 export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
-const AWS_SCOPE = `${AWS_PRESCRIBING_USER_SCOPE} ${AWS_DISPENSING_USER_SCOPE}`
+export const AWS_SCOPE = `${AWS_PRESCRIBING_USER_SCOPE} ${AWS_DISPENSING_USER_SCOPE}`
 export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 
 function getHeaderIdentifier(headers: Hapi.Utils.Dictionary<string>, identifier: RequestHeaders): string {
