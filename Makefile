@@ -114,7 +114,11 @@ build-epsat:
 build-all: build-api build-epsat
 
 build-specification:
-	$(MAKE) --directory=packages/specification build
+	mkdir -p packages/specification/dist
+	npm run lint --workspace packages/specification
+	npm run resolve --workspace packages/specification
+	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
+
 
 compile-specification:
 	npm run resolve-prescribing --workspace packages/specification/
@@ -366,9 +370,6 @@ create-smoke-tests:
 	&& cd packages/e2e-tests \
 	&& $(MAKE) create-pacts 
 
-# Example:
-# make env=internal-dev-sandbox pr=333 run-smoke-tests
-# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
 run-smoke-tests:
 	source .envrc \
 	&& cd packages/e2e-tests \
@@ -475,3 +476,6 @@ cfn-guard:
 
 aws-login:
 	aws sso login --sso-session sso-session
+
+combine-spec:
+	npm run combine-spec --workspace packages/specification

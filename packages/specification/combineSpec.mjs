@@ -1,8 +1,22 @@
+// eslint-disable-line no-console
+/*global console*/
+
 import pkg from 'yaml'
 const { parse, stringify } = pkg
 import { readFileSync, writeFileSync } from 'fs'
-import { isEqual } from 'lodash-es';
+import { isEqual } from 'lodash-es'
 
+const PRESCRIBING_SPEC='./fhir-prescribing.yaml'
+const DISPENSING_SPEC='./fhir-dispensing.yaml'
+const TEMPLATE_SPEC='./electronic-prescription-service-api.template.yaml'
+const COMBINED_SPEC='./electronic-prescription-service-api.new.yaml'
+const OLD_SPEC='./electronic-prescription-service-api.new.yaml'
+
+// list of paths that will not be added to the combined spec
+// these are in the source specs to allow correct paths to be corrected in Apigee
+const exclusionList = ['/FHIR/R4/$process-message', '/FHIR/R4/Task']
+
+// helper function to get diffs
 function getObjectDiff(obj1, obj2) {
     const diff = Object.keys(obj1).reduce((result, key) => {
         if (!Object.prototype.hasOwnProperty.call(obj2, key)) {
@@ -17,13 +31,12 @@ function getObjectDiff(obj1, obj2) {
     return diff;
 }
 
-const rawPrescribing = readFileSync('./fhir-prescribing.yaml', 'utf8')
-const rawDispensing = readFileSync('./fhir-dispensing.yaml', 'utf8')
-const rawTemplate = readFileSync('./electronic-prescription-service-api.template.yaml', 'utf8')
-let prescribing = parse(rawPrescribing)
-let dispensing = parse(rawDispensing)
-let template = parse(rawTemplate)
-const exclusionList = ['/FHIR/R4/$process-message', '/FHIR/R4/Task']
+const rawPrescribing = readFileSync(PRESCRIBING_SPEC, 'utf8')
+const rawDispensing = readFileSync(DISPENSING_SPEC, 'utf8')
+const rawTemplate = readFileSync(TEMPLATE_SPEC, 'utf8')
+const prescribing = parse(rawPrescribing)
+const dispensing = parse(rawDispensing)
+const template = parse(rawTemplate)
 
 // add the paths
 console.log("Adding prescribing.paths")
@@ -92,10 +105,10 @@ for (const [key, value] of Object.entries(dispensing.components.schemas)) {
     template.components.schemas[key] = value
 }
 
-writeFileSync('./electronic-prescription-service-api.new.yaml', stringify(template))
+writeFileSync(COMBINED_SPEC, stringify(template))
 
 
-const oldRawSpec = readFileSync('./electronic-prescription-service-api.yaml', 'utf8')
+const oldRawSpec = readFileSync(OLD_SPEC, 'utf8')
 let oldSpec = parse(oldRawSpec)
 
 const areTheyTheSame = getObjectDiff(
