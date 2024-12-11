@@ -15,10 +15,6 @@ poetry.lock
 self.token = token
 CidrIp: 0.0.0.0\/0
 
-# public certs are ok
-.github/scripts/release_code.sh:21:
-.github/scripts/release_code.sh:41:
-
 # ignore all xml and json examples, tests, resources
 ^[a-f0-9]{40}:examples\/.*\.xml:\d+:
 ^[a-f0-9]{40}:examples\/.*\.json:\d+:
