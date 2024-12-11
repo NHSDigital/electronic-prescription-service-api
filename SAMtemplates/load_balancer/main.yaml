@@ -50,6 +50,10 @@ Parameters:
     Type: String
   DockerImageTag:
     Type: String
+  TO_ASID:
+    Type: String
+  TO_PARTY_KEY:
+    Type: String
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -250,9 +254,9 @@ Resources:
             - Name: SANDBOX
               Value: 0
             - Name: TO_ASID
-              Value: 567456789789
+              Value: !Ref TO_ASID
             - Name: TO_PARTY_KEY
-              Value: YES-0000806
+              Value: !Ref TO_PARTY_KEY
             - Name: USE_SHA256_PREPARE
               Value: false
           Secrets:

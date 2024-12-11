@@ -70,6 +70,12 @@ on:
       RUN_REGRESSION_TEST:
         required: true
         type: boolean
+      TO_ASID:
+        required: true
+        type: string
+      TO_PARTY_KEY:
+        required: true
+        type: string
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -237,7 +243,8 @@ jobs:
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
           TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
           DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
-          SUBCACC_CERT: ${{ vars.SUBCACC_CERT }}
+          TO_PARTY_KEY: ${{ inputs.TO_PARTY_KEY }}
+          TO_ASID: ${{ inputs.TO_ASID }}
         run: ./release_code.sh
 
       - name: Get mtls secrets

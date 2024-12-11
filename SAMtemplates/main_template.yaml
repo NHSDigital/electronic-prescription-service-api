@@ -63,6 +63,10 @@ Parameters:
   DockerImageTag:
     Type: String
     Default: "xxx"
+  TO_ASID:
+    Type: String
+  TO_PARTY_KEY:
+    Type: String
 
 Resources:
   LoadBalancers:
@@ -81,6 +85,8 @@ Resources:
         LogRetentionInDays: !Ref LogRetentionInDays
         TargetSpineServer: !Ref TargetSpineServer
         DockerImageTag: !Ref DockerImageTag
+        TO_ASID: !Ref TO_ASID
+        TO_PARTY_KEY: !Ref TO_PARTY_KEY
 
 Outputs:
   LoadBalancerEndpoint:

@@ -140,6 +140,8 @@ jobs:
       TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: true
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -171,6 +173,8 @@ jobs:
       ZONE_ID_EXPORT: eps-route53-resources:EPS-ZoneID
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: false
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
@@ -203,6 +207,8 @@ jobs:
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: true
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
@@ -235,6 +241,8 @@ jobs:
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: true
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
@@ -262,6 +270,8 @@ jobs:
       # CREATE_INT_RC_RELEASE_NOTES: false
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: true
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -291,6 +301,8 @@ jobs:
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: false
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
@@ -319,6 +331,8 @@ jobs:
       DEPLOY_APIGEE: false
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: false
+      TO_ASID: TO_DO
+      TO_PARTY_KEY: TO_DO
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
