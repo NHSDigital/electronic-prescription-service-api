@@ -245,8 +245,6 @@ Resources:
               Value: debug
             - Name: NODE_ENV
               Value: production
-            - Name: SUBCACC_CERT
-              Value: !Ref SUBCACC_CERT
             #- Name: ODS_URL
             #  Value: /ptl/platform-common/egress/hosts/directory-spineservices
             - Name: SANDBOX
