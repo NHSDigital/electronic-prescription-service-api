@@ -116,7 +116,7 @@ export class MtlsSpineClient implements SpineClient {
           httpsAgent: this.httpsAgent
         }
       )
-      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, `/_poll/${path}`)
+      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, path)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -156,7 +156,8 @@ export class MtlsSpineClient implements SpineClient {
         logger.info("Waiting 5 seconds before polling again")
         await delay(5000)
       } else {
-        logger.info("Firs call so no delay before checking result")
+        logger.info("First call so delay 0.5 seconds before checking result")
+        //await delay(500)
       }
       return await this.poll(relativePollingUrl, fromAsid, logger)
     }
