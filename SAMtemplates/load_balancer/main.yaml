@@ -44,6 +44,8 @@ Parameters:
 
   LogRetentionInDays:
     Type: Number
+  LogLevel:
+    Type: String
   TargetSpineServer:
     Type: String
   DockerImageTag:
@@ -227,8 +229,6 @@ Resources:
               Value: true
             - Name: DISPENSE_ENABLED
               Value: true
-            #- Name: BASE_PATH
-            #  Value: https://internal-dev.api.service.nhs.uk/fhir-prescribing-pr-2884/
             - Name: COMMIT_ID
               Value: !Ref CommitId
             - Name: CRL_DISTRIBUTION_DOMAIN
@@ -242,7 +242,7 @@ Resources:
             - Name: ENVIRONMENT
               Value: internal-dev
             - Name: LOG_LEVEL
-              Value: debug
+              Value: !Ref LogLevel
             - Name: NODE_ENV
               Value: production
             #- Name: ODS_URL

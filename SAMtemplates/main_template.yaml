@@ -27,6 +27,10 @@ Parameters:
     Type: String
     Default: "xxx"
 
+  LogLevel:
+    Type: String
+    Default: "info"
+
   LogRetentionInDays:
     Type: Number
     Default: 30
@@ -73,6 +77,7 @@ Resources:
         TruststoreFile: !Ref TruststoreFile
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
+        LogLevel: !Ref LogLevel
         LogRetentionInDays: !Ref LogRetentionInDays
         TargetSpineServer: !Ref TargetSpineServer
         DockerImageTag: !Ref DockerImageTag
