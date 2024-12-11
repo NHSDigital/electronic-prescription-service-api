@@ -230,13 +230,13 @@ Resources:
             #- Name: BASE_PATH
             #  Value: https://internal-dev.api.service.nhs.uk/fhir-prescribing-pr-2884/
             - Name: COMMIT_ID
-              Value: foo
+              Value: !Ref CommitId
             - Name: CRL_DISTRIBUTION_DOMAIN
               Value: crl.nhs.uk
             - Name: CRL_DISTRIBUTION_PROXY
               Value: crl.nhs.uk
             - Name: DEPLOYED_VERSION
-              Value: foo
+              Value: !Ref VersionNumber
             - Name: DOSE_TO_TEXT_MODE
               Value: AUDIT
             - Name: ENVIRONMENT
