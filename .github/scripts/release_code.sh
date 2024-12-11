@@ -25,8 +25,6 @@ if [ -z "${ZONE_ID_EXPORT}" ]; then
   export ZONE_ID_EXPORT="NOT_SET"
 fi
 
-export SUBCACC_CERT
-
 # Print the values for verification
 echo "DOMAIN_NAME_EXPORT: $DOMAIN_NAME_EXPORT"
 echo "ZONE_ID_EXPORT: $ZONE_ID_EXPORT"

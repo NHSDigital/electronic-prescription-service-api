@@ -117,12 +117,12 @@ build-specification:
 	mkdir -p packages/specification/dist
 	npm run lint --workspace packages/specification
 	npm run resolve --workspace packages/specification
-	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
-
-
-compile-specification:
 	npm run resolve-prescribing --workspace packages/specification/
 	npm run resolve-dispensing --workspace packages/specification/
+	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
+
+combine-specification:
+	npm run combine-specification --workspace packages/specification
 
 build-coordinator:
 	npm run --workspace=packages/coordinator/ build
@@ -476,6 +476,3 @@ cfn-guard:
 
 aws-login:
 	aws sso login --sso-session sso-session
-
-combine-spec:
-	npm run combine-spec --workspace packages/specification

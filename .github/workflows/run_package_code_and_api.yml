@@ -57,7 +57,7 @@ jobs:
           export PATH=$PATH:$PWD/node_modules/.bin
           make build-api
           make sam-build
-          make compile-specification
+          make build-specification
           cp Makefile .aws-sam/build/
           cp samconfig_package_and_deploy.toml .aws-sam/build/
           mkdir -p .aws-sam/build/specification
@@ -97,7 +97,7 @@ jobs:
           cp .tool-versions ~/
           rm -rf .aws-sam
           export PATH=$PATH:$PWD/node_modules/.bin
-          make compile-specification
+          make build-specification
           make sam-build-sandbox
           cp Makefile .aws-sam/build/
           cp samconfig_package_and_deploy.toml .aws-sam/build/
