@@ -101,7 +101,6 @@ jobs:
           cp Makefile .aws-sam/build/
           cp samconfig_package_and_deploy.toml .aws-sam/build/
           mkdir -p .aws-sam/build/specification
-          cp packages/specification/dist/electronic-prescription-service-api.resolved.json .aws-sam/build/specification/
           cp packages/specification/dist/fhir-prescribing.resolved.json .aws-sam/build/specification/
           cp packages/specification/dist/fhir-dispensing.resolved.json .aws-sam/build/specification/
       

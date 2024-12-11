@@ -86,7 +86,7 @@ jobs:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       LOG_RETENTION_DAYS: 30
-      # DEPLOY_APIGEE: true
+      DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
       RUN_REGRESSION_TEST: true
@@ -110,7 +110,7 @@ jobs:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       LOG_RETENTION_DAYS: 30
-      # DEPLOY_APIGEE: true
+      DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: sandbox
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
       RUN_REGRESSION_TEST: false
