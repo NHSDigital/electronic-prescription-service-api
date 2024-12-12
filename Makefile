@@ -475,8 +475,8 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			ZoneIDExport=$$ZONE_ID_EXPORT \
 			TargetSpineServer=$$TARGET_SPINE_SERVER \
 			DockerImageTag=$$DOCKER_IMAGE_TAG \
-			TO_ASID=$$TO_ASID \
-			TO_PARTY_KEY=$$TO_PARTY_KEY
+			ToAsid=$$TO_ASID \
+			ToPartyKey=$$TO_PARTY_KEY
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
