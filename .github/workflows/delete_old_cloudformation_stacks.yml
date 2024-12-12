@@ -52,7 +52,7 @@ jobs:
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.PROXYGEN_PTL_ROLE }}
-          role-session-name: psu-delete-old-proxygen
+          role-session-name: fhir-facade-delete-old-proxygen
 
       - name: delete proxygen deployments
         shell: bash
