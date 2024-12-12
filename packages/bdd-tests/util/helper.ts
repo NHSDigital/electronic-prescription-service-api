@@ -21,11 +21,12 @@ import {
   statusReasonkey
 } from "./templates"
 import * as jwt from "../services/getJWT"
-import {DataTable} from "@cucumber/cucumber"
+import {DataTable, setDefaultTimeout} from "@cucumber/cucumber"
 
 import * as genid from "./genId"
 
 const authoredOn = new Date().toISOString()
+setDefaultTimeout(60 * 1000)
 
 /*
 THIS FILE SHOULD BE BROKEN INTO SMALLER FILES THE NEXT TIME IT IS CHANGED
