@@ -151,15 +151,15 @@ export class MtlsSpineClient implements SpineClient {
       return this.handleImmediateResponse(result, logger)
     }
 
-    if (pollCount > 6) {
-      const errorMessage = "No response to poll after 6 attempts"
-      logger.error(errorMessage)
-      return {
-        body: timeoutOperationOutcome,
-        statusCode: 500
-      }
-    }
     if (result.status === 202) {
+      if (pollCount > 6) {
+        const errorMessage = "No response to poll after 6 attempts"
+        logger.error(errorMessage)
+        return {
+          body: timeoutOperationOutcome,
+          statusCode: 500
+        }
+      }
       logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
