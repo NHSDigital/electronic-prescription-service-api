@@ -23,7 +23,7 @@ delete_apigee_deployments() {
   APIGEE_API=$2
   PROXYGEN_PRIVATE_KEY_NAME=$3
   PROXYGEN_KID=$4
-  proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:${PROXYGEN_PRIVATE_KEY_NAME}'].Value" --output text)
+  proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='secrets:${PROXYGEN_PRIVATE_KEY_NAME}'].Value" --output text)
 
   echo
   echo "checking apigee deployments on ${APIGEE_ENVIRONMENT}"
