@@ -36,7 +36,7 @@ beforeAll(async () => {
 
 describe("endpoint authentication e2e tests", () => {
   test(authenticationTestDescription, async () => {
-    const options = new CreatePactOptions("prescribing", "process", "send")
+    const options = new CreatePactOptions("proxygen", "process", "send")
     const provider = new Pact(pactOptions(options))
     await provider.setup()
     const apiPath = `${basePath}/$process-message`
@@ -63,7 +63,7 @@ describe("ensure errors are translated", () => {
       .find((r) => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
-    const options = new CreatePactOptions("prescribing", "process", "send")
+    const options = new CreatePactOptions("proxygen", "process", "send")
     const provider = new Pact(pactOptions(options))
     await provider.setup()
 
@@ -151,7 +151,7 @@ describe("ensure errors are translated", () => {
         issue: response?.issue
       }
 
-      const options = new CreatePactOptions("prescribing", "process", "send")
+      const options = new CreatePactOptions("proxygen", "process", "send")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
 
@@ -193,7 +193,7 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
   const bundle = JSON.parse(bundleStr) as fhir.Bundle
   const requestId = uuid.v4()
   const correlationId = uuid.v4()
-  const options = new CreatePactOptions("prescribing", "process", "send")
+  const options = new CreatePactOptions("proxygen", "process", "send")
   const provider = new Pact(pactOptions(options))
   await provider.setup()
   const interaction: InteractionObject = {

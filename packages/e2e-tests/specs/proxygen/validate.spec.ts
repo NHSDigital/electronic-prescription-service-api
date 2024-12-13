@@ -1,8 +1,8 @@
 import {CreatePactOptions, pactOptions} from "../../resources/common"
 import {InteractionObject, Pact} from "@pact-foundation/pact"
 
-test("prescribing metadata e2e tests", async () => {
-  const options = new CreatePactOptions("prescribing", "metadata")
+test("prescribing validate e2e tests", async () => {
+  const options = new CreatePactOptions("proxygen", "validate")
   const provider = new Pact(pactOptions(options))
   await provider.setup()
 

@@ -12,7 +12,7 @@ describe("claim e2e tests", () => {
   test.each(TestResources.claimCases)(
     "should be able to claim for %s",
     async (desc: string, message: fhir.Claim) => {
-      const options = new CreatePactOptions("prescribing", "claim")
+      const options = new CreatePactOptions("proxygen", "claim")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
@@ -32,7 +32,7 @@ describe("claim amend e2e tests", () => {
   test.each(TestResources.claimAmendCases)(
     "should be able to claim amend for %s",
     async (desc: string, message: fhir.Claim) => {
-      const options = new CreatePactOptions("prescribing", "claim", "amend")
+      const options = new CreatePactOptions("proxygen", "claim", "amend")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(

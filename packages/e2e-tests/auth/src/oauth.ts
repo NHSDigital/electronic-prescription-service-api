@@ -100,8 +100,6 @@ export class AuthClient {
     }
   }
 
-  // https://internal-dev.api.service.nhs.uk/oauth2-mock/authorize
-  // ?client_id=9AfEOqUltvbzj8YKXPZmN1ZfwaCRo4hs&redirect_uri=https://example.org/callback&state=123&response_type=code
   getAuthUrl(): string {
     return `/authorize`
   }
@@ -201,7 +199,7 @@ type AuthCallbackResponseData = {
 }
 
 const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => {
-  const responsePath: string = authResponse.request.path // /?code=UmsJVKNA&state=1234567890
+  const responsePath: string = authResponse.request.path
 
   const searchParams = new URLSearchParams(responsePath.substring(2)) // skip the leading `/?`
   return {

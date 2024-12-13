@@ -100,7 +100,7 @@ jobs:
           PACT_PROVIDER: nhsd-apim-eps
           API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
           API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
-          API_PRODUCT: prescribing
+          API_PRODUCT: proxygen
           SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
           SIGNING_CERT:  ${{ secrets.SIGNING_CERT }}
 
@@ -108,7 +108,8 @@ jobs:
       - name: Verify pacts
         shell: bash
         run: |
-          PACT_PROVIDER_URL=$(echo "$PACT_PROVIDER_URL" | tr '[:upper:]' '[:lower:]')
+          PACT_PROVIDER_PRESCRIBING_URL=$(echo "$PACT_PROVIDER_PRESCRIBING_URL" | tr '[:upper:]' '[:lower:]')
+          PACT_PROVIDER_DISPENSING_URL=$(echo "$PACT_PROVIDER_DISPENSING_URL" | tr '[:upper:]' '[:lower:]')
           export PACT_PROVIDER_URL
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
@@ -118,9 +119,6 @@ jobs:
           echo "PACT_CONSUMER: ${PACT_CONSUMER}"
           echo "PACT_PROVIDER: ${PACT_PROVIDER}"
           echo "API_PRODUCT: ${API_PRODUCT}"
-          echo "API_CLIENT_ID: HIDDEN"
-          echo "API_CLIENT_SECRET: HIDDEN"
-          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
 
           make verify-pacts
         env:
@@ -128,7 +126,8 @@ jobs:
           SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
-          PACT_PROVIDER_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
+          PACT_PROVIDER_PRESCRIBING_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
+          PACT_PROVIDER_DISPENSING_URL: https://internal-dev.api.service.nhs.uk/fhir-dispensing-${{ inputs.VERSION_NUMBER }}
           PACT_CONSUMER: eps-test-client
           PACT_PROVIDER: eps
-          API_PRODUCT: prescribing
+          API_PRODUCT: proxygen

@@ -1,8 +1,8 @@
 import {CreatePactOptions, pactOptions} from "../../resources/common"
 import {InteractionObject, Pact} from "@pact-foundation/pact"
 
-test("prescribing task tracker e2e tests", async () => {
-  const options = new CreatePactOptions("prescribing", "task", "tracker")
+test("prescribing metadata e2e tests", async () => {
+  const options = new CreatePactOptions("proxygen", "metadata")
   const provider = new Pact(pactOptions(options))
   await provider.setup()
 

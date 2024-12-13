@@ -19,7 +19,7 @@ export class CreatePactOptions {
   }
 }
 
-export type ApiMode = "live" | "sandbox" | "prescribing" | "dispensing"
+export type ApiMode = "live" | "sandbox" | "proxygen"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
   "validate" | "metadata"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
@@ -48,26 +48,23 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
   }
 }
 
-export function getProviderBaseUrl(apiMode, endpoint, operation) {
-  let providerBaseUrl
-  switch(apiMode) {
+// helper functions
+
+export function getProviderBaseUrl(apiProduct, endpoint, operation) {
+  switch(apiProduct) {
     case "sandbox": {
-      providerBaseUrl = process.env.PACT_PROVIDER_URL
-      break
+      return process.env.PACT_PROVIDER_URL
     }
-    case "prescribing": {
-      providerBaseUrl = getProxygenProviderBaseUrl(endpoint, operation)
-      break
+    case "proxygen": {
+      return getProxygenProviderBaseUrl(endpoint, operation)
     }
-    case "dispensing": {
-      providerBaseUrl = getProxygenProviderBaseUrl(endpoint, operation)
-      break
+    case "live": {
+      return process.env.PACT_PROVIDER_URL
     }
     default: {
-      providerBaseUrl = process.env.PACT_PROVIDER_URL
+      throw new Error("Unknown api mode")
     }
   }
-  return providerBaseUrl
 }
 
 function getProxygenProviderBaseUrl(endpoint, operation) {
@@ -117,36 +114,32 @@ function getProxygenProviderBaseUrl(endpoint, operation) {
       }
     }
     case "claim": {
-      return process.env.PACT_PROVIDER_URL
+      return process.env.PACT_PROVIDER_DISPENSING_URL
     }
     case "metadata": {
-      return process.env.PACT_PROVIDER_URL
+      return process.env.PACT_PROVIDER_DISPENSING_URL
     }
     default: {
       throw new Error("Unknown endpoint")
     }
   }
 }
+
 export function getPacticipantSuffix(apiMode) {
-  let pacticipant_suffix
   switch(apiMode) {
     case "sandbox": {
-      pacticipant_suffix = "sandbox"
-      break
+      return "sandbox"
     }
-    case "prescribing": {
-      pacticipant_suffix = "prescribing"
-      break
+    case "proxygen": {
+      return "proxygen"
     }
-    case "dispensing": {
-      pacticipant_suffix = "dispensing"
-      break
+    case "live": {
+      return "live"
     }
     default: {
-      pacticipant_suffix = "apim-hosted"
+      throw new Error("Unknown apiMode")
     }
   }
-  return pacticipant_suffix
 }
 
 export function createConsumerName(
@@ -155,17 +148,16 @@ export function createConsumerName(
 ) {
   return `${pacticipant_suffix}+${pact_version}`
 }
+
 export function createProviderName(
   pacticipant_suffix: string,
   apiEndpoint: string,
   apiOperation: string,
   pact_version: string
 ) {
-  /* eslint-disable-next-line max-len */
-  return `${pacticipant_suffix}+${apiEndpoint}+${apiOperation ? "-" + apiOperation : ""}+${pact_version}`
+  return `${pacticipant_suffix}+${apiEndpoint}+${apiOperation}+${pact_version}`
 }
 
-// helper functions
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
   return (parameter as fhir.StringParameter).valueString !== undefined
 }

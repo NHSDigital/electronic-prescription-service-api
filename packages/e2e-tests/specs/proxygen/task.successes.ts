@@ -12,7 +12,7 @@ describe("dispense interactions", () => {
   test.each(TestResources.taskReleaseCases)(
     "should be able to acquire prescription info on a prescription release",
     async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
-      const options = new CreatePactOptions("prescribing", "task", "release")
+      const options = new CreatePactOptions("proxygen", "task", "release")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
@@ -33,7 +33,7 @@ describe("Task return e2e tests", () => {
   test.each(TestResources.taskReturnCases)(
     "should be able to process %s",
     async (desc: string, message: fhir.Task) => {
-      const options = new CreatePactOptions("prescribing", "task", "return")
+      const options = new CreatePactOptions("proxygen", "task", "return")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
@@ -53,7 +53,7 @@ describe("Task withdraw e2e tests", () => {
   test.each(TestResources.taskWithdrawCases)(
     "should be able to withdraw %s",
     async (desc: string, message: fhir.Task) => {
-      const options = new CreatePactOptions("prescribing", "task", "withdraw")
+      const options = new CreatePactOptions("proxygen", "task", "withdraw")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(

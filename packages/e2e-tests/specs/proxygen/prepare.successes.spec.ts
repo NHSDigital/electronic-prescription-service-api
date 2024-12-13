@@ -13,7 +13,7 @@ describe("prepare prescribing e2e tests", () => {
   test.each(TestResources.prepareCaseGroups)(
     "should be able to prepare a %s message",
     async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
-      const options = new CreatePactOptions("prescribing", "prepare")
+      const options = new CreatePactOptions("proxygen", "prepare")
       const provider = new Pact(pactOptions(options))
       await provider.setup()
 

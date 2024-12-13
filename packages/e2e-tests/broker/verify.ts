@@ -10,7 +10,7 @@ import {
 } from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
-import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
+import {Verifier, VerifierOptions} from "@pact-foundation/pact"
 // pact-core does not currently support requestFilter to set auth tokens
 // *****************************************************************************************************
 
@@ -42,10 +42,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
   verifierOptions = {
     ...verifierOptions,
-    pactUrls: [fileName
-      // eslint-disable-next-line max-len
-      //`${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
-    ],
+    pactUrls: [fileName],
     // Healthcare worker role from /userinfo endpoint, i.e.
     // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
     customProviderHeaders: {
@@ -54,7 +51,7 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   }
 
   const verifier = new Verifier(verifierOptions)
-  return await verifier.verify()
+  return await verifier.verifyProvider()
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {

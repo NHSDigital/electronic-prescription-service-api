@@ -347,11 +347,8 @@ create-sandbox-pacts: clear-pacts
 create-live-pacts: clear-pacts
 	cd packages/e2e-tests && npm run create-live-pacts
 
-create-prescribing-pacts: clear-pacts
-	cd packages/e2e-tests && npm run create-prescribing-pacts
-
-create-dispensing-pacts: clear-pacts
-	cd packages/e2e-tests && npm run create-dispensing-pacts
+create-proxygen-pacts: clear-pacts
+	cd packages/e2e-tests && npm run create-proxygen-pacts
 
 verify-pacts:
 	cd packages/e2e-tests && npm run verify-pacts
