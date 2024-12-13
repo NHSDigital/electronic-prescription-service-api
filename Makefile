@@ -148,7 +148,7 @@ build-proxies:
 ## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
-	cd packages/e2e-tests && $(MAKE) test
+	npm run test --workspace packages/e2e-tests
 
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
