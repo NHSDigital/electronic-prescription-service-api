@@ -186,6 +186,10 @@ steps:
       echo "API_CLIENT_ID: HIDDEN"
       echo "API_CLIENT_SECRET: HIDDEN"
       echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+      echo "PWD: ${PWD}"
+      echo "Pipeline.Workspace: $(Pipeline.Workspace)"
+      echo "SERVICE_NAME: ${SERVICE_NAME}"
+      echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
 
     displayName: Show PACT variables
     name: showPactVariables
@@ -237,14 +241,14 @@ steps:
   - task: PublishBuildArtifacts@1
     displayName: "Publish Pact Tests"
     inputs:
-      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api/packages/e2e-tests/pact"
+      pathToPublish: "packages/e2e-tests/pact"
       artifactName: "pact_tests"
       publishLocation: "Container"
     condition: eq(variables['run_smoke_tests'], 'true')
   - task: PublishBuildArtifacts@1
     displayName: "Publish Test Prescriptions"
     inputs:
-      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+      pathToPublish: "packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
       artifactName: "smoke-tests"
       publishLocation: "Container"
     condition: eq(variables['run_smoke_tests'], 'true')
