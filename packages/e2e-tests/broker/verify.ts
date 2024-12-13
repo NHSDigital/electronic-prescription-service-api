@@ -1,6 +1,12 @@
 /* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
 import register from "tsconfig-paths/register"
-import {ApiEndpoint, ApiOperation} from "../resources/common"
+import {
+  ApiEndpoint,
+  ApiOperation,
+  createConsumerName,
+  createProviderName,
+  getPacticipantSuffix
+} from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
 import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
@@ -12,20 +18,31 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
+  const pacticipant_suffix = getPacticipantSuffix(process.env["API_PRODUCT"])
+  const providerName = createProviderName(
+    pacticipant_suffix,
+    endpoint,
+    operation,
+    process.env.PACT_VERSION
+  )
+  const consumerName = createConsumerName(
+    pacticipant_suffix,
+    process.env.PACT_VERSION
+  )
   let verifierOptions: VerifierOptions = {
     consumerVersionTags: [process.env.PACT_VERSION],
-    provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
+    provider: providerName,
     providerVersion: providerVersion,
     providerBaseUrl: process.env.PACT_PROVIDER_URL,
     logLevel: "error"
   }
 
-  const pacticipant_suffix = process.env.APIGEE_ENVIRONMENT?.includes("sandbox") ? "-sandbox" : ""
+  const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
   verifierOptions = {
     ...verifierOptions,
-    pactUrls: [
+    pactUrls: [fileName
       // eslint-disable-next-line max-len
-      `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
+      //`${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
     ],
     // Healthcare worker role from /userinfo endpoint, i.e.
     // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo

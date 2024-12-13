@@ -12,6 +12,11 @@ ifndef mode
 mode = $(APIGEE_ENVIRONMENT)
 endif
 
+create-prescribing-pacts:
+	rm -rf pact
+	npm run clear-cache
+	npm run create-prescribing-pacts
+
 create-pacts:
 	rm -rf pact
 	npm run clear-cache

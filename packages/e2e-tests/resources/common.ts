@@ -19,7 +19,7 @@ export class CreatePactOptions {
   }
 }
 
-export type ApiMode = "live" | "sandbox"
+export type ApiMode = "live" | "sandbox" | "prescribing" | "dispensing"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
   "validate" | "metadata"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
@@ -27,17 +27,64 @@ export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
 
 // used to add type-safety for adding a new pact
 export function pactOptions(options: CreatePactOptions): PactOptions {
-  const sandbox = options.apiMode === "sandbox"
-  const pacticipant_suffix = sandbox ? "-sandbox" : ""
+  const pacticipant_suffix = getPacticipantSuffix(options.apiMode)
+  const providerName = createProviderName(
+    pacticipant_suffix,
+    options.apiEndpoint,
+    options.apiOperation,
+    process.env.PACT_VERSION
+  )
+  const consumerName = createConsumerName(
+    pacticipant_suffix,
+    process.env.PACT_VERSION
+  )
   return {
     spec: 2,
-    consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
-    /* eslint-disable-next-line max-len */
-    provider: `nhsd-apim-eps${pacticipant_suffix}+${options.apiEndpoint}${options.apiOperation ? "-" + options.apiOperation : ""}+${process.env.PACT_VERSION}`,
+    consumer: consumerName,
+    provider: providerName,
     pactfileWriteMode: "merge",
     dir: path.join(__dirname, "../pact/pacts"),
     logLevel: "info"
   }
+}
+
+export function getPacticipantSuffix(apiMode) {
+  let pacticipant_suffix
+  switch(apiMode) {
+    case "sandbox": {
+      pacticipant_suffix = "sandbox"
+      break
+    }
+    case "prescribing": {
+      pacticipant_suffix = "prescribing"
+      break
+    }
+    case "dispensing": {
+      pacticipant_suffix = "dispensing"
+      break
+    }
+    default: {
+      pacticipant_suffix = "apim-hosted"
+    }
+  }
+  return pacticipant_suffix
+
+}
+
+export function createConsumerName(
+  pacticipant_suffix: string,
+  pact_version: string
+) {
+  return `${pacticipant_suffix}+${pact_version}`
+}
+export function createProviderName(
+  pacticipant_suffix: string,
+  apiEndpoint: string,
+  apiOperation: string,
+  pact_version: string
+) {
+  /* eslint-disable-next-line max-len */
+  return `${pacticipant_suffix}+${apiEndpoint}+${apiOperation ? "-" + apiOperation : ""}+${pact_version}`
 }
 
 // helper functions
