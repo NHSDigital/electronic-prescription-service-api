@@ -1,79 +1,49 @@
-# End to end tests (Smoke tests)
+# End to end tests using pact
 
-Smoke tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.
+This contains code to create pacts and verify them as a provider
+
+Tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.
 
 Once setup see:
 
 **[Add a new example](./docs/AddingExamples.md)**
 
-**[Running smoke tests](./docs/Testing.md)**
 
-**[Testing with dispensers](./docs/TestingDispensing.md)**
+### To run locally
 
-**[Generating postman collections](./docs/Postman.md)**
-
-## Setup for Windows
-
-### Download
-
-Turn on developer mode *before* cloning repo to allow windows to create symlinks used in repo. See below:
-
- ![alt text](./docs/WindowsSearch-DeveloperSettings.png "Windows Search - Developer Settings") 
- ![alt text](./docs/DeveloperSettings.png "Developer Settings") 
-
-Save to C://e to avoid long path issue in windows when running smoke-tests (was not resolved by setting to 1 in registry during testing). See below:
-
+You can run the tests locally against any deployed proxy.   
+You need to set the following environment variables:
 ```
-cd C://
-git clone https://github.com/NHSDigital/electronic-prescription-service-api.git e
-```
-
-### Install 
-
-```
-make install
-make install-smoke-tests
-```
-
-
-
-## Setup for WSL
-
-```
-make install-smoke-tests
-```
-
-### To run
-
-Set the following environment variables:
-```
-export PACT_PROVIDER=nhsd-apim-eps
-export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
-export PACT_BROKER_BASIC_AUTH_USERNAME=<broker_username>
-export PACT_BROKER_BASIC_AUTH_PASSWORD=<broker_password>
-export PACT_BROKER_URL=https://nhsd-pact-broker.herokuapp.com
-export PACT_VERSION="$SERVICE_BASE_PATH"
-export PACT_USE_BROKER=false
-export SERVICE_BASE_PATH=electronic-prescriptions
+export PACT_PROVIDER=eps
+export PACT_CONSUMER=eps-test-client
+export PACT_VERSION=local_testing
 export API_CLIENT_ID=<api_client_id>
 export API_CLIENT_SECRET=<api_client_secret>
 export APIGEE_ENVIRONMENT=internal-dev
-export APIGEE_KEY=<apigee_key>
+```
+For APIM deployed proxy set this
+```
+export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/electronic-prescriptions # can also point to a pull request
+export API_PRODUCT=live
 ```
 
-The `apigee_key` can be found in AWS Parameter Store. 
-The `api_client_id` and `api_client_secret` can be found in the Postman environment variables.
-For the other bracketed values, consult the dev team.
-
-Now run the following commands to create the pact files locally:
+For proxygen deployed proxy set this
 ```
-export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token)
-make create-pacts
+export PACT_PROVIDER_PRESCRIBING_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/fhir-prescribing # can also point to a pull request
+export PACT_PROVIDER_DISPENSING_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/fhir-dispensing # can also point to a pull request
+export API_PRODUCT=proxygen
 ```
 
-You now have ten minutes to run the smoke tests before your token runs out. You will then need to re-run the two commands to regenerate pacts with valid auth headers.
+The `api_client_id` and `api_client_secret` can be found from the developer portal.
+Now run ONE of the following commands to create the pact files locally:
 
-To run:
+```
+make create-live-pacts
+make create-sandbox-pacts
+make create-proxygen-pacts
+```
+
+To run the pacts use the following
 ```
 make verify-pacts
 ```
