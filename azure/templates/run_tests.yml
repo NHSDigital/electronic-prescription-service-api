@@ -87,6 +87,7 @@ steps:
           export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox
           export PACT_PROVIDER=nhsd-apim-eps-sandbox
           export API_PRODUCT=sandbox
+          export CREATE_PACT_MAKEFILE_TARGET=create-sandbox-pacts
 
           echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]''"
           echo "##vso[task.setvariable variable=SIGNING_CERT_PATH]''"
@@ -98,6 +99,7 @@ steps:
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export PACT_PROVIDER=nhsd-apim-eps
           export API_PRODUCT=live
+          export CREATE_PACT_MAKEFILE_TARGET=create-live-pacts
 
           export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/$(eps_int_test_private.key)
           export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/$(eps_int_test_certificate.crt)
@@ -137,6 +139,7 @@ steps:
       echo "##vso[task.setvariable variable=PACT_CONSUMER]$PACT_CONSUMER"
       echo "##vso[task.setvariable variable=PACT_PROVIDER]$PACT_PROVIDER"
       echo "##vso[task.setvariable variable=API_PRODUCT]$API_PRODUCT"
+      echo "##vso[task.setvariable variable=CREATE_PACT_MAKEFILE_TARGET]$CREATE_PACT_MAKEFILE_TARGET"
     displayName: Set PACT variables and install node dependencies
     name: setPactVariables
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
@@ -161,6 +164,7 @@ steps:
       export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
       export eps_int_test_private_file=$(eps_int_test_private.key)
       export API_PRODUCT=$(API_PRODUCT)
+      export CREATE_PACT_MAKEFILE_TARGET=$(CREATE_PACT_MAKEFILE_TARGET)
 
       echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
       echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
@@ -172,6 +176,7 @@ steps:
       echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
       echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
       echo "API_PRODUCT: ${API_PRODUCT}"
+      echo "CREATE_PACT_MAKEFILE_TARGET: ${CREATE_PACT_MAKEFILE_TARGET}"
       echo "API_CLIENT_ID: HIDDEN"
       echo "API_CLIENT_SECRET: HIDDEN"
       echo "APIGEE_ACCESS_TOKEN: HIDDEN"
@@ -197,10 +202,9 @@ steps:
       export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
       export API_PRODUCT=$(API_PRODUCT)
+      export CREATE_PACT_MAKEFILE_TARGET=$(CREATE_PACT_MAKEFILE_TARGET)
 
-      cd packages/e2e-tests
-
-      make create-pacts > /dev/null
+      make ${CREATE_PACT_MAKEFILE_TARGET}
     displayName: Create PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
     workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
@@ -223,10 +227,6 @@ steps:
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
       export API_PRODUCT=$(API_PRODUCT)
 
-      cd packages/e2e-tests
-
-      # Verify
-      chmod +x ./broker/verify.ts
       make verify-pacts
     displayName: Run PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
