@@ -14,27 +14,7 @@ export const createUnauthorisedInteraction = (desc: string, path: string): Inter
     },
     willRespondWith: {
       headers: {
-        "Content-Type": "application/json"
-      },
-      body: {
-        resourceType: "OperationOutcome",
-        issue: [
-          {
-            severity: "error",
-            code: "forbidden",
-            details: {
-              coding: [
-                {
-                  system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-                  version: "1",
-                  code: "ACCESS_DENIED",
-                  display: "Access Denied - Unauthorised"
-                }
-              ]
-            },
-            diagnostics: "Invalid access token"
-          }
-        ]
+        "Content-Type": "text/plain"
       },
       status: 401
     }

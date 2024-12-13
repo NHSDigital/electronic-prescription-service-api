@@ -48,6 +48,85 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
   }
 }
 
+export function getProviderBaseUrl(apiMode, endpoint, operation) {
+  let providerBaseUrl
+  switch(apiMode) {
+    case "sandbox": {
+      providerBaseUrl = process.env.PACT_PROVIDER_URL
+      break
+    }
+    case "prescribing": {
+      providerBaseUrl = getProxygenProviderBaseUrl(endpoint, operation)
+      break
+    }
+    case "dispensing": {
+      providerBaseUrl = getProxygenProviderBaseUrl(endpoint, operation)
+      break
+    }
+    default: {
+      providerBaseUrl = process.env.PACT_PROVIDER_URL
+    }
+  }
+  return providerBaseUrl
+}
+
+function getProxygenProviderBaseUrl(endpoint, operation) {
+  switch(endpoint) {
+    case "validate": {
+      return process.env.PACT_PROVIDER_PRESCRIBING_URL
+    }
+    case "prepare": {
+      return process.env.PACT_PROVIDER_PRESCRIBING_URL
+    }
+    case "process": {
+      switch(operation) {
+        case "send": {
+          return process.env.PACT_PROVIDER_PRESCRIBING_URL
+        }
+        case "cancel": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "dispense": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "dispenseamend": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        default: {
+          throw new Error("Unknown endpoint")
+        }
+      }
+    }
+    case "task": {
+      switch(operation) {
+        case "release": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "return": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "withdraw": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "tracker": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        default: {
+          throw new Error("Unknown endpoint")
+        }
+      }
+    }
+    case "claim": {
+      return process.env.PACT_PROVIDER_URL
+    }
+    case "metadata": {
+      return process.env.PACT_PROVIDER_URL
+    }
+    default: {
+      throw new Error("Unknown endpoint")
+    }
+  }
+}
 export function getPacticipantSuffix(apiMode) {
   let pacticipant_suffix
   switch(apiMode) {
@@ -68,7 +147,6 @@ export function getPacticipantSuffix(apiMode) {
     }
   }
   return pacticipant_suffix
-
 }
 
 export function createConsumerName(

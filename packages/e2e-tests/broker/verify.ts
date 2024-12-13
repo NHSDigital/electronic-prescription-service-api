@@ -5,7 +5,8 @@ import {
   ApiOperation,
   createConsumerName,
   createProviderName,
-  getPacticipantSuffix
+  getPacticipantSuffix,
+  getProviderBaseUrl
 } from "../resources/common"
 import path from "path"
 // note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
@@ -29,11 +30,12 @@ async function verify(endpoint: string, operation?: string): Promise<any> {
     pacticipant_suffix,
     process.env.PACT_VERSION
   )
+  const providerBaseUrl = getProviderBaseUrl(process.env["API_PRODUCT"], endpoint, operation)
   let verifierOptions: VerifierOptions = {
     consumerVersionTags: [process.env.PACT_VERSION],
     provider: providerName,
     providerVersion: providerVersion,
-    providerBaseUrl: process.env.PACT_PROVIDER_URL,
+    providerBaseUrl: providerBaseUrl,
     logLevel: "error"
   }
 
