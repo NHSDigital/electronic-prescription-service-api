@@ -62,10 +62,17 @@ steps:
     displayName: Wait for API deploy
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
     workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+  - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
+    inputs:
+      repository: self
+      path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
+      submodules: true
+    displayName: Checkout code
   - bash: |
       #!/bin/bash
 
       set -euo pipefail
+      make install-node
       export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
       export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
       export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
@@ -254,12 +261,6 @@ steps:
       mergeTestResults: true
       testRunTitle: "EPS Tests"
       failTaskOnFailedTests: true
-  - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
-    inputs:
-      repository: self
-      path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
-      submodules: true
-    displayName: Checkout code
       # Run the regression tests
   - bash: |
       if [[ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" ]]; then
@@ -276,7 +277,6 @@ steps:
     condition: succeeded()
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
-        make install-node
         npm run test --workspace packages/bdd-tests
       fi
     displayName: Run BDD Tests
