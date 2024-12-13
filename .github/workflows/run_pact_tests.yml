@@ -78,7 +78,7 @@ jobs:
         env:
           SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
           SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
-          APIGEE_ENVIRONMENT: ${{ inputs.VERSION_NUMBER }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
           PACT_PROVIDER_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           PACT_CONSUMER: nhsd-apim-eps-test-client
@@ -97,7 +97,7 @@ jobs:
         env:
           SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
           SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
-          APIGEE_ENVIRONMENT: ${{ inputs.VERSION_NUMBER }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
           PACT_PROVIDER_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           PACT_CONSUMER: eps-test-client
