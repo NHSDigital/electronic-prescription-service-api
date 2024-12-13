@@ -57,7 +57,7 @@ jobs:
         run: |
           make install
 
-      - name: Prepare pact
+      - name: Prepare pacts
         shell: bash
         run: |
           APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
@@ -75,6 +75,21 @@ jobs:
           export SIGNING_PRIVATE_KEY_PATH
           export SIGNING_CERT_PATH
           make create-prescribing-pacts
+
+          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
+          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
+          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
+          echo "PACT_VERSION: ${PACT_VERSION}"
+          echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
+          echo "PACT_CONSUMER: ${PACT_CONSUMER}"
+          echo "PACT_PROVIDER: ${PACT_PROVIDER}"
+          echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
+          echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
+          echo "API_PRODUCT: ${API_PRODUCT}"
+          echo "API_CLIENT_ID: HIDDEN"
+          echo "API_CLIENT_SECRET: HIDDEN"
+          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+
         env:
           SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
           SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
@@ -90,9 +105,24 @@ jobs:
           SIGNING_CERT:  ${{ secrets.SIGNING_CERT }}
 
 
-      - name: Prepare pact
+      - name: Verify pacts
         shell: bash
         run: |
+          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
+          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
+          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
+          echo "PACT_VERSION: ${PACT_VERSION}"
+          echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
+          echo "PACT_CONSUMER: ${PACT_CONSUMER}"
+          echo "PACT_PROVIDER: ${PACT_PROVIDER}"
+          echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
+          echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
+          echo "API_PRODUCT: ${API_PRODUCT}"
+          echo "CREATE_PACT_MAKEFILE_TARGET: ${CREATE_PACT_MAKEFILE_TARGET}"
+          echo "API_CLIENT_ID: HIDDEN"
+          echo "API_CLIENT_SECRET: HIDDEN"
+          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+
           make verify-pacts
         env:
           SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
@@ -102,8 +132,4 @@ jobs:
           PACT_PROVIDER_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           PACT_CONSUMER: eps-test-client
           PACT_PROVIDER: eps
-          API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
-          API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
           API_PRODUCT: prescribing
-          SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
-          SIGNING_CERT:  ${{ secrets.SIGNING_CERT }}
