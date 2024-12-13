@@ -136,6 +136,7 @@ steps:
       echo "##vso[task.setvariable variable=PACT_PROVIDER_URL]$PACT_PROVIDER_URL"
       echo "##vso[task.setvariable variable=PACT_CONSUMER]$PACT_CONSUMER"
       echo "##vso[task.setvariable variable=PACT_PROVIDER]$PACT_PROVIDER"
+      echo "##vso[task.setvariable variable=API_PRODUCT]$API_PRODUCT"
     displayName: Set PACT variables and install node dependencies
     name: setPactVariables
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
