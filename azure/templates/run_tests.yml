@@ -150,7 +150,6 @@ steps:
     displayName: Set PACT variables and install node dependencies
     name: setPactVariables
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       #!/bin/bash
 
@@ -190,7 +189,6 @@ steps:
 
     displayName: Show PACT variables
     name: showPactVariables
-    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       #!/bin/bash
 
@@ -214,7 +212,6 @@ steps:
       make ${CREATE_PACT_MAKEFILE_TARGET}
     displayName: Create PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       #!/bin/bash
 
@@ -237,7 +234,6 @@ steps:
       make verify-pacts
     displayName: Run PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - task: PublishBuildArtifacts@1
     displayName: "Publish Pact Tests"
     inputs:
@@ -275,11 +271,9 @@ steps:
       fi
     displayName: Regression Tests
     condition: succeeded()
-    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         npm run test --workspace packages/bdd-tests
       fi
     displayName: Run BDD Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"

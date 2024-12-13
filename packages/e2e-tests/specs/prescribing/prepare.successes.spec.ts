@@ -1,32 +1,33 @@
-import {Matchers, Pact} from "@pact-foundation/pact"
-import * as TestResources from "../../resources/test-resources"
 import {
   createInteraction,
   CreatePactOptions,
   getStringParameterByName,
   pactOptions
 } from "../../resources/common"
+import {Matchers} from "@pact-foundation/pact"
+import {Pact} from "@pact-foundation/pact"
+import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 
 describe("prepare prescribing e2e tests", () => {
-  test.each(TestResources.prepareCaseGroups)("should be able to prepare a %s message", async (
-    desc: string, request: fhir.Bundle, response: fhir.Parameters
-  ) => {
-    const options = new CreatePactOptions("prescribing", "prepare")
-    const provider = new Pact(pactOptions(options))
-    await provider.setup()
+  test.each(TestResources.prepareCaseGroups)(
+    "should be able to prepare a %s message",
+    async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+      const options = new CreatePactOptions("prescribing", "prepare")
+      const provider = new Pact(pactOptions(options))
+      await provider.setup()
 
-    const interaction = createInteraction(
-      options,
-      request,
-      getResponseExpectation(response),
-      `a request to prepare a ${desc} message`
-    )
+      const interaction = createInteraction(
+        options,
+        request,
+        getResponseExpectation(response),
+        `a request to prepare ${desc} message`
+      )
 
-    await provider.addInteraction(interaction)
-    await provider.writePact()
-    await provider.finalize()
-  })
+      await provider.addInteraction(interaction)
+      await provider.writePact()
+      await provider.finalize()
+    })
 })
 
 function getResponseExpectation(response: fhir.Parameters) {
