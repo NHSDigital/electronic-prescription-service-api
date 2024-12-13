@@ -150,7 +150,7 @@ steps:
     displayName: Set PACT variables and install node dependencies
     name: setPactVariables
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       #!/bin/bash
 
@@ -190,7 +190,7 @@ steps:
 
     displayName: Show PACT variables
     name: showPactVariables
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       #!/bin/bash
 
@@ -214,7 +214,7 @@ steps:
       make ${CREATE_PACT_MAKEFILE_TARGET}
     displayName: Create PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       #!/bin/bash
 
@@ -237,18 +237,18 @@ steps:
       make verify-pacts
     displayName: Run PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - task: PublishBuildArtifacts@1
     displayName: "Publish Pact Tests"
     inputs:
-      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/pact"
+      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api/packages/e2e-tests/pact"
       artifactName: "pact_tests"
       publishLocation: "Container"
     condition: eq(variables['run_smoke_tests'], 'true')
   - task: PublishBuildArtifacts@1
     displayName: "Publish Test Prescriptions"
     inputs:
-      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
       artifactName: "smoke-tests"
       publishLocation: "Container"
     condition: eq(variables['run_smoke_tests'], 'true')
@@ -275,9 +275,11 @@ steps:
       fi
     displayName: Regression Tests
     condition: succeeded()
+    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         npm run test --workspace packages/bdd-tests
       fi
     displayName: Run BDD Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+    workingDirectory: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"

@@ -68,8 +68,8 @@ jobs:
                 exit 1
           fi
           mkdir -p .secrets
-          cat "${SIGNING_PRIVATE_KEY}" > .secrets/private.key
-          cat "${SIGNING_CERT}" > .secrets/cert.crt
+          echo "${SIGNING_PRIVATE_KEY}" > .secrets/private.key
+          echo "${SIGNING_CERT}" > .secrets/cert.crt
           SIGNING_PRIVATE_KEY_PATH=${PWD}/.secrets/private.key
           SIGNING_CERT_PATH=${PWD}/.secrets/cert.crt
           export SIGNING_PRIVATE_KEY_PATH
