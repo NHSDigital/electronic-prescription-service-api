@@ -108,6 +108,8 @@ jobs:
       - name: Verify pacts
         shell: bash
         run: |
+          PACT_PROVIDER_URL=$(echo "$PACT_PROVIDER_URL" | tr '[:upper:]' '[:lower:]')
+          export PACT_PROVIDER_URL
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
