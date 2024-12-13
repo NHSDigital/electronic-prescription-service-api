@@ -60,13 +60,8 @@ jobs:
       - name: Prepare pacts
         shell: bash
         run: |
-          APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
+          APIGEE_ACCESS_TOKEN=dummy_token
           export APIGEE_ACCESS_TOKEN
-          if [ -z "$APIGEE_ACCESS_TOKEN" ]
-          then
-                echo "Could not retrieve APIGEE_ACCESS_TOKEN"
-                exit 1
-          fi
           mkdir -p .secrets
           echo "${SIGNING_PRIVATE_KEY}" > .secrets/private.key
           echo "${SIGNING_CERT}" > .secrets/cert.crt
@@ -74,7 +69,6 @@ jobs:
           SIGNING_CERT_PATH=${PWD}/.secrets/cert.crt
           export SIGNING_PRIVATE_KEY_PATH
           export SIGNING_CERT_PATH
-          make create-prescribing-pacts
 
           echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
@@ -90,6 +84,7 @@ jobs:
           echo "API_CLIENT_SECRET: HIDDEN"
           echo "APIGEE_ACCESS_TOKEN: HIDDEN"
 
+          make create-proxygen-pacts
         env:
           SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
           SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
@@ -131,3 +126,5 @@ jobs:
           PACT_CONSUMER: eps-test-client
           PACT_PROVIDER: eps
           API_PRODUCT: proxygen
+          API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
+          API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}

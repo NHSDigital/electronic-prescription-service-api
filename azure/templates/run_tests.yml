@@ -128,13 +128,7 @@ steps:
           export API_CLIENT_ID
           export API_CLIENT_SECRET
 
-          echo "Fetching Apigee access token..."
-          export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
-          if [ -z "$APIGEE_ACCESS_TOKEN" ]
-          then
-                echo "Could not retrieve APIGEE_ACCESS_TOKEN"
-                exit 1
-          fi
+          export APIGEE_ACCESS_TOKEN=dummy_token
           echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]$SIGNING_PRIVATE_KEY_PATH"
           echo "##vso[task.setvariable variable=SIGNING_CERT_PATH]$SIGNING_CERT_PATH"
           echo "##vso[task.setvariable variable=API_CLIENT_ID]$API_CLIENT_ID"

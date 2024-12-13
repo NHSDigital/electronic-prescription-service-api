@@ -12,8 +12,7 @@
     "create-live-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPattern live",
     "create-proxygen-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPattern proxygen",
     "fetch-apigee-access-token": "ts-node --project tsconfig.json ./auth/src/oauth.ts --use_strict",
-    "verify-pacts": "ts-node --project tsconfig.json ./broker/verify.ts --use_strict",
-    "generate-token": "ts-node --project tsconfig.json ./services/get-access-token.ts"
+    "verify-pacts": "ts-node --project tsconfig.json ./broker/verify.ts --use_strict"
   },
   "author": "NHS Digital",
   "license": "MIT",

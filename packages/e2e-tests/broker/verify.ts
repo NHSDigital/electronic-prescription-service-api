@@ -9,44 +9,48 @@ import {
   getProviderBaseUrl
 } from "../resources/common"
 import path from "path"
-// note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
 import {Verifier, VerifierOptions} from "@pact-foundation/pact"
-// pact-core does not currently support requestFilter to set auth tokens
-// *****************************************************************************************************
+import {getAuthToken} from "broker/oauth"
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(endpoint: string, operation?: string): Promise<any> {
+// define variable that is retrieved at runtime for an oauth2 token
+let oAuth2Token: string
+
+async function verify(endpoint: string, operation?: string): Promise<string> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
-  const pacticipant_suffix = getPacticipantSuffix(process.env["API_PRODUCT"])
+  const pacticipantSuffix = getPacticipantSuffix(process.env["API_PRODUCT"])
   const providerName = createProviderName(
-    pacticipant_suffix,
+    pacticipantSuffix,
     endpoint,
     operation,
     process.env.PACT_VERSION
   )
   const consumerName = createConsumerName(
-    pacticipant_suffix,
+    pacticipantSuffix,
     process.env.PACT_VERSION
   )
   const providerBaseUrl = getProviderBaseUrl(process.env["API_PRODUCT"], endpoint, operation)
-  let verifierOptions: VerifierOptions = {
+  const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
+
+  const verifierOptions: VerifierOptions = {
     consumerVersionTags: [process.env.PACT_VERSION],
     provider: providerName,
     providerVersion: providerVersion,
     providerBaseUrl: providerBaseUrl,
-    logLevel: "error"
-  }
-
-  const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
-  verifierOptions = {
-    ...verifierOptions,
+    logLevel: "error",
     pactUrls: [fileName],
-    // Healthcare worker role from /userinfo endpoint, i.e.
-    // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
     customProviderHeaders: {
       "NHSD-Session-URID": "555254242106" // for user UID 656005750108
+    },
+    // use a request filter to inject a valid auth token at runtime
+    requestFilter: (req, res, next) => {
+      if (!req.headers["authorization"]) {
+        next()
+        return
+      }
+      req.headers["authorization"] = `Bearer ${oAuth2Token}`
+      next()
     }
   }
 
@@ -118,8 +122,14 @@ async function verifyTaskTracker(): Promise<void> {
   await verifyOnce("task", "tracker")
 }
 
+async function getAccessToken(): Promise<string> {
+  oAuth2Token = await getAuthToken()
+  return
+}
+
 (async () => {
-  await verifyMetadata()
+  await getAccessToken()
+    .then(verifyMetadata)
     .then(verifyValidate)
     .then(verifyPrepare)
     .then(verifySend)

@@ -27,15 +27,15 @@ export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
 
 // used to add type-safety for adding a new pact
 export function pactOptions(options: CreatePactOptions): PactOptions {
-  const pacticipant_suffix = getPacticipantSuffix(options.apiMode)
+  const pacticipantSuffix = getPacticipantSuffix(options.apiMode)
   const providerName = createProviderName(
-    pacticipant_suffix,
+    pacticipantSuffix,
     options.apiEndpoint,
     options.apiOperation,
     process.env.PACT_VERSION
   )
   const consumerName = createConsumerName(
-    pacticipant_suffix,
+    pacticipantSuffix,
     process.env.PACT_VERSION
   )
   return {

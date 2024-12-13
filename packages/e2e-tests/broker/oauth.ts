@@ -62,10 +62,6 @@ export class AuthClient {
     return `https://${this.environment}.api.service.nhs.uk/oauth2-mock`
   }
 
-  getKeycloakUrl(): string {
-    return `https://identity.ptl.api.platform.nhs.uk/auth/realms/Cis2-mock-internal-dev/protocol/openid-connect`
-  }
-
   private getState(): string {
     // return uuid.v4()
     return "1234567890"
@@ -244,7 +240,7 @@ const exchangeCodeForToken = async (
   return tokenResponse.data
 }
 
-export const getAuthToken = async (): Promise<string> => {
+export async function getAuthToken(): Promise<string> {
   const client = new AuthClient()
   const axiosInstance = getAxiosInstance(client)
 
@@ -261,5 +257,3 @@ export const getAuthToken = async (): Promise<string> => {
 
   return tokenResponse.access_token
 }
-
-getAuthToken().then(data => console.log(data)).catch(err => console.error(err))
