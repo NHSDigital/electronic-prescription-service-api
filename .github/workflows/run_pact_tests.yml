@@ -90,9 +90,8 @@ jobs:
           SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
-          PACT_PROVIDER_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
-          PACT_CONSUMER: nhsd-apim-eps-test-client
-          PACT_PROVIDER: nhsd-apim-eps
+          PACT_CONSUMER: eps-test-client
+          PACT_PROVIDER: eps
           API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
           API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
           API_MODE: live
@@ -111,7 +110,8 @@ jobs:
           echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
           echo "PACT_VERSION: ${PACT_VERSION}"
-          echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
+          echo "PACT_PROVIDER_PRESCRIBING_URL: ${PACT_PROVIDER_PRESCRIBING_URL}"
+          echo "PACT_PROVIDER_DISPENSING_URL: ${PACT_PROVIDER_DISPENSING_URL}"
           echo "PACT_CONSUMER: ${PACT_CONSUMER}"
           echo "PACT_PROVIDER: ${PACT_PROVIDER}"
           echo "API_MODE: ${API_MODE}"
