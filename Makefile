@@ -344,11 +344,11 @@ clear-pacts:
 create-sandbox-pacts: clear-pacts
 	cd packages/e2e-tests && npm run create-sandbox-pacts
 
-create-live-pacts: clear-pacts
-	cd packages/e2e-tests && npm run create-live-pacts
+create-apim-pacts: clear-pacts
+	cd packages/e2e-tests && API_DEPLOYMENT_METHOD=apim npm run create-live-pacts
 
 create-proxygen-pacts: clear-pacts
-	cd packages/e2e-tests && npm run create-proxygen-pacts
+	cd packages/e2e-tests && API_DEPLOYMENT_METHOD=proxygen npm run create-live-pacts
 
 verify-pacts:
 	cd packages/e2e-tests && npm run verify-pacts

@@ -79,10 +79,10 @@ jobs:
           echo "PACT_PROVIDER: ${PACT_PROVIDER}"
           echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
           echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
-          echo "API_PRODUCT: ${API_PRODUCT}"
+          echo "API_MODE: ${API_MODE}"
           echo "API_CLIENT_ID: HIDDEN"
           echo "API_CLIENT_SECRET: HIDDEN"
-          echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+          echo "API_DEPLOYMENT_METHOD: ${API_DEPLOYMENT_METHOD}"
 
           make create-proxygen-pacts
         env:
@@ -95,9 +95,10 @@ jobs:
           PACT_PROVIDER: nhsd-apim-eps
           API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
           API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
-          API_PRODUCT: proxygen
+          API_MODE: live
           SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
           SIGNING_CERT:  ${{ secrets.SIGNING_CERT }}
+          API_DEPLOYMENT_METHOD: proxygen
 
 
       - name: Verify pacts
@@ -113,7 +114,8 @@ jobs:
           echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
           echo "PACT_CONSUMER: ${PACT_CONSUMER}"
           echo "PACT_PROVIDER: ${PACT_PROVIDER}"
-          echo "API_PRODUCT: ${API_PRODUCT}"
+          echo "API_MODE: ${API_MODE}"
+          echo "API_DEPLOYMENT_METHOD: ${API_DEPLOYMENT_METHOD}"
 
           make verify-pacts
         env:
@@ -125,6 +127,7 @@ jobs:
           PACT_PROVIDER_DISPENSING_URL: https://internal-dev.api.service.nhs.uk/fhir-dispensing-${{ inputs.VERSION_NUMBER }}
           PACT_CONSUMER: eps-test-client
           PACT_PROVIDER: eps
-          API_PRODUCT: proxygen
           API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
           API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
+          API_DEPLOYMENT_METHOD: proxygen
+          API_MODE: live

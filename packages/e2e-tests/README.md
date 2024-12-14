@@ -24,14 +24,24 @@ export APIGEE_ENVIRONMENT=internal-dev
 For APIM deployed proxy set this
 ```
 export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/electronic-prescriptions # can also point to a pull request
-export API_PRODUCT=live
+export API_DEPLOYMENT_METHOD=apim
 ```
 
 For proxygen deployed proxy set this
 ```
 export PACT_PROVIDER_PRESCRIBING_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/fhir-prescribing # can also point to a pull request
 export PACT_PROVIDER_DISPENSING_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/fhir-dispensing # can also point to a pull request
-export API_PRODUCT=proxygen
+export API_DEPLOYMENT_METHOD=proxygen
+```
+
+For sandbox testing set this
+```
+export API_MODE=sandbox
+```
+
+For other testing set this
+```
+export API_MODE=live
 ```
 
 The `api_client_id` and `api_client_secret` can be found from the developer portal.

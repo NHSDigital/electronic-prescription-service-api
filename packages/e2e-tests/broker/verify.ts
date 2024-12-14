@@ -19,7 +19,7 @@ async function verify(endpoint: string, operation?: string): Promise<string> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
-  const pacticipantSuffix = getPacticipantSuffix(process.env["API_PRODUCT"])
+  const pacticipantSuffix = getPacticipantSuffix(process.env["API_MODE"])
   const providerName = createProviderName(
     pacticipantSuffix,
     endpoint,
@@ -30,7 +30,7 @@ async function verify(endpoint: string, operation?: string): Promise<string> {
     pacticipantSuffix,
     process.env.PACT_VERSION
   )
-  const providerBaseUrl = getProviderBaseUrl(process.env["API_PRODUCT"], endpoint, operation)
+  const providerBaseUrl = getProviderBaseUrl(process.env["API_DEPLOYMENT_METHOD"], endpoint, operation)
   const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
 
   const verifierOptions: VerifierOptions = {

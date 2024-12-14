@@ -10,7 +10,6 @@
     "clear-cache": "jest --clearCache",
     "create-sandbox-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPattern sandbox",
     "create-live-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPattern live",
-    "create-proxygen-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPattern proxygen",
     "fetch-apigee-access-token": "ts-node --project tsconfig.json ./auth/src/oauth.ts --use_strict",
     "verify-pacts": "ts-node --project tsconfig.json ./broker/verify.ts --use_strict"
   },

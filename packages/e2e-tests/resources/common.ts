@@ -19,7 +19,7 @@ export class CreatePactOptions {
   }
 }
 
-export type ApiMode = "live" | "sandbox" | "proxygen"
+export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
   "validate" | "metadata"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
@@ -39,7 +39,7 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
     process.env.PACT_VERSION
   )
   return {
-    spec: 2,
+    spec: 4,
     consumer: consumerName,
     provider: providerName,
     pactfileWriteMode: "merge",
@@ -50,19 +50,16 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
 
 // helper functions
 
-export function getProviderBaseUrl(apiProduct, endpoint, operation) {
-  switch(apiProduct) {
-    case "sandbox": {
+export function getProviderBaseUrl(apiDeploymentMethod, endpoint, operation) {
+  switch(apiDeploymentMethod) {
+    case "apim": {
       return process.env.PACT_PROVIDER_URL
     }
     case "proxygen": {
       return getProxygenProviderBaseUrl(endpoint, operation)
     }
-    case "live": {
-      return process.env.PACT_PROVIDER_URL
-    }
     default: {
-      throw new Error("Unknown api mode")
+      throw new Error("Unknown api deployment method")
     }
   }
 }
@@ -130,9 +127,6 @@ export function getPacticipantSuffix(apiMode) {
     case "sandbox": {
       return "sandbox"
     }
-    case "proxygen": {
-      return "proxygen"
-    }
     case "live": {
       return "live"
     }
@@ -150,12 +144,12 @@ export function createConsumerName(
 }
 
 export function createProviderName(
-  pacticipant_suffix: string,
+  pacticipantSuffix: string,
   apiEndpoint: string,
   apiOperation: string,
-  pact_version: string
+  pactVersion: string
 ) {
-  return `${pacticipant_suffix}+${apiEndpoint}+${apiOperation}+${pact_version}`
+  return `${pacticipantSuffix}+${apiEndpoint}+${apiOperation ? apiOperation: ""}+${pactVersion}`
 }
 
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
@@ -186,7 +180,7 @@ export function getHeaders(): {[header: string]: string} {
     "Content-Type": "application/fhir+json; fhirVersion=4.0",
     "X-Request-ID": requestId,
     "X-Correlation-ID": correlationId,
-    "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+    "Authorization": "dummy auth header"
   }
 }
 
