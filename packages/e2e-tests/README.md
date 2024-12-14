@@ -1,12 +1,21 @@
 # End to end tests using pact
 
-This contains code to create pacts and verify them as a provider
+This contains code to create pacts and verify them as a provider.   
 
-Tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.
+Tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.   
 
-Once setup see:
+There are two stages to the testing. Create pact step uses jest to create pact files based on examples in this repo. These are defined in the specs folder. 
+The sandbox folder contains tests that run against sandbox deployments, and the live folder contains tests that run against a non sandbox deployment.   
 
-**[Add a new example](./docs/AddingExamples.md)**
+The live tests have a 'beforeAll' step which runs updatePrescriptions in services/update-prescriptions.ts which updates the prescription id in the examples and creates a valid signature in the payload that is going to be sent. 
+
+Preparing the tests generates pact files under pact/pacts.
+
+
+Once the pact files are generated, a verify step is run which runs broker/verify.ts. This runs in a specific order as some of the tests expect prescriptions to be created or released and so are done as one of the initial steps. This script dynamically inserts the target url into the request, and also adds an OAuth2 token to the request header before sending it
+
+
+If a new example is added, see [Add a new example](./docs/AddingExamples.md) for more details on what needs doing
 
 
 ### To run locally
