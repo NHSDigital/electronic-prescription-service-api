@@ -237,7 +237,7 @@ paths:
       summary: Download prescriptions - Dispensing
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from EPS that are available for dispensing. BLAH
+        Use this endpoint to download prescriptions from EPS that are available for dispensing.
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
