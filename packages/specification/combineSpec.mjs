@@ -10,7 +10,7 @@ const PRESCRIBING_SPEC='./fhir-prescribing.yaml'
 const DISPENSING_SPEC='./fhir-dispensing.yaml'
 const TEMPLATE_SPEC='./electronic-prescription-service-api.template.yaml'
 const COMBINED_SPEC='./electronic-prescription-service-api.new.yaml'
-const OLD_SPEC='./electronic-prescription-service-api.new.yaml'
+const OLD_SPEC='./electronic-prescription-service-api.yaml'
 
 // list of paths that will not be added to the combined spec
 // these are in the source specs to allow correct paths to be corrected in Apigee
