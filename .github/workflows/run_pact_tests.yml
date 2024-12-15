@@ -70,8 +70,6 @@ jobs:
           export SIGNING_PRIVATE_KEY_PATH
           export SIGNING_CERT_PATH
 
-          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
-          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
           echo "PACT_VERSION: ${PACT_VERSION}"
           echo "PACT_PROVIDER_URL: ${PACT_PROVIDER_URL}"
@@ -86,8 +84,6 @@ jobs:
 
           make create-proxygen-pacts
         env:
-          SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
-          SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
           PACT_CONSUMER: eps-test-client
@@ -106,8 +102,6 @@ jobs:
           PACT_PROVIDER_PRESCRIBING_URL=$(echo "$PACT_PROVIDER_PRESCRIBING_URL" | tr '[:upper:]' '[:lower:]')
           PACT_PROVIDER_DISPENSING_URL=$(echo "$PACT_PROVIDER_DISPENSING_URL" | tr '[:upper:]' '[:lower:]')
           export PACT_PROVIDER_URL
-          echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
-          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
           echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
           echo "PACT_VERSION: ${PACT_VERSION}"
           echo "PACT_PROVIDER_PRESCRIBING_URL: ${PACT_PROVIDER_PRESCRIBING_URL}"
@@ -119,8 +113,6 @@ jobs:
 
           make verify-pacts
         env:
-          SERVICE_ARTIFACT_NAME: electronic-prescription-service-api-prescribing-pacts
-          SERVICE_BASE_PATH: fhir-prescribing-${{ inputs.VERSION_NUMBER }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
           PACT_PROVIDER_PRESCRIBING_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
