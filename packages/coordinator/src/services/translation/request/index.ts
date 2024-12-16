@@ -25,6 +25,7 @@ export async function convertFhirMessageToSignedInfoMessage(
   }
 
   const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar(applicationId)
+  logger.info({hashingAlgorithm}, `Using hashing algorithm ${hashingAlgorithm}`)
   const parentPrescription = convertParentPrescription(bundle, logger)
   const fragments = extractFragments(parentPrescription)
   const canonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
