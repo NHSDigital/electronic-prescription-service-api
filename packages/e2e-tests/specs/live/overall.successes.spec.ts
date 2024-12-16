@@ -9,6 +9,9 @@ import * as claimSuccesses from "./claim.successes"
 const logger = pino()
 
 beforeAll(async() => {
+  if (!process.env["API_DEPLOYMENT_METHOD"]) {
+    throw new Error("API_DEPLOYMENT_METHOD is not defined")
+  }
   if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
     await updatePrescriptions(
       fetcher.prescriptionOrderExamples.filter(e => e.isSuccess),

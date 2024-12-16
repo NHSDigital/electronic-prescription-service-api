@@ -62,10 +62,6 @@ export class AuthClient {
     return `https://${this.environment}.api.service.nhs.uk/oauth2-mock`
   }
 
-  getKeycloakUrl(): string {
-    return `https://identity.ptl.api.platform.nhs.uk/auth/realms/Cis2-mock-internal-dev/protocol/openid-connect`
-  }
-
   private getState(): string {
     // return uuid.v4()
     return "1234567890"
@@ -100,8 +96,6 @@ export class AuthClient {
     }
   }
 
-  // https://internal-dev.api.service.nhs.uk/oauth2-mock/authorize
-  // ?client_id=9AfEOqUltvbzj8YKXPZmN1ZfwaCRo4hs&redirect_uri=https://example.org/callback&state=123&response_type=code
   getAuthUrl(): string {
     return `/authorize`
   }
@@ -201,7 +195,7 @@ type AuthCallbackResponseData = {
 }
 
 const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackResponseData => {
-  const responsePath: string = authResponse.request.path // /?code=UmsJVKNA&state=1234567890
+  const responsePath: string = authResponse.request.path
 
   const searchParams = new URLSearchParams(responsePath.substring(2)) // skip the leading `/?`
   return {
@@ -246,7 +240,7 @@ const exchangeCodeForToken = async (
   return tokenResponse.data
 }
 
-export const getAuthToken = async (): Promise<string> => {
+export async function getAuthToken(): Promise<string> {
   const client = new AuthClient()
   const axiosInstance = getAxiosInstance(client)
 
@@ -263,5 +257,3 @@ export const getAuthToken = async (): Promise<string> => {
 
   return tokenResponse.access_token
 }
-
-getAuthToken().then(data => console.log(data)).catch(err => console.error(err))

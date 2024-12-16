@@ -27,13 +27,21 @@ export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
 
 // used to add type-safety for adding a new pact
 export function pactOptions(options: CreatePactOptions): PactOptions {
-  const sandbox = options.apiMode === "sandbox"
-  const pacticipant_suffix = sandbox ? "-sandbox" : ""
+  const pacticipantSuffix = getPacticipantSuffix(options.apiMode)
+  const providerName = createProviderName(
+    pacticipantSuffix,
+    options.apiEndpoint,
+    options.apiOperation,
+    process.env.PACT_VERSION
+  )
+  const consumerName = createConsumerName(
+    pacticipantSuffix,
+    process.env.PACT_VERSION
+  )
   return {
-    spec: 2,
-    consumer: `nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}`,
-    /* eslint-disable-next-line max-len */
-    provider: `nhsd-apim-eps${pacticipant_suffix}+${options.apiEndpoint}${options.apiOperation ? "-" + options.apiOperation : ""}+${process.env.PACT_VERSION}`,
+    spec: 4,
+    consumer: consumerName,
+    provider: providerName,
     pactfileWriteMode: "merge",
     dir: path.join(__dirname, "../pact/pacts"),
     logLevel: "info"
@@ -41,6 +49,109 @@ export function pactOptions(options: CreatePactOptions): PactOptions {
 }
 
 // helper functions
+
+export function getProviderBaseUrl(apiDeploymentMethod, endpoint, operation) {
+  switch(apiDeploymentMethod) {
+    case "apim": {
+      return process.env.PACT_PROVIDER_URL
+    }
+    case "proxygen": {
+      return getProxygenProviderBaseUrl(endpoint, operation)
+    }
+    default: {
+      throw new Error("Unknown api deployment method")
+    }
+  }
+}
+
+function getProxygenProviderBaseUrl(endpoint, operation) {
+  switch(endpoint) {
+    case "validate": {
+      return process.env.PACT_PROVIDER_PRESCRIBING_URL
+    }
+    case "prepare": {
+      return process.env.PACT_PROVIDER_PRESCRIBING_URL
+    }
+    case "process": {
+      switch(operation) {
+        case "send": {
+          return process.env.PACT_PROVIDER_PRESCRIBING_URL
+        }
+        case "cancel": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "dispense": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "dispenseamend": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        default: {
+          throw new Error("Unknown endpoint")
+        }
+      }
+    }
+    case "task": {
+      switch(operation) {
+        case "release": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "return": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "withdraw": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        case "tracker": {
+          return process.env.PACT_PROVIDER_DISPENSING_URL
+        }
+        default: {
+          throw new Error("Unknown endpoint")
+        }
+      }
+    }
+    case "claim": {
+      return process.env.PACT_PROVIDER_DISPENSING_URL
+    }
+    case "metadata": {
+      return process.env.PACT_PROVIDER_DISPENSING_URL
+    }
+    default: {
+      throw new Error("Unknown endpoint")
+    }
+  }
+}
+
+export function getPacticipantSuffix(apiMode) {
+  switch(apiMode) {
+    case "sandbox": {
+      return "sandbox"
+    }
+    case "live": {
+      return "live"
+    }
+    default: {
+      throw new Error("Unknown apiMode")
+    }
+  }
+}
+
+export function createConsumerName(
+  pacticipant_suffix: string,
+  pact_version: string
+) {
+  return `${pacticipant_suffix}+${pact_version}`
+}
+
+export function createProviderName(
+  pacticipantSuffix: string,
+  apiEndpoint: string,
+  apiOperation: string,
+  pactVersion: string
+) {
+  return `${pacticipantSuffix}+${apiEndpoint}+${apiOperation ? apiOperation: ""}+${pactVersion}`
+}
+
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
   return (parameter as fhir.StringParameter).valueString !== undefined
 }
@@ -69,7 +180,7 @@ export function getHeaders(): {[header: string]: string} {
     "Content-Type": "application/fhir+json; fhirVersion=4.0",
     "X-Request-ID": requestId,
     "X-Correlation-ID": correlationId,
-    "Authorization": `Bearer ${process.env.APIGEE_ACCESS_TOKEN}`
+    "Authorization": "dummy auth header"
   }
 }
 
