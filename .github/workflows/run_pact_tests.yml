@@ -123,3 +123,13 @@ jobs:
           API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
           API_DEPLOYMENT_METHOD: proxygen
           API_MODE: live
+
+      - uses: actions/upload-artifact@v4
+        name: Upload pact_tests
+        if: success() || failure()
+        with:
+          name: pact_tests
+          path: |
+            packages/e2e-tests/prescriptions*.txt
+            packages/e2e-tests/pact
+      
