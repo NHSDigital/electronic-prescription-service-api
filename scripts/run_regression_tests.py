@@ -55,7 +55,8 @@ def trigger_test_run(env, pr_label, product, auth_header):
             "environment": env,
             "pull_request_id": pr_label,
             "product": product,
-            "github_tag": REGRESSION_TESTS_REPO_TAG
+            "github_tag": REGRESSION_TESTS_REPO_TAG,
+            "run_sha1_tests": "true"
         },
     }
 
