@@ -85,6 +85,26 @@ describe("Spine communication", () => {
     loggerSpy.mockRestore()
   })
 
+  test("502 polling response returns an error", async () => {
+    mock.onGet().reply(502, "502 response")
+
+    const loggerSpy = jest.spyOn(logger, "error")
+    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
+
+    expect(spineResponse.statusCode).toBe(502)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      {
+        error: expect.anything(),
+        response: expect.objectContaining({
+          data: "502 response",
+          status: 502
+        })
+      },
+      expect.stringContaining("Failed polling request for ")
+    )
+    loggerSpy.mockRestore()
+  })
+
   test("Async success messages returned from spine return a 200 response", async () => {
     const asyncSuccess = readFileAsString("async_success.xml")
     mock.onPost().reply(200, `statusText: "OK", responseText: ${asyncSuccess}`)
