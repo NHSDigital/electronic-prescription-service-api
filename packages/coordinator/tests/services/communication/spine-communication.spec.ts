@@ -92,7 +92,7 @@ describe("Spine communication", () => {
     mock.onGet().reply(502, "502 response")
 
     const loggerSpy = jest.spyOn(logger, "error")
-    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
+    const spineResponse = await requestHandler.poll("test_polling_location", "200000001285", logger)
 
     expect(spineResponse.statusCode).toBe(502)
     expect(loggerSpy).toHaveBeenCalledWith(
@@ -103,7 +103,7 @@ describe("Spine communication", () => {
           status: 502
         })
       },
-      expect.stringContaining("Failed polling request for ")
+      expect.stringContaining("Failed polling request for polling path test_polling_location.")
     )
     loggerSpy.mockRestore()
   })
