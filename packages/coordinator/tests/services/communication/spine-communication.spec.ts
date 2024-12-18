@@ -66,6 +66,16 @@ describe("Spine communication", () => {
       .toBe("example.com/eps/_poll/test-content-location")
   })
 
+  test("500 polling response returns 202 status", async () => {
+    mock.onGet().reply(500, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+
+    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
+
+    expect(spineResponse.statusCode).toBe(202)
+  })
+
   test("Async success messages returned from spine return a 200 response", async () => {
     const asyncSuccess = readFileAsString("async_success.xml")
     mock.onPost().reply(200, `statusText: "OK", responseText: ${asyncSuccess}`)
