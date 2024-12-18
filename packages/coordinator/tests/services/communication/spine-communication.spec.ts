@@ -67,13 +67,22 @@ describe("Spine communication", () => {
   })
 
   test("500 polling response returns 202 status", async () => {
-    mock.onGet().reply(500, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location"
-    })
+    mock.onGet().reply(500, "500 response")
 
+    const loggerSpy = jest.spyOn(logger, "warn")
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
     expect(spineResponse.statusCode).toBe(202)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      {
+        response: expect.objectContaining({
+          data: "500 response",
+          status: 500
+        })
+      },
+      expect.stringContaining("500 response received from polling path")
+    )
+    loggerSpy.mockRestore()
   })
 
   test("Async success messages returned from spine return a 200 response", async () => {

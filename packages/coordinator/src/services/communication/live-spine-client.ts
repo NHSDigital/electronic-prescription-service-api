@@ -110,7 +110,7 @@ export class LiveSpineClient implements SpineClient {
       }
       if (error.response.status === 500) {
         // treat a 500 response as a 202 response
-        logger.warn({error, response: responseToLog}, `500 response received from polling path ${path}`)
+        logger.warn({response: responseToLog}, `500 response received from polling path ${path}`)
         return {
           body: {},
           statusCode: 202
