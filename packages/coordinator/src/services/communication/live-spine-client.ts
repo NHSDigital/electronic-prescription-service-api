@@ -114,7 +114,7 @@ export class LiveSpineClient implements SpineClient {
         return LiveSpineClient.handlePollableOrImmediateResponse({
           data: {},
           status: 202,
-          statusText: "OK",
+          statusText: "Accepted",
           headers: {},
           config: error.response.config
         }, logger, `/_poll/${path}`)
