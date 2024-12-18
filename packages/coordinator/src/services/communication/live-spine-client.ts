@@ -111,10 +111,13 @@ export class LiveSpineClient implements SpineClient {
       if (error.response.status === 500) {
         // treat a 500 response as a 202 response
         logger.warn({response: responseToLog}, `500 response received from polling path ${path}`)
-        return {
-          body: {},
-          statusCode: 202
-        }
+        return LiveSpineClient.handlePollableOrImmediateResponse({
+          data: {},
+          status: 202,
+          statusText: "OK",
+          headers: {},
+          config: error.response.config
+        }, logger, `/_poll/${path}`)
       }
       logger.error({error, response: responseToLog}, `Failed polling request for polling path ${path}. Error: ${error}`)
       return LiveSpineClient.handleError(error)

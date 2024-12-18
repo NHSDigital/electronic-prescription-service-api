@@ -70,9 +70,12 @@ describe("Spine communication", () => {
     mock.onGet().reply(500, "500 response")
 
     const loggerSpy = jest.spyOn(logger, "warn")
-    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
+    const spineResponse = await requestHandler.poll("test-polling-location", "200000001285", logger)
 
     expect(spineResponse.statusCode).toBe(202)
+    expect(spine.isPollable(spineResponse)).toBe(true)
+    expect((spineResponse as spine.SpinePollableResponse).pollingUrl)
+      .toBe("example.com/eps/_poll/test-polling-location")
     expect(loggerSpy).toHaveBeenCalledWith(
       {
         response: expect.objectContaining({
