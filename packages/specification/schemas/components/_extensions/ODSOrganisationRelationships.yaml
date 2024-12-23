@@ -12,8 +12,9 @@ properties:
     items:
       type: object
       required: [url, valueIdentifier]
-      description: Used to identify the reimbursement authority that a notification needs to be sent to. 
-For England, this will be NHS Business Services Authority - T1450. For Wales, this will be NHS Wales Shared Services Partnership - RQFZ1.
+      description: |
+        Used to identify the reimbursement authority that a notification needs to be sent to. 
+        For England, this will be NHS Business Services Authority - T1450. For Wales, this will be NHS Wales Shared Services Partnership - RQFZ1.
       properties:
         url: 
           type: string
