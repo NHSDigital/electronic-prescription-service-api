@@ -95,7 +95,8 @@ properties:
   requester:
     type: object
     description: |
-      Reference object to identify the requester of a prescription. 
+      Reference object to identify the requester of a prescription.
+      The requester's professional code, for example a GMC registration number, must be provided.
       A PractitionerRole resource within the Bundle must be referenced.
     properties:
       reference:
