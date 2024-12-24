@@ -459,10 +459,12 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			EnableMutualTLS=$$enable_mutual_tls \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
+			LogRetentionInDays=$$LOG_RETENTION_DAYS \
 			Env=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
 			ZoneIDExport=$$ZONE_ID_EXPORT \
-			TargetSpineServer=$$TARGET_SPINE_SERVER
+			TargetSpineServer=$$TARGET_SPINE_SERVER \
+			DockerImageTag=$$DOCKER_IMAGE_TAG
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh

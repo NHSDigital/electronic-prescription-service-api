@@ -37,9 +37,9 @@ on:
       #   required: false
       #   type: string
       #   default: INFO
-      # LOG_RETENTION_DAYS:
-      #   required: true
-      #   type: string
+      LOG_RETENTION_DAYS:
+        required: true
+        type: string
       # CREATE_INT_RELEASE_NOTES:
       #   type: boolean
       #   default: false
@@ -62,6 +62,9 @@ on:
         required: false
         type: string
       TARGET_SPINE_SERVER:
+        required: true
+        type: string
+      DOCKER_IMAGE_TAG:
         required: true
         type: string
     secrets:
@@ -98,7 +101,7 @@ jobs:
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
-          role-session-name: github-actions
+          role-session-name: fhir-facade-cloud-formation-deploy
 
       - name: Download build artifact
         uses: actions/download-artifact@v4
@@ -177,18 +180,18 @@ jobs:
 
       - name: Push FHIR Facade image to Amazon ECR
         run: |
-          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.VERSION_NUMBER }}"
+          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
 
       - name: Push Validator image to Amazon ECR
         run: |
-          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.VERSION_NUMBER }}"
+          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
 
       - name: Check fhir facade scan results
         env:
           REPOSITORY_NAME: fhir-facade-repo
-          IMAGE_TAG: ${{ inputs.VERSION_NUMBER }}
+          IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
         working-directory: .github/scripts
         run: |
           ./check_ecr_image_scan_results.sh
@@ -196,7 +199,7 @@ jobs:
       - name: Check validator scan results
         env:
           REPOSITORY_NAME: validator-repo
-          IMAGE_TAG: ${{ inputs.VERSION_NUMBER }}
+          IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
         working-directory: .github/scripts
         run: |
           ./check_ecr_image_scan_results.sh
@@ -217,5 +220,7 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
           ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
+          LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
           TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
         run: ./release_code.sh

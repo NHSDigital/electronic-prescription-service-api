@@ -415,7 +415,7 @@
                 },
                 "validityPeriod": {
                   "start": "2022-02-19",
-                  "end": "2022-03-19"
+                  "end": "2022-03-19T23:59:59Z"
                 },
                 "expectedSupplyDuration": {
                   "unit": "days",
@@ -565,7 +565,7 @@
                 },
                 "validityPeriod": {
                   "start": "2022-02-19",
-                  "end": "2022-03-19"
+                  "end": "2022-03-19T23:59:59Z"
                 },
                 "expectedSupplyDuration": {
                   "unit": "days",

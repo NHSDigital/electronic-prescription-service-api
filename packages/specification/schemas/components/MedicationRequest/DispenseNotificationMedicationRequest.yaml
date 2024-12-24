@@ -160,8 +160,10 @@ properties:
             description: |
               End date of an issue; capped at 12 months and cannot exceed the prescription's end date.
               Overall validity of the drug.
-            format: date
-            example: "2022-10-21"
+              Must be in date-time format with the time set to 23:59:59 on the last valid day of the prescription, including for single-day prescriptions. 
+              Example: "2022-10-21T23:59:59Z"
+            format: date-time   
+            example: "2022-10-21T23:59:59Z"        
       expectedSupplyDuration:
         type: object
         description: |
