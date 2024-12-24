@@ -9,7 +9,7 @@ env:
 
 jobs:
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v3.0.0
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.0.5
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -48,13 +48,20 @@ jobs:
    runs-on: ubuntu-latest
    outputs:
      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+     sha_short: ${{ steps.commit_id.outputs.sha_short }}
 
    steps:
-     - name: Get Commit ID
-       id: commit_id
-       run: |
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        ref: ${{ env.BRANCH_NAME }}
+
+    - name: Get Commit ID
+      id: commit_id
+      run: |
         #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
-         echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   package_code:
     needs: [get_issue_number, get_commit_id]
@@ -80,7 +87,8 @@ jobs:
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
-      TARGET_SPINE_SERVER: veit07.devspineservices.nhs.uk
+      TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
+      DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
 
@@ -101,5 +109,6 @@ jobs:
       LOG_RETENTION_DAYS: 30
       # DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: sandbox
+      DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
