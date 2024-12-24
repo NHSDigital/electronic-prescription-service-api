@@ -4,14 +4,13 @@ import * as common from "./common"
 
 const GP_PRACTICE_CODE_NOT_KNOWN = "V81999"
 
-function unknownGPPractice() {
-  const unknownGP: common.IdentifierReference<practitionerRole.Organization> = {
+function unknownGPPractice(): common.IdentifierReference<practitionerRole.Organization> {
+  return {
     identifier: {
-      system: "http://hl7.org/fhir/sid/us-npi",
+      system: "https://fhir.nhs.uk/Id/ods-organization-code",
       value: GP_PRACTICE_CODE_NOT_KNOWN
     }
   }
-  return unknownGP
 }
 
 export class Patient extends common.Resource {
@@ -22,22 +21,17 @@ export class Patient extends common.Resource {
   gender?: string
   birthDate?: string
   address?: Array<demographics.Address>
+  generalPractitioner?: Array<common.IdentifierReference<practitionerRole.Organization>>
 
-  private _generalPractitioner?: Array<common.IdentifierReference<practitionerRole.Organization>>
+  constructor(data?: Partial<Patient>) {
+    super()
+    // Default behaviour
+    Object.assign(this, data)
 
-  get generalPractitioner(): Array<common.IdentifierReference<practitionerRole.Organization>> {
-    if (!this._generalPractitioner) {
-      // Provide a default value if none is set
-      const defaultGP = unknownGPPractice()
-      this._generalPractitioner = [defaultGP]
+    // If generalPractitioner is undefined or empty, default to unknownGPPractice().
+    if (!this.generalPractitioner || this.generalPractitioner.length === 0) {
+      this.generalPractitioner = [unknownGPPractice()]
     }
-    return this._generalPractitioner
-  }
-
-  set generalPractitioner(
-    value: Array<common.IdentifierReference<practitionerRole.Organization>> | undefined
-  ) {
-    this._generalPractitioner = value
   }
 }
 
