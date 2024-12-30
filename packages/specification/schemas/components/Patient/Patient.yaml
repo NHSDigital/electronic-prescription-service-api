@@ -132,9 +132,9 @@ properties:
       type: object
       properties:
         system:
-          description: Means of communication, such as phone or email.
+          description: Mean of communication allowed is Phone only
           type: string
-          enum: [phone, fax, email, other]
+          enum: [phone]
         use:
           type: string
           description: Location associated with communication system.
