@@ -48,7 +48,7 @@ properties:
     type: string
     description: |
       The intent of a MedicationRequest object. 
-      For acute prescriptions, this should be 'order'
+      For acute prescriptions, this should be 'order'.
       For repeat and eRD prescriptions, this should be 'original order' for the first prescription issue. For subsequent issues, this should be 'instance-order'.
     enum:
       - order
