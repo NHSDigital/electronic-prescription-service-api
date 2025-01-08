@@ -132,7 +132,7 @@ properties:
       type: object
       properties:
         system:
-          description: Mean of communication allowed is Phone only
+          description: Means of communication allowed is Phone only
           type: string
           enum: [phone]
         use:
