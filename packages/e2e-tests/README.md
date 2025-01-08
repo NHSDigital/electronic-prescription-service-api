@@ -57,7 +57,7 @@ The `api_client_id` and `api_client_secret` can be found from the developer port
 Now run ONE of the following commands to create the pact files locally:
 
 ```
-make create-live-pacts
+make create-apim-pacts
 make create-sandbox-pacts
 make create-proxygen-pacts
 ```
