@@ -367,7 +367,7 @@ async function signPrescription(
   if (provenancesCheck.length > 0) {
     throw new Error("Could not remove provenance, this must be removed to get a fresh timestamp")
   }
-  const prepareResponse = await convertFhirMessageToSignedInfoMessage(prepareRequest, logger)
+  const prepareResponse = await convertFhirMessageToSignedInfoMessage(prepareRequest, "fakeApplicationId", logger)
   const digestParameter = prepareResponse.parameter.find((p) => p.name === "digest") as fhir.StringParameter
   const timestampParameter = prepareResponse.parameter.find((p) => p.name === "timestamp") as fhir.StringParameter
   const digest = Buffer.from(digestParameter.valueString, "base64").toString("utf-8")
@@ -376,7 +376,7 @@ async function signPrescription(
     `<SignedInfo>`
   )
   const signature = crypto
-    .sign("sha1", Buffer.from(digest, "utf-8"), {
+    .sign(null, Buffer.from(digest, "utf-8"), {
       key: fs.readFileSync(privateKeyPath, "utf-8"),
       padding: crypto.constants.RSA_PKCS1_PADDING
     })
@@ -403,7 +403,7 @@ async function signPrescription(
   provenance.signature[0].data = Buffer.from(xmlDSig, "utf-8").toString("base64")
 
   try {
-    const signatureVerifier = crypto.createVerify("RSA-SHA1")
+    const signatureVerifier = crypto.createVerify("RSA-SHA256")
     signatureVerifier.update(digest)
     const verified = signatureVerifier.verify(certificate, signature, "base64")
     if (!verified) {

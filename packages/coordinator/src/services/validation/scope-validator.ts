@@ -15,7 +15,7 @@ export function validatePermittedPrescribeMessage(scope: string): Array<fhir.Ope
     return [errors.createDisabledFeatureIssue("Prescribing")]
   }
 
-  if (!validateScope(scope, [PRESCRIBING_USER_SCOPE, AWS_DISPENSING_USER_SCOPE])) {
+  if (!validateScope(scope, [PRESCRIBING_USER_SCOPE, AWS_PRESCRIBING_USER_SCOPE])) {
     if (validateScope(scope, [PRESCRIBING_APP_SCOPE])) {
       return [errors.createUserRestrictedOnlyScopeIssue("Prescribing")]
     }

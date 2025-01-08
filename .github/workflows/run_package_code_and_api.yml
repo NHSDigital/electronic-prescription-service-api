@@ -96,7 +96,7 @@ jobs:
           cp .tool-versions ~/
           rm -rf .aws-sam
           export PATH=$PATH:$PWD/node_modules/.bin
-          make build-specification
+          make build-proxygen-specification
           make sam-build-sandbox
           cp Makefile .aws-sam/build/
           cp samconfig_package_and_deploy.toml .aws-sam/build/
