@@ -31,7 +31,7 @@
     "@types/lossless-json": "1.0.4",
     "axios": "^1.7.9",
     "axios-cookiejar-support": "^5.0.5",
-    "jsdom": "^25.0.1",
+    "jsdom": "^26.0.0",
     "jsonwebtoken": "^9.0.2",
     "license-checker": "^25.0.1",
     "lossless-json": "^4.0.2",
