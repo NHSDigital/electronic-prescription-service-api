@@ -15,7 +15,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   get_version:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       version: ${{ steps.set_version.outputs.version }}
     steps:
@@ -26,7 +26,7 @@ jobs:
         run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"   
 
   get_commit_id:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       commit_id: ${{ steps.commit_id.outputs.commit_id }}
       short_commit_id: ${{ steps.short_commit_id.outputs.short_commit_id }}
@@ -40,7 +40,7 @@ jobs:
 
   tag_release:
     needs: quality_checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     outputs:
       spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
     steps:

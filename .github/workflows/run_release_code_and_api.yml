@@ -102,7 +102,7 @@ on:
 
 jobs:
   release_code_and_api:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     environment: ${{ inputs.AWS_ENVIRONMENT }}
     permissions:
       id-token: write

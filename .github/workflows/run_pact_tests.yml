@@ -20,7 +20,7 @@ on:
         required: true
 jobs:
   run_pact_tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     permissions:
       id-token: write
       contents: read
