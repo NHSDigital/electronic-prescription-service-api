@@ -1,5 +1,5 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
-import {Matchers} from "@pact-foundation/pact"
+import {InteractionObject, Matchers} from "@pact-foundation/pact"
 import {Pact} from "@pact-foundation/pact"
 
 test("metadata e2e tests", async () => {
@@ -7,20 +7,47 @@ test("metadata e2e tests", async () => {
   const provider = new Pact(pactOptions(options))
   await provider.setup()
 
-  const interaction = createInteraction(
-    options,
-    null,
-    getResponseExpectation()
-  )
-  interaction.willRespondWith.headers = {
-    ...interaction.willRespondWith.headers,
-    "Content-Type": "application/json; charset=utf-8"
-  }
+  const interaction = getInteraction(process.env["API_DEPLOYMENT_METHOD"], options)
 
   await provider.addInteraction(interaction)
   await provider.writePact()
   await provider.finalize()
 })
+
+function getInteraction(apiDeploymentMethod, options) {
+  switch(apiDeploymentMethod) {
+    case "apim": {
+      const interaction = createInteraction(
+        options,
+        null,
+        getResponseExpectation()
+      )
+      interaction.willRespondWith.headers = {
+        ...interaction.willRespondWith.headers,
+        "Content-Type": "application/json; charset=utf-8"
+      }
+      return interaction
+    }
+    case "proxygen": {
+      const interaction: InteractionObject = {
+        state: null,
+        uponReceiving: "a valid response",
+        withRequest: {
+          method: "GET",
+          path: "/_ping"
+        },
+        willRespondWith: {
+          status: 200
+        }
+      }
+      return interaction
+    }
+    default: {
+      throw new Error("Unknown api deployment method")
+    }
+
+  }
+}
 
 function getResponseExpectation() {
   return {

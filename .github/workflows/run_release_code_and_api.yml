@@ -91,10 +91,18 @@ on:
         required: false
       REGRESSION_TESTS_PEM:
         required: false
+      API_CLIENT_ID:
+        required: false
+      API_CLIENT_SECRET:
+        required: false
+      SIGNING_PRIVATE_KEY:
+        required: false
+      SIGNING_CERT:
+        required: false
 
 jobs:
   release_code_and_api:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     environment: ${{ inputs.AWS_ENVIRONMENT }}
     permissions:
       id-token: write
@@ -316,3 +324,17 @@ jobs:
       PRODUCT: EPS-FHIR-DISPENSING
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+
+  pact_tests:
+    if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    name: Pact Tests
+    uses: ./.github/workflows/run_pact_tests.yml
+    needs: release_code_and_api
+    with:
+      APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+    secrets:
+      API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
