@@ -109,7 +109,9 @@
 			"truststorebucket",
 			"URID",
 			"URPID",
-			"whens"
+			"whens",
+			"proxygen",
+			"pacticipant"
 		],
 		"cSpell.dictionaries": [
 			"en-GB"

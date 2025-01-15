@@ -2,6 +2,7 @@
 token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
 github-token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
 token: ?"?\$\{\{\s*secrets\.DEPENDABOT_TOKEN\s*\}\}"?
+token: ?"?\$\{\{\s*secrets\.VALIDATOR_UPGRADE_PAT\s*\}\}"?
 id-token: write
 --token=\$\{\{\s*steps\.generate-token\.outputs\.token\s*\}\}
 --token=\$GITHUB-TOKEN

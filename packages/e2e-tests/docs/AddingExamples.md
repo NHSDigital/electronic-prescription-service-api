@@ -15,7 +15,7 @@ Number is a way to group requests and responses together in each directory, for 
 
 the convert response would be set as the expected response for the process request
 
-These examples are then loaded into smoke tests (e2e tests) run during continous deployment
+These examples are then loaded into smoke tests (e2e tests) run during continuous deployment
 
 Operation can be omitted for prepare examples as there is only one operation for this endpoint
 
