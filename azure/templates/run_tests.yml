@@ -62,14 +62,22 @@ steps:
     displayName: Wait for API deploy
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
     workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
+  - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
+    inputs:
+      repository: self
+      path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
+      submodules: true
+    displayName: Checkout code
   - bash: |
       #!/bin/bash
 
       set -euo pipefail
+      make install-node
       export SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)
       export SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)
       export APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)
       export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
+      export API_DEPLOYMENT_METHOD=apim
 
       if [[ $SERVICE_ARTIFACT_NAME == v* ]]; then
           PACT_VERSION=$STAGE_NAME
@@ -86,16 +94,19 @@ steps:
       if [[ "$APIGEE_ENVIRONMENT" == *"sandbox"* ]]; then
           export PACT_CONSUMER=nhsd-apim-eps-test-client-sandbox
           export PACT_PROVIDER=nhsd-apim-eps-sandbox
+          export API_MODE=sandbox
+          export CREATE_PACT_MAKEFILE_TARGET=create-sandbox-pacts
 
           echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]''"
           echo "##vso[task.setvariable variable=SIGNING_CERT_PATH]''"
           echo "##vso[task.setvariable variable=API_CLIENT_ID]''"
           echo "##vso[task.setvariable variable=API_CLIENT_SECRET]''"
-          echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN]''"
 
       else
           export PACT_CONSUMER=nhsd-apim-eps-test-client
           export PACT_PROVIDER=nhsd-apim-eps
+          export API_MODE=live
+          export CREATE_PACT_MAKEFILE_TARGET=create-apim-pacts
 
           export SIGNING_PRIVATE_KEY_PATH=$(Pipeline.Workspace)/secrets/$(eps_int_test_private.key)
           export SIGNING_CERT_PATH=$(Pipeline.Workspace)/secrets/$(eps_int_test_certificate.crt)
@@ -117,27 +128,22 @@ steps:
           export API_CLIENT_ID
           export API_CLIENT_SECRET
 
-          echo "Fetching Apigee access token..."
-          export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token --workspace packages/e2e-tests)
-          if [ -z "$APIGEE_ACCESS_TOKEN" ]
-          then
-                echo "Could not retrieve APIGEE_ACCESS_TOKEN"
-                exit 1
-          fi
+          export APIGEE_ACCESS_TOKEN=dummy_token
           echo "##vso[task.setvariable variable=SIGNING_PRIVATE_KEY_PATH]$SIGNING_PRIVATE_KEY_PATH"
           echo "##vso[task.setvariable variable=SIGNING_CERT_PATH]$SIGNING_CERT_PATH"
           echo "##vso[task.setvariable variable=API_CLIENT_ID]$API_CLIENT_ID"
           echo "##vso[task.setvariable variable=API_CLIENT_SECRET]$API_CLIENT_SECRET"
-          echo "##vso[task.setvariable variable=APIGEE_ACCESS_TOKEN]$APIGEE_ACCESS_TOKEN"
       fi
       echo "##vso[task.setvariable variable=PACT_VERSION]$PACT_VERSION"
       echo "##vso[task.setvariable variable=PACT_PROVIDER_URL]$PACT_PROVIDER_URL"
       echo "##vso[task.setvariable variable=PACT_CONSUMER]$PACT_CONSUMER"
       echo "##vso[task.setvariable variable=PACT_PROVIDER]$PACT_PROVIDER"
+      echo "##vso[task.setvariable variable=API_MODE]$API_MODE"
+      echo "##vso[task.setvariable variable=CREATE_PACT_MAKEFILE_TARGET]$CREATE_PACT_MAKEFILE_TARGET"
+      echo "##vso[task.setvariable variable=API_DEPLOYMENT_METHOD]$API_DEPLOYMENT_METHOD"
     displayName: Set PACT variables and install node dependencies
     name: setPactVariables
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
   - bash: |
       #!/bin/bash
 
@@ -157,6 +163,9 @@ steps:
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
       export eps_int_test_certificate_file=$(eps_int_test_certificate.crt)
       export eps_int_test_private_file=$(eps_int_test_private.key)
+      export API_MODE=$(API_MODE)
+      export CREATE_PACT_MAKEFILE_TARGET=$(CREATE_PACT_MAKEFILE_TARGET)
+      export API_DEPLOYMENT_METHOD=$(API_DEPLOYMENT_METHOD)
 
       echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
       echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
@@ -167,13 +176,19 @@ steps:
       echo "PACT_PROVIDER: ${PACT_PROVIDER}"
       echo "SIGNING_PRIVATE_KEY_PATH: ${SIGNING_PRIVATE_KEY_PATH}"
       echo "SIGNING_CERT_PATH: ${SIGNING_CERT_PATH}"
+      echo "API_MODE: ${API_MODE}"
+      echo "CREATE_PACT_MAKEFILE_TARGET: ${CREATE_PACT_MAKEFILE_TARGET}"
       echo "API_CLIENT_ID: HIDDEN"
       echo "API_CLIENT_SECRET: HIDDEN"
       echo "APIGEE_ACCESS_TOKEN: HIDDEN"
+      echo "PWD: ${PWD}"
+      echo "Pipeline.Workspace: $(Pipeline.Workspace)"
+      echo "SERVICE_NAME: ${SERVICE_NAME}"
+      echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
+      echo "API_DEPLOYMENT_METHOD: ${API_DEPLOYMENT_METHOD}"
 
     displayName: Show PACT variables
     name: showPactVariables
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
   - bash: |
       #!/bin/bash
 
@@ -191,13 +206,13 @@ steps:
       export API_CLIENT_ID=$(API_CLIENT_ID)
       export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+      export API_MODE=$(API_MODE)
+      export CREATE_PACT_MAKEFILE_TARGET=$(CREATE_PACT_MAKEFILE_TARGET)
+      export API_DEPLOYMENT_METHOD=$(API_DEPLOYMENT_METHOD)
 
-      cd packages/e2e-tests
-
-      make create-pacts > /dev/null
+      make ${CREATE_PACT_MAKEFILE_TARGET}
     displayName: Create PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
   - bash: |
       #!/bin/bash
 
@@ -215,26 +230,23 @@ steps:
       export API_CLIENT_ID=$(API_CLIENT_ID)
       export API_CLIENT_SECRET=$(API_CLIENT_SECRET)
       export APIGEE_ACCESS_TOKEN=$(APIGEE_ACCESS_TOKEN)
+      export API_MODE=$(API_MODE)
+      export API_DEPLOYMENT_METHOD=$(API_DEPLOYMENT_METHOD)
 
-      cd packages/e2e-tests
-
-      # Verify
-      chmod +x ./broker/verify.ts
       make verify-pacts
     displayName: Run PACT tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    workingDirectory: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)"
   - task: PublishBuildArtifacts@1
     displayName: "Publish Pact Tests"
     inputs:
-      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/pact"
+      pathToPublish: "packages/e2e-tests/pact"
       artifactName: "pact_tests"
       publishLocation: "Container"
     condition: eq(variables['run_smoke_tests'], 'true')
   - task: PublishBuildArtifacts@1
     displayName: "Publish Test Prescriptions"
     inputs:
-      pathToPublish: "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
+      pathToPublish: "packages/e2e-tests/prescriptions-$(APIGEE_ENVIRONMENT).txt"
       artifactName: "smoke-tests"
       publishLocation: "Container"
     condition: eq(variables['run_smoke_tests'], 'true')
@@ -247,12 +259,6 @@ steps:
       mergeTestResults: true
       testRunTitle: "EPS Tests"
       failTaskOnFailedTests: true
-  - task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
-    inputs:
-      repository: self
-      path: "$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/electronic-prescription-service-api"
-      submodules: true
-    displayName: Checkout code
       # Run the regression tests
   - bash: |
       if [[ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" ]]; then
@@ -269,7 +275,6 @@ steps:
     condition: succeeded()
   - bash: |
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
-        make install-node
         npm run test --workspace packages/bdd-tests
       fi
     displayName: Run BDD Tests
