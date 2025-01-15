@@ -4,7 +4,7 @@ on:
     types: [opened]
 jobs:
   link-ticket:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       REF: ${{ github.event.pull_request.head.ref }}
     steps:
