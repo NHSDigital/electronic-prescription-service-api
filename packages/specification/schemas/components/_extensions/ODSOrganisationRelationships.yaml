@@ -27,4 +27,4 @@ properties:
               enum: [https://fhir.nhs.uk/Id/ods-organization-code]
             value:
               type: string
-              example: T1450 for England. RQFZI for Wales.
+              example: T1450
