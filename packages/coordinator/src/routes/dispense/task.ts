@@ -25,7 +25,7 @@ export default [
     path: `${BASE_PATH}/Task`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
-      const taskPayload = getPayload(request) as fhir.Task
+      const taskPayload = await getPayload(request) as fhir.Task
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(taskPayload), HashingAlgorithm.SHA256)})
 
       const scope = getScope(request.headers)

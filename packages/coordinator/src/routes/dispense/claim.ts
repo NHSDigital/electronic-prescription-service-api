@@ -25,7 +25,7 @@ export default [
     path: `${BASE_PATH}/Claim`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
-      const claimPayload = getPayload(request) as fhir.Claim
+      const claimPayload = await getPayload(request) as fhir.Claim
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(claimPayload), HashingAlgorithm.SHA256)})
 
       const scope = getScope(request.headers)
