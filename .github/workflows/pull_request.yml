@@ -17,7 +17,7 @@ jobs:
     uses: ./.github/workflows/pr_title_check.yml
 
   get_issue_number:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: quality_checks
     outputs:
       issue_number: ${{ steps.get_issue_number.outputs.result }}
@@ -45,7 +45,7 @@ jobs:
           result-encoding: string
 
   get_commit_id:
-   runs-on: ubuntu-latest
+   runs-on: ubuntu-22.04
    outputs:
      commit_id: ${{ steps.commit_id.outputs.commit_id }}
      sha_short: ${{ steps.commit_id.outputs.sha_short }}
@@ -97,7 +97,11 @@ jobs:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
-
+      API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
+  
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/run_release_code_and_api.yml

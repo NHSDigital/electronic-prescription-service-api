@@ -148,7 +148,6 @@ build-proxies:
 ## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
-	cd packages/e2e-tests && $(MAKE) test
 
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
@@ -337,43 +336,22 @@ check-language-versions:
 generate-mock-certs:
 	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
-# Variables
+clear-pacts:
+	rm -rf packages/e2e-tests/pact
 
-ifdef pr
-pr-prefix = -pr-
-endif
+# we use cd for these rather than workspace as the scripts expect to be run in packages/e2e-tests
+create-sandbox-pacts: clear-pacts
+	cd packages/e2e-tests && npm run create-sandbox-pacts
 
-ifneq (,$(findstring sandbox,$(env)))
-pact-provider = nhsd-apim-eps-sandbox
-else
-pact-provider = nhsd-apim-eps
-endif
+create-apim-pacts: clear-pacts
+	cd packages/e2e-tests && API_DEPLOYMENT_METHOD=apim npm run create-live-pacts
 
-export SERVICE_BASE_PATH=electronic-prescriptions$(pr-prefix)$(pr)
-export PACT_PROVIDER=$(pact-provider)
-export APIGEE_ENVIRONMENT=$(env)
-export APIGEE_ACCESS_TOKEN=$(token)
+create-proxygen-pacts: clear-pacts
+	cd packages/e2e-tests && API_DEPLOYMENT_METHOD=proxygen npm run create-live-pacts
 
-space := $(subst ,, )
-export PACT_VERSION = $(subst $(space),,$(USERNAME))
-export PACT_PROVIDER_URL=https://$(env).api.service.nhs.uk/$(SERVICE_BASE_PATH)
-export PACT_TAG=$(env)
-
-# Example:
-# make install-smoke-tests
-install-smoke-tests:
-	cd packages/e2e-tests && $(MAKE) install
-
-# Example:
-# make mode=sandbox create-smoke-tests
-# make mode=live create-smoke-tests
-# make mode=sandbox update=false create-smoke-tests
-# make mode=live update=false create-smoke-tests
-create-smoke-tests:
-	source .envrc \
-	&& cd packages/e2e-tests \
-	&& $(MAKE) create-pacts 
-
+verify-pacts:
+	cd packages/e2e-tests && npm run verify-pacts
+	
 run-smoke-tests:
 	source .envrc \
 	&& cd packages/e2e-tests \
