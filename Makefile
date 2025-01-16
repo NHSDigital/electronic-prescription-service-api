@@ -114,7 +114,19 @@ build-epsat:
 build-all: build-api build-epsat
 
 build-specification:
-	$(MAKE) --directory=packages/specification build 
+	mkdir -p packages/specification/dist
+	npm run lint --workspace packages/specification
+	npm run resolve --workspace packages/specification
+	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
+
+# this is a separate target as azure pipelines fail on this
+build-proxygen-specification:
+	mkdir -p packages/specification/dist
+	npm run resolve-prescribing --workspace packages/specification/
+	npm run resolve-dispensing --workspace packages/specification/
+
+combine-specification:
+	npm run combine-specification --workspace packages/specification
 
 build-coordinator:
 	npm run --workspace=packages/coordinator/ build
@@ -136,7 +148,6 @@ build-proxies:
 ## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
-	cd packages/e2e-tests && $(MAKE) test
 
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
@@ -325,46 +336,22 @@ check-language-versions:
 generate-mock-certs:
 	cd packages/coordinator/tests/resources/certificates && bash ./generate_mock_certs.sh
 
-# Variables
+clear-pacts:
+	rm -rf packages/e2e-tests/pact
 
-ifdef pr
-pr-prefix = -pr-
-endif
+# we use cd for these rather than workspace as the scripts expect to be run in packages/e2e-tests
+create-sandbox-pacts: clear-pacts
+	cd packages/e2e-tests && npm run create-sandbox-pacts
 
-ifneq (,$(findstring sandbox,$(env)))
-pact-provider = nhsd-apim-eps-sandbox
-else
-pact-provider = nhsd-apim-eps
-endif
+create-apim-pacts: clear-pacts
+	cd packages/e2e-tests && API_DEPLOYMENT_METHOD=apim npm run create-live-pacts
 
-export SERVICE_BASE_PATH=electronic-prescriptions$(pr-prefix)$(pr)
-export PACT_PROVIDER=$(pact-provider)
-export APIGEE_ENVIRONMENT=$(env)
-export APIGEE_ACCESS_TOKEN=$(token)
+create-proxygen-pacts: clear-pacts
+	cd packages/e2e-tests && API_DEPLOYMENT_METHOD=proxygen npm run create-live-pacts
 
-space := $(subst ,, )
-export PACT_VERSION = $(subst $(space),,$(USERNAME))
-export PACT_PROVIDER_URL=https://$(env).api.service.nhs.uk/$(SERVICE_BASE_PATH)
-export PACT_TAG=$(env)
-
-# Example:
-# make install-smoke-tests
-install-smoke-tests:
-	cd packages/e2e-tests && $(MAKE) install
-
-# Example:
-# make mode=sandbox create-smoke-tests
-# make mode=live create-smoke-tests
-# make mode=sandbox update=false create-smoke-tests
-# make mode=live update=false create-smoke-tests
-create-smoke-tests:
-	source .envrc \
-	&& cd packages/e2e-tests \
-	&& $(MAKE) create-pacts 
-
-# Example:
-# make env=internal-dev-sandbox pr=333 run-smoke-tests
-# make env=internal-dev pr=333 token=qvgsB5OR0QUKppg2pGbDagVMrj65 run-smoke-tests
+verify-pacts:
+	cd packages/e2e-tests && npm run verify-pacts
+	
 run-smoke-tests:
 	source .envrc \
 	&& cd packages/e2e-tests \
@@ -459,12 +446,18 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			EnableMutualTLS=$$enable_mutual_tls \
 			VersionNumber=$$VERSION_NUMBER \
 			CommitId=$$COMMIT_ID \
+			LogLevel=$$LOG_LEVEL \
 			LogRetentionInDays=$$LOG_RETENTION_DAYS \
 			Env=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
 			ZoneIDExport=$$ZONE_ID_EXPORT \
 			TargetSpineServer=$$TARGET_SPINE_SERVER \
-			DockerImageTag=$$DOCKER_IMAGE_TAG
+			DockerImageTag=$$DOCKER_IMAGE_TAG \
+			ToAsid=$$TO_ASID \
+			ToPartyKey=$$TO_PARTY_KEY
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
+
+aws-login:
+	aws sso login --sso-session sso-session

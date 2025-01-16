@@ -1,79 +1,68 @@
-# End to end tests (Smoke tests)
+# End to end tests using pact
 
-Smoke tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.
+This contains code to create pacts and verify them as a provider.   
 
-Once setup see:
+Tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.   
 
-**[Add a new example](./docs/AddingExamples.md)**
+There are two stages to the testing. Create pact step uses jest to create pact files based on examples in this repo. These are defined in the specs folder. 
+The sandbox folder contains tests that run against sandbox deployments, and the live folder contains tests that run against a non sandbox deployment.   
 
-**[Running smoke tests](./docs/Testing.md)**
+The live tests have a 'beforeAll' step which runs updatePrescriptions in services/update-prescriptions.ts which updates the prescription id in the examples and creates a valid signature in the payload that is going to be sent. 
 
-**[Testing with dispensers](./docs/TestingDispensing.md)**
+Preparing the tests generates pact files under pact/pacts.
 
-**[Generating postman collections](./docs/Postman.md)**
 
-## Setup for Windows
+Once the pact files are generated, a verify step is run which runs broker/verify.ts. This runs in a specific order as some of the tests expect prescriptions to be created or released and so are done as one of the initial steps. This script dynamically inserts the target url into the request, and also adds an OAuth2 token to the request header before sending it
 
-### Download
 
-Turn on developer mode *before* cloning repo to allow windows to create symlinks used in repo. See below:
+If a new example is added, see [Add a new example](./docs/AddingExamples.md) for more details on what needs doing
 
- ![alt text](./docs/WindowsSearch-DeveloperSettings.png "Windows Search - Developer Settings") 
- ![alt text](./docs/DeveloperSettings.png "Developer Settings") 
 
-Save to C://e to avoid long path issue in windows when running smoke-tests (was not resolved by setting to 1 in registry during testing). See below:
+### To run locally
 
+You can run the tests locally against any deployed proxy.   
+You need to set the following environment variables:
 ```
-cd C://
-git clone https://github.com/NHSDigital/electronic-prescription-service-api.git e
-```
-
-### Install 
-
-```
-make install
-make install-smoke-tests
-```
-
-
-
-## Setup for WSL
-
-```
-make install-smoke-tests
-```
-
-### To run
-
-Set the following environment variables:
-```
-export PACT_PROVIDER=nhsd-apim-eps
-export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/$SERVICE_BASE_PATH
-export PACT_BROKER_BASIC_AUTH_USERNAME=<broker_username>
-export PACT_BROKER_BASIC_AUTH_PASSWORD=<broker_password>
-export PACT_BROKER_URL=https://nhsd-pact-broker.herokuapp.com
-export PACT_VERSION="$SERVICE_BASE_PATH"
-export PACT_USE_BROKER=false
-export SERVICE_BASE_PATH=electronic-prescriptions
+export PACT_PROVIDER=eps
+export PACT_CONSUMER=eps-test-client
+export PACT_VERSION=local_testing
 export API_CLIENT_ID=<api_client_id>
 export API_CLIENT_SECRET=<api_client_secret>
 export APIGEE_ENVIRONMENT=internal-dev
-export APIGEE_KEY=<apigee_key>
+```
+For APIM deployed proxy set this
+```
+export PACT_PROVIDER_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/electronic-prescriptions # can also point to a pull request
+export API_DEPLOYMENT_METHOD=apim
 ```
 
-The `apigee_key` can be found in AWS Parameter Store. 
-The `api_client_id` and `api_client_secret` can be found in the Postman environment variables.
-For the other bracketed values, consult the dev team.
-
-Now run the following commands to create the pact files locally:
+For proxygen deployed proxy set this
 ```
-export APIGEE_ACCESS_TOKEN=$(npm run --silent fetch-apigee-access-token)
-make create-pacts
+export PACT_PROVIDER_PRESCRIBING_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/fhir-prescribing # can also point to a pull request
+export PACT_PROVIDER_DISPENSING_URL=https://$APIGEE_ENVIRONMENT.api.service.nhs.uk/fhir-dispensing # can also point to a pull request
+export API_DEPLOYMENT_METHOD=proxygen
 ```
 
-You now have ten minutes to run the smoke tests before your token runs out. You will then need to re-run the two commands to regenerate pacts with valid auth headers.
+For sandbox testing set this
+```
+export API_MODE=sandbox
+```
 
-To run:
+For other testing set this
+```
+export API_MODE=live
+```
+
+The `api_client_id` and `api_client_secret` can be found from the developer portal.
+Now run ONE of the following commands to create the pact files locally:
+
+```
+make create-apim-pacts
+make create-sandbox-pacts
+make create-proxygen-pacts
+```
+
+To run the pacts use the following
 ```
 make verify-pacts
 ```
