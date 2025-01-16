@@ -21,6 +21,6 @@ export class TaskPathBuilder extends AbstractPathBuilder {
     // TODO: Should we use a reference to the element within 'contained'?
     // const requesterReference = `${this.path}.requester.reference.substring(1)` // Get the value after the '#'
     // eslint-disable-next-line max-len
-    return `${this.path}.contained.ofType(Organization).identifier.where(system = 'https://fhir.nhs.uk/Id/ods-organization-code').value`
+    return `${this.path}.contained.where(resourceType = 'Organization').identifier.where(system = 'https://fhir.nhs.uk/Id/ods-organization-code').value`
   }
 }
