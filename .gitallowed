@@ -2,6 +2,7 @@
 token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
 github-token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
 token: ?"?\$\{\{\s*secrets\.DEPENDABOT_TOKEN\s*\}\}"?
+token: ?"?\$\{\{\s*secrets\.VALIDATOR_UPGRADE_PAT\s*\}\}"?
 id-token: write
 --token=\$\{\{\s*steps\.generate-token\.outputs\.token\s*\}\}
 --token=\$GITHUB-TOKEN
@@ -371,5 +372,4 @@ super\(\"1\.2
 ^[a-f0-9]{40}:scripts\/deploy_spec\.sh:7
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:27
 ^[a-f0-9]{40}:scripts\/run_regression_tests\.py:11
-ab8e8b5bcf122807d9ff6f00eb4ff20d730c0611:Makefile:371
-bef751d2089f8d17151bb309ac8749eae23576b5:Makefile:371
+Makefile:371
