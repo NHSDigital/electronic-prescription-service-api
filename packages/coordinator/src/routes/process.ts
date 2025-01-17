@@ -28,7 +28,7 @@ export default [
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$process-message`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-      const bundle = getPayload(request) as fhir.Bundle
+      const bundle = await getPayload(request) as fhir.Bundle
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle), HashingAlgorithm.SHA256)})
 
       const scope = getScope(request.headers)

@@ -14,8 +14,8 @@ export class FhirPathReader {
     this.fhirResource = fhir
   }
 
-  read(path: string): string {
-    const results = this.readAll(path)
+  async read(path: string): Promise<string> {
+    const results = await this.readAll(path)
     if (results.length > 1) {
       // eslint-disable-next-line max-len
       throw new Error(`Fhir Path Reader unexpectedly got more than 1 result for path: '${path}'. Did you mean to call 'readAll'?`)
@@ -26,7 +26,7 @@ export class FhirPathReader {
     return results[0]
   }
 
-  readAll(path: string): Array<string> {
+  readAll(path: string): Array<string> | Promise<Array<string>> {
     return evaluate(this.fhirResource, path)
   }
 }
