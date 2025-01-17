@@ -43,6 +43,7 @@ properties:
           maxItems: 5
           description: |
             Given names, including any middle names.
+            
             Each name(s) should be a separate item in the list. The first given name may include multiple names, separated by a space.
             Subsequent names must be broken down into list items. For example, the input `[Jane Marie Anne, Jo Adele]` returns `[Jane Marie Anne, Jo, Adele]`.
           example: [Jane Marie Anne, Jo, Adele]
@@ -60,8 +61,7 @@ properties:
   gender:
     type: string
     description: |
-      Classification of the gender of a patient. The classification is phenotypical rather than genotypical, i.e. it does not provide codes for medical or scientific purposes.
-      It is the administrative gender that the patient wishes to be known as. In some cases, this may not be the same as the patient’s registered birth gender, or their current clinical gender.
+      This is the gender that is recorded on official documents, for example a birth certificate or passport. For some people, the gender held in EPS and/or PDS might not match the gender they identify with.
     enum:
       - male
       - female
@@ -74,8 +74,6 @@ properties:
       The date on which the patient was born or is officially deemed to have been born.
       
       It is a date in the format `yyyy-mm-dd`. Due to data quality issues on a small number of patients `yyyy-mm` and `yyyy` format may also be returned.
-      
-      When a patient tagged as `very restricted` is retrieved, birth date is removed from the response.
     example: "2010-10-22"
     format: date
   address:
