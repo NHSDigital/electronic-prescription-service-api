@@ -5,7 +5,7 @@ on:
 
 jobs:
   pr_title_format_check:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
       - name: Check PR Title is Prefixed with Change Type
         env:

@@ -1,41 +1,63 @@
 /* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
 import register from "tsconfig-paths/register"
-import {ApiEndpoint, ApiOperation} from "../resources/common"
+import {
+  ApiEndpoint,
+  ApiOperation,
+  createConsumerName,
+  createProviderName,
+  getPacticipantSuffix,
+  getProviderBaseUrl
+} from "../resources/common"
 import path from "path"
-// note: using /pact-core as /pact does not yet have providerBaseUrl resulting in defaulting to locahost
-import {Verifier, VerifierOptions} from "@pact-foundation/pact-core"
-// pact-core does not currently support requestFilter to set auth tokens
-// *****************************************************************************************************
+import {Verifier, VerifierOptions} from "@pact-foundation/pact"
+import {getAuthToken} from "broker/oauth"
 
-/* eslint-disable  @typescript-eslint/no-explicit-any */
-async function verify(endpoint: string, operation?: string): Promise<any> {
+// define variable that is retrieved at runtime for an oauth2 token
+let oAuth2Token: string
+
+async function verify(endpoint: string, operation?: string): Promise<string> {
   const providerVersion = process.env.PACT_TAG
     ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
     : process.env.PACT_VERSION
-  let verifierOptions: VerifierOptions = {
-    consumerVersionTags: [process.env.PACT_VERSION],
-    provider: `${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}`,
-    providerVersion: providerVersion,
-    providerBaseUrl: process.env.PACT_PROVIDER_URL,
-    logLevel: "error"
-  }
+  const pacticipantSuffix = getPacticipantSuffix(process.env["API_MODE"])
+  const providerName = createProviderName(
+    pacticipantSuffix,
+    endpoint,
+    operation,
+    process.env.PACT_VERSION
+  )
+  const consumerName = createConsumerName(
+    pacticipantSuffix,
+    process.env.PACT_VERSION
+  )
+  const providerBaseUrl = getProviderBaseUrl(process.env["API_DEPLOYMENT_METHOD"], endpoint, operation)
+  const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
 
-  const pacticipant_suffix = process.env.APIGEE_ENVIRONMENT?.includes("sandbox") ? "-sandbox" : ""
-  verifierOptions = {
-    ...verifierOptions,
-    pactUrls: [
-      // eslint-disable-next-line max-len
-      `${path.join(__dirname, "../pact/pacts")}/nhsd-apim-eps-test-client${pacticipant_suffix}+${process.env.PACT_VERSION}-${process.env.PACT_PROVIDER}+${endpoint}${operation ? "-" + operation : ""}+${process.env.PACT_VERSION}.json`
-    ],
-    // Healthcare worker role from /userinfo endpoint, i.e.
-    // https://<environment>.api.service.nhs.uk/oauth2-mock/userinfo
+  const verifierOptions: VerifierOptions = {
+    consumerVersionTags: [process.env.PACT_VERSION],
+    provider: providerName,
+    providerVersion: providerVersion,
+    providerBaseUrl: providerBaseUrl,
+    logLevel: "error",
+    pactUrls: [fileName],
     customProviderHeaders: {
       "NHSD-Session-URID": "555254242106" // for user UID 656005750108
+    },
+    // use a request filter to inject a valid auth token at runtime
+    requestFilter: (req, res, next) => {
+      if (!req.headers["authorization"]) {
+        next()
+        return
+      }
+      if (!process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+        req.headers["authorization"] = `Bearer ${oAuth2Token}`
+      }
+      next()
     }
   }
 
   const verifier = new Verifier(verifierOptions)
-  return await verifier.verify()
+  return await verifier.verifyProvider()
 }
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
@@ -102,8 +124,16 @@ async function verifyTaskTracker(): Promise<void> {
   await verifyOnce("task", "tracker")
 }
 
+async function getAccessToken(): Promise<string> {
+  if (!process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+    oAuth2Token = await getAuthToken()
+  }
+  return
+}
+
 (async () => {
-  await verifyMetadata()
+  await getAccessToken()
+    .then(verifyMetadata)
     .then(verifyValidate)
     .then(verifyPrepare)
     .then(verifySend)
