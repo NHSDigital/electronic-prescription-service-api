@@ -18,7 +18,7 @@ export default [
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$dose-to-text`,
     handler: externalValidator(async (request, responseToolkit) => {
-      const payload = getPayload(request) as fhir.Resource
+      const payload = await getPayload(request) as fhir.Resource
       const resources = getResourcesWithDosageInstructions(payload)
       if (!resources) {
         const response = fhir.createOperationOutcome(
