@@ -281,7 +281,7 @@ Resources:
               Protocol: tcp
           Environment:
             - Name: LOG_LEVEL
-              Value: !Ref LogLevel
+              Value: INFO
           LogConfiguration:
             LogDriver: awslogs
             Options:
