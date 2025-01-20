@@ -16,13 +16,13 @@ const defaultPrescription: common.Prescription = {
   repeatsIssued: ""
 }
 
-test("build prescription returns correct values", () => {
+test("build prescription returns correct values", async () => {
   const sendFhirStr = readFileSync(
     path.join(__dirname, sendRequestFilePath),
     "utf-8"
   )
   const sendFhir: fhir.Bundle = LosslessJson.parse(sendFhirStr) as fhir.Bundle
-  const result = common.buildPrescription(sendFhir)
+  const result = await common.buildPrescription(sendFhir)
   expect(result).toStrictEqual(defaultPrescription)
 })
 

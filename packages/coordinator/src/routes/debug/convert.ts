@@ -29,7 +29,7 @@ export default [
     path: `${BASE_PATH}/$convert`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
-      const payload = getPayload(request) as fhir.Resource
+      const payload = await getPayload(request) as fhir.Resource
       const scope = getScope(request.headers)
       const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)

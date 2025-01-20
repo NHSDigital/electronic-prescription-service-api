@@ -11,11 +11,11 @@ export class MessageHeaderPathBuilder extends AbstractPathBuilder {
   }
 
   destination(): MedicationRequestPathBuilder {
-    return new MedicationRequestPathBuilder(`${this.path}.ofType(MedicationRequest).first()`)
+    return new MedicationRequestPathBuilder(`${this.path}.where(resourceType = 'MedicationRequest').first()`)
   }
 
   medicationRequests(): MedicationRequestPathBuilder {
-    return new MedicationRequestPathBuilder(`${this.path}.ofType(MedicationRequest)`)
+    return new MedicationRequestPathBuilder(`${this.path}.where(resourceType = 'MedicationRequest')`)
   }
 }
 
