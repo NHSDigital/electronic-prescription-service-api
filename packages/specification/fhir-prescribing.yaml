@@ -558,6 +558,7 @@ paths:
       responses:
         "200":
           description: "Dummy response"
+      security: []
 components:
   securitySchemes:
     nhs-cis2-aal3:
