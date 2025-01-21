@@ -76,6 +76,9 @@ on:
       TO_PARTY_KEY:
         required: true
         type: string
+      IS_PULL_REQUEST:
+        type: boolean
+        default: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -333,6 +336,7 @@ jobs:
     with:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
       API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
