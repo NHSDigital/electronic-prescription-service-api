@@ -1340,3 +1340,6 @@ x-nhsd-apim:
     - name: asid
       required: true
       header: nhsd-asid
+    - name: apiproxy.name
+      required: true
+      header: apiproxy

@@ -1181,3 +1181,6 @@ x-nhsd-apim:
     - name: asid
       required: true
       header: nhsd-asid
+    - name: scope
+      required: true
+      header: nhsd-scope
