@@ -52,6 +52,6 @@ export async function translateToFhir<T>(
       return translatedSpineResponse
     }
   }
-  logger.error("Unhandled Spine response")
+  logger.error({body: bodyString}, "Unhandled Spine response")
   return SpineResponseHandler.createServerErrorResponse()
 }
