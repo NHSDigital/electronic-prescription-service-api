@@ -49,7 +49,7 @@ describe("translateToFhir", () => {
     expect(body).toEqual(SpineResponseHandler.createServerErrorResponse().fhirResponse)
     expect(returnedValues.statusCode).toBe(500)
     expect(loggerSpy).toHaveBeenCalledWith(
-      {"body": "this body does not pass the regex checks"}, "Unhandled Spine response"
+      {"hl7Message":{"body":"this body does not pass the regex checks", "statusCode":420}}, "Unhandled Spine response"
     )
   })
 
