@@ -36,7 +36,8 @@ describe("translateToFhir", () => {
     })
 
   test("returns internal server error on unexpected spine response", async () => {
-    const bodyString = "this body doesnt pass the regex checks"
+    const loggerSpy = jest.spyOn(logger, "error")
+    const bodyString = "this body does not pass the regex checks"
     const spineResponse: spine.SpineDirectResponse<string> = {
       body: bodyString,
       statusCode: 420
@@ -47,6 +48,9 @@ describe("translateToFhir", () => {
 
     expect(body).toEqual(SpineResponseHandler.createServerErrorResponse().fhirResponse)
     expect(returnedValues.statusCode).toBe(500)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      {"hl7Message":{"body":"this body does not pass the regex checks", "statusCode":420}}, "Unhandled Spine response"
+    )
   })
 
   test.each([spineResponses.cancellationSuccess, spineResponses.cancellationDispensedError])(
