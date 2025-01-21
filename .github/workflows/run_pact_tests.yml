@@ -118,8 +118,8 @@ jobs:
         env:
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
-          PACT_PROVIDER_PRESCRIBING_URL: https://{{ inputs.APIGEE_ENVIRONMENT }}.api.service.nhs.uk/fhir-prescribing${{ inputs.IS_PULL_REQUEST == false && '' || format('-{0}', inputs.VERSION_NUMBER) }}
-          PACT_PROVIDER_DISPENSING_URL: https://{{ inputs.APIGEE_ENVIRONMENT }}.api.service.nhs.uk/fhir-dispensing-${{ inputs.IS_PULL_REQUEST == false && '' || format('-{0}', inputs.VERSION_NUMBER) }}
+          PACT_PROVIDER_PRESCRIBING_URL: https://${{ inputs.APIGEE_ENVIRONMENT }}.api.service.nhs.uk/fhir-prescribing${{ inputs.IS_PULL_REQUEST == false && '' || format('-{0}', inputs.VERSION_NUMBER) }}
+          PACT_PROVIDER_DISPENSING_URL: https://${{ inputs.APIGEE_ENVIRONMENT }}.api.service.nhs.uk/fhir-dispensing-${{ inputs.IS_PULL_REQUEST == false && '' || format('-{0}', inputs.VERSION_NUMBER) }}
           PACT_CONSUMER: eps-test-client
           PACT_PROVIDER: eps
           API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
