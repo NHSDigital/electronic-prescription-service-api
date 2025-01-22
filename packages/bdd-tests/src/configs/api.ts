@@ -53,6 +53,6 @@ function writeToFile(text, extension, prefix, subfolder) {
   } catch (e) {
     console.log(e)
   }
-  const filename = path.join(folderName, `${prefix}${ new Date().toISOString()}.${extension}`)
+  const filename = path.join(folderName, `${prefix}${ new Date().toISOString().replaceAll(":", "_")}.${extension}`)
   fs.writeFileSync(filename, text)
 }
