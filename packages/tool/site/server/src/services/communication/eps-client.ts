@@ -55,7 +55,8 @@ axiosInstance.interceptors.response.use((response: AxiosResponse) => {
       status: error.response?.status
     }}, "unsuccessful api call")
 
-  return Promise.reject(error)
+  // let epsat figure out how to deal with errors so just return response
+  return error.response
 })
 
 const getUrlSearchParams = (query: QueryParams): URLSearchParams => {
