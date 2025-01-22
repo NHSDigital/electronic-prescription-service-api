@@ -51,6 +51,9 @@ docker_service:
   - name: eps-validator
     port: 9001
     expose: false
+    environment:
+      - name: LOG_LEVEL
+        value: INFO
     health_check:
       matcher: "200"
       path: "/_status"
