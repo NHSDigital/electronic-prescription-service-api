@@ -108,7 +108,7 @@ export async function callFhirValidator(
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
     headers: {
       "Content-Type": requestHeaders["content-type"],
-      "x-request-id": requestHeaders["x-request-id"],
+      "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
       "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
       "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
       "nhsd-request-id": requestHeaders["nhsd-request-id"]

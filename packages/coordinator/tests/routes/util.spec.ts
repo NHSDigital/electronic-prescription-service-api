@@ -47,6 +47,20 @@ describe("forward header", ()=> {
     expect(requestHeaders["nhsd-correlation-id"]).toBe("my_nhsd_correlation_id")
     expect(requestHeaders["nhsd-request-id"]).toBe("my_nhsd_request_id")
   })
+
+  test("API forwards nhsd-request-id header as x-request-id to validator", async () => {
+    mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome"})
+
+    const exampleHeaders = {
+      accept: "application/json+fhir",
+      "nhsd-request-id": "my_nhsd_request_id"
+    }
+
+    await callFhirValidator("data", exampleHeaders)
+    const requestHeaders = mock.history.post[0].headers
+    expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
+    expect(requestHeaders["x-request-id"]).toBe("my_nhsd_request_id")
+  })
 })
 
 describe("identifyMessageType", () => {
