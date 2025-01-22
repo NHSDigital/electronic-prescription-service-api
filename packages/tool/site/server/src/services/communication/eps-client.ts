@@ -9,7 +9,12 @@ import {
 } from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
-import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
+import axios, {
+  AxiosError,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+  RawAxiosRequestHeaders
+} from "axios"
 import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
@@ -23,30 +28,32 @@ type QueryParams = Record<string, string | Array<string>>
 
 const axiosInstance = axios.create()
 
+axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+  logger.info({
+    request: {
+      headers: request.headers,
+      url: request.url,
+      baseURL: request.baseURL,
+      method: request.method
+    }}, "making api call")
+
+  return request
+})
+
 axiosInstance.interceptors.response.use((response: AxiosResponse) => {
-  logger.info("successful api call", {
+  logger.info({
     response: {
       headers: response.headers,
       status: response.status
-    },
-    request: {
-      headers: response.request.headers,
-      url: response.request.url,
-      host: response.request.host,
-      method: response.request.method
-    }})
+    }}, "successful api call")
 
   return response
 }, (error: AxiosError) => {
-  logger.info("unsuccessful api call", {
+  logger.error({
     response: {
       headers: error.response?.headers,
       status: error.response?.status
-    },
-    request: {
-      headers: error.request.headers,
-      url: error.request.url
-    }})
+    }}, "unsuccessful api call")
 
   return Promise.reject(error)
 })
