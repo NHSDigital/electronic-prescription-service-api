@@ -2,7 +2,7 @@ import {fhir, spine} from "@models"
 import Hapi from "@hapi/hapi"
 import pino from "pino"
 import * as LosslessJson from "lossless-json"
-import axios, {AxiosError, AxiosResponse, InternalAxiosRequestConfig} from "axios"
+import axios from "axios"
 import stream from "stream"
 import {translateToFhir} from "../services/translation/response"
 import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
@@ -16,8 +16,6 @@ import {
 } from "../utils/type-guards"
 
 type HapiPayload = string | object | Buffer | stream
-
-const logger = pino()
 
 export enum ContentTypes {
   XML = "application/xml",
@@ -75,36 +73,6 @@ export async function callFhirValidator(
   payload: HapiPayload,
   requestHeaders: Hapi.Utils.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
-  const requestInterceptor = axios.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-    logger.info({
-      request: {
-        headers: request.headers,
-        url: request.url,
-        baseURL: request.baseURL,
-        method: request.method
-      }}, "making validator call")
-
-    return request
-  })
-
-  const responseInterceptor = axios.interceptors.response.use((response: AxiosResponse) => {
-    logger.info({
-      response: {
-        headers: response.headers,
-        status: response.status
-      }}, "successful validator call")
-
-    return response
-  }, (error: AxiosError) => {
-    logger.error({
-      response: {
-        headers: error.response?.headers,
-        status: error.response?.status
-      }}, "unsuccessful validator call")
-
-    // let cooordinator figure out how to deal with errors so just return response
-    return error.response
-  })
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
     headers: {
       "Content-Type": requestHeaders["content-type"],
@@ -114,9 +82,6 @@ export async function callFhirValidator(
       "nhsd-request-id": requestHeaders["nhsd-request-id"]
     }
   })
-
-  axios.interceptors.request.eject(requestInterceptor)
-  axios.interceptors.response.eject(responseInterceptor)
 
   const validatorResponseData = validatorResponse.data
   if (!validatorResponseData) {
