@@ -33,8 +33,8 @@ instance.interceptors.response.use(
   },
   (error) => {
     const x_request_id = error.response.headers["x-request-id"]
-    writeToFile(JSON.stringify(error.response.data), "json", "Resp_", x_request_id)
-    writeToFile(JSON.stringify(error.response.headers), "json", "Resp_headers_", x_request_id)
+    writeToFile(JSON.stringify(error.response.data), "json", "Resp_", `${x_request_id}_error`)
+    writeToFile(JSON.stringify(error.response.headers), "json", "Resp_headers_", `${x_request_id}_error`)
     return Promise.reject(error)
   }
 )
