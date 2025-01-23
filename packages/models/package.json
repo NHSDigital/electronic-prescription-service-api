@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "axios": "^1.7.9",
-    "fhirpath": "^3.16.2",
+    "fhirpath": "^3.16.3",
     "lossless-json": "^4.0.2",
     "xml-js": "^1.6.11"
   },
