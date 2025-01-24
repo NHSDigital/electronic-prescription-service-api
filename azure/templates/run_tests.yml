@@ -274,6 +274,7 @@ steps:
     displayName: Regression Tests
     condition: succeeded()
   - bash: |
+      mkdir -p packages/bdd-tests/resources/
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         npm run test --workspace packages/bdd-tests
       fi
