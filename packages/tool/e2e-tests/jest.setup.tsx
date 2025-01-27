@@ -1,1 +1,1 @@
-jest.retryTimes(5, { logErrorsBeforeRetry: true })
+jest.retryTimes(3, { logErrorsBeforeRetry: true })
