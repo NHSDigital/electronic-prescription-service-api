@@ -3,9 +3,7 @@ import {PathLike} from "fs"
 import {writeFile, access, mkdir} from "node:fs/promises"
 import _ from "lodash"
 
-import "chromedriver"
-import "geckodriver"
-import {Builder, ThenableWebDriver} from "selenium-webdriver"
+import {Builder, ThenableWebDriver, Browser} from "selenium-webdriver"
 import * as chrome from "selenium-webdriver/chrome"
 import {
   expect,
@@ -70,7 +68,7 @@ beforeEach(async () => {
   })
   driver = new Builder()
     .setChromeOptions(options)
-    .forBrowser("chrome")
+    .forBrowser(Browser.CHROME)
     .build()
 })
 
@@ -99,6 +97,7 @@ function buildChromeOptions() {
     chromeOptions.addArguments("--no-sandbox")
     chromeOptions.addArguments("--disable-dev-shm-usage")
     chromeOptions.addArguments("--headless")
+    chromeOptions.addArguments("--remote-debugging-pipe")
   }
   return chromeOptions
 }
