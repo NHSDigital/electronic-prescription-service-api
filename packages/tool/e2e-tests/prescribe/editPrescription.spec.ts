@@ -15,7 +15,7 @@ import {
 import {By, ThenableWebDriver, until} from "selenium-webdriver"
 import {sendPageTitle} from "../locators"
 
-describe("firefox", () => {
+describe("chrome", () => {
   test("can edit the organisation on a prescription", async () => {
     const newOrganisation = "AAAAA"
     await editPrescriptionOrganisationUserJourney(driver, newOrganisation)

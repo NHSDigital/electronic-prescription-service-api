@@ -17,7 +17,7 @@ import {
 } from "../helpers"
 import {copyFhirRequestButton, fhirRequestExpander} from "../locators"
 
-describe("firefox", () => {
+describe("chrome", () => {
   test("can validate a fhir resource", async () => {
     await sendPrescriptionUserJourney(driver)
     await (await getElement(driver, fhirRequestExpander)).click()

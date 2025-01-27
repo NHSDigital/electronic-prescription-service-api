@@ -11,7 +11,7 @@ import {
 } from "../helpers"
 import {returnButton, returnPageTitle} from "../locators"
 
-describe("firefox", () => {
+describe("chrome", () => {
   test("can return prescription", async () => {
     await sendPrescriptionUserJourney(driver)
     await releasePrescriptionUserJourney(driver)
