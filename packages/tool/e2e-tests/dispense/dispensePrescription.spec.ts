@@ -7,7 +7,7 @@ import {
   checkMyPrescriptions
 } from "../helpers"
 
-describe("firefox", () => {
+describe("chrome", () => {
   test("can dispense prescription using form", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()

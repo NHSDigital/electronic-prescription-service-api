@@ -18,7 +18,7 @@ import {
   searchViewDetailsButton
 } from "../locators"
 
-describe("firefox", () => {
+describe("chrome", () => {
   test("can search for prescription", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()

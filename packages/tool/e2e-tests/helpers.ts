@@ -62,7 +62,7 @@ import {getPrescriptionItemIds} from "./utils/prescriptionIds"
 import {createDispenseBody} from "./utils/dispenseBody"
 
 export const LOCAL_MODE = Boolean(process.env.LOCAL_MODE)
-export const FIREFOX_BINARY_PATH = process.env.FIREFOX_BINARY_PATH || "/usr/bin/firefox"
+export const CHROME_BINARY_PATH = process.env.CHROME_BINARY_PATH || "/usr/bin/chrome"
 
 export const SERVICE_BASE_PATH = process.env.SERVICE_BASE_PATH || "eps-api-tool"
 export const APIGEE_ENVIRONMENT = process.env.APIGEE_ENVIRONMENT || "internal-dev"

@@ -12,7 +12,7 @@ import {
 } from "../helpers"
 import {withdrawButton, withdrawPageTitle, withdrawPrescriptionAction} from "../locators"
 
-describe("firefox", () => {
+describe("chrome", () => {
   test("can withdraw prescription", async () => {
     await sendPrescriptionUserJourney(driver)
     await releasePrescriptionUserJourney(driver)

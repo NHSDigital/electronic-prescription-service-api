@@ -3,12 +3,16 @@ import {PathLike} from "fs"
 import {writeFile, access, mkdir} from "node:fs/promises"
 import _ from "lodash"
 
-import "chromedriver"
-import "geckodriver"
-import {Builder, ThenableWebDriver} from "selenium-webdriver"
-import * as firefox from "selenium-webdriver/firefox"
+import {Builder, ThenableWebDriver, Browser} from "selenium-webdriver"
+import * as chrome from "selenium-webdriver/chrome"
+import {
+  expect,
+  beforeAll,
+  beforeEach,
+  afterEach
+} from "@jest/globals"
 
-import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
+import {EPSAT_HOME_URL, CHROME_BINARY_PATH, LOCAL_MODE} from "./helpers"
 
 import * as login from "./auth/login.spec"
 import * as logout from "./auth/logout.spec"
@@ -58,13 +62,13 @@ beforeAll(async () => {
 
 beforeEach(async () => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
-  const options = buildFirefoxOptions()
+  const options = buildChromeOptions()
   Object.defineProperty(global, "hasTestFailures", {
     value: false
   })
   driver = new Builder()
-    .setFirefoxOptions(options)
-    .forBrowser("firefox")
+    .setChromeOptions(options)
+    .forBrowser(Browser.CHROME)
     .build()
 })
 
@@ -83,15 +87,19 @@ afterEach(async () => {
   await driver.quit()
 })
 
-function buildFirefoxOptions() {
-  const firefoxOptions = new firefox.Options()
+function buildChromeOptions() {
+  const chromeOptions = new chrome.Options()
   if (LOCAL_MODE) {
-    firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
+    chromeOptions.setBinaryPath(CHROME_BINARY_PATH)
+    chromeOptions.addArguments("--no-sandbox")
   }
   if (!LOCAL_MODE) {
-    firefoxOptions.addArguments("--headless")
+    chromeOptions.addArguments("--no-sandbox")
+    chromeOptions.addArguments("--disable-dev-shm-usage")
+    chromeOptions.addArguments("--headless")
+    chromeOptions.addArguments("--remote-debugging-pipe")
   }
-  return firefoxOptions
+  return chromeOptions
 }
 
 // Unused export to keep the linter happy.
