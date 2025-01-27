@@ -93,8 +93,11 @@ function buildChromeOptions() {
   const chromeOptions = new chrome.Options()
   if (LOCAL_MODE) {
     chromeOptions.setBinaryPath(CHROME_BINARY_PATH)
+    chromeOptions.addArguments("--no-sandbox")
   }
   if (!LOCAL_MODE) {
+    chromeOptions.addArguments("--no-sandbox")
+    chromeOptions.addArguments("--disable-dev-shm-usage")
     chromeOptions.addArguments("--headless")
   }
   return chromeOptions
