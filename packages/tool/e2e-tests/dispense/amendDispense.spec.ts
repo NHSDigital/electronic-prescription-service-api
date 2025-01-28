@@ -11,7 +11,7 @@ import {searchForPrescriptionUserJourney} from "../tracker/searchPrescription.sp
 import {prescriptionNotDispensedStatus} from "../locators"
 import {until} from "selenium-webdriver"
 
-describe("chrome", () => {
+describe("firefox", () => {
   test("can amend a dispense", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()

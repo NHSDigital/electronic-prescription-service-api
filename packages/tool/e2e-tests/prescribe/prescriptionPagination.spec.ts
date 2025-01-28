@@ -8,7 +8,7 @@ import {
 } from "../helpers"
 import * as fileInfoFactory from "../file-upload-info/upload-info/Test-pack-info"
 
-describe("chrome", () => {
+describe("firefox", () => {
   test("can navigate through paginated prescription summaries", async () => {
     await loginViaSimulatedAuthSmartcardUser(driver)
     await createPrescription(driver)

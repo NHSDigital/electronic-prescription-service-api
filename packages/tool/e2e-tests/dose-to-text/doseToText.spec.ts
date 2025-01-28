@@ -14,7 +14,7 @@ import {
 
 const examplePrescription = JSON.stringify(readBundleFromFile("./messages/prescriptionOrder.json"))
 
-describe("chrome", () => {
+describe("firefox", () => {
   test("can convert dose to text for prescription", async () => {
     await navigateToUrl(driver, `${EPSAT_HOME_URL}/`)
     await convertDoseToText()

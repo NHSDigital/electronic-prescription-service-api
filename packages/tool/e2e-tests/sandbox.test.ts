@@ -1,17 +1,11 @@
 import "chromedriver"
 import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
-import * as chrome from "selenium-webdriver/chrome"
-import {EPSAT_HOME_URL, CHROME_BINARY_PATH, LOCAL_MODE} from "./helpers"
+import * as firefox from "selenium-webdriver/firefox"
+import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
 import * as doseToText from "./dose-to-text/doseToText.spec"
 import _ from "lodash"
 import "path"
-import {
-  expect,
-  beforeAll,
-  beforeEach,
-  afterEach
-} from "@jest/globals"
 
 const testResultsDirectory = "test_results"
 
@@ -41,13 +35,13 @@ beforeAll(async () => {
 
 beforeEach(async() => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
-  const options = buildChromeOptions()
+  const options = buildFirefoxOptions()
   Object.defineProperty(global, "hasTestFailures", {
     value: false
   })
   driver = new Builder()
-    .setChromeOptions(options)
-    .forBrowser("chrome")
+    .setFirefoxOptions(options)
+    .forBrowser("firefox")
     .build()
 })
 
@@ -66,15 +60,15 @@ afterEach(async () => {
   await driver.close()
 })
 
-function buildChromeOptions() {
-  const chromeOptions = new chrome.Options()
+function buildFirefoxOptions() {
+  const firefoxOptions = new firefox.Options()
   if (LOCAL_MODE) {
-    chromeOptions.setBinaryPath(CHROME_BINARY_PATH)
+    firefoxOptions.setBinary(FIREFOX_BINARY_PATH)
   }
   if (!LOCAL_MODE) {
-    chromeOptions.addArguments("--headless")
+    firefoxOptions.addArguments("--headless")
   }
-  return chromeOptions
+  return firefoxOptions
 }
 
 // Unused export to keep the linter happy.

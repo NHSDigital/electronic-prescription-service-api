@@ -1,7 +1,7 @@
 import {driver} from "../live.test"
 import {loginUnattendedAccess, loginViaSimulatedAuthSmartcardUser} from "../helpers"
 
-describe("chrome", () => {
+describe("firefox", () => {
   test("can login to attended session", async () => {
     await loginViaSimulatedAuthSmartcardUser(driver)
   })

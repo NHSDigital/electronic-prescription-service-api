@@ -8,7 +8,7 @@ import {
   claimAmendPrescriptionUserJourney
 } from "../helpers"
 
-describe("chrome", () => {
+describe("firefox", () => {
   test("can amend a claim on a prescription", async () => {
     const prescriptionId = await sendPrescriptionUserJourney(driver)
     expect(prescriptionId).toBeTruthy()
