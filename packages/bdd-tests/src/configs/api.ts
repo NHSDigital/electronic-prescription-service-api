@@ -33,8 +33,8 @@ instance.interceptors.response.use(
   },
   (error) => {
     const x_request_id = error.response.headers["x-request-id"]
-    writeToFile(JSON.stringify(error.response.data), "json", "Resp_", `${x_request_id}_error`)
-    writeToFile(JSON.stringify(error.response.headers), "json", "Resp_headers_", `${x_request_id}_error`)
+    writeToFile(JSON.stringify(error.response.data), "json", "Resp_", x_request_id)
+    writeToFile(JSON.stringify(error.response.headers), "json", "Resp_headers_", x_request_id)
     return Promise.reject(error)
   }
 )
@@ -53,6 +53,6 @@ function writeToFile(text, extension, prefix, subfolder) {
   } catch (e) {
     console.log(e)
   }
-  const filename = path.join(folderName, `${prefix}${ new Date().toISOString().replaceAll(":", "_")}.${extension}`)
+  const filename = path.join(folderName, `${prefix}${ new Date().toISOString()}.${extension}`)
   fs.writeFileSync(filename, text)
 }
