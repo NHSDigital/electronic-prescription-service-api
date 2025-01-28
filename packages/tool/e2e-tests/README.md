@@ -25,7 +25,7 @@ $env:FIREFOX_BINARY_PATH="C:\Program Files\Mozilla Firefox\firefox.exe"  # <-- c
 - WSL2 / Linux
 ```bash
 export LOCAL_MODE="true"
-export CHROME_BINARY_PATH=$(which google-chrome)
+export FIREFOX_BINARY_PATH=$(which firefox)
 ```
 
 
