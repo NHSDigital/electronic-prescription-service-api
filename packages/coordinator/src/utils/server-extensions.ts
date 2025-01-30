@@ -21,6 +21,19 @@ export function reformatUserErrorsToFhir(
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     request.log("error", response)
+  } else {
+    if (response.statusCode >= 400) {
+      request.log("warn", {
+        msg: "error or warning response",
+        error: {
+          res: {
+            statusCode: response.statusCode,
+            body: response.source,
+            Headers: response.headers
+          }
+        }
+      })
+    }
   }
   return responseToolkit.continue
 }
