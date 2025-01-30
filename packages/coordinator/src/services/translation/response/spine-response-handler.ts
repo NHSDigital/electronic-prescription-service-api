@@ -102,6 +102,7 @@ export class SpineResponseHandler<T> {
       logger.error("Trying to return bad request response with no error details")
       return SpineResponseHandler.createServerErrorResponse()
     }
+    logger.info({issues}, "Issues found in spine response. Returning non successful result")
     return SpineResponseHandler.createResponseForIssues(issues)
   }
 
