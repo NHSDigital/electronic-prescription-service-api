@@ -74,11 +74,6 @@
         <Step>
           <Name>AssignMessage.AddScopeHeader</Name>
         </Step>
-        <Step>
-          <!--This should always be the last Step - as it is just before the message is sent - so the initial request stays intact for as long as possible.
-                      The Swapping of the Request Headers converts X-Request-ID and X-Correlation-ID to NHSD-Request-ID and NHSD-Correlation-ID before sending to backend. -->
-          <Name>AssignMessage.Swap.RequestHeaders</Name>
-        </Step>
       </Request>
       <Response>
         <Step>

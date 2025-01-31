@@ -68,15 +68,15 @@
     </Condition>
     <TargetEndpoint>sync-wrap</TargetEndpoint>
   </RouteRule>
-  <RouteRule name="apim">
-    <TargetEndpoint>apim</TargetEndpoint>
-  </RouteRule>
   <RouteRule name="eps">
     <Condition>
       request.verb = "POST"
       AND proxy.pathsuffix MatchesPath "/FHIR/R4/Claim"
     </Condition>
     <TargetEndpoint>eps</TargetEndpoint>
+  </RouteRule>
+  <RouteRule name="apim">
+    <TargetEndpoint>apim</TargetEndpoint>
   </RouteRule>
   <DefaultFaultRule>
     <Step>
