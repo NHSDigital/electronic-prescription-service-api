@@ -60,6 +60,14 @@ Parameters:
       - 2922
       - 3288
       - 3653
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - test
+      - ref
+      - prod
+    Default: dev
   TargetSpineServer:
     Type: String
     Default: "xxx"
@@ -91,6 +99,7 @@ Resources:
         DockerImageTag: !Ref DockerImageTag
         ToAsid: !Ref ToAsid
         ToPartyKey: !Ref ToPartyKey
+        Environment: !Ref Environment
 
 Outputs:
   LoadBalancerEndpoint:

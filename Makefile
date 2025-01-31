@@ -449,7 +449,7 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			LogLevel=$$LOG_LEVEL \
 			ValidatorLogLevel=$$VALIDATOR_LOG_LEVEL \
 			LogRetentionInDays=$$LOG_RETENTION_DAYS \
-			Env=$$TARGET_ENVIRONMENT \
+			Environment=$$TARGET_ENVIRONMENT \
 			DomainNameExport=$$DOMAIN_NAME_EXPORT \
 			ZoneIDExport=$$ZONE_ID_EXPORT \
 			TargetSpineServer=$$TARGET_SPINE_SERVER \
