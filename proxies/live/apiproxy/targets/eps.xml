@@ -1,4 +1,4 @@
-<TargetEndpoint name="apim">
+<TargetEndpoint name="eps">
   <PreFlow/>
   <Flows>
     <Flow name="No-Auth">
