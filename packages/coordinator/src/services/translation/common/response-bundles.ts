@@ -17,10 +17,12 @@ import {
 } from "../response/release/additional-instructions"
 import {createMedicationRequest} from "../response/release/release-medication-request"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "./dateTime"
+import pino from "pino"
 
 export async function createBundle(
   parentPrescription: hl7V3.ParentPrescription,
-  responseMessageId: string
+  responseMessageId: string,
+  logger: pino.Logger<never>
 ): Promise<fhir.Bundle> {
   return {
     resourceType: "Bundle",
@@ -33,13 +35,17 @@ export async function createBundle(
       value: parentPrescription.id._attributes.root.toLowerCase()
     },
     type: "message",
-    entry: (await createBundleResources(parentPrescription, responseMessageId)).map(convertResourceToBundleEntry)
+    entry: (await createBundleResources(
+      parentPrescription,
+      responseMessageId,
+      logger)).map(convertResourceToBundleEntry)
   }
 }
 
 async function createBundleResources(
   parentPrescription: hl7V3.ParentPrescription,
-  responseMessageId: string
+  responseMessageId: string,
+  logger: pino.Logger<never>
 ): Promise<Array<fhir.Resource>> {
   const bundleResources: Array<fhir.Resource> = []
   const focusIds: Array<string> = []
@@ -69,7 +75,7 @@ async function createBundleResources(
   const lineItems = toArray(pertinentPrescription.pertinentInformation2).map((pi2) => pi2.pertinentLineItem)
 
   const firstItemText = lineItems[0].pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
-  const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText)
+  const firstItemAdditionalInstructions = parseAdditionalInstructions(firstItemText, logger)
 
   const medication = firstItemAdditionalInstructions.medication
   const patientInfo = firstItemAdditionalInstructions.patientInfo
@@ -98,7 +104,8 @@ async function createBundleResources(
       hl7LineItem,
       patientId,
       authorId,
-      responsiblePartyId
+      responsiblePartyId,
+      logger
     )
     bundleResources.push(medicationRequest)
     focusIds.push(medicationRequest.id)
