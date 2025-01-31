@@ -64,13 +64,19 @@
         proxy.pathsuffix MatchesPath "/FHIR/R4/$process-message"
         OR proxy.pathsuffix MatchesPath "/FHIR/R4/Task/$release"
         OR proxy.pathsuffix MatchesPath "/FHIR/R4/Task"
-        OR proxy.pathsuffix MatchesPath "/FHIR/R4/Claim"
       )
     </Condition>
     <TargetEndpoint>sync-wrap</TargetEndpoint>
   </RouteRule>
   <RouteRule name="apim">
     <TargetEndpoint>apim</TargetEndpoint>
+  </RouteRule>
+  <RouteRule name="eps">
+    <Condition>
+      request.verb = "POST"
+      AND proxy.pathsuffix MatchesPath "/FHIR/R4/Claim"
+    </Condition>
+    <TargetEndpoint>eps</TargetEndpoint>
   </RouteRule>
   <DefaultFaultRule>
     <Step>
