@@ -57,8 +57,9 @@ afterAll(() => {
 // We always want to use our mock CRL and ARL, to avoid relying on external ones
 const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
 const ptlArl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/arlc3.crl"
+const directCrl = "http://crl.nhs.uk/int/1d/crlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
-const validUrls = new RegExp(`(${ptlCrl}|${mockCrl})`)
+const validUrls = new RegExp(`(${ptlCrl}|${mockCrl}|${directCrl})`)
 
 mock.onAny(validUrls).reply(200, TestCertificates.berRevocationList)
 
@@ -141,6 +142,8 @@ beforeEach(() => {
   loggerInfo = logSpies.loggerInfo
   loggerWarn = logSpies.loggerWarn
   loggerError = logSpies.loggerError
+  process.env.MTLS_SPINE_CLIENT = "false"
+  mock.resetHistory()
 })
 
 afterEach(() => {
@@ -208,13 +211,25 @@ describe("Sanity check mock data", () => {
 
 // 1.1 - Valid certificate
 describe("Certificate not on the CRL", () => {
-  test("certificate is valid", async () => {
+  test("certificate is valid - not in EPS hosted container", async () => {
     // The certificate has NOT been revoked and its serial is NOT on our mock CRL
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
     const isValid = await isSignatureCertificateValid(prescription, logger)
 
     expect(isValid).toEqual(true)
     expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
+    expect(mock.history.get[0].url).toBe(ptlCrl)
+  })
+
+  test("certificate is valid - in EPS hosted container", async () => {
+    process.env.MTLS_SPINE_CLIENT = "true"
+    // The certificate has NOT been revoked and its serial is NOT on our mock CRL
+    const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    const isValid = await isSignatureCertificateValid(prescription, logger)
+
+    expect(isValid).toEqual(true)
+    expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
+    expect(mock.history.get[0].url).toBe(directCrl)
   })
 })
 
