@@ -191,8 +191,8 @@ jobs:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
-      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
-      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
 
   release_ref:
     needs:
@@ -347,8 +347,8 @@ jobs:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
-      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
-      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
 
   release_prod:
     needs:
@@ -386,3 +386,5 @@ jobs:
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
