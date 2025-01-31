@@ -51,7 +51,7 @@ export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
   if (isSandbox()) {
     return DEFAULT_SANDBOX_ASID
   }
-  if (headers[RequestHeaders.ASID] !== "") {
+  if (headers[RequestHeaders.ASID] !== undefined) {
     return headers[RequestHeaders.ASID]
   }
   if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
@@ -62,7 +62,7 @@ export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
 }
 
 export function getPartyKey(headers: Hapi.Utils.Dictionary<string>): string {
-  if (headers[RequestHeaders.PARTY_KEY] !== "") {
+  if (headers[RequestHeaders.PARTY_KEY] !== undefined) {
     return headers[RequestHeaders.PARTY_KEY]
   }
   if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
