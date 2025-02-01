@@ -290,7 +290,11 @@ describe("prescriptionEndorsements", () => {
 
     const headers = {
       "nhsd-request-id": "test",
-      "nhsd-asid": "200000001285"
+      "nhsd-asid": "200000001285",
+      "nhsd-party-key": "T141D-822234",
+      "nhsd-identity-uuid": "555254239107", //USERQ RANDOM Mr
+      "nhsd-session-urid": "555254240100", //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
+      "nhsd-correlation-id": "test-correlation-id"
     }
 
     const hl7v3PrescriptionXml = (await convertBundleToSpineRequest(bundle, headers, logger)).message

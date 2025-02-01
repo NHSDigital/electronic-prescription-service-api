@@ -28,6 +28,9 @@ export function isEpsHostedContainer(): boolean {
   return process.env.MTLS_SPINE_CLIENT === "true"
 }
 
+export function enableDefaultAsidPartyKey(): boolean {
+  return process.env.ENABLE_DEFAULT_ASID_PARTY_KEY === "true"
+}
 export function isSandbox(): boolean {
   return process.env.SANDBOX === "1"
 }
