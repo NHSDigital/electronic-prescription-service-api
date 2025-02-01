@@ -23,12 +23,14 @@ import {validatePermittedAttendedDispenseMessage, validatePermittedPrescribeMess
 import {isIdentifierReference, isReference} from "../../utils/type-guards"
 import * as common from "../../../../models/fhir/common"
 import {PractitionerRole} from "../../../../models/fhir"
+import pino from "pino"
 
 export function verifyBundle(
   bundle: fhir.Bundle,
   scope: string,
   accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string
+  accessTokenSDSRoleID: string,
+  logger: pino.Logger<never>
 ): Array<fhir.OperationOutcomeIssue> {
   if (bundle.resourceType !== "Bundle") {
     return [errors.createResourceTypeIssue("Bundle")]
@@ -49,7 +51,7 @@ export function verifyBundle(
     return [errors.messageTypeIssue]
   }
 
-  const commonErrors = verifyCommonBundle(bundle, accessTokenSDSUserID, accessTokenSDSRoleID)
+  const commonErrors = verifyCommonBundle(bundle, accessTokenSDSUserID, accessTokenSDSRoleID, logger)
 
   let messageTypeSpecificErrors
   switch (messageType) {
@@ -114,7 +116,8 @@ function validatePractitionerRolePractitionerField(
 export function verifyCommonBundle(
   bundle: fhir.Bundle,
   accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string
+  accessTokenSDSRoleID: string,
+  logger: pino.Logger<never>
 ): Array<fhir.OperationOutcomeIssue> {
   const incorrectValueErrors: Array<fhir.OperationOutcomeIssue> = []
   const medicationRequests = getMedicationRequests(bundle)
@@ -143,7 +146,8 @@ export function verifyCommonBundle(
       isResponsibleParty,
       incorrectValueErrors,
       accessTokenSDSUserID,
-      accessTokenSDSRoleID
+      accessTokenSDSRoleID,
+      logger
     )
   }
   )
@@ -182,7 +186,8 @@ function validatePractitionerRole(
   isResponsibleParty: boolean,
   incorrectValueErrors: Array<fhir.OperationOutcomeIssue>,
   accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string
+  accessTokenSDSRoleID: string,
+  logger: pino.Logger<never>
 ): void {
   if (practitionerRole.practitioner) {
     validatePractitionerRolePractitionerField(
@@ -205,31 +210,38 @@ function validatePractitionerRole(
       bundle, practitionerRole.practitioner as fhir.Reference<PractitionerRole>
     )
     if (practitioner) {
-      verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID)
+      verifyPractitionerID(practitioner.identifier, accessTokenSDSUserID, logger)
     }
   }
 
   const hasPractitionerRoleIdentifier = practitionerRole && practitionerRole.identifier
   if (hasPractitionerRoleIdentifier) {
-    verifyPractitionerRoleID(practitionerRole.identifier, accessTokenSDSRoleID)
+    verifyPractitionerRoleID(practitionerRole.identifier, accessTokenSDSRoleID, logger)
   }
 }
 
-function verifyPractitionerRoleID(identifier: Array<fhir.Identifier>, accessTokenSDSRoleID: string): void{
+function verifyPractitionerRoleID(
+  identifier: Array<fhir.Identifier>,
+  accessTokenSDSRoleID: string,
+  logger: pino.Logger<never>): void{
   const bodySDSRoleID = getIdentifierValueForSystem(
     identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
     'Bundle.entry("PractitionerRole").identifier'
   )
   if (bodySDSRoleID !== accessTokenSDSRoleID) {
-    console.warn(
-      `SDS Role ID does not match between access token and message body. Access Token: `
-      + `${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+    logger.warn(
+      {accessTokenSDSRoleID, bodySDSRoleID},
+      "SDS Role ID does not match between access token and message body"
     )
   }
 }
 
-function verifyPractitionerID(identifier: Array<fhir.Identifier>, accessTokenSDSUserID: string): void{
+function verifyPractitionerID(
+  identifier: Array<fhir.Identifier>,
+  accessTokenSDSUserID: string,
+  logger: pino.Logger<never>
+): void{
   const bodySDSUserID = getIdentifierValueOrNullForSystem(
     identifier,
     "https://fhir.nhs.uk/Id/sds-user-id",
@@ -237,9 +249,9 @@ function verifyPractitionerID(identifier: Array<fhir.Identifier>, accessTokenSDS
   )
   //Checks if the SDS User ID from the body of the message exists and matches the SDS User ID from the accessToken
   if (bodySDSUserID && bodySDSUserID !== accessTokenSDSUserID) {
-    console.warn(
-      `SDS Unique User ID does not match between access token and message body. Access Token: `
-      + `${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
+    logger.warn(
+      {accessTokenSDSUserID, bodySDSUserID},
+      "SDS Unique User ID does not match between access token and message body"
     )
   }
 }

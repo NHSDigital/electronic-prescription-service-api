@@ -31,7 +31,13 @@ export default [
       const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
       const applicationId = getApplicationId(request.headers)
-      const issues = bundleValidator.verifyBundle(bundle, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+      const issues = bundleValidator.verifyBundle(
+        bundle,
+        scope,
+        accessTokenSDSUserID,
+        accessTokenSDSRoleID,
+        request.logger
+      )
       if (issues.length) {
         request.log("info", {verifyBundleIssues: issues})
         const response = fhir.createOperationOutcome(issues, bundle.meta?.lastUpdated)

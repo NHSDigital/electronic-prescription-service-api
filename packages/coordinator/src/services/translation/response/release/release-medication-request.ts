@@ -9,16 +9,18 @@ import {parseAdditionalInstructions} from "./additional-instructions"
 import {convertHL7V3DateTimeToIsoDateTimeString, convertHL7V3DateToIsoDateString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {LosslessNumber} from "lossless-json"
+import pino from "pino"
 
 export function createMedicationRequest(
   prescription: hl7V3.Prescription,
   lineItem: hl7V3.LineItem,
   patientId: string,
   requesterId: string,
-  responsiblePartyId: string
+  responsiblePartyId: string,
+  logger: pino.Logger<never>
 ): fhir.MedicationRequest {
   const text = lineItem.pertinentInformation1?.pertinentAdditionalInstructions?.value?._text ?? ""
-  const additionalInstructions = parseAdditionalInstructions(text)
+  const additionalInstructions = parseAdditionalInstructions(text, logger)
   const courseOfTherapyType = createCourseOfTherapyType(
     prescription.pertinentInformation5.pertinentPrescriptionTreatmentType,
     lineItem.repeatNumber

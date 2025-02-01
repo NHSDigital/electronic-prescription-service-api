@@ -468,7 +468,6 @@ describe("convertResponsibleParty", () => {
 
       const resultAgentPerson = result.AgentPerson
 
-      console.log(resultAgentPerson)
       // Practitioner telecom
       expect(resultAgentPerson.telecom[0]._attributes.value.slice(4)).toEqual(
         (bundle.entry[3].resource as fhir.Practitioner).telecom[0].value

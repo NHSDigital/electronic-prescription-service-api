@@ -35,7 +35,7 @@ export default [
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
 
       if (isBundle(payload)) {
-        const issues = bundleValidator.verifyBundle(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+        const issues = bundleValidator.verifyBundle(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID, logger)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues, payload.meta?.lastUpdated)
           const statusCode = getStatusCode(issues)
@@ -73,7 +73,7 @@ export default [
       }
 
       if (isClaim(payload)) {
-        const issues = claimValidator.verifyClaim(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+        const issues = claimValidator.verifyClaim(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID, logger)
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues, payload.meta?.lastUpdated)
           const statusCode = getStatusCode(issues)

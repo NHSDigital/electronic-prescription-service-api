@@ -22,8 +22,10 @@ import {
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
 import {isReference} from "../../../src/utils/type-guards"
+import pino from "pino"
 
-jest.spyOn(global.console, "warn").mockImplementation(() => null)
+const logger = pino()
+const loggerWarnSpy = jest.spyOn(logger, "warn")
 
 function validateValidationErrors(validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
@@ -62,7 +64,8 @@ describe("Bundle checks", () => {
       bundle as fhir.Bundle,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toContainEqual(errors.messageTypeIssue)
   })
@@ -73,7 +76,8 @@ describe("Bundle checks", () => {
       TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([errors.createDisabledFeatureIssue("Prescribing")])
   })
@@ -84,7 +88,8 @@ describe("Bundle checks", () => {
       TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([errors.createDisabledFeatureIssue("Dispensing")])
   })
@@ -95,7 +100,8 @@ describe("Bundle checks", () => {
       TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([])
   })
@@ -106,7 +112,8 @@ describe("Bundle checks", () => {
       TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([])
   })
@@ -116,7 +123,8 @@ describe("Bundle checks", () => {
       TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([])
   })
@@ -126,7 +134,8 @@ describe("Bundle checks", () => {
       TestResources.specification[0].fhirMessageUnsigned,
       PRESCRIBING_APP_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Prescribing")])
   })
@@ -136,7 +145,8 @@ describe("Bundle checks", () => {
       TestResources.specification[0].fhirMessageUnsigned,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([errors.createMissingScopeIssue("Prescribing")])
   })
@@ -146,7 +156,8 @@ describe("Bundle checks", () => {
       TestResources.specification[2].fhirMessageDispense,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([])
   })
@@ -156,7 +167,8 @@ describe("Bundle checks", () => {
       TestResources.specification[2].fhirMessageDispense,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
@@ -166,7 +178,8 @@ describe("Bundle checks", () => {
       TestResources.specification[2].fhirMessageDispense,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
@@ -176,7 +189,8 @@ describe("Bundle checks", () => {
       TestResources.specification[0].fhirMessageUnsigned,
       `fake-testing-scope ${PRESCRIBING_APP_SCOPE} ${PRESCRIBING_USER_SCOPE}`,
       "test_sds_user_id",
-      "test_sds_role_id"
+      "test_sds_role_id",
+      logger
     )
     expect(result).toEqual([])
   })
@@ -196,20 +210,20 @@ describe("verifyCommonBundle", () => {
   })
 
   test("Should accept a prescription-order message where all MedicationRequests have intent order", () => {
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(0)
   })
 
   test("Should reject a message where one MedicationRequest has intent plan", () => {
     medicationRequests[0].intent = fhir.MedicationRequestIntent.PLAN
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
   })
 
   test("Should reject a message where all MedicationRequests have intent plan", () => {
     medicationRequests.forEach((medicationRequest) => (medicationRequest.intent = fhir.MedicationRequestIntent.PLAN))
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].expression).toContainEqual("Bundle.entry.resource.ofType(MedicationRequest).intent")
   })
@@ -223,7 +237,7 @@ describe("verifyCommonBundle", () => {
     }
     medicationRequests[0].medicationCodeableConcept = testCodeableConcept
     medicationRequests[0].medicationReference = testReference
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(1)
   })
 
@@ -237,27 +251,31 @@ describe("verifyCommonBundle", () => {
     practitionerRoles[0].organization = testReference
     practitionerRoles[0].healthcareService = [testReference]
 
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(3)
   })
 
-  test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    validator.verifyCommonBundle(bundle, "test_sds_user_id", "100102238986")
-    expect(console.warn).toHaveBeenCalledWith(
-      // eslint-disable-next-line max-len
-      "SDS Unique User ID does not match between access token and message body. Access Token: test_sds_user_id Body: 3415870201."
+  test("logger warn when inconsistent accessToken and body SDS user unique ID", () => {
+    validator.verifyCommonBundle(bundle, "test_sds_user_id", "100102238986", logger)
+    expect(loggerWarnSpy).toHaveBeenCalledWith({
+      accessTokenSDSUserID: "test_sds_user_id",
+      bodySDSUserID: "3415870201"
+    },
+    "SDS Unique User ID does not match between access token and message body"
     )
   })
 
-  test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
-    validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id")
-    expect(console.warn).toHaveBeenCalledWith(
-      // eslint-disable-next-line max-len
-      "SDS Role ID does not match between access token and message body. Access Token: test_sds_role_id Body: 100102238986."
+  test("logger warn when inconsistent accessToken and body SDS role profile ID", () => {
+    validator.verifyCommonBundle(bundle, "3415870201", "test_sds_role_id", logger)
+    expect(loggerWarnSpy).toHaveBeenCalledWith({
+      accessTokenSDSRoleID: "test_sds_role_id",
+      bodySDSRoleID: "100102238986"
+    },
+    "SDS Role ID does not match between access token and message body"
     )
   })
 
-  test("console will not warn when SDS User ID is missing", () => {
+  test("logger will not warn when SDS User ID is missing", () => {
     const testReference: Array<fhir.Identifier> = [
       {
         system: "https://fhir.hl7.org.uk/Id/gmc-number",
@@ -271,18 +289,20 @@ describe("verifyCommonBundle", () => {
     const practitioner = resolvePractitioner(bundle, practitionerRoles[0].practitioner)
     practitioner.identifier = testReference
 
-    validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
 
-    expect(console.warn).not.toHaveBeenCalledWith(
-      "SDS Role ID does not match between access token and message body." +
-        "Access Token: test_sds_role_id Body: test_sds_role_id."
+    expect(loggerWarnSpy).not.toHaveBeenCalledWith({
+      accessTokenSDSRoleID: "test_sds_role_id",
+      bodySDSRoleID: "test_sds_role_id"
+    },
+    "SDS Role ID does not match between access token and message body"
     )
   })
 
   test("Should accept a practitionerRole with org-only responsible party", () => {
     const bundle = clone(TestResources.specification[6].fhirMessageUnsigned)
 
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(0)
   })
 
@@ -293,7 +313,7 @@ describe("verifyCommonBundle", () => {
     }
     organizations[0].telecom = [telecom]
 
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].diagnostics).toEqual(
       "Required field bundle.entry[8].resource.telecom[0].use is missing."
@@ -307,7 +327,7 @@ describe("verifyCommonBundle", () => {
     }
     organizations[0].telecom = [telecom]
 
-    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id")
+    const validationErrors = validator.verifyCommonBundle(bundle, "test_sds_user_id", "test_sds_role_id", logger)
     expect(validationErrors).toHaveLength(1)
     expect(validationErrors[0].diagnostics).toEqual(
       "Required field bundle.entry[8].resource.telecom[0].value is missing."

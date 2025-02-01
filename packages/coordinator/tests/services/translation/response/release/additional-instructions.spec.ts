@@ -1,3 +1,4 @@
+import pino from "pino"
 import {
   createCommunicationRequest,
   createList,
@@ -6,9 +7,10 @@ import {
 } from "../../../../../src/services/translation/response/release/additional-instructions"
 import {fhir} from "@models"
 
+const logger = pino()
 describe("parseAdditionalInstructions", () => {
   test("handles empty", () => {
-    const thing = parseAdditionalInstructions("")
+    const thing = parseAdditionalInstructions("", logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -29,7 +31,7 @@ describe("parseAdditionalInstructions", () => {
       output: [`Jennifer "Bede" O'Reilly & Máirín MacCarron`]
     }
   ])("handles single patientInfo, including XML special characters", (data) => {
-    const thing = parseAdditionalInstructions(data.input)
+    const thing = parseAdditionalInstructions(data.input, logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual(data.output)
     expect(thing.controlledDrugWords).toEqual("")
@@ -40,7 +42,7 @@ describe("parseAdditionalInstructions", () => {
     "<patientInfo>Patient info 1</patientInfo><patientInfo>Patient info 2</patientInfo>",
     "<patientInfo>Patient info 1</patientInfo> <patientInfo>Patient info 2</patientInfo>"
   ])("handles multiple patientInfo", (text) => {
-    const thing = parseAdditionalInstructions(text)
+    const thing = parseAdditionalInstructions(text, logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
     expect(thing.controlledDrugWords).toEqual("")
@@ -61,7 +63,7 @@ describe("parseAdditionalInstructions", () => {
       output: ["St George's Mushroom extract by Johnson & Johnson"]
     }
   ])("handles single medication, including XML special characters", (data) => {
-    const thing = parseAdditionalInstructions(data.input)
+    const thing = parseAdditionalInstructions(data.input, logger)
     expect(thing.medication).toEqual(data.output)
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -72,7 +74,7 @@ describe("parseAdditionalInstructions", () => {
     "<medication>Medication 1</medication><medication>Medication 2</medication>",
     "<medication>Medication 1</medication>\t<medication>Medication 2</medication>"
   ])("handles multiple medication", (text) => {
-    const thing = parseAdditionalInstructions(text)
+    const thing = parseAdditionalInstructions(text, logger)
     expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -83,7 +85,7 @@ describe("parseAdditionalInstructions", () => {
     "<medication>Medication</medication><patientInfo>Patient info</patientInfo>",
     "<medication>Medication</medication>\r\n<patientInfo>Patient info</patientInfo>"
   ])("handles medication and patient info", (text) => {
-    const thing = parseAdditionalInstructions(text)
+    const thing = parseAdditionalInstructions(text, logger)
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual(["Patient info"])
     expect(thing.controlledDrugWords).toEqual("")
@@ -92,7 +94,8 @@ describe("parseAdditionalInstructions", () => {
 
   test("handles medication and patient info in other order", () => {
     const thing = parseAdditionalInstructions(
-      "<patientInfo>Patient info</patientInfo><medication>Medication</medication>"
+      "<patientInfo>Patient info</patientInfo><medication>Medication</medication>",
+      logger
     )
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual(["Patient info"])
@@ -103,7 +106,8 @@ describe("parseAdditionalInstructions", () => {
   test("handles interleaved medication and patient info", () => {
     const thing = parseAdditionalInstructions(
       // eslint-disable-next-line max-len
-      "<patientInfo>Patient info 1</patientInfo><medication>Medication 1</medication><patientInfo>Patient info 2</patientInfo><medication>Medication 2</medication>"
+      "<patientInfo>Patient info 1</patientInfo><medication>Medication 1</medication><patientInfo>Patient info 2</patientInfo><medication>Medication 2</medication>",
+      logger
     )
     expect(thing.medication).toEqual(["Medication 1", "Medication 2"])
     expect(thing.patientInfo).toEqual(["Patient info 1", "Patient info 2"])
@@ -116,7 +120,8 @@ describe("parseAdditionalInstructions", () => {
       `<patientInfo>PAT&amp;PAT</patientInfo><medication>MED&gt;MED</medication>\
       <patientInfo>PAT&lt;PAT</patientInfo><medication>MED&apos;MED</medication>\
       <medication>MED&quot;MED</medication><patientInfo>PAT&quot;PAT</patientInfo>\
-      <patientInfo>PAT&gt;&gt;PAT</patientInfo>CD: twenty eight\nAdditional instructions`
+      <patientInfo>PAT&gt;&gt;PAT</patientInfo>CD: twenty eight\nAdditional instructions`,
+      logger
     )
     expect(thing.medication).toEqual(["MED>MED", "MED'MED", `MED"MED`])
     expect(thing.patientInfo).toEqual(["PAT&PAT", "PAT<PAT", `PAT"PAT`, "PAT>>PAT"])
@@ -125,7 +130,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles controlled drug words", () => {
-    const thing = parseAdditionalInstructions("CD: twenty eight")
+    const thing = parseAdditionalInstructions("CD: twenty eight", logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("twenty eight")
@@ -133,7 +138,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles additional instructions", () => {
-    const thing = parseAdditionalInstructions("Additional instructions")
+    const thing = parseAdditionalInstructions("Additional instructions", logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -141,7 +146,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles controlled drug words and other instructions", () => {
-    const thing = parseAdditionalInstructions("CD: twenty eight\nAdditional instructions")
+    const thing = parseAdditionalInstructions("CD: twenty eight\nAdditional instructions", logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("twenty eight")
@@ -149,7 +154,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles multiline additional instructions", () => {
-    const thing = parseAdditionalInstructions("Additional instructions line 1\nAdditional instructions line 2")
+    const thing = parseAdditionalInstructions("Additional instructions line 1\nAdditional instructions line 2", logger)
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -158,7 +163,8 @@ describe("parseAdditionalInstructions", () => {
 
   test("handles controlled drug words and multiline additional instructions", () => {
     const thing = parseAdditionalInstructions(
-      "CD: twenty eight\nAdditional instructions line 1\nAdditional instructions line 2"
+      "CD: twenty eight\nAdditional instructions line 1\nAdditional instructions line 2",
+      logger
     )
     expect(thing.medication).toEqual([])
     expect(thing.patientInfo).toEqual([])
@@ -167,7 +173,7 @@ describe("parseAdditionalInstructions", () => {
   })
 
   test("handles XML chars in additional instructions", () => {
-    const thing = parseAdditionalInstructions("<medication>Medication</medication>Line < 2\nLine > 1")
+    const thing = parseAdditionalInstructions("<medication>Medication</medication>Line < 2\nLine > 1", logger)
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual([])
     expect(thing.controlledDrugWords).toEqual("")
@@ -177,7 +183,8 @@ describe("parseAdditionalInstructions", () => {
   test("handles all fields", () => {
     const thing = parseAdditionalInstructions(
       // eslint-disable-next-line max-len
-      "<medication>Medication</medication><patientInfo>Patient info</patientInfo>CD: twenty eight\nAdditional instructions"
+      "<medication>Medication</medication><patientInfo>Patient info</patientInfo>CD: twenty eight\nAdditional instructions",
+      logger
     )
     expect(thing.medication).toEqual(["Medication"])
     expect(thing.patientInfo).toEqual(["Patient info"])
@@ -188,7 +195,8 @@ describe("parseAdditionalInstructions", () => {
   test("multi new line case", () => {
     const thing = parseAdditionalInstructions(
       // eslint-disable-next-line max-len
-      "\n<medication>med 1</medication>\n<medication>med 2</medication>\n<patientInfo>Your named GP is the is your registered GP who is someone. This does not change your right to see any GP in the practice.\n\n</patientInfo>\n<patientInfo>Next review date: 14-Sep-2023</patientInfo>\n\nCD: twenty eight"
+      "\n<medication>med 1</medication>\n<medication>med 2</medication>\n<patientInfo>Your named GP is the is your registered GP who is someone. This does not change your right to see any GP in the practice.\n\n</patientInfo>\n<patientInfo>Next review date: 14-Sep-2023</patientInfo>\n\nCD: twenty eight",
+      logger
     )
     expect(thing.medication).toEqual(["med 1", "med 2"])
     // eslint-disable-next-line max-len

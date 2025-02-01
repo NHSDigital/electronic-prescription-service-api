@@ -36,7 +36,7 @@ export default [
       const scope = getScope(request.headers)
       const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-      const issues = claimValidator.verifyClaim(claimPayload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+      const issues = claimValidator.verifyClaim(claimPayload, scope, accessTokenSDSUserID, accessTokenSDSRoleID, logger)
 
       if (issues.length) {
         const response = fhir.createOperationOutcome(issues, claimPayload.meta?.lastUpdated)

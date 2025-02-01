@@ -392,7 +392,6 @@ describe("release rejection handler", () => {
       contained: [organization],
       extension: [extension]
     }
-    console.log(JSON.stringify(result))
     expect(result).toMatchObject<TranslatedSpineResponse>({
       statusCode: 400,
       fhirResponse: operationOutcome

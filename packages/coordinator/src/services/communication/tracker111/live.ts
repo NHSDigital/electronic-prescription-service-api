@@ -73,7 +73,7 @@ export class LiveTrackerClient implements TrackerClient {
       )
       return response.data
     } catch (error) {
-      console.log(error)
+      logger.error(error)
       return error
     }
   }

@@ -4,12 +4,14 @@ import {getIdentifierValueForSystem} from "../translation/common"
 import {getContainedPractitionerRoleViaReference} from "../translation/common/getResourcesOfType"
 import {medicationDispenseEndorsementPresent} from "../translation/request/dispense/dispense-claim"
 import {validatePermittedAttendedDispenseMessage} from "./scope-validator"
+import pino from "pino"
 
 export function verifyClaim(
   claim: fhir.Claim,
   scope: string,
   accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string
+  accessTokenSDSRoleID: string,
+  logger: pino.Logger<never>
 ): Array<fhir.OperationOutcomeIssue> {
   if (claim.resourceType !== "Claim") {
     return [errors.createResourceTypeIssue("Claim")]
@@ -37,9 +39,11 @@ export function verifyClaim(
       'claim.contained("PractitionerRole").practitioner.identifier'
     )
     if (bodySDSUserID !== accessTokenSDSUserID) {
-      console.warn(
-        // eslint-disable-next-line max-len
-        `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
+      logger.warn({
+        accessTokenSDSUserID,
+        bodySDSUserID
+      },
+      "SDS Unique User ID does not match between access token and message body"
       )
     }
   }
@@ -51,9 +55,11 @@ export function verifyClaim(
       'claim.contained("PractitionerRole").identifier'
     )
     if (bodySDSRoleID !== accessTokenSDSRoleID) {
-      console.warn(
-        // eslint-disable-next-line max-len
-        `SDS Role ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSRoleID}.`
+      logger.warn({
+        accessTokenSDSRoleID,
+        bodySDSRoleID
+      },
+      "SDS Role ID does not match between access token and message body"
       )
     }
   }
