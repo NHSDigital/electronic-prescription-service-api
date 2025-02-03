@@ -9,6 +9,10 @@
 			"path": "../packages/coordinator"
 		},
 		{
+			"name": "packages/cdk",
+			"path": "../packages/cdk"
+		},
+		{
 			"name": "packages/e2e-tests",
 			"path": "../packages/e2e-tests"
 		},

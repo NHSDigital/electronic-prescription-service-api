@@ -444,3 +444,8 @@ cfn-guard:
 
 aws-login:
 	aws sso login --sso-session sso-session
+
+cdk-synth:
+	npx cdk synth \
+		--quiet \
+		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"

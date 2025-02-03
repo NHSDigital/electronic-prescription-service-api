@@ -25,7 +25,8 @@
     "packages/tool/e2e-tests",
     "packages/tool/site/client",
     "packages/tool/site/server",
-    "packages/bdd-tests"
+    "packages/bdd-tests",
+    "packages/cdk"
   ],
   "private": true,
   "devDependencies": {

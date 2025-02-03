@@ -49,11 +49,7 @@ export async function updatePrescriptions(
   }
 
   const hasPrivateKeyAndX509Cert = fs.existsSync(privateKeyPath) && fs.existsSync(x509CertificatePath)
-  if (hasPrivateKeyAndX509Cert) {
-    signPrescriptionFn = signPrescription
-  } else {
-    logger.warn("No private key / x509 certificate found, signing has been skipped")
-  }
+
 
   for (const processCase of orderCases) {
     await updateOrderCases(processCase, replacements, signPrescriptionFn, logger)
