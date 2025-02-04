@@ -1,30 +1,42 @@
 import {fetcher} from "@models"
 import {verifyClaim} from "../../../src/services/validation/claim-validator"
 import {DISPENSING_USER_SCOPE} from "../../../src/services/validation/scope-validator"
+import pino from "pino"
 
-jest.spyOn(global.console, "warn").mockImplementation(() => null)
+const logger = pino()
+const loggerWarnSpy = jest.spyOn(logger, "warn")
 
 describe("verifyClaim", () => {
   const invalidClaim = fetcher.claimExamples[0].request
   const validClaim = fetcher.claimExamples[1].request
 
   test("accepts a valid Claim", () => {
-    const result = verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result).toHaveLength(0)
   })
 
-  test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105")
-    expect(console.warn).toHaveBeenCalled()
+  test("logger warn when inconsistent accessToken and body SDS user unique ID", () => {
+    verifyClaim(validClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105", logger)
+    expect(loggerWarnSpy).toHaveBeenCalledWith({
+      accessTokenSDSUserID: "test_sds_user_id",
+      bodySDSUserID: "7654321"
+    },
+    "SDS Unique User ID does not match between access token and message body"
+    )
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
-    verifyClaim(validClaim, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id")
-    expect(console.warn).toHaveBeenCalled()
+    verifyClaim(validClaim, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id", logger)
+    expect(loggerWarnSpy).toHaveBeenCalledWith({
+      accessTokenSDSRoleID: "test_sds_role_id",
+      bodySDSRoleID: "454567759542"
+    },
+    "SDS Role ID does not match between access token and message body"
+    )
   })
 
   test("raise an error if no endorsement code is provided in the claim", () => {
-    const result = verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(invalidClaim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result[0].diagnostics).toEqual("The claim is missing the required endorsement code.")
   })
 
@@ -32,7 +44,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance[0].coverage = coverageWithValue("T1450")
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result).toHaveLength(0)
   })
 
@@ -40,7 +52,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance[0].coverage = coverageWithValue("RQFZ1")
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result).toHaveLength(0)
   })
 
@@ -48,7 +60,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance[0].coverage = coverageWithValue("invalid")
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result[0]).toEqual({
       severity: "error",
       code: "value",
@@ -61,7 +73,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance = []
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result[0]).toEqual(arrayLengthError(0))
   })
 
@@ -69,7 +81,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance = [claim.insurance[0], claim.insurance[0]]
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result[0]).toEqual(arrayLengthError(2))
   })
 
@@ -77,7 +89,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance[0].coverage = coverageWithValue("t1450")
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result[0]).toEqual({
       severity: "error",
       code: "value",
@@ -90,7 +102,7 @@ describe("verifyClaim", () => {
     const claim = {...validClaim}
     claim.insurance[0].coverage = coverageWithValue("rqfz1")
 
-    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+    const result = verifyClaim(claim, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id", logger)
     expect(result[0]).toEqual({
       severity: "error",
       code: "value",
