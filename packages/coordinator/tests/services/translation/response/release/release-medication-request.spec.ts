@@ -15,7 +15,9 @@ import {LosslessNumber} from "lossless-json"
 import {toArray} from "../../../../../src/services/translation/common"
 import {setSubcaccCertEnvVar} from "../../../../resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
+import pino from "pino"
 
+const logger = pino()
 describe("extension", () => {
   setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
   const exampleResponsiblePartyId = "responsiblePartyId"
@@ -615,7 +617,8 @@ describe("createMedicationRequest", () => {
       lineItem,
       "patient-id",
       "requester-id",
-      "responsible-party-id"
+      "responsible-party-id",
+      logger
     )
 
     it("should not have a basedOn field", () => {
@@ -638,7 +641,8 @@ describe("createMedicationRequest", () => {
       lineItem,
       "patient-id",
       "requester-id",
-      "responsible-party-id"
+      "responsible-party-id",
+      logger
     )
 
     it("should have intent of order", () => {
@@ -659,7 +663,8 @@ describe("createMedicationRequest", () => {
       lineItem,
       "patient-id",
       "requester-id",
-      "responsible-party-id"
+      "responsible-party-id",
+      logger
     )
 
     it("should have intent of reflex order", () => {
