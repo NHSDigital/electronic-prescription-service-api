@@ -251,7 +251,7 @@ describe("inner bundle", () => {
   let result: fhir.Bundle
 
   beforeAll(async () => {
-    result = await createBundle(getExampleParentPrescription(), "ReleaseRequestId")
+    result = await createBundle(getExampleParentPrescription(), "ReleaseRequestId", logger)
   })
 
   test("contains id", () => {
@@ -284,7 +284,7 @@ describe("bundle resources", () => {
   let result: fhir.Bundle
 
   beforeAll(async () => {
-    result = await createBundle(getExampleParentPrescription(), "ReleaseRequestId")
+    result = await createBundle(getExampleParentPrescription(), "ReleaseRequestId", logger)
   })
 
   test("contains MessageHeader", () => {
@@ -343,7 +343,7 @@ describe("medicationRequest details", () => {
 
   test("acute treatmentType causes intent = order", async () => {
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.ACUTE
-    const result = await createBundle(parentPrescription, "ReleaseRequestId")
+    const result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
 
     const medicationRequests = getMedicationRequests(result)
 
@@ -354,7 +354,7 @@ describe("medicationRequest details", () => {
 
   test("continuous treatmentType causes intent = order", async () => {
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS
-    const result = await createBundle(parentPrescription, "ReleaseRequestId")
+    const result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
 
     const medicationRequests = getMedicationRequests(result)
 
@@ -366,7 +366,7 @@ describe("medicationRequest details", () => {
   test("continuous repeat dispensing treatmentType causes intent = reflex-order", async () => {
     const parentPrescription = getExampleRepeatDispensingParentPrescription()
     treatmentType.value = hl7V3.PrescriptionTreatmentTypeCode.CONTINUOUS_REPEAT_DISPENSING
-    const result = await createBundle(parentPrescription, "ReleaseRequestId")
+    const result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
 
     const medicationRequests = getMedicationRequests(result)
 
@@ -427,7 +427,7 @@ describe("practitioner details", () => {
         "ResponsiblePartyJobRoleCode",
         "ResponsiblePartyProfessionalCode"
       )
-      result = await createBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
     })
 
     commonTests(2, 2)
@@ -457,7 +457,7 @@ describe("practitioner details", () => {
     })
     test("requester PractitionerRole contains correct JobRoleCode", async () => {
       prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
-      const jobRoleCodeResult = await createBundle(parentPrescription, "ReleaseRequestId")
+      const jobRoleCodeResult = await createBundle(parentPrescription, "ReleaseRequestId", logger)
 
       const requester = getRequester(jobRoleCodeResult)
       const requesterCodes = requester.code
@@ -474,7 +474,7 @@ describe("practitioner details", () => {
     })
     test("requester PractitionerRole contains correct JobRole Display Name", async () => {
       prescription.author.AgentPerson.code._attributes.code = "S0030:G0100:R0620"
-      const jobRoleCodeResult = await createBundle(parentPrescription, "ReleaseRequestId")
+      const jobRoleCodeResult = await createBundle(parentPrescription, "ReleaseRequestId", logger)
 
       const requester = getRequester(jobRoleCodeResult)
       const requesterCodes = requester.code
@@ -560,7 +560,7 @@ describe("practitioner details", () => {
     beforeAll(async () => {
       setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode1")
       setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "ProfessionalCode2")
-      result = await createBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
     })
 
     commonTests(1, 1)
@@ -631,7 +631,7 @@ describe("practitioner details", () => {
     beforeAll(async () => {
       setupAuthorAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "G1234567")
       setupResponsiblePartyAgentPerson("CommonRoleProfileId", "CommonJobRoleCode", "612345")
-      result = await createBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
     })
 
     commonTests(1, 1)
@@ -684,7 +684,7 @@ describe("practitioner details", () => {
       delete prescription.responsibleParty.AgentPerson.id
       delete prescription.responsibleParty.AgentPerson.code
       prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "ProfessionalCode"
-      result = await createBundle(parentPrescription, "ReleaseRequestId")
+      result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
     })
 
     commonTests(2, 2)
@@ -704,7 +704,7 @@ describe("practitioner details", () => {
     delete prescription.responsibleParty.AgentPerson.id
     delete prescription.responsibleParty.AgentPerson.code
     prescription.responsibleParty.AgentPerson.agentPerson.id._attributes.extension = "612345"
-    result = await createBundle(parentPrescription, "ReleaseRequestId")
+    result = await createBundle(parentPrescription, "ReleaseRequestId", logger)
     const respPracPractitionerRole = getResponsiblePractitioner(result)
     expect(respPracPractitionerRole.identifier).toMatchObject([
       {
