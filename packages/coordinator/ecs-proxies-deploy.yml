@@ -1,7 +1,7 @@
 docker_service_cpu: 2048
 docker_service_memory: 4096
 # change the below to scale up for load testing
-docker_service_desired_capacity: "{{ 4 if APIGEE_ENVIRONMENT in ('internal-dev', 'ref', 'prod') else 1 }}"
+# docker_service_desired_capacity: "{{ 1 if APIGEE_ENVIRONMENT in ('internal-dev', 'ref', 'prod') else 1 }}"
 docker_service_autoscaling_prod:
   service_metric: ECSServiceAverageCPUUtilization
   target_value: 70
