@@ -1,12 +1,13 @@
 import * as uuid from "uuid"
 import {fhir} from "@models"
 import {readXmlStripNamespace} from "../../../serialisation/xml"
+import pino from "pino"
 
 const MEDICATION_TAG_MATCHER = /^\s*<medication>([\s\S]*?)<\/medication>/
 const PATIENT_INFO_TAG_MATCHER = /^\s*<patientInfo>([\s\S]*?)<\/patientInfo>/
 const CONTROLLED_DRUG_MATCHER = /^\s*CD: (.*?)(?:$|\n)/
 
-export function parseAdditionalInstructions(additionalInstructionsText: string): {
+export function parseAdditionalInstructions(additionalInstructionsText: string, logger: pino.Logger<never>): {
   medication: Array<string>
   patientInfo: Array<string>
   controlledDrugWords: string
@@ -23,7 +24,7 @@ export function parseAdditionalInstructions(additionalInstructionsText: string):
         const medicationJsFromXml = readXmlStripNamespace(medicationMatch[0])
         medication.push(medicationJsFromXml.medication._text)
       } catch (err) {
-        console.log("Failed to parse medication in additional instructions falling back to raw", err)
+        logger.warn({err}, "Failed to parse medication in additional instructions falling back to raw")
         medication.push(medicationMatch[1])
       }
       additionalInstructionsText = additionalInstructionsText.substring(medicationMatch[0].length)
@@ -32,7 +33,7 @@ export function parseAdditionalInstructions(additionalInstructionsText: string):
         const patientInfoJsFromXml = readXmlStripNamespace(patientInfoMatch[0])
         patientInfo.push(patientInfoJsFromXml.patientInfo._text)
       } catch (err) {
-        console.log("Failed to parse patient info in additional instructions falling back to raw", err)
+        logger.warn({err}, "Failed to parse patient info in additional instructions falling back to raw")
         patientInfo.push(patientInfoMatch[1])
       }
       additionalInstructionsText = additionalInstructionsText.substring(patientInfoMatch[0].length)
