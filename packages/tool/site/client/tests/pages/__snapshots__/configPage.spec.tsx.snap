@@ -5,15 +5,15 @@ exports[`Displays config form 1`] = `
 <form><label class="nhsuk-label nhsuk-label--s">EPS</label>
   <div class="nhsuk-form-group">
     <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="epsPrNumber--label" for="epsPrNumber">EPS PR Number</label><input class="nhsuk-input nhsuk-input--width-30" type="text" name="epsPrNumber" id="epsPrNumber" value=""></div><label class="nhsuk-label nhsuk-label--s">Signing</label>
+      <div class="nhsuk-form-group"><label class="nhsuk-label" id="epsPrNumber--label" for="epsPrNumber">EPS PR Number</label><input class="nhsuk-input nhsuk-input--width-30" type="text" name="epsPrNumber" id="epsPrNumber" value=""></div><label class="nhsuk-label nhsuk-label--s">Use Proxygen</label>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="useProxygen">
+          <div class="nhsuk-checkboxes__item"><input name="useProxygen" id="useProxygen" type="checkbox" data-checkbox-exclusive-group="useProxygen" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="useProxygen--label" for="useProxygen">Use Proxygen deployed APIs</label></div>
+        </div>
+      </div><label class="nhsuk-label nhsuk-label--s">Signing</label>
       <div class="nhsuk-form-group">
         <div class="nhsuk-checkboxes" id="useSigningMockCheckboxes">
           <div class="nhsuk-checkboxes__item"><input name="useSigningMock" id="useSigningMock" type="checkbox" data-checkbox-exclusive-group="useSigningMockCheckboxes" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="useSigningMock--label" for="useSigningMock">Use Signing Mock</label></div>
-        </div>
-      </div><label class="nhsuk-label nhsuk-label--s">Use Proxygen</label>
-      <div class="nhsuk-form-group">
-        <div class="nhsuk-checkboxes" id="useProxygen">
-          <div class="nhsuk-checkboxes__item"><input name="useProxygen" id="useProxygen" type="checkbox" data-checkbox-exclusive-group="useProxygen" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="useProxygen--label" for="useProxygen">Use Proxygen</label></div>
         </div>
       </div>
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="signingPrNumber--label" for="signingPrNumber">Signing PR Number</label><input class="nhsuk-input nhsuk-input--width-30" type="text" name="signingPrNumber" id="signingPrNumber" value=""></div>

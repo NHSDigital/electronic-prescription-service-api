@@ -234,7 +234,7 @@ exports[`Withdraw Page When there are two dispense notifications should match th
   </table>
 </div>
 <form>
-  <div class="nhsuk-form-group">
+  <div class="">
     <fieldset class="nhsuk-fieldset">
       <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-label--s" id="pharmacy--label" for="pharmacy">Pharmacy withdrawing prescription</label>
         <div class="nhsuk-radios" id="pharmacy" value="VNFKT" aria-label="Pharmacy withdrawing prescription">

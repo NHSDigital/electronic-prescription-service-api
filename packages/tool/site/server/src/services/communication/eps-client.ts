@@ -49,7 +49,7 @@ interface ApiCall {
   body?: unknown,
   params?: URLSearchParams,
   requestId?: string,
-  correlationId? : string,
+  correlationId : string,
   additionalHeaders?: RawAxiosRequestHeaders
 }
 
