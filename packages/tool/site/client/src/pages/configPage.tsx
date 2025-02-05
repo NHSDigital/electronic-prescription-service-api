@@ -7,6 +7,7 @@ import {Field, Formik} from "formik"
 import {axiosInstance} from "../requests/axiosInstance"
 import BackButton from "../components/common/backButton"
 import SuccessOrFail from "../components/common/successOrFail"
+import { isInternalDev, isInternalDevSandbox, isQa } from "../services/environment"
 
 interface ConfigFormValues {
   useSigningMock: boolean
@@ -20,9 +21,10 @@ interface ConfigResponse {
 }
 
 const ConfigPage: React.FC = () => {
-  const {baseUrl} = useContext(AppContext)
+  const {baseUrl, environment} = useContext(AppContext)
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
   const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: "", useProxygen: false}
+  const isDevOrQa = isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment)
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -44,26 +46,33 @@ const ConfigPage: React.FC = () => {
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <Label bold>EPS</Label>
             <Fieldset>
-              <Field
-                id="epsPrNumber"
-                name="epsPrNumber"
-                as={TextInput}
-                width={30}
-                label="EPS PR Number"
-              />
-              <Label bold>Signing</Label>
-              <Checkboxes id="useSigningMockCheckboxes">
-                <Field id="useSigningMock" name="useSigningMock" type="checkbox" as={Checkboxes.Box}>
-                  Use Signing Mock
-                </Field>
-              </Checkboxes>
+              {isDevOrQa &&
+                <Field
+                  id="epsPrNumber"
+                  name="epsPrNumber"
+                  as={TextInput}
+                  width={30}
+                  label="EPS PR Number"
+                />
+              }
               <Label bold>Use Proxygen</Label>
               <Checkboxes id="useProxygen">
                 <Field id="useProxygen" name="useProxygen" type="checkbox" as={Checkboxes.Box}>
-                  Use Proxygen
+                  Use Proxygen deployed APIs
                 </Field>
               </Checkboxes>
-              {!formik.values.useSigningMock && !formik.values.useProxygen &&
+              {isDevOrQa && 
+                <Label bold>Signing</Label>
+              }
+
+              {isDevOrQa && 
+                <Checkboxes id="useSigningMockCheckboxes">
+                  <Field id="useSigningMock" name="useSigningMock" type="checkbox" as={Checkboxes.Box}>
+                    Use Signing Mock
+                  </Field>
+                </Checkboxes>
+              }
+              {!formik.values.useSigningMock && isDevOrQa &&
                 <Field
                   id="signingPrNumber"
                   name="signingPrNumber"
@@ -71,7 +80,7 @@ const ConfigPage: React.FC = () => {
                   width={30}
                   label="Signing PR Number"
                 />
-              }
+              }              
             </Fieldset>
             <ButtonList>
               <Button type="submit">Save</Button>
