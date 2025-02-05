@@ -11,6 +11,7 @@ import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
 import axios, {
   AxiosError,
+  AxiosInstance,
   AxiosResponse,
   InternalAxiosRequestConfig,
   RawAxiosRequestHeaders
@@ -22,8 +23,6 @@ import {Ping} from "../../routes/health/get-status"
 import {DosageTranslationArray} from "../../routes/dose-to-text"
 
 type QueryParams = Record<string, string | Array<string>>
-
-const axiosInstance = axios.create()
 
 const getUrlSearchParams = (query: QueryParams): URLSearchParams => {
   const urlSearchParams = new URLSearchParams()
@@ -46,12 +45,14 @@ interface EpsResponse<T> {
 
 class EpsClient {
   private request: Hapi.Request
+  private axiosInstance: AxiosInstance
 
   constructor(request: Hapi.Request) {
     this.request = request
+    this.axiosInstance = axios.create()
     const logger = request.logger
 
-    axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+    this.axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
       logger.info({
         apiCall: {
           request: {
@@ -65,7 +66,7 @@ class EpsClient {
       return request
     })
 
-    axiosInstance.interceptors.response.use((response: AxiosResponse) => {
+    this.axiosInstance.interceptors.response.use((response: AxiosResponse) => {
       logger.info({
         apiCall: {
           response: {
@@ -125,7 +126,7 @@ class EpsClient {
   async makePingRequest(): Promise<Ping> {
     const basePath = this.getBasePath("prescribe")
     const url = `${CONFIG.apigeeEgressHost}/${basePath}/_ping`
-    return (await axiosInstance.get<Ping>(url)).data
+    return (await this.axiosInstance.get<Ping>(url)).data
   }
 
   async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
@@ -184,7 +185,7 @@ class EpsClient {
       Object.assign(headers, additionalHeaders)
     }
 
-    return axiosInstance.request({
+    return this.axiosInstance.request({
       url,
       method: body ? "POST" : "GET",
       headers,

@@ -22,10 +22,11 @@ exports[`Displays error message if prepare errors present 1`] = `
     <details class="nhsuk-details nhsuk-expander">
       <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
       <div class="nhsuk-details__text">
-        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%2C%0A%20%20%22x-epsat-request-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*",
   "Content-Type": "application/x-www-form-urlencoded",
-  "nhsd-identity-authentication-method": "N3_SMARTCARD"
+  "nhsd-identity-authentication-method": "N3_SMARTCARD",
+  "x-epsat-request-id": "test-uuid"
 }</pre>
       </div>
     </details>
@@ -92,10 +93,11 @@ exports[`Displays error message if redirect URI not present 1`] = `
     <details class="nhsuk-details nhsuk-expander">
       <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
       <div class="nhsuk-details__text">
-        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
+        <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button sc-ivxoEo krxZPo" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-ivxoEo krxZPo" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22Content-Type%22%3A%20%22application%2Fx-www-form-urlencoded%22%2C%0A%20%20%22nhsd-identity-authentication-method%22%3A%20%22N3_SMARTCARD%22%2C%0A%20%20%22x-epsat-request-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-dntaoT cwTwjs">{
   "Accept": "application/json, text/plain, */*",
   "Content-Type": "application/x-www-form-urlencoded",
-  "nhsd-identity-authentication-method": "N3_SMARTCARD"
+  "nhsd-identity-authentication-method": "N3_SMARTCARD",
+  "x-epsat-request-id": "test-uuid"
 }</pre>
       </div>
     </details>
