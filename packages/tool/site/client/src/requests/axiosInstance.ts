@@ -7,9 +7,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    const requestId = uuidv4()
-    config.headers["x-correlation-id"] = requestId
-
+    config.headers["x-correlation-id"] = uuidv4()
     return config
   },
   (error) => {
