@@ -38,10 +38,11 @@ Parameters:
     AllowedValues:
       - dev
       - test
+      - qa
+      - int
       - ref
       - prod
     Default: dev
-
   LogRetentionInDays:
     Type: Number
   LogLevel:
@@ -56,6 +57,12 @@ Parameters:
   ToAsid:
     Type: String
   ToPartyKey:
+    Type: String
+  EnableDefaultAsidPartyKey:
+    Type: String
+  DefaultPtlAsid:
+    Type: String
+  DefaultPtlPartyKey:
     Type: String
 
 Conditions:
@@ -262,6 +269,12 @@ Resources:
               Value: !Ref ToPartyKey
             - Name: USE_SHA256_PREPARE
               Value: false
+            - Name: ENABLE_DEFAULT_ASID_PARTY_KEY
+              Value: !Ref EnableDefaultAsidPartyKey
+            - Name: DEFAULT_PTL_ASID
+              Value: !Ref DefaultPtlAsid
+            - Name: DEFAULT_PTL_PARTY_KEY
+              Value: !Ref DefaultPtlPartyKey
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey

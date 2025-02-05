@@ -60,6 +60,16 @@ Parameters:
       - 2922
       - 3288
       - 3653
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - test
+      - qa
+      - int
+      - ref
+      - prod
+    Default: dev
   TargetSpineServer:
     Type: String
     Default: "xxx"
@@ -69,6 +79,12 @@ Parameters:
   ToAsid:
     Type: String
   ToPartyKey:
+    Type: String
+  EnableDefaultAsidPartyKey:
+    Type: String
+  DefaultPtlAsid:
+    Type: String
+  DefaultPtlPartyKey:
     Type: String
 
 Resources:
@@ -91,6 +107,10 @@ Resources:
         DockerImageTag: !Ref DockerImageTag
         ToAsid: !Ref ToAsid
         ToPartyKey: !Ref ToPartyKey
+        EnableDefaultAsidPartyKey: !Ref EnableDefaultAsidPartyKey
+        DefaultPtlAsid: !Ref DefaultPtlAsid
+        DefaultPtlPartyKey: !Ref DefaultPtlPartyKey
+        Environment: !Ref Environment
 
 Outputs:
   LoadBalancerEndpoint:
