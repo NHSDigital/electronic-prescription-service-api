@@ -455,7 +455,10 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			TargetSpineServer=$$TARGET_SPINE_SERVER \
 			DockerImageTag=$$DOCKER_IMAGE_TAG \
 			ToAsid=$$TO_ASID \
-			ToPartyKey=$$TO_PARTY_KEY
+			ToPartyKey=$$TO_PARTY_KEY \
+			EnableDefaultAsidPartyKey=$$ENABLE_DEFAULT_ASID_PARTY_KEY \
+			DefaultPtlAsid=$$DEFAULT_PTL_ASID \
+			DefaultPtlPartyKey=$$DEFAULT_PTL_PARTY_KEY
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh

@@ -78,6 +78,12 @@ Parameters:
     Type: String
   ToPartyKey:
     Type: String
+  EnableDefaultAsidPartyKey:
+    Type: String
+  DefaultPtlAsid:
+    Type: String
+  DefaultPtlPartyKey:
+    Type: String
 
 Resources:
   LoadBalancers:
@@ -99,6 +105,9 @@ Resources:
         DockerImageTag: !Ref DockerImageTag
         ToAsid: !Ref ToAsid
         ToPartyKey: !Ref ToPartyKey
+        EnableDefaultAsidPartyKey: !Ref EnableDefaultAsidPartyKey
+        DefaultPtlAsid: !Ref DefaultPtlAsid
+        DefaultPtlPartyKey: !Ref DefaultPtlPartyKey
         Environment: !Ref Environment
 
 Outputs:
