@@ -38,10 +38,11 @@ Parameters:
     AllowedValues:
       - dev
       - test
+      - qa
+      - int
       - ref
       - prod
     Default: dev
-
   LogRetentionInDays:
     Type: Number
   LogLevel:
