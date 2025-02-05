@@ -20,44 +20,10 @@ import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
 import {DosageTranslationArray} from "../../routes/dose-to-text"
-import pino from "pino"
-
-const logger = pino()
 
 type QueryParams = Record<string, string | Array<string>>
 
 const axiosInstance = axios.create()
-
-axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-  logger.info({
-    request: {
-      headers: request.headers,
-      url: request.url,
-      baseURL: request.baseURL,
-      method: request.method
-    }}, "making api call")
-
-  return request
-})
-
-axiosInstance.interceptors.response.use((response: AxiosResponse) => {
-  logger.info({
-    response: {
-      headers: response.headers,
-      status: response.status
-    }}, "successful api call")
-
-  return response
-}, (error: AxiosError) => {
-  logger.error({
-    response: {
-      headers: error.response?.headers,
-      status: error.response?.status
-    }}, "unsuccessful api call")
-
-  // let epsat figure out how to deal with errors so just return response
-  return error.response
-})
 
 const getUrlSearchParams = (query: QueryParams): URLSearchParams => {
   const urlSearchParams = new URLSearchParams()
@@ -83,6 +49,44 @@ class EpsClient {
 
   constructor(request: Hapi.Request) {
     this.request = request
+    const logger = request.logger
+
+    axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
+      logger.info({
+        apiCall: {
+          request: {
+            headers: request.headers,
+            url: request.url,
+            baseURL: request.baseURL,
+            method: request.method
+          }}
+      }, "making api call")
+
+      return request
+    })
+
+    axiosInstance.interceptors.response.use((response: AxiosResponse) => {
+      logger.info({
+        apiCall: {
+          response: {
+            headers: response.headers,
+            status: response.status
+          }
+        }
+      }, "successful api call")
+
+      return response
+    }, (error: AxiosError) => {
+      logger.error({
+        response: {
+          headers: error.response?.headers,
+          status: error.response?.status
+        }}, "unsuccessful api call")
+
+      // let epsat figure out how to deal with errors so just return response
+      return error.response
+    })
+
   }
 
   async makeGetTaskTrackerRequest(query: QueryParams): Promise<Bundle | OperationOutcome> {
