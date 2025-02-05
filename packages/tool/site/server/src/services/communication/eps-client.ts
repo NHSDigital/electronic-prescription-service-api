@@ -118,7 +118,7 @@ class EpsClient {
     const urlSearchParams = getUrlSearchParams(query)
     return (await this.makeApiCall<Bundle | OperationOutcome>({
       path: "Task",
-      apiType: ApiType.Prescribing,
+      apiType: ApiType.Dispensing,
       params: urlSearchParams,
       correlationId
     })).data
