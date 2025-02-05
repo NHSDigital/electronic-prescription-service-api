@@ -80,7 +80,7 @@ const ConfigPage: React.FC = () => {
                   width={30}
                   label="Signing PR Number"
                 />
-              }              
+              }
             </Fieldset>
             <ButtonList>
               <Button type="submit">Save</Button>
