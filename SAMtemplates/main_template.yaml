@@ -60,6 +60,14 @@ Parameters:
       - 2922
       - 3288
       - 3653
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - test
+      - ref
+      - prod
+    Default: dev
   TargetSpineServer:
     Type: String
     Default: "xxx"
@@ -100,6 +108,7 @@ Resources:
         EnableDefaultAsidPartyKey: !Ref EnableDefaultAsidPartyKey
         DefaultPtlAsid: !Ref DefaultPtlAsid
         DefaultPtlPartyKey: !Ref DefaultPtlPartyKey
+        Environment: !Ref Environment
 
 Outputs:
   LoadBalancerEndpoint:
