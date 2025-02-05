@@ -194,7 +194,7 @@ class EpsClient {
     const useProxygen = getSessionValue("use_proxygen", this.request)
     let replacementString = "electronic-prescriptions"
     if (useProxygen) {
-      replacementString = api==="prescribing" ? "fhir-prescribing" : "fhir-dispensing"
+      replacementString = api==="prescribe" ? "fhir-prescribing" : "fhir-dispensing"
     }
     return prNumber
       ? `${replacementString}-pr-${prNumber}`

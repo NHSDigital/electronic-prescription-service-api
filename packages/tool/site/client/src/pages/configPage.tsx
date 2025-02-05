@@ -60,7 +60,7 @@ const ConfigPage: React.FC = () => {
               <Label bold>Use Proxygen</Label>
               <Checkboxes id="useProxygen">
                 <Field id="useProxygen" name="useProxygen" type="checkbox" as={Checkboxes.Box}>
-                  Use Signing Mock
+                  Use Proxygen
                 </Field>
               </Checkboxes>
               {!formik.values.useSigningMock && !formik.values.useProxygen &&
