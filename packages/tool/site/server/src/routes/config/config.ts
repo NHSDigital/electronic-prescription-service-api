@@ -8,11 +8,13 @@ export default {
     const payload = request.payload as {
       useSigningMock: boolean,
       epsPrNumber: string,
-      signingPrNumber: string
+      signingPrNumber: string,
+      useProxygen: boolean
     }
     setSessionValue("use_signing_mock", payload.useSigningMock, request)
     setSessionValue("eps_pr_number", payload.epsPrNumber, request)
     setSessionValue("signing_pr_number", payload.signingPrNumber, request)
+    setSessionValue("use_proxygen", payload.useProxygen, request)
     return h.response({success: true}).code(200)
   }
 }

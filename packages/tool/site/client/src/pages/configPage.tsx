@@ -10,6 +10,7 @@ import SuccessOrFail from "../components/common/successOrFail"
 
 interface ConfigFormValues {
   useSigningMock: boolean
+  useProxygen: boolean
   epsPrNumber: string
   signingPrNumber: string
 }
@@ -21,7 +22,7 @@ interface ConfigResponse {
 const ConfigPage: React.FC = () => {
   const {baseUrl} = useContext(AppContext)
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
-  const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: ""}
+  const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: "", useProxygen: false}
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -56,7 +57,13 @@ const ConfigPage: React.FC = () => {
                   Use Signing Mock
                 </Field>
               </Checkboxes>
-              {!formik.values.useSigningMock &&
+              <Label bold>Use Proxygen</Label>
+              <Checkboxes id="useProxygen">
+                <Field id="useProxygen" name="useProxygen" type="checkbox" as={Checkboxes.Box}>
+                  Use Signing Mock
+                </Field>
+              </Checkboxes>
+              {!formik.values.useSigningMock && !formik.values.useProxygen &&
                 <Field
                   id="signingPrNumber"
                   name="signingPrNumber"
