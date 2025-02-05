@@ -43,6 +43,25 @@ interface EpsResponse<T> {
   spineResponse?: string
 }
 
+interface ApiCall {
+  path: string,
+  api: string,
+  body?: unknown,
+  params?: URLSearchParams,
+  requestId?: string,
+  correlationId? : string,
+  additionalHeaders?: RawAxiosRequestHeaders
+}
+
+interface GetEpsResponse {
+  endpoint: string,
+  api: string,
+  body?: FhirResource,
+  params?: URLSearchParams,
+  fhirResponseOnly?: boolean,
+  correlationId: string
+}
+
 class EpsClient {
   private request: Hapi.Request
   private axiosInstance: AxiosInstance
@@ -90,37 +109,79 @@ class EpsClient {
 
   }
 
-  async makeGetTaskTrackerRequest(query: QueryParams): Promise<Bundle | OperationOutcome> {
+  async makeGetTaskTrackerRequest(query: QueryParams, correlationId: string): Promise<Bundle | OperationOutcome> {
     const urlSearchParams = getUrlSearchParams(query)
-    return (await this.makeApiCall<Bundle | OperationOutcome>("Task", "prescribe", undefined, urlSearchParams)).data
+    return (await this.makeApiCall<Bundle | OperationOutcome>({
+      path: "Task",
+      api: "prescribe",
+      params: urlSearchParams,
+      correlationId
+    })).data
   }
 
-  async makePrepareRequest(body: Bundle): Promise<Parameters | OperationOutcome> {
-    return (await this.makeApiCall<Parameters | OperationOutcome>("$prepare", "prescribe", body)).data
+  async makePrepareRequest(body: Bundle, correlationId: string): Promise<Parameters | OperationOutcome> {
+    return (await this.makeApiCall<Parameters | OperationOutcome>({
+      path: "$prepare",
+      api: "prescribe",
+      body,
+      correlationId
+    })).data
   }
 
-  async makeSendRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("$process-message", "prescribe", body)
+  async makeSendRequest(body: Bundle, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "$process-message",
+      api: "prescribe",
+      body,
+      correlationId
+    })
   }
 
-  async makeSendFhirRequest(body: Bundle): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("$process-message", "prescribe", body, undefined, true)
+  async makeSendFhirRequest(body: Bundle, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "$process-message",
+      api: "prescribe",
+      body,
+      correlationId,
+      fhirResponseOnly: true
+    })
   }
 
-  async makeReleaseRequest(body: Parameters): Promise<EpsResponse<Parameters | OperationOutcome>> {
-    return await this.getEpsResponse("Task/$release", "dispense", body)
+  async makeReleaseRequest(
+    body: Parameters, correlationId: string): Promise<EpsResponse<Parameters | OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "Task/$release",
+      api: "dispense",
+      body,
+      correlationId
+    })
   }
 
-  async makeReturnRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("Task", "dispense", body)
+  async makeReturnRequest(body: Task, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "Task",
+      api: "dispense",
+      body,
+      correlationId
+    })
   }
 
-  async makeWithdrawRequest(body: Task): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("Task", "dispense", body)
+  async makeWithdrawRequest(body: Task, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "Task",
+      api: "dispense",
+      body,
+      correlationId
+    })
   }
 
-  async makeClaimRequest(body: Claim): Promise<EpsResponse<OperationOutcome>> {
-    return await this.getEpsResponse("Claim", "dispense", body)
+  async makeClaimRequest(body: Claim, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "Claim",
+      api: "dispense",
+      body: body,
+      correlationId
+    })
   }
 
   async makePingRequest(): Promise<Ping> {
@@ -129,68 +190,88 @@ class EpsClient {
     return (await this.axiosInstance.get<Ping>(url)).data
   }
 
-  async makeValidateRequest(body: FhirResource): Promise<EpsResponse<OperationOutcome>> {
-    const requestId = uuid.v4()
-    // eslint-disable-next-line max-len
-    const response = await this.makeApiCall<OperationOutcome>("$validate", "prescribe", body, undefined, requestId, {"x-show-validation-warnings": "true"})
+  async makeValidateRequest(body: FhirResource, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    const response = await this.makeApiCall<OperationOutcome>({
+      path: "$validate",
+      api: "prescribe",
+      body,
+      correlationId,
+      additionalHeaders: {"x-show-validation-warnings": "true"}
+    })
     const statusCode = response.status
     const fhirResponse = response.data
     return {statusCode, fhirResponse}
   }
 
-  async makeConvertRequest(body: FhirResource): Promise<string> {
-    const response = (await this.makeApiCall<string | OperationOutcome>("$convert", "prescribe", body)).data
+  async makeConvertRequest(body: FhirResource, correlationId: string): Promise<string> {
+    const response = (await this.makeApiCall<string | OperationOutcome>({
+      path: "$convert",
+      api: "prescribe",
+      body,
+      correlationId
+    })).data
     return typeof response === "string" ? response : JSON.stringify(response, null, 2)
   }
 
-  async makeDoseToTextRequest(body: FhirResource): Promise<EpsResponse<DosageTranslationArray>> {
+  async makeDoseToTextRequest(body: FhirResource, correlationId: string): Promise<EpsResponse<DosageTranslationArray>> {
     const requestId = uuid.v4()
-    const response = await this.makeApiCall<DosageTranslationArray>(
-      "$dose-to-text", "prescribe", body, undefined, requestId)
+    const response = await this.makeApiCall<DosageTranslationArray>({
+      path: "$dose-to-text",
+      api: "prescribe",
+      body,
+      requestId,
+      correlationId
+    })
     const statusCode = response.status
     const doseToTextResponse = response.data
     return {statusCode, fhirResponse: doseToTextResponse}
   }
 
   private async getEpsResponse<T>(
-    endpoint: string,
-    api: string,
-    body?: FhirResource,
-    params?: URLSearchParams,
-    fhirResponseOnly?: boolean
+    params: GetEpsResponse
   ) {
     const requestId = uuid.v4()
-    const response = await this.makeApiCall<T>(endpoint, api, body, params, requestId)
+    const response = await this.makeApiCall<T>({
+      path: params.endpoint,
+      api: params.api,
+      body: params.body,
+      params: params.params,
+      requestId,
+      correlationId: params.correlationId
+    })
     const statusCode = response.status
     const fhirResponse = response.data
-    const spineResponse = fhirResponseOnly
+    const spineResponse = params.fhirResponseOnly
       ? ""
-      // eslint-disable-next-line max-len
-      : (await this.makeApiCall<string | OperationOutcome>(endpoint, api, body, params, requestId, {"x-raw-response": "true"})).data
+
+      : (await this.makeApiCall<string | OperationOutcome>({
+        path: params.endpoint,
+        api: params.api,
+        body: params.body,
+        params: params.params,
+        requestId,
+        correlationId: params.correlationId,
+        additionalHeaders: {"x-raw-response": "true"}
+      })).data
     return {statusCode, fhirResponse, spineResponse: this.asString(spineResponse)}
   }
 
   private async makeApiCall<T>(
-    path: string,
-    api: string,
-    body?: unknown,
-    params?: URLSearchParams,
-    requestId?: string,
-    additionalHeaders?: RawAxiosRequestHeaders
+    apiCall: ApiCall
   ): Promise<AxiosResponse<T>> {
-    const basePath = this.getBasePath(api)
-    const url = `${CONFIG.apigeeEgressHost}/${basePath}/FHIR/R4/${path}`
-    const headers: RawAxiosRequestHeaders = this.getHeaders(requestId)
-    if (additionalHeaders) {
-      Object.assign(headers, additionalHeaders)
+    const basePath = this.getBasePath(apiCall.api)
+    const url = `${CONFIG.apigeeEgressHost}/${basePath}/FHIR/R4/${apiCall.path}`
+    const headers: RawAxiosRequestHeaders = this.getHeaders(apiCall.requestId, apiCall.correlationId)
+    if (apiCall.additionalHeaders) {
+      Object.assign(headers, apiCall.additionalHeaders)
     }
 
     return this.axiosInstance.request({
       url,
-      method: body ? "POST" : "GET",
+      method: apiCall.body ? "POST" : "GET",
       headers,
-      data: body,
-      params
+      data: apiCall.body,
+      params: apiCall.params
     })
   }
 
@@ -206,10 +287,10 @@ class EpsClient {
       : `${CONFIG.basePath}`.replace("eps-api-tool", replacementString)
   }
 
-  protected getHeaders(requestId: string | undefined): RawAxiosRequestHeaders {
+  protected getHeaders(requestId: string | undefined, correlationId: string | undefined): RawAxiosRequestHeaders {
     return {
       "x-request-id": requestId ?? uuid.v4(),
-      "x-correlation-id": uuid.v4()
+      "x-correlation-id": correlationId ?? uuid.v4()
     }
   }
 
@@ -243,11 +324,14 @@ class LiveEpsClient extends EpsClient {
     this.accessToken = accessToken
   }
 
-  protected override getHeaders(requestId: string | undefined): RawAxiosRequestHeaders {
+  protected override getHeaders(
+    requestId: string | undefined,
+    correlationId: string | undefined
+  ): RawAxiosRequestHeaders {
     return {
       "Authorization": `Bearer ${this.accessToken}`,
       "x-request-id": requestId ?? uuid.v4(),
-      "x-correlation-id": uuid.v4()
+      "x-correlation-id": correlationId ?? uuid.v4()
     }
   }
 }

@@ -15,6 +15,7 @@ import {
 } from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getMedicationRequests} from "../../common/getResources"
+import {getCorrelationId} from "../util"
 
 interface DispenserDetails {
   odsCode: string
@@ -30,8 +31,9 @@ export default [
       const releaseRequest = request.payload as Parameters
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest)
-      const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
+      const correlationId = getCorrelationId(request)
+      const releaseResponse = await epsClient.makeReleaseRequest(releaseRequest, correlationId)
+      const releaseRequestHl7 = await epsClient.makeConvertRequest(releaseRequest, correlationId)
 
       let withDispenser: DispenserDetails | undefined = undefined
       const releasedPrescriptionIds: Array<string> = []

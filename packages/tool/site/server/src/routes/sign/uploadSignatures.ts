@@ -3,7 +3,7 @@ import {getSigningClient} from "../../services/communication/signing-client"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
-import {getSessionPrescriptionIdsArray} from "../util"
+import {getCorrelationId, getSessionPrescriptionIdsArray} from "../util"
 
 export default [
   {
@@ -16,9 +16,10 @@ export default [
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
       const signInHeaders = request.headers["nhsd-identity-authentication-method"]
+      const correlationId = getCorrelationId(request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
-        const prepareResponse = await epsClient.makePrepareRequest(prepareRequest)
+        const prepareResponse = await epsClient.makePrepareRequest(prepareRequest, correlationId)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
         if (!prepareResponseIsError(prepareResponse)) {
           successfulPreparePrescriptionIds.push(id)

@@ -31,9 +31,9 @@ exports[`Displays an error if prescription-order not found 1`] = `
     <details class="nhsuk-details nhsuk-expander">
       <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
       <div class="nhsuk-details__text">
-        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22x-epsat-request-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22x-correlation-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
   "Accept": "application/json, text/plain, */*",
-  "x-epsat-request-id": "test-uuid"
+  "x-correlation-id": "test-uuid"
 }</pre>
       </div>
     </details>
@@ -81,9 +81,9 @@ exports[`Displays an error if previous claim not found for amend 1`] = `
     <details class="nhsuk-details nhsuk-expander">
       <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
       <div class="nhsuk-details__text">
-        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22x-epsat-request-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22x-correlation-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
   "Accept": "application/json, text/plain, */*",
-  "x-epsat-request-id": "test-uuid"
+  "x-correlation-id": "test-uuid"
 }</pre>
       </div>
     </details>
@@ -131,9 +131,9 @@ exports[`Displays an error on invalid response 1`] = `
     <details class="nhsuk-details nhsuk-expander">
       <summary class="nhsuk-details__summary"><span class="nhsuk-details__summary-text">Request Headers</span></summary>
       <div class="nhsuk-details__text">
-        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22x-epsat-request-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
+        <div class="sc-blHHSb kmtnvA"><button class="nhsuk-button sc-egkSDF cXLMqO" aria-disabled="false" type="submit">Copy</button><a class="nhsuk-button sc-egkSDF cXLMqO" role="button" aria-disabled="false" draggable="false" href="data:text/xml;charset=utf-8,%7B%0A%20%20%22Accept%22%3A%20%22application%2Fjson%2C%20text%2Fplain%2C%20*%2F*%22%2C%0A%20%20%22x-correlation-id%22%3A%20%22test-uuid%22%0A%7D" download="message">Download</a></div><pre class="sc-gtLWhw hVlgjH">{
   "Accept": "application/json, text/plain, */*",
-  "x-epsat-request-id": "test-uuid"
+  "x-correlation-id": "test-uuid"
 }</pre>
       </div>
     </details>
