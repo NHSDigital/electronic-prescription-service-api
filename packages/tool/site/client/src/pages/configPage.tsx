@@ -1,5 +1,5 @@
 import * as React from "react"
-import {useContext, useState} from "react"
+import {useContext, useState, useEffect, useCallback} from "react"
 import {Label, Button, Fieldset, Form, Checkboxes, TextInput} from "nhsuk-react-components"
 import {AppContext} from "../index"
 import ButtonList from "../components/common/buttonList"
@@ -20,11 +20,37 @@ interface ConfigResponse {
   success: boolean
 }
 
+interface ConfigDetails {
+  useSigningMock: boolean,
+  epsPrNumber: string,
+  signingPrNumber: string,
+  useProxygen: boolean
+}
+
 const ConfigPage: React.FC = () => {
   const {baseUrl, environment} = useContext(AppContext)
   const [configUpdateSuccess, setConfigUpdateSuccess] = useState(undefined)
-  const initialValues = {useSigningMock: false, epsPrNumber: "", signingPrNumber: "", useProxygen: false}
+  const [configValues, setConfigValues] = useState({useSigningMock: false, epsPrNumber: "", signingPrNumber: "", useProxygen: false})
+  const initialValues = {
+    useSigningMock: configValues.useSigningMock,
+    epsPrNumber: configValues.epsPrNumber,
+    signingPrNumber: configValues.signingPrNumber,
+    useProxygen: configValues.useProxygen
+  }
   const isDevOrQa = isInternalDev(environment) || isInternalDevSandbox(environment) || isQa(environment)
+  
+
+  useEffect(() => {
+    axiosInstance.get(`${baseUrl}getconfig`)
+      .then(response => {
+        if (response.status === 200) {
+          const configDetails = response.data
+          if (configDetails.useSigningMock && configDetails.epsPrNumber && configDetails.signingPrNumber && configDetails.useProxygen) {
+            setConfigValues(response.data)
+          }
+        }
+      })
+  }, [])
 
   if (configUpdateSuccess !== undefined) {
     return <>
@@ -35,13 +61,14 @@ const ConfigPage: React.FC = () => {
     </>
   }
 
+
   return (
     <>
       <Label isPageHeading>Config</Label>
       <Formik<ConfigFormValues>
         initialValues={initialValues}
         onSubmit={values => updateConfig(baseUrl, values, setConfigUpdateSuccess)}
-      >
+        enableReinitialize={true}> 
         {formik =>
           <Form onSubmit={formik.handleSubmit} onReset={formik.handleReset}>
             <Label bold>EPS</Label>
