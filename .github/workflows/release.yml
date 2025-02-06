@@ -131,6 +131,7 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       # CREATE_INT_RELEASE_NOTES: true
@@ -142,6 +143,8 @@ jobs:
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -150,6 +153,12 @@ jobs:
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
 
   release_dev_sandbox:
     needs: [tag_release, package_code, get_commit_id]
@@ -167,6 +176,7 @@ jobs:
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       TARGET_SPINE_SERVER: sandbox
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       DOMAIN_NAME_EXPORT: eps-route53-resources:EPS-domain
@@ -175,10 +185,14 @@ jobs:
       RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
 
   release_ref:
     needs:
@@ -203,16 +217,21 @@ jobs:
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
-      RUN_REGRESSION_TEST: true
+      RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
 
   release_qa:
     needs:
@@ -237,16 +256,25 @@ jobs:
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
-      RUN_REGRESSION_TEST: true
+      RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.QA_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.QA_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.QA_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.QA_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
 
   release_int:
     needs: [tag_release, release_qa, package_code, get_commit_id]
@@ -264,6 +292,7 @@ jobs:
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       # CREATE_INT_RELEASE_NOTES: true
@@ -272,6 +301,8 @@ jobs:
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -280,6 +311,12 @@ jobs:
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.INT_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.INT_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.INT_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.INT_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
 
   release_sandbox:
     needs: [tag_release, release_qa, package_code, get_commit_id]
@@ -297,16 +334,21 @@ jobs:
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       TARGET_SPINE_SERVER: sandbox
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
 
   release_prod:
     needs:
@@ -325,6 +367,7 @@ jobs:
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       TARGET_SPINE_SERVER: prescriptions.spineservices.nhs.uk
       LOG_LEVEL: info
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 731
       # MARK_JIRA_RELEASED: true
       # CREATE_PROD_RELEASE_NOTES: true
@@ -333,6 +376,8 @@ jobs:
       RUN_REGRESSION_TEST: false
       TO_ASID: TO_DO
       TO_PARTY_KEY: TO_DO
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_DEPLOY_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -341,3 +386,5 @@ jobs:
       DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused

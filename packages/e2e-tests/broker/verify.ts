@@ -49,7 +49,9 @@ async function verify(endpoint: string, operation?: string): Promise<string> {
         next()
         return
       }
-      req.headers["authorization"] = `Bearer ${oAuth2Token}`
+      if (!process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+        req.headers["authorization"] = `Bearer ${oAuth2Token}`
+      }
       next()
     }
   }
@@ -123,7 +125,9 @@ async function verifyTaskTracker(): Promise<void> {
 }
 
 async function getAccessToken(): Promise<string> {
-  oAuth2Token = await getAuthToken()
+  if (!process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+    oAuth2Token = await getAuthToken()
+  }
   return
 }
 

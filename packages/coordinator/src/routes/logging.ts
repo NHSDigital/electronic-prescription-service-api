@@ -109,23 +109,23 @@ const getPathBuilder = <T extends fhir.Resource>(payload: T): FhirPathGetter => 
   }
 }
 
-const readValueFromFhirPath = (reader: FhirPathReader, fhirPath: string): string => {
+const readValueFromFhirPath = async (reader: FhirPathReader, fhirPath: string): Promise<string> => {
   if (fhirPath) {
-    return reader.read(fhirPath) || VALUE_NOT_PROVIDED
+    return await reader.read(fhirPath) || VALUE_NOT_PROVIDED
   }
 
   return VALUE_NOT_PROVIDED
 }
 
-const getPayloadIdentifiers = <T extends fhir.Resource>(payload: T): PayloadIdentifiers => {
+const getPayloadIdentifiers = async <T extends fhir.Resource>(payload: T): Promise<PayloadIdentifiers> => {
   const reader = new FhirPathReader(payload)
   const builder = getPathBuilder(payload)
 
   return {
-    payloadIdentifier: readValueFromFhirPath(reader, builder.getPayloadIdentifier()),
-    patientNhsNumber: readValueFromFhirPath(reader, builder.getNhsNumber()),
-    senderOdsCode: readValueFromFhirPath(reader, builder.getOdsCode()),
-    prescriptionShortFormId: readValueFromFhirPath(reader, builder.getPrescriptionNumber())
+    payloadIdentifier: await readValueFromFhirPath(reader, builder.getPayloadIdentifier()),
+    patientNhsNumber: await readValueFromFhirPath(reader, builder.getNhsNumber()),
+    senderOdsCode: await readValueFromFhirPath(reader, builder.getOdsCode()),
+    prescriptionShortFormId: await readValueFromFhirPath(reader, builder.getPrescriptionNumber())
   }
 }
 

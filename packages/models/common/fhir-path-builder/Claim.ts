@@ -41,7 +41,7 @@ class ClaimPathBuilder extends AbstractPathBuilder {
   }
 
   organization(): OrganizationPathBuilder {
-    return new OrganizationPathBuilder(`${this.path}.contained.ofType(Organization)`)
+    return new OrganizationPathBuilder(`${this.path}.contained.where(resourceType = 'Organization')`)
   }
 }
 

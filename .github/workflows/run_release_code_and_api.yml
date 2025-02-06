@@ -37,6 +37,10 @@ on:
         required: false
         type: string
         default: info
+      VALIDATOR_LOG_LEVEL:
+        required: false
+        type: string
+        default: INFO
       LOG_RETENTION_DAYS:
         required: true
         type: string
@@ -76,6 +80,11 @@ on:
       TO_PARTY_KEY:
         required: true
         type: string
+      IS_PULL_REQUEST:
+        type: boolean
+        default: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY:
+        type: boolean
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -99,7 +108,10 @@ on:
         required: false
       SIGNING_CERT:
         required: false
-
+      DEFAULT_PTL_ASID:
+        required: false
+      DEFAULT_PTL_PARTY_KEY:
+        required: false
 jobs:
   release_code_and_api:
     runs-on: ubuntu-22.04
@@ -241,6 +253,7 @@ jobs:
           COMMIT_ID: ${{ inputs.COMMIT_ID }}
           enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
           LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
+          VALIDATOR_LOG_LEVEL: ${{ inputs.VALIDATOR_LOG_LEVEL }}
           LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
           stack_name: ${{ inputs.STACK_NAME }}
           TARGET_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
@@ -253,6 +266,9 @@ jobs:
           DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
           TO_PARTY_KEY: ${{ inputs.TO_PARTY_KEY }}
           TO_ASID: ${{ inputs.TO_ASID }}
+          ENABLE_DEFAULT_ASID_PARTY_KEY: ${{ inputs.ENABLE_DEFAULT_ASID_PARTY_KEY }}
+          DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+          DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
         run: ./release_code.sh
 
       - name: Get mtls secrets
@@ -301,6 +317,14 @@ jobs:
           DRY_RUN: false
         run: ./deploy_api.sh
 
+      - uses: actions/upload-artifact@v4
+        name: Upload specs
+        with:
+          name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs
+          path: |
+            ${{ env.SPEC_PATH_DISPENSING }}
+            ${{ env.SPEC_PATH_PRESCRIBING }}
+  
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Prescribing Regression Tests
@@ -333,6 +357,7 @@ jobs:
     with:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
       API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}

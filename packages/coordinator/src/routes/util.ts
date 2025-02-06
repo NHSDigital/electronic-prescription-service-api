@@ -75,7 +75,11 @@ export async function callFhirValidator(
 ): Promise<fhir.OperationOutcome> {
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
     headers: {
-      "Content-Type": requestHeaders["content-type"]
+      "Content-Type": requestHeaders["content-type"],
+      "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
+      "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
+      "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
+      "nhsd-request-id": requestHeaders["nhsd-request-id"]
     }
   })
 
@@ -166,12 +170,14 @@ const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
   }
 }
 
-export const getPayload = (request: Hapi.Request): fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task => {
+type FhirPayload = fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task
+
+export const getPayload = async (request: Hapi.Request): Promise<FhirPayload> => {
   const payload = parsePayload(request.payload, request.logger)
 
   if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
     // AEA-2743 - Log identifiers within incoming payloads
-    const payloadIdentifiers = getPayloadIdentifiers(payload)
+    const payloadIdentifiers = await getPayloadIdentifiers(payload)
     request.log("audit", {payloadIdentifiers: payloadIdentifiers})
 
     return payload

@@ -86,6 +86,7 @@ jobs:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
@@ -93,6 +94,8 @@ jobs:
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: true
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
@@ -101,6 +104,8 @@ jobs:
       API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
       SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
       SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
   
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
@@ -117,6 +122,7 @@ jobs:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: sandbox
@@ -124,7 +130,45 @@ jobs:
       RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
+
+  # uncomment the block below if you want to release a build from a branch to ref
+  # note - you will still need to approve the release to ref in github actions - it wont be automatically released
+  # release_ref_code:
+  #   needs: [get_issue_number, package_code, get_commit_id]
+  #   uses: ./.github/workflows/run_release_code_and_api.yml
+  #   with:
+  #     STACK_NAME: prescribe-dispense
+  #     ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
+  #     AWS_ENVIRONMENT: ref
+  #     APIGEE_ENVIRONMENT: ref
+  #     ENABLE_MUTUAL_TLS: true
+  #     BUILD_ARTIFACT: packaged_code
+  #     SPEC_ARTIFACT: specification_code
+  #     TRUSTSTORE_FILE: fhirfacade-truststore.pem
+  #     VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
+  #     COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
+  #     LOG_LEVEL: debug
+  #     VALIDATOR_LOG_LEVEL: INFO
+  #     LOG_RETENTION_DAYS: 30
+  #     DEPLOY_APIGEE: true
+  #     TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
+  #     DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
+  #     RUN_REGRESSION_TEST: false
+  #     TO_ASID: 567456789789
+  #     TO_PARTY_KEY: YES-0000806
+  #     IS_PULL_REQUEST: true
+  #   secrets:
+  #     CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+  #     PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+  #     REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+  #     API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+  #     API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+  #     SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+  #     SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}

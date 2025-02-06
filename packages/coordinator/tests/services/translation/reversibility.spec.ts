@@ -27,7 +27,7 @@ describe("translations are reversible", () => {
     "Organization",
     "Provenance"
   ])("%s", async (resourceType: string) => {
-    const translatedBundle = await createBundle(parentPrescription, uuid.v4())
+    const translatedBundle = await createBundle(parentPrescription, uuid.v4(), logger)
     const original = getResourcesOfType(originalBundle, resourceType)
     removeIds(...original)
     const translated = getResourcesOfType(translatedBundle, resourceType)
