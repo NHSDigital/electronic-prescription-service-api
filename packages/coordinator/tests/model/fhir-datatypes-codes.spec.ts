@@ -15,6 +15,18 @@ describe("Patient", () => {
     expect(patient.generalPractitioner[0].identifier.value).toBe("V81999")
   })
 
+  it("should default generalPractitioner to unknownGPPractice when provided as null", () => {
+    const patient = new fhir.Patient({generalPractitioner: null})
+    expect(patient.generalPractitioner).toHaveLength(1)
+    expect(patient.generalPractitioner[0].identifier.value).toBe("V81999")
+  })
+
+  it("should default generalPractitioner to unknownGPPractice when provided as undefined", () => {
+    const patient = new fhir.Patient({generalPractitioner: undefined})
+    expect(patient.generalPractitioner).toHaveLength(1)
+    expect(patient.generalPractitioner[0].identifier.value).toBe("V81999")
+  })
+
   it("should not overwrite generalPractitioner if it is provided", () => {
     const customGp = {
       identifier: {
