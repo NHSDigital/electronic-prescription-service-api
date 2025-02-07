@@ -7,7 +7,6 @@ import {
   loadPredefinedExamplePrescription,
   loginViaSimulatedAuthSmartcardUser,
   sendPrescription,
-  setMockSigningConfig,
   tenTimesDefaultWaitTimeout,
   viewPrescriptionUserJourney,
   waitForPageToRender
@@ -29,7 +28,6 @@ async function editPrescriptionOrganisationUserJourney(
   newOrganisation: string
 ): Promise<void> {
   await loginViaSimulatedAuthSmartcardUser(driver)
-  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadPredefinedExamplePrescription(driver)
   await editPrescriptionOrganisation(driver, newOrganisation)

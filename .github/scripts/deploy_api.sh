@@ -146,6 +146,7 @@ echo "Removing dummy paths before publishing spec"
 jq 'del(."paths"."/FHIR/R4/$process-message")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
 jq 'del(."paths"."/FHIR/R4//FHIR/R4/Task")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
 jq 'del(."paths"."/FHIR/R4/$validate")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
+jq 'del(."paths"."/FHIR/R4/$convert")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
 
 if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
     echo

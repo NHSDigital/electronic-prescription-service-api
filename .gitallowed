@@ -45,6 +45,10 @@ super\(\"1\.2
 
 # snapshots are fine
 ^[a-f0-9]{40}:?packages\/tool\/site\/client\/tests\/pages\/__snapshots__\/.*snap
+^packages\/tool\/site\/client\/tests\/pages\/__snapshots__\/.*snap
+
+# CONFIG.sessionKey is fine
+CONFIG.sessionKey
 
 # files that no longer exist or have been moved
 ^[a-f0-9]{40}:.*sds-api\/spine-directory-service\/sds\/lookup\/tests\/data\/my_real_server_schema\.json
@@ -338,6 +342,8 @@ super\(\"1\.2
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:65
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:87
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:227
+^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:54
+^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:76
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/routes\/api\/send\.ts:150
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/routes\/auth\/refresh\.ts:12
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/routes\/sign\/downloadSignatures\.ts:29
