@@ -8,6 +8,7 @@ import {
 } from "../../services/session"
 import {Claim} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
+import {getCorrelationId} from "../util"
 
 export default [
   {
@@ -19,8 +20,9 @@ export default [
       const claimRequest = payload.claim
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const claimResponse = await epsClient.makeClaimRequest(claimRequest)
-      const claimResponseHl7 = await epsClient.makeConvertRequest(claimRequest)
+      const correlationId = getCorrelationId(request)
+      const claimResponse = await epsClient.makeClaimRequest(claimRequest, correlationId)
+      const claimResponseHl7 = await epsClient.makeConvertRequest(claimRequest, correlationId)
       const success = claimResponse.statusCode === 200
 
       if (success) {

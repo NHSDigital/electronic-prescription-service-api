@@ -49,7 +49,7 @@ export default {
 
         return h.redirect(CONFIG.baseUrl)
       } catch (e) {
-        console.log(`Callback failed: ${e}`)
+        request.logger.error(`Callback failed: ${e}`)
         return h.response({error: e})
       }
     }

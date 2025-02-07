@@ -91,7 +91,6 @@ export async function getElement(
 
 export async function sendPrescriptionUserJourney(driver: ThenableWebDriver): Promise<string> {
   await loginViaSimulatedAuthSmartcardUser(driver)
-  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadPredefinedExamplePrescription(driver)
   await sendPrescription(driver)
@@ -101,7 +100,6 @@ export async function sendPrescriptionUserJourney(driver: ThenableWebDriver): Pr
 
 export async function sendBulkPrescriptionUserJourney(driver: ThenableWebDriver, fileInfo: FileUploadInfo, successfulResultCountExpected: number): Promise<void> {
   await loginViaSimulatedAuthSmartcardUser(driver)
-  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadTestData(driver, fileInfo)
   await sendPrescription(driver)
@@ -123,7 +121,6 @@ export async function prescriptionIntoCanceledState(driver: ThenableWebDriver, f
 
 export async function sendPrescriptionSingleMessageUserJourney(driver: ThenableWebDriver, fileUploadInfo: FileUploadInfo): Promise<string> {
   await loginViaSimulatedAuthSmartcardUser(driver)
-  await setMockSigningConfig(driver)
   await createPrescription(driver)
   await loadTestData(driver, fileUploadInfo)
   await sendPrescription(driver)
@@ -352,16 +349,6 @@ export async function sendPrescription(driver: ThenableWebDriver): Promise<void>
   await new Promise(r => setTimeout(r, 10000))
 
   finaliseWebAction(driver, "SENDING PRESCRIPTION...")
-}
-
-export async function setMockSigningConfig(driver: ThenableWebDriver): Promise<void> {
-  await (await getElement(driver, configLink)).click()
-  await driver.wait(until.elementLocated(configPageTitle))
-  await waitForPageToRender()
-
-  await (await getElement(driver, By.name("useSigningMock"))).click()
-  await (await getElement(driver, configButton)).click()
-  await (await getElement(driver, backButton)).click()
 }
 
 export async function checkApiResult(driver: ThenableWebDriver, fhirOnly?: boolean): Promise<void> {

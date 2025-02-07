@@ -9,6 +9,7 @@ import {
 } from "../../services/session"
 import {Bundle, Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
+import {getCorrelationId} from "../util"
 
 export default [
   {
@@ -18,8 +19,9 @@ export default [
       const withdrawRequest = request.payload as Task
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const withdrawResponse = await epsClient.makeWithdrawRequest(withdrawRequest)
-      const withdrawRequestHl7 = await epsClient.makeConvertRequest(withdrawRequest)
+      const correlationId = getCorrelationId(request)
+      const withdrawResponse = await epsClient.makeWithdrawRequest(withdrawRequest, correlationId)
+      const withdrawRequestHl7 = await epsClient.makeConvertRequest(withdrawRequest, correlationId)
       const success = withdrawResponse.statusCode === 200
       if (success) {
         const prescriptionId = withdrawRequest.groupIdentifier?.value

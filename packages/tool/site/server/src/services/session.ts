@@ -9,9 +9,9 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
   const sessionValue = request.yar.get(key)
   if (isLocal(CONFIG.environment)) {
     if (sessionValue === null) {
-      console.error(`Failed to retrieve session value for key: ${key}`)
+      request.logger.error(`Failed to retrieve session value for key: ${key}`)
     } else {
-      console.log(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
+      request.logger.info(`Retrieved ${key} from session with value: ${JSON.stringify(sessionValue)}`)
     }
   }
   if (sessionValue && Object.keys(sessionValue).length === 1 && Object.keys(sessionValue)[0] === "arrayValues") {
@@ -30,7 +30,7 @@ export function setSessionValue(key: string, value: unknown, request: Hapi.Reque
     value = {arrayValues: value}
   }
   if (isLocal(CONFIG.environment)) {
-    console.log(`Saving ${key} to session with value: ${JSON.stringify(value)}`)
+    request.logger.info(`Saving ${key} to session with value: ${JSON.stringify(value)}`)
   }
   request.yar.set(key, value)
 }
