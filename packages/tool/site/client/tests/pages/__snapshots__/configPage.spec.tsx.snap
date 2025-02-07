@@ -1,6 +1,22 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Displays config form 1`] = `
+exports[`Displays config form correctly in int 1`] = `
+"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Config</label></h1>
+<form><label class="nhsuk-label nhsuk-label--s">EPS</label>
+  <div class="nhsuk-form-group">
+    <fieldset class="nhsuk-fieldset"><label class="nhsuk-label nhsuk-label--s">Use Proxygen</label>
+      <div class="nhsuk-form-group">
+        <div class="nhsuk-checkboxes" id="useProxygen">
+          <div class="nhsuk-checkboxes__item"><input name="useProxygen" id="useProxygen" type="checkbox" data-checkbox-exclusive-group="useProxygen" value="false"><label class="nhsuk-label nhsuk-checkboxes__label" id="useProxygen--label" for="useProxygen">Use Proxygen deployed APIs</label></div>
+        </div>
+      </div>
+    </fieldset>
+  </div>
+  <div class="sc-egkSDF hcqWyj"><button class="nhsuk-button" aria-disabled="false" type="submit">Save</button></div>
+</form>"
+`;
+
+exports[`Displays config form correctly in internal dev 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Config</label></h1>
 <form><label class="nhsuk-label nhsuk-label--s">EPS</label>
   <div class="nhsuk-form-group">
