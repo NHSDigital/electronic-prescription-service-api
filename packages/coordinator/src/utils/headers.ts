@@ -7,7 +7,7 @@ import {
   PRESCRIBING_USER_SCOPE,
   TRACKER_USER_SCOPE
 } from "../services/validation/scope-validator"
-import {isEpsHostedContainer, isSandbox} from "./feature-flags"
+import {enableDefaultAsidPartyKey, isEpsHostedContainer, isSandbox} from "./feature-flags"
 
 export enum RequestHeaders {
   APPLICATION_ID = "nhsd-application-id",
@@ -25,7 +25,10 @@ export enum RequestHeaders {
   SMOKE_TEST = "x-smoke-test",
 }
 
-export const DEFAULT_ASID = "200000001285"
+export const DEFAULT_SANDBOX_ASID = "200000001285"
+export const DEFAULT_SANDBOX_PARTY_KEY = "DEFAULT_SANDBOX_PARTY_KEY"
+export const DEFAULT_PTL_ASID = process.env.DEFAULT_PTL_ASID
+export const DEFAULT_PTL_PARTY_KEY = process.env.DEFAULT_PTL_PARTY_KEY
 export const DEFAULT_UUID = "555254239107"
 export const DEFAULT_RPID = "555254240100" //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
 export const DEFAULT_SCOPE = `${PRESCRIBING_USER_SCOPE} ${DISPENSING_USER_SCOPE} ${TRACKER_USER_SCOPE}`
@@ -46,11 +49,31 @@ export function getCorrelationId(headers: Hapi.Utils.Dictionary<string>): string
 }
 
 export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
-  return isSandbox() ? DEFAULT_ASID : headers[RequestHeaders.ASID]
+  if (isSandbox()) {
+    return DEFAULT_SANDBOX_ASID
+  }
+  if (headers[RequestHeaders.ASID] !== undefined) {
+    return headers[RequestHeaders.ASID]
+  }
+  if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
+    return DEFAULT_PTL_ASID
+  }
+
+  throw new Error("Could not get ASID")
 }
 
 export function getPartyKey(headers: Hapi.Utils.Dictionary<string>): string {
-  return headers[RequestHeaders.PARTY_KEY]
+  if (isSandbox()) {
+    return DEFAULT_SANDBOX_PARTY_KEY
+  }
+  if (headers[RequestHeaders.PARTY_KEY] !== undefined) {
+    return headers[RequestHeaders.PARTY_KEY]
+  }
+  if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
+    return DEFAULT_PTL_PARTY_KEY
+  }
+
+  throw new Error("Could not get party key")
 }
 
 export function getSdsUserUniqueId(headers: Hapi.Utils.Dictionary<string>): string {

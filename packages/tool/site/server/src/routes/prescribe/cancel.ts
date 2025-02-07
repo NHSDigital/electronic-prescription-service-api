@@ -2,6 +2,7 @@ import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {Bundle} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession} from "../../services/session"
+import {getCorrelationId} from "../util"
 
 export default [
   {
@@ -11,8 +12,9 @@ export default [
       const cancelRequest = request.payload as Bundle
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const cancelResponse = await epsClient.makeSendRequest(cancelRequest)
-      const cancelResponseHl7 = await epsClient.makeConvertRequest(cancelRequest)
+      const correlationId = getCorrelationId(request)
+      const cancelResponse = await epsClient.makeSendRequest(cancelRequest, correlationId)
+      const cancelResponseHl7 = await epsClient.makeConvertRequest(cancelRequest, correlationId)
       const success = cancelResponse.statusCode === 200
       return responseToolkit.response({
         success: success,

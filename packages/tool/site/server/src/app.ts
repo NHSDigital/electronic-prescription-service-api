@@ -5,12 +5,7 @@ import Vision from "@hapi/vision"
 import * as inert from "@hapi/inert"
 import Yar from "@hapi/yar"
 import Cookie from "@hapi/cookie"
-import {
-  isDev,
-  isLocal,
-  isQa,
-  isSandbox
-} from "./services/environment"
+import {isLocal, isSandbox} from "./services/environment"
 import axios from "axios"
 import {CONFIG} from "./config"
 import {getSessionValue} from "./services/session"
@@ -198,9 +193,7 @@ function addViewRoutes(server: Hapi.Server) {
     server.route(addView("dose-to-text"))
   }
 
-  if (isDev(CONFIG.environment) || isLocal(CONFIG.environment) || isQa(CONFIG.environment)) {
-    server.route(addView("config"))
-  }
+  server.route(addView("config"))
 
   function addHomeView(): Hapi.ServerRoute {
     return addView("/")
