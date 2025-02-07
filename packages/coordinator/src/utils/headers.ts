@@ -26,6 +26,7 @@ export enum RequestHeaders {
 }
 
 export const DEFAULT_SANDBOX_ASID = "200000001285"
+export const DEFAULT_SANDBOX_PARTY_KEY = "DEFAULT_SANDBOX_PARTY_KEY"
 export const DEFAULT_PTL_ASID = process.env.DEFAULT_PTL_ASID
 export const DEFAULT_PTL_PARTY_KEY = process.env.DEFAULT_PTL_PARTY_KEY
 export const DEFAULT_UUID = "555254239107"
@@ -62,6 +63,9 @@ export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
 }
 
 export function getPartyKey(headers: Hapi.Utils.Dictionary<string>): string {
+  if (isSandbox()) {
+    return DEFAULT_SANDBOX_PARTY_KEY
+  }
   if (headers[RequestHeaders.PARTY_KEY] !== undefined) {
     return headers[RequestHeaders.PARTY_KEY]
   }
