@@ -69,7 +69,7 @@ interface GetEpsResponseParameters {
 
 class EpsClient {
   private request: Hapi.Request
-  private axiosInstance: AxiosInstance
+  private readonly axiosInstance: AxiosInstance
 
   constructor(request: Hapi.Request) {
     this.request = request
