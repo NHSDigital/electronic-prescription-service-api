@@ -2,6 +2,7 @@ import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession, removeFromSessionValue} from "../../services/session"
 import {Task} from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
+import {getCorrelationId} from "../util"
 
 export default [
   {
@@ -11,8 +12,9 @@ export default [
       const releaseRequest = request.payload as Task
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const returnResponse = await epsClient.makeReturnRequest(releaseRequest)
-      const returnRequestHl7 = await epsClient.makeConvertRequest(releaseRequest)
+      const correlationId = getCorrelationId(request)
+      const returnResponse = await epsClient.makeReturnRequest(releaseRequest, correlationId)
+      const returnRequestHl7 = await epsClient.makeConvertRequest(releaseRequest, correlationId)
       const success = returnResponse.statusCode === 200
       if (success) {
         removeFromSessionValue("released_prescription_ids", releaseRequest.groupIdentifier?.value, request)

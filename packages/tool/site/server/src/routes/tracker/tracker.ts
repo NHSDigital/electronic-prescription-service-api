@@ -1,6 +1,7 @@
 import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession} from "../../services/session"
+import {getCorrelationId} from "../util"
 
 export default [
   {
@@ -9,7 +10,8 @@ export default [
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const response = await epsClient.makeGetTaskTrackerRequest(request.query)
+      const correlationId = getCorrelationId(request)
+      const response = await epsClient.makeGetTaskTrackerRequest(request.query, correlationId)
       return h.response(response).code(200)
     }
   }

@@ -101,7 +101,7 @@ export default {
       const scopes = ["openid", "profile"]
       const redirectUri = getRedirectUri(authorizationUri, CONFIG.cis2AppClientId, callbackUri, scopes)
 
-      console.log(`Redirecting browser to: ${redirectUri}`)
+      request.logger.info(`Redirecting browser to: ${redirectUri}`)
       return h.response({redirectUri})
     }
 
@@ -110,7 +110,7 @@ export default {
       const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2/authorize`
       const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 
-      console.log(`Redirecting browser to: ${redirectUri}`)
+      request.logger.info(`Redirecting browser to: ${redirectUri}`)
       return h.response({redirectUri})
     }
 
@@ -118,7 +118,7 @@ export default {
     const authorizationUri = `${CONFIG.publicApigeeHost}/oauth2-mock/authorize`
     const redirectUri = getRedirectUri(authorizationUri, CONFIG.apigeeAppClientId, callbackUri)
 
-    console.log(`Redirecting browser to: ${redirectUri}`)
+    request.logger.info(`Redirecting browser to: ${redirectUri}`)
     return h.response({redirectUri})
   }
 }

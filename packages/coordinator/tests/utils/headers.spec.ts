@@ -79,7 +79,7 @@ describe("header functions do the right thing", () => {
   test("getPartyKey gets correct value when is sandbox", () => {
     process.env.SANDBOX = "1"
     const partyKey = getPartyKey(validTestHeaders)
-    expect(partyKey).toBe("T141D-822234")
+    expect(partyKey).toBe("DEFAULT_SANDBOX_PARTY_KEY")
   })
 
   test("getPartyKey gets correct value when not in sandbox but in PTL hosted container", () => {
