@@ -2,6 +2,7 @@ import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {getApigeeAccessTokenFromSession} from "../services/session"
 import {getEpsClient} from "../services/communication/eps-client"
 import * as fhir from "fhir/r4"
+import {getCorrelationId} from "./util"
 
 export interface DosageTranslation {
   identifier: Array<fhir.Identifier>
@@ -16,7 +17,8 @@ export default [
       const doseToTextRequest = request.payload as fhir.FhirResource
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const doseToTextResponse = await epsClient.makeDoseToTextRequest(doseToTextRequest)
+      const correlationId = getCorrelationId(request)
+      const doseToTextResponse = await epsClient.makeDoseToTextRequest(doseToTextRequest, correlationId)
       const epsResponse = doseToTextResponse.fhirResponse as DosageTranslationArray
       const doseToTextResults = epsResponse ?? []
       const success = doseToTextResponse.statusCode === 200

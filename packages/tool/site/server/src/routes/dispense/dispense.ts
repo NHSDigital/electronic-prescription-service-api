@@ -8,6 +8,7 @@ import {
 } from "../../services/session"
 import * as fhir from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
+import {getCorrelationId} from "../util"
 
 export interface MedicationDispense extends fhir.MedicationDispense {
   contained: Array<MedicationRequest | fhir.PractitionerRole>
@@ -27,8 +28,11 @@ export default [
 
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
-      const dispenseNotificationResponse = await epsClient.makeSendRequest(dispenseNotificationRequest)
-      const dispenseNotificationRequestHl7 = await epsClient.makeConvertRequest(dispenseNotificationRequest)
+      const correlationId = getCorrelationId(request)
+      const dispenseNotificationResponse = await epsClient.makeSendRequest(dispenseNotificationRequest, correlationId)
+      const dispenseNotificationRequestHl7 = await epsClient.makeConvertRequest(
+        dispenseNotificationRequest, correlationId
+      )
       const success = dispenseNotificationResponse.statusCode === 200
       if (success) {
         const medicationDispense = dispenseNotificationRequest?.entry

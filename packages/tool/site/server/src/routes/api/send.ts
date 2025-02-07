@@ -9,6 +9,7 @@ import {getEpsClient} from "../../services/communication/eps-client"
 import * as fhir from "fhir/r4"
 import {SignatureDownloadResponse} from "../../services/communication/signing-client"
 import {getMedicationRequests} from "../../common/getResources"
+import {getCorrelationId} from "../util"
 
 interface SuccessfulPrepareData {
   prescriptionId: string
@@ -63,6 +64,7 @@ export default [
 
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
+      const correlationId = getCorrelationId(request)
       const results = []
 
       for (const prepare of prepares) {
@@ -88,10 +90,10 @@ export default [
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let sendResponse: any
         if (prepares.length === 1) {
-          sendResponse = await epsClient.makeSendRequest(sendRequest)
-          sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest)
+          sendResponse = await epsClient.makeSendRequest(sendRequest, correlationId)
+          sendRequestHl7 = await epsClient.makeConvertRequest(sendRequest, correlationId)
         } else {
-          sendResponse = await epsClient.makeSendFhirRequest(sendRequest)
+          sendResponse = await epsClient.makeSendFhirRequest(sendRequest, correlationId)
         }
 
         results.push({
