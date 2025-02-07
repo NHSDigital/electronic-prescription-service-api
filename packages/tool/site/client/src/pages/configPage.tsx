@@ -45,7 +45,10 @@ const ConfigPage: React.FC = () => {
       .then(response => {
         if (response.status === 200) {
           const configDetails = response.data
-          if (configDetails.useSigningMock && configDetails.epsPrNumber && configDetails.signingPrNumber && configDetails.useProxygen) {
+          if (configDetails.hasOwnProperty("useSigningMock") && 
+          configDetails.hasOwnProperty("epsPrNumber") &&
+          configDetails.hasOwnProperty("signingPrNumber") && 
+          configDetails.hasOwnProperty("useProxygen")) {
             setConfigValues(response.data)
           }
         }
