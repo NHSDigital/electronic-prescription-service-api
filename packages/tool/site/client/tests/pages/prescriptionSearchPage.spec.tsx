@@ -1,6 +1,7 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import pretty from "pretty"
+import {v4} from "uuid"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
@@ -15,6 +16,9 @@ import {PrescriptionStatus} from "../../src/fhir/reference-data/valueSets"
 import {DateRangeType} from "../../src/components/prescription-tracker/dateRangeField"
 import {internalDev} from "../../src/services/environment"
 import {MemoryRouter} from "react-router-dom"
+
+jest.mock("uuid")
+;(v4 as jest.Mock).mockImplementation(() => "test-uuid")
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "003D4D-A99968-4C5AAJ"

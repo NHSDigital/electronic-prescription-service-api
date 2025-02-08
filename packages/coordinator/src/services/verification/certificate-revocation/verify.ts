@@ -16,6 +16,7 @@ import {
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
 import {X509CrlEntry} from "@peculiar/x509"
+import {isEpsHostedContainer} from "../../../utils/feature-flags"
 
 const CRL_DISTRIBUTION_DOMAIN = process.env.CRL_DISTRIBUTION_DOMAIN
 const CRL_DISTRIBUTION_PROXY = process.env.CRL_DISTRIBUTION_PROXY
@@ -175,9 +176,12 @@ const checkForRevocation = async (
   }
 
   for (const distributionPointURI of distributionPointsURI) {
-    const proxiedDistributionPointURI = distributionPointURI.replace(
-      "http://" + CRL_DISTRIBUTION_DOMAIN,
-      "https://" + CRL_DISTRIBUTION_PROXY)
+    let proxiedDistributionPointURI = distributionPointURI
+    if (!isEpsHostedContainer()) {
+      proxiedDistributionPointURI = distributionPointURI.replace(
+        "http://" + CRL_DISTRIBUTION_DOMAIN,
+        "https://" + CRL_DISTRIBUTION_PROXY)
+    }
     const crl = await getRevocationList(proxiedDistributionPointURI, logger)
     if (!crl) {
       logger.error(`Cannot retrieve CRL from certificate with serial ${serialNumber}`)

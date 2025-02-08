@@ -14,6 +14,7 @@ import MockAdapter from "axios-mock-adapter"
 const baseUrl = "baseUrl/"
 
 const loginUrl = `${baseUrl}login`
+const configUrl = `${baseUrl}getconfig`
 
 const attendedAuthRedirectUrl = `https://attended-auth.com`
 const unattendedAuthRedirectUrl = `https://unattended-auth.com`
@@ -22,7 +23,10 @@ jest.mock("../../src/browser/navigation")
 
 const mock = new MockAdapter(axiosInstance)
 
-beforeEach(() => mock.reset())
+beforeEach(() => {
+  mock.reset()
+  mock.onAny(configUrl).reply(200)
+})
 afterEach(() => mock.reset())
 
 test("Displays user/system options in internal-dev", async () => {

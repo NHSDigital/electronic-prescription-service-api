@@ -77,7 +77,7 @@ const routes: Array<ServerRoute> = isSandbox(CONFIG.environment)
     oauthCallbackRoute
   ]
   : [
-    configRoutes,
+    ...configRoutes,
     ...authRoutes,
     ...apiRoutes,
     ...stateRoutes,

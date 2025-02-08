@@ -342,6 +342,13 @@ export const validTestHeaders: Hapi.Utils.Dictionary<string> = {
   "nhsd-correlation-id": "test-correlation-id"
 }
 
+export const validTestHeadersWithoutAsidPartyKey: Hapi.Utils.Dictionary<string> = {
+  "nhsd-request-id": "test",
+  "nhsd-identity-uuid": "555254239107", //USERQ RANDOM Mr
+  "nhsd-session-urid": "555254240100", //S8000:G8000:R8001 - "Clinical":"Clinical Provision":"Nurse Access Role"
+  "nhsd-correlation-id": "test-correlation-id"
+}
+
 export const parentPrescriptions = {
   validSignature: readXml(
     fs.readFileSync(path.join(__dirname, "./signed-prescriptions/ValidSignature.xml"), "utf-8")
