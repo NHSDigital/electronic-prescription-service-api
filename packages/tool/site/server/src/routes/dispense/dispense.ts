@@ -29,7 +29,8 @@ export default [
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const correlationId = getCorrelationId(request)
-      const dispenseNotificationResponse = await epsClient.makeSendRequest(dispenseNotificationRequest, correlationId)
+      const dispenseNotificationResponse =
+        await epsClient.makeDispenseRequest(dispenseNotificationRequest, correlationId)
       const dispenseNotificationRequestHl7 = await epsClient.makeConvertRequest(
         dispenseNotificationRequest, correlationId
       )
