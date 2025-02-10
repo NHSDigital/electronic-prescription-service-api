@@ -50,6 +50,13 @@ export default [
   },
   {
     method: "GET" as RouteDefMethods,
+    path: "/_ping",
+    handler: async (_request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      return h.response().code(200)
+    }
+  },
+  {
+    method: "GET" as RouteDefMethods,
     path: "/_validatormetrics/{path*}",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       try {
