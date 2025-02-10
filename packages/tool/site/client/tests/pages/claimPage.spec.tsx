@@ -12,7 +12,7 @@ import {renderWithContext} from "../renderWithContext"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import {StaticProductInfo} from "../../src/components/claim/claimForm"
-import {MemoryRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router"
 
 jest.mock("uuid")
 ;(v4 as jest.Mock).mockImplementation(() => "test-uuid")
