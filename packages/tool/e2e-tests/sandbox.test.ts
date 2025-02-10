@@ -6,6 +6,12 @@ import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
 import * as doseToText from "./dose-to-text/doseToText.spec"
 import _ from "lodash"
 import "path"
+import {
+  beforeAll,
+  beforeEach,
+  expect,
+  afterEach
+} from "@jest/globals"
 
 const testResultsDirectory = "test_results"
 
