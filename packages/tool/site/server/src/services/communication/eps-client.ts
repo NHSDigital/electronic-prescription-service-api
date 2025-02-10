@@ -142,6 +142,15 @@ class EpsClient {
     })
   }
 
+  async makeDispenseRequest(body: Bundle, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
+    return await this.getEpsResponse({
+      endpoint: "$process-message",
+      apiType: ApiType.Dispensing,
+      body,
+      correlationId
+    })
+  }
+
   async makeSendFhirRequest(body: Bundle, correlationId: string): Promise<EpsResponse<OperationOutcome>> {
     return await this.getEpsResponse({
       endpoint: "$process-message",
