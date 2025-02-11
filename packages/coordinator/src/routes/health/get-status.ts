@@ -52,7 +52,10 @@ export default [
     method: "GET" as RouteDefMethods,
     path: "/_ping",
     handler: async (_request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return h.response().code(200)
+      const data = {
+        version: "unknown version"
+      }
+      return h.response(data).code(200)
     }
   },
   {
