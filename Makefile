@@ -458,7 +458,8 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 			ToPartyKey=$$TO_PARTY_KEY \
 			EnableDefaultAsidPartyKey=$$ENABLE_DEFAULT_ASID_PARTY_KEY \
 			DefaultPtlAsid=$$DEFAULT_PTL_ASID \
-			DefaultPtlPartyKey=$$DEFAULT_PTL_PARTY_KEY
+			DefaultPtlPartyKey=$$DEFAULT_PTL_PARTY_KEY \
+			SHA1_ENABLED_APPLICATION_IDS=$$SHA1_ENABLED_APPLICATION_IDS
 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
