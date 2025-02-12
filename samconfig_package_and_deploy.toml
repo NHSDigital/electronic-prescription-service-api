@@ -17,6 +17,7 @@ lint = true
 capabilities = ["CAPABILITY_IAM", "CAPABILITY_AUTO_EXPAND"]
 confirm_changeset = true
 resolve_s3 = false
+SHA1_ENABLED_APPLICATION_IDS='DEFAULT_SHA1_ENABLED_APPLICATION_IDS'
 
 [default.package.parameters]
 resolve_s3 = false
