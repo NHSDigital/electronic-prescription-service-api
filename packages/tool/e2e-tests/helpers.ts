@@ -73,7 +73,7 @@ export const twoTimesDefaultWaitTimeout = defaultWaitTimeout * 2
 export const threeTimesDefaultWaitTimeout = defaultWaitTimeout * 3
 export const fiveTimesDefaultWaitTimeout = defaultWaitTimeout * 5
 export const tenTimesDefaultWaitTimeout = defaultWaitTimeout * 10
-export const apiTimeout = 240000
+export const apiTimeout = 120000
 
 export async function getElement(
   driver: ThenableWebDriver,
