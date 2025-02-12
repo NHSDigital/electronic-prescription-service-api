@@ -47,6 +47,7 @@ sed -i "s/CHANGE_SHA1_ENABLED_APPLICATION_IDS/${SHA1_ENABLED_APPLICATION_IDS}/g"
 sed -i "s/CHANGE_TRUSTSTORE_BUCKET_NAME/${TRUSTSTORE_BUCKET_NAME}/g" samconfig_package_and_deploy.toml
 sed -i "s/CHANGE_LATEST_TRUSTSTORE_VERSION/${LATEST_TRUSTSTORE_VERSION}/g" samconfig_package_and_deploy.toml
 sed -i "s/CHANGE_TRUSTSTORE_FILE/${TRUSTSTORE_FILE}/g" samconfig_package_and_deploy.toml
+# shellcheck disable=SC2154
 sed -i "s/CHANGE_enable_mutual_tls/${enable_mutual_tls}/g" samconfig_package_and_deploy.toml
 sed -i "s/CHANGE_VERSION_NUMBER/${VERSION_NUMBER}/g" samconfig_package_and_deploy.toml
 sed -i "s/CHANGE_COMMIT_ID/${COMMIT_ID}/g" samconfig_package_and_deploy.toml
