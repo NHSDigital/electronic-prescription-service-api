@@ -37,6 +37,25 @@ cd ../../.aws-sam/build || exit
 
 # fix the deployment file
 sed -i "s/DEFAULT_SHA1_ENABLED_APPLICATION_IDS/${SHA1_ENABLED_APPLICATION_IDS}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_TRUSTSTORE_BUCKET_NAME/${TRUSTSTORE_BUCKET_NAME}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_LATEST_TRUSTSTORE_VERSION/${LATEST_TRUSTSTORE_VERSION}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_TRUSTSTORE_FILE/${TRUSTSTORE_FILE}/g" samconfig_package_and_deploy.toml
+sed -i "s/default_enable_mutual_tls/${enable_mutual_tls}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_VERSION_NUMBER/${VERSION_NUMBER}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_COMMIT_ID/${COMMIT_ID}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_LOG_LEVEL/${LOG_LEVEL}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_VALIDATOR_LOG_LEVEL/${VALIDATOR_LOG_LEVEL}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_LOG_RETENTION_DAYS/${LOG_RETENTION_DAYS}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_TARGET_ENVIRONMENT/${TARGET_ENVIRONMENT}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_DOMAIN_NAME_EXPORT/${DOMAIN_NAME_EXPORT}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_ZONE_ID_EXPORT/${ZONE_ID_EXPORT}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_TARGET_SPINE_SERVER/${TARGET_SPINE_SERVER}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_DOCKER_IMAGE_TAG/${DOCKER_IMAGE_TAG}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_TO_ASID/${TO_ASID}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_TO_PARTY_KEY/${TO_PARTY_KEY}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_ENABLE_DEFAULT_ASID_PARTY_KEY/${ENABLE_DEFAULT_ASID_PARTY_KEY}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_DEFAULT_PTL_ASID/${DEFAULT_PTL_ASID}/g" samconfig_package_and_deploy.toml
+sed -i "s/DEFAULT_DEFAULT_PTL_PARTY_KEY/${DEFAULT_PTL_PARTY_KEY}/g" samconfig_package_and_deploy.toml
 
 cat samconfig_package_and_deploy.toml
 
