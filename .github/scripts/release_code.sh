@@ -38,4 +38,7 @@ cd ../../.aws-sam/build || exit
 # fix the deployment file
 sed -i "s/DEFAULT_SHA1_ENABLED_APPLICATION_IDS/${SHA1_ENABLED_APPLICATION_IDS}/g" samconfig_package_and_deploy.toml
 
+cat samconfig_package_and_deploy.toml
+
+echo "Starting deployment"
 make sam-deploy-package
