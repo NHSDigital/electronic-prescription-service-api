@@ -86,7 +86,7 @@ Parameters:
     Type: String
   DefaultPtlPartyKey:
     Type: String
-  SHA1_ENABLED_APPLICATION_IDS:
+  SHA1EnabledApplicationIds:
     Type: String
 
 Resources:
@@ -113,7 +113,7 @@ Resources:
         DefaultPtlAsid: !Ref DefaultPtlAsid
         DefaultPtlPartyKey: !Ref DefaultPtlPartyKey
         Environment: !Ref Environment
-        SHA1_ENABLED_APPLICATION_IDS: !Ref SHA1_ENABLED_APPLICATION_IDS
+        SHA1EnabledApplicationIds: !Ref SHA1EnabledApplicationIds
 
 Outputs:
   LoadBalancerEndpoint:

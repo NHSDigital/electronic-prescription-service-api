@@ -64,7 +64,7 @@ Parameters:
     Type: String
   DefaultPtlPartyKey:
     Type: String
-  SHA1_ENABLED_APPLICATION_IDS:
+  SHA1EnabledApplicationIds:
     Type: String
 
 Conditions:
@@ -278,7 +278,7 @@ Resources:
             - Name: DEFAULT_PTL_PARTY_KEY
               Value: !Ref DefaultPtlPartyKey
             - Name: SHA1_ENABLED_APPLICATION_IDS
-              Value: !Ref SHA1_ENABLED_APPLICATION_IDS
+              Value: !Ref SHA1EnabledApplicationIds
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey
