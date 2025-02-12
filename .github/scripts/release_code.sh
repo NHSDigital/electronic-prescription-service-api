@@ -34,4 +34,8 @@ echo "TARGET_SPINE_SERVER: $TARGET_SPINE_SERVER"
 
 # Change directory and invoke the make command
 cd ../../.aws-sam/build || exit
+
+# fix the deployment file
+sed -i "s/DEFAULT_SHA1_ENABLED_APPLICATION_IDS/${SHA1_ENABLED_APPLICATION_IDS}/g" samconfig_package_and_deploy.toml
+
 make sam-deploy-package
