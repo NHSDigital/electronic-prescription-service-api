@@ -131,7 +131,7 @@ jobs:
         name: Upload pact_tests
         if: success() || failure()
         with:
-          name: pact_tests
+          name: pact_tests_${{ inputs.APIGEE_ENVIRONMENT }}
           path: |
             packages/e2e-tests/prescriptions*.txt
             packages/e2e-tests/pact
