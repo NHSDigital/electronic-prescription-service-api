@@ -48,7 +48,7 @@ def generate_timestamp():
 
 def trigger_test_run(env, pr_label, product, auth_header):
     body = {
-        "ref": "master",
+        "ref": "main",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
