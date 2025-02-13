@@ -1347,3 +1347,6 @@ x-nhsd-apim:
     - name: asid
       required: true
       header: nhsd-asid
+    - name: id
+      required: true
+      header: nhsd-application-id

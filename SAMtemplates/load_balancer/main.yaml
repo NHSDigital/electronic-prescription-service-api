@@ -64,6 +64,8 @@ Parameters:
     Type: String
   DefaultPtlPartyKey:
     Type: String
+  SHA1EnabledApplicationIds:
+    Type: String
 
 Conditions:
   CreateTruststore: !Equals [!Ref EnableMutualTLS, true]
@@ -275,6 +277,8 @@ Resources:
               Value: !Ref DefaultPtlAsid
             - Name: DEFAULT_PTL_PARTY_KEY
               Value: !Ref DefaultPtlPartyKey
+            - Name: SHA1_ENABLED_APPLICATION_IDS
+              Value: !Ref SHA1EnabledApplicationIds
           Secrets:
             - Name: SpinePrivateKey
               ValueFrom: !ImportValue account-resources:SpinePrivateKey
