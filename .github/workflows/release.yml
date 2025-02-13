@@ -262,7 +262,7 @@ jobs:
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
-      RUN_REGRESSION_TEST: false
+      RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
       IS_PULL_REQUEST: false
