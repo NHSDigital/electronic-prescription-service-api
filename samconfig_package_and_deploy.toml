@@ -17,6 +17,28 @@ lint = true
 capabilities = ["CAPABILITY_IAM", "CAPABILITY_AUTO_EXPAND"]
 confirm_changeset = true
 resolve_s3 = false
+parameter_overrides=[
+    "SHA1EnabledApplicationIds='CHANGE_SHA1_ENABLED_APPLICATION_IDS'",
+    "TruststoreBucketName=CHANGE_TRUSTSTORE_BUCKET_NAME",
+    "TruststoreVersion=CHANGE_LATEST_TRUSTSTORE_VERSION",
+    "TruststoreFile=CHANGE_TRUSTSTORE_FILE",
+    "EnableMutualTLS=CHANGE_enable_mutual_tls",
+    "VersionNumber=CHANGE_VERSION_NUMBER",
+    "CommitId=CHANGE_COMMIT_ID",
+    "LogLevel=CHANGE_LOG_LEVEL",
+    "ValidatorLogLevel=CHANGE_VALIDATOR_LOG_LEVEL",
+    "LogRetentionInDays=CHANGE_LOG_RETENTION_DAYS",
+    "Environment=CHANGE_TARGET_ENVIRONMENT",
+    "DomainNameExport=CHANGE_DOMAIN_NAME_EXPORT",
+    "ZoneIDExport=CHANGE_ZONE_ID_EXPORT",
+    "TargetSpineServer=CHANGE_TARGET_SPINE_SERVER",
+    "DockerImageTag=CHANGE_DOCKER_IMAGE_TAG",
+    "ToAsid=CHANGE_TO_ASID",
+    "ToPartyKey=CHANGE_TO_PARTY_KEY",
+    "EnableDefaultAsidPartyKey=CHANGE_ENABLE_DEFAULT_ASID_PARTY_KEY",
+    "DefaultPtlAsid=CHANGE_DEFAULT_PTL_ASID",
+    "DefaultPtlPartyKey=CHANGE_DEFAULT_PTL_PARTY_KEY"
+]
 
 [default.package.parameters]
 resolve_s3 = false

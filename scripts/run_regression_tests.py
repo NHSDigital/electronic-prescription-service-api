@@ -13,7 +13,7 @@ import time
 from requests.auth import HTTPBasicAuth
 
 # This should be set to a known good version of regression test repo
-REGRESSION_TESTS_REPO_TAG = "v2.9.1"
+REGRESSION_TESTS_REPO_TAG = "v2.11.13"
 
 GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
 GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs"
@@ -55,8 +55,7 @@ def trigger_test_run(env, pr_label, product, auth_header):
             "environment": env,
             "pull_request_id": pr_label,
             "product": product,
-            "github_tag": REGRESSION_TESTS_REPO_TAG,
-            "run_sha1_tests": True
+            "github_tag": REGRESSION_TESTS_REPO_TAG
         },
     }
 
