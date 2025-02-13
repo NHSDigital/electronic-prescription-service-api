@@ -2,7 +2,7 @@
 
 exports[`Displays user/system options in internal-dev 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Login</label></h1><label class="nhsuk-label">When prompted enter the following User Id: 555086689106</label><label class="nhsuk-label">Select access level:</label>
-<div class="sc-egkSDF hcqWyj"><button class="nhsuk-button" aria-disabled="false" type="submit">User - Mock</button><button class="nhsuk-button" aria-disabled="false" type="submit">System</button></div>"
+<div class="sc-dVBluf duNEre"><button class="nhsuk-button" aria-disabled="false" type="submit">User - Mock</button><button class="nhsuk-button" aria-disabled="false" type="submit">System</button></div>"
 `;
 
 exports[`Redirects to attended auth in integration 1`] = `"<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Login</label></h1><label class="nhsuk-label">Redirecting to auth...</label>"`;
@@ -11,5 +11,5 @@ exports[`Redirects to attended simulated auth when selecting user access level i
 
 exports[`Redirects to unattended auth when selecting system access level in internal-dev 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Login</label></h1><label class="nhsuk-label">When prompted enter the following User Id: 555086689106</label><label class="nhsuk-label">Select access level:</label>
-<div class="sc-egkSDF hcqWyj"><button class="nhsuk-button" aria-disabled="false" type="submit">User - Mock</button><button class="nhsuk-button" aria-disabled="false" type="submit">System</button></div>"
+<div class="sc-dVBluf duNEre"><button class="nhsuk-button" aria-disabled="false" type="submit">User - Mock</button><button class="nhsuk-button" aria-disabled="false" type="submit">System</button></div>"
 `;
