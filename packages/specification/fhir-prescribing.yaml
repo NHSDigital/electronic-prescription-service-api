@@ -1182,7 +1182,7 @@ x-nhsd-apim:
   temporary: false
   monitoring: false
   access:
-  - title: FHIR Prescribing Service API Application Restricted
+  - title: FHIR Prescribing Service API User Restricted
     grants:
       nhs-cis2-aal3: []
   target:
