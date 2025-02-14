@@ -1325,7 +1325,7 @@ x-nhsd-apim:
   temporary: false
   monitoring: false
   access:
-  - title: FHIR Dispensing Service API User Restricted
+  - title: FHIR Dispensing Service API Application Restricted
     grants:
       nhs-cis2-aal3: []
   target:
