@@ -408,6 +408,44 @@ describe("release rejection handler", () => {
     const operationOutcome = result.fhirResponse as fhir.OperationOutcome
     expect(operationOutcome.issue[0].diagnostics).toBeUndefined()
   })
+
+  test("handleResponse returns unknown when AgentPerson is missing", async () => {
+    const expectedSendMessagePayload = createError(
+      "PORX_IN110101UK30",
+      createReleaseRejectSubject(new hl7V3.PrescriptionReleaseRejectionReason("0004"))
+    )
+    // eslint-disable-next-line max-len
+    delete expectedSendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject.pertinentInformation.pertinentRejectionReason.performer
+    const spineResponse = writeXmlStringPretty({PORX_IN110101UK30: expectedSendMessagePayload})
+    const result = await releaseRejectionHandler.handleResponse(spineResponse, logger)
+
+    const outcomeIssue = createRejectionOperationOutcomeIssue(
+      fhir.IssueCodes.BUSINESS_RULE,
+      "PRESCRIPTION_WITH_ANOTHER_DISPENSER",
+      "Prescription is with another dispenser"
+    )
+    const organization: fhir.Organization = {
+      resourceType: "Organization",
+      id: result.fhirResponse.contained[0].id,
+      name: "UNKNOWN",
+      identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "UNKNOWN"}]
+    }
+    const extension: fhir.ReferenceExtension<fhir.Bundle> = {
+      url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo",
+      valueReference: {reference: `#${result.fhirResponse.contained[0].id}`}
+    }
+    const operationOutcome: fhir.OperationOutcome = {
+      resourceType: "OperationOutcome",
+      issue: [outcomeIssue],
+      contained: [organization],
+      extension: [extension]
+    }
+    expect(result).toMatchObject<TranslatedSpineResponse>({
+      statusCode: 400,
+      fhirResponse: operationOutcome
+    })
+  })
+
 })
 
 function createSendMessagePayload<T>(interactionId: string) {
