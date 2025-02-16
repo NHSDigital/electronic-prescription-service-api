@@ -3,20 +3,12 @@ import {
   Duration,
   Environment,
   Fn,
-  RemovalPolicy,
   Stack,
   StackProps
 } from "aws-cdk-lib"
 import {HostedZone} from "aws-cdk-lib/aws-route53"
 import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager"
 import {Key} from "aws-cdk-lib/aws-kms"
-import {
-  CfnLogGroup,
-  FilterPattern,
-  LogGroup,
-  SubscriptionFilter
-} from "aws-cdk-lib/aws-logs"
-import {KinesisDestination} from "aws-cdk-lib/aws-logs-destinations"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
 import {
@@ -49,6 +41,7 @@ import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
 import {nagSuppressions} from "../nagSuppressions"
+import { LogGroups } from "../resources/LogGroups"
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
     readonly serviceName: string
@@ -120,6 +113,14 @@ export class PrescribeDispenseStack extends Stack {
       "validator-repo"
     )
 
+    const logGroups = new LogGroups(this, "logGroups", {
+      stackName: props.stackName,
+      cloudWatchLogsKmsKey: cloudWatchLogsKmsKey,
+      logRetentionInDays: logRetentionInDays,
+      splunkDeliveryStream: splunkDeliveryStream,
+      splunkSubscriptionFilterRole: splunkSubscriptionFilterRole
+    })
+
     const spinePrivateKey = Secret.fromSecretCompleteArn(this, "spinePrivateKey", spinePrivateKeyImport)
     const spinePublicCertificate = Secret.fromSecretCompleteArn(
       this,
@@ -131,53 +132,6 @@ export class PrescribeDispenseStack extends Stack {
     // resources
 
     // log groups
-    const coordinatorLogGroup = new LogGroup(this, "CoordinatorLogGroup", {
-      encryptionKey: cloudWatchLogsKmsKey,
-      logGroupName: `/aws/ecs/${props.stackName!}-coordinator`,
-      retention: logRetentionInDays,
-      removalPolicy: RemovalPolicy.DESTROY
-    })
-
-    const cfnCoordinatorLogGroup = coordinatorLogGroup.node.defaultChild as CfnLogGroup
-    cfnCoordinatorLogGroup.cfnOptions.metadata = {
-      guard: {
-        SuppressedRules: [
-          "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
-        ]
-      }
-    }
-
-    new SubscriptionFilter(this, "CoordinatorSplunkSubscriptionFilter", {
-      logGroup: coordinatorLogGroup,
-      filterPattern: FilterPattern.allTerms(),
-      destination: new KinesisDestination(splunkDeliveryStream, {
-        role: splunkSubscriptionFilterRole
-      })
-    })
-
-    const validatorLogGroup = new LogGroup(this, "ValidatorLogGroup", {
-      encryptionKey: cloudWatchLogsKmsKey,
-      logGroupName: `/aws/ecs/${props.stackName!}-validator`,
-      retention: logRetentionInDays,
-      removalPolicy: RemovalPolicy.DESTROY
-    })
-
-    const cfnValidatorLogGroup = validatorLogGroup.node.defaultChild as CfnLogGroup
-    cfnValidatorLogGroup.cfnOptions.metadata = {
-      guard: {
-        SuppressedRules: [
-          "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
-        ]
-      }
-    }
-
-    new SubscriptionFilter(this, "ValidatorSplunkSubscriptionFilter", {
-      logGroup: validatorLogGroup,
-      filterPattern: FilterPattern.allTerms(),
-      destination: new KinesisDestination(splunkDeliveryStream, {
-        role: splunkSubscriptionFilterRole
-      })
-    })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
       clusterName: `${props.stackName!}-cluster`,
@@ -301,7 +255,7 @@ export class PrescribeDispenseStack extends Stack {
       },
       logging:  LogDrivers.awsLogs({
         streamPrefix: "ecs",
-        logGroup: coordinatorLogGroup
+        logGroup: logGroups.coordinatorLogGroup
       })
     })
 
@@ -322,7 +276,7 @@ export class PrescribeDispenseStack extends Stack {
       },
       logging:  LogDrivers.awsLogs({
         streamPrefix: "ecs",
-        logGroup: validatorLogGroup
+        logGroup: logGroups.validatorLogGroup
       })
     })
 
