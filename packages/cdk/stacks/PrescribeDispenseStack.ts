@@ -22,10 +22,8 @@ import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {
   ApplicationLoadBalancer,
-  ApplicationProtocol,
+  CfnListener,
   IpAddressType,
-  MutualAuthenticationMode,
-  SslPolicy,
   TrustStore
 } from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
@@ -63,7 +61,7 @@ export class PrescribeDispenseStack extends Stack {
     const enableDefaultAsidPartyKey: string = this.node.tryGetContext("enableDefaultAsidPartyKey")
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
-    const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
+    //const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
     const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
 
     // imports
@@ -182,6 +180,13 @@ export class PrescribeDispenseStack extends Stack {
       validation: CertificateValidation.fromDns(hostedZone)
     })
 
+    const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
+      bucket: trustStoreBucket,
+      key: trustStoreFile,
+      trustStoreName: `${props.stackName!}-ts`,
+      version: trustStoreVersion
+    })
+
     const fhirFacadeService = new ApplicationLoadBalancedFargateService(this, "fhirFacadeService", {
       assignPublicIp: false,
       certificate: fhirFacadeAlbCertificate,
@@ -209,29 +214,12 @@ export class PrescribeDispenseStack extends Stack {
       }
     })
 
-    const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
-      bucket: trustStoreBucket,
-      key: trustStoreFile,
-      trustStoreName: `${props.stackName!}-ts`,
-      version: trustStoreVersion
-    })
-
-    const fhirFacadeListener = fhirFacadeAlb.addListener("fhirFacadeListener", {
-      port: 443,
-      protocol: ApplicationProtocol.HTTPS,
-      certificates: [
-        fhirFacadeAlbCertificate
-      ],
-      ...(enableMutualTls) && {mutualAuthentication: {
-        ignoreClientCertificateExpiry: false,
-        mutualAuthenticationMode: MutualAuthenticationMode.VERIFY,
-        trustStore: fhirFacadeAlbTrustStore
-      }},
-      sslPolicy: SslPolicy.TLS13_EXT2
-    })
-    fhirFacadeListener.addTargetGroups("targetGroups", {
-      targetGroups: [fhirFacadeService.targetGroup]
-    })
+    const CFNfhirFacadeListener = fhirFacadeService.listener.node.defaultChild as CfnListener
+    CFNfhirFacadeListener.addPropertyOverride("MutualAuthentication.IgnoreClientCertificateExpiry", "False")
+    CFNfhirFacadeListener.addPropertyOverride("MutualAuthentication.Mode", "verify")
+    CFNfhirFacadeListener.addPropertyOverride(
+      "MutualAuthentication.TrustStoreArn", fhirFacadeAlbTrustStore.trustStoreArn
+    )
 
     nagSuppressions(this)
   }
