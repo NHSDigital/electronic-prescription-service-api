@@ -198,14 +198,11 @@ export class PrescribeDispenseStack extends Stack {
     loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443), "ipv4 https frm anywhere")
     loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443), "ipv6 https frm anywhere")
 
-    let albTrustStore: TrustStore
-    if (enableMutualTls) {
-      albTrustStore = new TrustStore(this, "Store", {
-        bucket: trustStoreBucket,
-        key: trustStoreFile,
-        trustStoreName: `${props.stackName!}-truststore`
-      })
-    }
+    const albTrustStore = new TrustStore(this, "Store", {
+      bucket: trustStoreBucket,
+      key: trustStoreFile,
+      trustStoreName: `${props.stackName!}-ts`
+    })
 
     const alb = new ApplicationLoadBalancer(this, "ALB", {
       vpc: defaultVpc,
