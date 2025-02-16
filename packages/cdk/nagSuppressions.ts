@@ -27,7 +27,7 @@ export const nagSuppressions = (stack: Stack) => {
 
   safeAddNagSuppression(
     stack,
-    "/prescribe-dispense/EcsTaskExecutionRole/Resource",
+    "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/Resource",
     [
       {
         id: "AwsSolutions-IAM4",
@@ -38,7 +38,7 @@ export const nagSuppressions = (stack: Stack) => {
 
   safeAddNagSuppression(
     stack,
-    "/prescribe-dispense/EcsTaskExecutionRole/DefaultPolicy/Resource",
+    "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource",
     [
       {
         id: "AwsSolutions-IAM5",

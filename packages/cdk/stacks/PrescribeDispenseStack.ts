@@ -10,7 +10,7 @@ import {HostedZone} from "aws-cdk-lib/aws-route53"
 import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager"
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
-import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
+import {Role} from "aws-cdk-lib/aws-iam"
 import {
   Peer,
   Port,
@@ -162,44 +162,11 @@ export class PrescribeDispenseStack extends Stack {
     alb.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     alb.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
 
-    const ecsTaskExecutionRolePolicy = ManagedPolicy.fromManagedPolicyArn(
-      this,
-      "AmazonECSTaskExecutionRolePolicy",
-      "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-    )
-    const lambdaAccessSecretsPolicy = ManagedPolicy.fromManagedPolicyArn(
-      this,
-      "LambdaAccessSecretsPolicy",
-      Fn.importValue("account-resources:LambdaAccessSecretsPolicy")
-    )
-    const lambdaDecryptSecretsKMSPolicy = ManagedPolicy.fromManagedPolicyArn(
-      this,
-      "LambdaDecryptSecretsKMSPolicy",
-      Fn.importValue("account-resources:LambdaDecryptSecretsKMSPolicy")
-    )
-    const epsSigningCertChainManagedPolicy = ManagedPolicy.fromManagedPolicyArn(
-      this,
-      "EpsSigningCertChainManagedPolicy",
-      Fn.importValue("secrets:epsSigningCertChainManagedPolicy")
-    )
-
-    const ecsTaskExecutionRole = new Role(this, "EcsTaskExecutionRole", {
-      assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
-      managedPolicies: [
-        ecsTaskExecutionRolePolicy,
-        lambdaAccessSecretsPolicy,
-        lambdaDecryptSecretsKMSPolicy,
-        epsSigningCertChainManagedPolicy
-      ],
-      roleName: `${props.stackName!}-ecsTaskExecutionRole`
-    })
-
     const ecsTasks = new ECSTasks(this, "ecsTasks", {
       stackName: props.stackName,
       fhirFacadeRepo: fhirFacadeRepo,
       validatorRepo: validatorRepo,
       dockerImageTag: dockerImageTag,
-      ecsTaskExecutionRole: ecsTaskExecutionRole,
       containerPort: containerPort,
       containerPortValidator: containerPortValidator,
       targetSpineServer: targetSpineServer,

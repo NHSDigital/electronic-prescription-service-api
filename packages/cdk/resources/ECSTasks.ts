@@ -1,6 +1,6 @@
 import {Construct} from "constructs"
 
-import {IRole} from "aws-cdk-lib/aws-iam"
+import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
 import {ILogGroup} from "aws-cdk-lib/aws-logs"
 import {IRepository} from "aws-cdk-lib/aws-ecr"
 import {
@@ -13,13 +13,13 @@ import {
   Secret as ecsSecret
 } from "aws-cdk-lib/aws-ecs"
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager"
+import {Fn} from "aws-cdk-lib"
 
 export interface ECSTasksProps {
   readonly stackName: string
   readonly fhirFacadeRepo: IRepository
   readonly validatorRepo: IRepository
   readonly dockerImageTag: string
-  readonly ecsTaskExecutionRole: IRole
   readonly containerPort: number
   readonly containerPortValidator: number
   readonly targetSpineServer: string
@@ -51,10 +51,43 @@ export class ECSTasks extends Construct {
     super(scope, id)
 
     // Resources
+
+    const ecsTaskExecutionRolePolicy = ManagedPolicy.fromManagedPolicyArn(
+      this,
+      "AmazonECSTaskExecutionRolePolicy",
+      "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+    )
+    const lambdaAccessSecretsPolicy = ManagedPolicy.fromManagedPolicyArn(
+      this,
+      "LambdaAccessSecretsPolicy",
+      Fn.importValue("account-resources:LambdaAccessSecretsPolicy")
+    )
+    const lambdaDecryptSecretsKMSPolicy = ManagedPolicy.fromManagedPolicyArn(
+      this,
+      "LambdaDecryptSecretsKMSPolicy",
+      Fn.importValue("account-resources:LambdaDecryptSecretsKMSPolicy")
+    )
+    const epsSigningCertChainManagedPolicy = ManagedPolicy.fromManagedPolicyArn(
+      this,
+      "EpsSigningCertChainManagedPolicy",
+      Fn.importValue("secrets:epsSigningCertChainManagedPolicy")
+    )
+
+    const ecsTaskExecutionRole = new Role(this, "EcsTaskExecutionRole", {
+      assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: [
+        ecsTaskExecutionRolePolicy,
+        lambdaAccessSecretsPolicy,
+        lambdaDecryptSecretsKMSPolicy,
+        epsSigningCertChainManagedPolicy
+      ],
+      roleName: `${props.stackName!}-ecsTaskExecutionRole`
+    })
+
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
       cpu: 2048,
       memoryLimitMiB: 4096,
-      executionRole: props.ecsTaskExecutionRole,
+      executionRole: ecsTaskExecutionRole,
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.X86_64,
         operatingSystemFamily: OperatingSystemFamily.LINUX
