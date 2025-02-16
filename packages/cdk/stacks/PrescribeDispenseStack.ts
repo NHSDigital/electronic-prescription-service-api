@@ -180,7 +180,7 @@ export class PrescribeDispenseStack extends Stack {
       validation: CertificateValidation.fromDns(hostedZone)
     })
 
-    const loadBalancedFargateService = new ApplicationLoadBalancedFargateService(this, "Service", {
+    const fhirFacadeService = new ApplicationLoadBalancedFargateService(this, "fhirFacadeService", {
       assignPublicIp: false,
       certificate: fhirFacadeAlbCertificate,
       cluster: ecsCluster,
@@ -214,7 +214,7 @@ export class PrescribeDispenseStack extends Stack {
       version: trustStoreVersion
     })
 
-    const listener = fhirFacadeAlb.addListener("listener", {
+    const fhirFacadeListener = fhirFacadeAlb.addListener("fhirFacadeListener", {
       port: 443,
       protocol: ApplicationProtocol.HTTPS,
       certificates: [
@@ -227,8 +227,8 @@ export class PrescribeDispenseStack extends Stack {
       }},
       sslPolicy: SslPolicy.TLS13_EXT2
     })
-    listener.addTargetGroups("targetGroups", {
-      targetGroups: [loadBalancedFargateService.targetGroup]
+    fhirFacadeListener.addTargetGroups("targetGroups", {
+      targetGroups: [fhirFacadeService.targetGroup]
     })
 
     nagSuppressions(this)
