@@ -79,7 +79,7 @@ jobs:
         run: |
           tar -rf artifact.tar \
             .tool-versions \
-            packages \
+            packages/cdk \
             node_modules \
             package.json \
             package-lock.json \

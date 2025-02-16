@@ -266,6 +266,7 @@ jobs:
             "vpcId": $vpcId,
             "trustStoreBucketArn": $trustStoreBucketArn,
             "trustStoreFile": $trustStoreFile,
+            "trustStoreVersion": $trustStoreVersion,
             "commitId": $commitId,
             "dockerImageTag": $dockerImageTag,
             "targetSpineServer": $targetSpineServer,
