@@ -114,6 +114,8 @@ export class PrescribeDispenseStack extends Stack {
     const spineCAChain = Secret.fromSecretCompleteArn(this, "spineCAChain", spineCAChainImport)
     const epsSigningCertChain = Secret.fromSecretCompleteArn(this, "epsSigningCertChain", epsSigningCertChainImport)
 
+    const fhirFacadeHostname = `${props.stackName}.${epsDomainNameImport}`
+
     // resources
     const logGroups = new LogGroups(this, "logGroups", {
       stackName: props.stackName,
@@ -176,7 +178,7 @@ export class PrescribeDispenseStack extends Stack {
     })
 
     const fhirFacadeAlbCertificate = new Certificate(this, "fhirFacadeAlbCertificate", {
-      domainName: `${props.stackName}.${epsDomainNameImport}`,
+      domainName: fhirFacadeHostname,
       validation: CertificateValidation.fromDns(hostedZone)
     })
 
@@ -186,7 +188,7 @@ export class PrescribeDispenseStack extends Stack {
       cluster: ecsCluster,
       cpu: 2048,
       desiredCount: 2,
-      domainName: `${props.stackName}.${epsDomainNameImport}`,
+      domainName: fhirFacadeHostname,
       domainZone: hostedZone,
       enableECSManagedTags: true,
       ipAddressType: IpAddressType.DUAL_STACK,
