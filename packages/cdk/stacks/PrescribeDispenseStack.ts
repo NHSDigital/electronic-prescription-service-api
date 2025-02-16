@@ -90,7 +90,7 @@ export class PrescribeDispenseStack extends Stack {
     const spinePrivateKeyImport = Fn.importValue("account-resources:SpinePrivateKey")
     const spinePublicCertificateImport = Fn.importValue("account-resources:SpinePublicCertificate")
     const spineCAChainImport = Fn.importValue("account-resources:SpineCAChain")
-    const epsSigningCertChainImport = Fn.importValue("account-resources:epsSigningCertChain")
+    const epsSigningCertChainImport = Fn.importValue("secrets:epsSigningCertChain")
 
     // cooerce context and imports to relevant types
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "hostedZone", {
