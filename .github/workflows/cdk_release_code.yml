@@ -328,7 +328,7 @@ jobs:
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          SPEC_PATH: ${{ env.SPEC_PATH_PRESCRIBING }}
+          SPEC_PATH: ../.build/packages/specification/dist/fhir-prescribing.resolved.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
@@ -343,7 +343,7 @@ jobs:
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          SPEC_PATH: ${{ env.SPEC_PATH_DISPENSING }}
+          SPEC_PATH: ../.build/packages/specification/dist/fhir-dispensing.resolved.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
