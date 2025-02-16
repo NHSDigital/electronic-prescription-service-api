@@ -48,7 +48,7 @@ import {
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
-
+import {nagSuppressions} from "../nagSuppressions"
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
     readonly serviceName: string
@@ -78,6 +78,7 @@ export class PrescribeDispenseStack extends Stack {
     const enableDefaultAsidPartyKey: string = this.node.tryGetContext("enableDefaultAsidPartyKey")
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
+    const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -356,16 +357,17 @@ export class PrescribeDispenseStack extends Stack {
       certificates: [
         albCertificate
       ],
-      mutualAuthentication: {
+      ...(enableMutualTls) && {mutualAuthentication: {
         ignoreClientCertificateExpiry: false,
         mutualAuthenticationMode: MutualAuthenticationMode.VERIFY,
         trustStore: albTrustStore
-      },
+      }},
       sslPolicy: SslPolicy.TLS13_EXT2
     })
     listener.addTargetGroups("targetGroups", {
       targetGroups: [loadBalancedFargateService.targetGroup]
     })
 
+    nagSuppressions(this)
   }
 }

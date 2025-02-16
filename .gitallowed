@@ -20,6 +20,9 @@ const token = await getAuthToken()
 throw new Error\(`Cannot retrieve auth token: \${requestUrl} returned \${response.data}`\)
 throw `Could not retrieve token: \${result.data}
 
+# ignore dummy account id in cdk.json
+ "accountId": "766544332211"
+
 # ignore all xml and json examples, tests, resources
 ^[a-f0-9]{40}:examples\/.*\.xml:\d+:
 ^[a-f0-9]{40}:examples\/.*\.json:\d+:

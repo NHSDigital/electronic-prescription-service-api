@@ -1,0 +1,102 @@
+name: cdk package code
+
+on:
+  workflow_call:
+    inputs:
+      VERSION_NUMBER:
+        required: true
+        type: string
+      COMMIT_ID:
+        required: true
+        type: string
+
+
+jobs:
+  package_code:
+    runs-on: ubuntu-22.04
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+
+      # using git commit sha for version of action to ensure we have stable version
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.14.1
+  
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        with:
+          asdf_branch: v0.14.1
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared
+
+      - name: make install
+        run: |
+          make install build-proxygen-specification
+
+      - name: Build FHIR Facade Docker image
+        id: build-fhir-facade-image
+        run: |
+          docker build -t "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -f packages/coordinator/Dockerfile .
+          docker save "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -o FHIR_facade_docker.img   
+
+      - name: get latest validator release
+        id: get_latest_validator_release
+        run: |
+          LATEST_VALIDATOR_VERSION=v1.0.200-alpha
+          echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_ENV"
+
+      - name: Download Dockerfile, manifest.json and JAR file for Validator
+        run: |
+          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VALIDATOR_VERSION }}/Dockerfile"
+          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VALIDATOR_VERSION }}/manifest.json"
+          curl -L -o fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VALIDATOR_VERSION }}/fhir-validator.jar"
+
+      - name: Build Validator Docker image
+        id: build-validator-image
+        run: |
+          docker build -t "validator-repo:${{ inputs.VERSION_NUMBER }}" -f Dockerfile .
+          docker images
+          docker save "validator-repo:${{ inputs.VERSION_NUMBER }}" -o validator_docker.img   
+
+      - name: 'package cdk'
+        run: |
+          tar -rf artifact.tar \
+            .tool-versions \
+            packages \
+            node_modules \
+            package.json \
+            package-lock.json \
+            tsconfig.defaults.json \
+            Makefile \
+            cdk.json
+
+      - uses: actions/upload-artifact@v4
+        name: upload build artifact
+        with:
+          name: cdk_artifact
+          path: artifact.tar
+
+      - uses: actions/upload-artifact@v4
+        name: Upload docker images
+        with:
+          name: docker_artifact
+          path: |
+            FHIR_facade_docker.img
+            validator_docker.img

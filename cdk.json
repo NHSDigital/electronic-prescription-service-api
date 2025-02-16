@@ -88,6 +88,7 @@
     "validatorLogLevel": "foo",
     "enableDefaultAsidPartyKey": "foo",
     "defaultPTLAsid": "foo",
-    "defaultPTLPartyKey": "foo"
+    "defaultPTLPartyKey": "foo",
+    "enableMutualTls": true
   }
 }

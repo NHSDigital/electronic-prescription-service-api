@@ -1,0 +1,400 @@
+name: cdk release code
+
+on:
+  workflow_call:
+    inputs:
+      STACK_NAME:
+        required: true
+        type: string
+      ARTIFACT_BUCKET_PREFIX:
+        required: true
+        type: string
+      AWS_ENVIRONMENT:
+        required: true
+        type: string
+      APIGEE_ENVIRONMENT:
+        required: true
+        type: string
+      ENABLE_MUTUAL_TLS:
+        required: true
+        type: boolean
+      BUILD_ARTIFACT:
+        required: true
+        type: string
+      SPEC_ARTIFACT:
+        required: true
+        type: string
+      TRUSTSTORE_FILE:
+        required: true
+        type: string
+      VERSION_NUMBER:
+        required: true
+        type: string
+      COMMIT_ID:
+        required: true
+        type: string
+      LOG_LEVEL:
+        required: false
+        type: string
+        default: info
+      VALIDATOR_LOG_LEVEL:
+        required: false
+        type: string
+        default: INFO
+      LOG_RETENTION_DAYS:
+        required: true
+        type: string
+      # CREATE_INT_RELEASE_NOTES:
+      #   type: boolean
+      #   default: false
+      # CREATE_INT_RC_RELEASE_NOTES:
+      #   type: boolean
+      #   default: false
+      # CREATE_PROD_RELEASE_NOTES:
+      #   type: boolean
+      #   default: false
+      # MARK_JIRA_RELEASED:
+      #   type: boolean
+      #   default: false
+      DEPLOY_APIGEE:
+        type: boolean
+        default: true
+      DOMAIN_NAME_EXPORT:
+        required: false
+        type: string
+      ZONE_ID_EXPORT:
+        required: false
+        type: string
+      TARGET_SPINE_SERVER:
+        required: true
+        type: string
+      DOCKER_IMAGE_TAG:
+        required: true
+        type: string
+      RUN_REGRESSION_TEST:
+        required: true
+        type: boolean
+      TO_ASID:
+        required: true
+        type: string
+      TO_PARTY_KEY:
+        required: true
+        type: string
+      IS_PULL_REQUEST:
+        type: boolean
+        default: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY:
+        type: boolean
+      SHA1_ENABLED_APPLICATION_IDS:
+        type: string
+        required: false
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE:
+        required: true
+      CDK_PULL_IMAGE_ROLE:
+        required: true
+      DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+        required: false
+      INT_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+        required: false
+      PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+        required: false
+      DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
+        required: false
+      PROXYGEN_ROLE:
+        required: false
+      REGRESSION_TESTS_PEM:
+        required: false
+      API_CLIENT_ID:
+        required: false
+      API_CLIENT_SECRET:
+        required: false
+      SIGNING_PRIVATE_KEY:
+        required: false
+      SIGNING_CERT:
+        required: false
+      DEFAULT_PTL_ASID:
+        required: false
+      DEFAULT_PTL_PARTY_KEY:
+        required: false
+jobs:
+  release_code_and_api:
+    runs-on: ubuntu-22.04
+    environment: ${{ inputs.AWS_ENVIRONMENT }}
+    name: deploy to ${{ inputs.AWS_ENVIRONMENT }}
+    permissions:
+      id-token: write
+      contents: write
+
+    steps:
+      - name: Checkout local github actions
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+          fetch-depth: 0
+          sparse-checkout: |
+            .github
+
+      - name: Configure AWS Credentials
+        id: connect-aws-pull-image
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.CDK_PULL_IMAGE_ROLE }}
+          role-session-name: prescription-clinical-tracker-ui-pull-image
+
+      - name: Retrieve AWS Account ID
+        id: retrieve-pull-image-account-id
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+
+      - name: Login to Amazon ECR
+        id: login-ecr-pull-image
+        run: |
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+
+      - name: Pull cdk-utils-build from Amazon ECR
+        run: |
+          docker pull "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest"
+          docker tag "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest" cdk-utils-build-repo:latest
+
+      - name: build_artifact download
+        uses: actions/download-artifact@v4
+        with:
+          name: cdk_artifact
+
+      - name: docker_artifact download
+        uses: actions/download-artifact@v4
+        with:
+          name: docker_artifact
+          path: .
+
+      - name: Extract FHIR Facade docker image
+        id: extract-FHIR-facade-image
+        run: |
+          docker load -i FHIR_facade_docker.img
+
+      - name: Extract validator docker image
+        id: extract-validator-image
+        run: |
+          docker load -i validator_docker.img
+
+      - name: extract build_artifact
+        run: |
+          mkdir -p .build
+          tar -xf artifact.tar -C .build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        id: connect-aws-deploy
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
+          role-session-name: fhir-facade-cloud-formation-deploy
+          output-credentials: true
+
+      - name: Retrieve AWS Account ID
+        id: retrieve-deploy-account-id
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+       
+      - name: Login to Amazon ECR
+        id: login-ecr-push-image
+        run: |
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+
+      - name: Push FHIR Facade image to Amazon ECR
+        run: |
+          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+
+      - name: Push Validator image to Amazon ECR
+        run: |
+          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+
+      - name: Check fhir facade scan results
+        env:
+          REPOSITORY_NAME: fhir-facade-repo
+          IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+        working-directory: .github/scripts
+        run: |
+          ./check_ecr_image_scan_results.sh
+
+      - name: Check validator scan results
+        env:
+          REPOSITORY_NAME: validator-repo
+          IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+        working-directory: .github/scripts
+        run: |
+          ./check_ecr_image_scan_results.sh
+
+  
+      - name: fix cdk.json for deployment
+        run: |
+          # shellcheck disable=SC2140
+          TRUSTSTORE_BUCKET_ARN=$(aws cloudformation describe-stacks --stack-name account-resources --query "Stacks[0].Outputs[?OutputKey=='TrustStoreBucket'].OutputValue" --output text)
+          TRUSTSTORE_BUCKET_NAME=$(echo "${TRUSTSTORE_BUCKET_ARN}" | cut -d ":" -f 6)
+          LATEST_TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKET_NAME}" --prefix "${TRUSTSTORE_FILE}" --query 'Versions[?IsLatest].[VersionId]' --output text)
+          vpc_id=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "vpc-resources:VpcId") | .Value')
+          jq \
+          --arg serviceName "${{ inputs.STACK_NAME }}" \
+          --arg VERSION_NUMBER "${{ inputs.VERSION_NUMBER }}" \
+          --arg COMMIT_ID "${{ inputs.COMMIT_ID }}" \
+          --arg accountId "${{ env.ACCOUNT_ID }}" \
+          --arg logRetentionInDays "${{ inputs.LOG_RETENTION_DAYS }}" \
+          --arg vpcId "${vpc_id}" \
+          --arg trustStoreBucketArn "${TRUSTSTORE_BUCKET_ARN}" \
+          --arg trustStoreFile "${LATEST_TRUSTSTORE_VERSION}" \
+          --arg commitId "${{ inputs.COMMIT_ID }}" \
+          --arg dockerImageTag "${{ inputs.DOCKER_IMAGE_TAG }}" \
+          --arg targetSpineServer "${{ inputs.TARGET_SPINE_SERVER }}" \
+          --arg logLevel "${{ inputs.LOG_LEVEL }}" \
+          --arg toAsid "${{ inputs.TO_ASID }}" \
+          --arg toPartyKey "${{ inputs.TO_PARTY_KEY }}" \
+          --arg validatorLogLevel "${{ inputs.VALIDATOR_LOG_LEVEL }}" \
+          --arg enableDefaultAsidPartyKey "${{ inputs.ENABLE_DEFAULT_ASID_PARTY_KEY }}" \
+          --arg defaultPTLAsid "${{ secrets.DEFAULT_PTL_ASID }}" \
+          --arg defaultPTLPartyKey "${{ secrets.DEFAULT_PTL_PARTY_KEY }}" \
+          --argjson enableMutualTls "${{ inputs.ENABLE_MUTUAL_TLS }}" \
+          '.context += {
+            "serviceName": $serviceName,
+            "VERSION_NUMBER": $VERSION_NUMBER,
+            "COMMIT_ID": $COMMIT_ID,
+            "accountId": $accountId,
+            "logRetentionInDays": $logRetentionInDays,
+            "vpcId": $vpcId,
+            "trustStoreBucketArn": $trustStoreBucketArn,
+            "trustStoreFile": $trustStoreFile,
+            "commitId": $commitId,
+            "dockerImageTag": $dockerImageTag,
+            "targetSpineServer": $targetSpineServer,
+            "logLevel": $logLevel,
+            "toAsid": $toAsid,
+            "toPartyKey": $toPartyKey,
+            "validatorLogLevel": $validatorLogLevel,
+            "enableDefaultAsidPartyKey": $enableDefaultAsidPartyKey,
+            "defaultPTLAsid": $defaultPTLAsid,
+            "defaultPTLPartyKey": $defaultPTLPartyKey
+            }' \
+          .build/cdk.json > .build/cdk.new.json
+          mv .build/cdk.new.json .build/cdk.json
+
+      - name: Show diff
+        run: |
+          docker run \
+          -v "$(pwd)/.build":/home/cdkuser/workspace/ \
+          -e AWS_ACCESS_KEY_ID=${{ steps.connect-aws-deploy.outputs.aws-access-key-id }} \
+          -e AWS_SECRET_ACCESS_KEY=${{ steps.connect-aws-deploy.outputs.aws-secret-access-key }} \
+          -e AWS_SESSION_TOKEN=${{ steps.connect-aws-deploy.outputs.aws-session-token }} \
+          -e AWS_REGION="eu-west-2" \
+          -e SHOW_DIFF="true" \
+          -e DEPLOY_CODE="false" \
+          -e CDK_APP_PATH="packages/cdk/bin/PrescribeDispenseApp.ts" \
+          cdk-utils-build-repo:latest
+        shell: bash
+
+      - name: Deploy code
+        run: |
+          docker run \
+          -v "$(pwd)/.build":/home/cdkuser/workspace/ \
+          -e AWS_ACCESS_KEY_ID=${{ steps.connect-aws-deploy.outputs.aws-access-key-id }} \
+          -e AWS_SECRET_ACCESS_KEY=${{ steps.connect-aws-deploy.outputs.aws-secret-access-key }} \
+          -e AWS_SESSION_TOKEN=${{ steps.connect-aws-deploy.outputs.aws-session-token }} \
+          -e AWS_REGION="eu-west-2" \
+          -e SHOW_DIFF="false" \
+          -e DEPLOY_CODE="true" \
+          -e CDK_APP_PATH="packages/cdk/bin/PrescribeDispenseApp.ts" \
+          cdk-utils-build-repo:latest
+        shell: bash
+
+      - name: Get mtls secrets
+        shell: bash
+        run: |
+          mkdir -p ~/.proxygen/tmp
+          client_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:FhirFacadeClientKeySecret'].Value" --output text)
+          client_cert_arn=$(aws cloudformation list-exports --query "Exports[?Name=='account-resources:FhirFacadeClientCertSecret'].Value" --output text)
+          aws secretsmanager get-secret-value --secret-id "${client_private_key_arn}" --query SecretString --output text > ~/.proxygen/tmp/client_private_key
+          aws secretsmanager get-secret-value --secret-id "${client_cert_arn}" --query SecretString --output text > ~/.proxygen/tmp/client_cert
+
+      - name: Configure AWS Credentials for API release
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.PROXYGEN_ROLE }}
+          role-session-name: proxygen-ptl
+
+      - name: Deploy fhir-prescribing API
+        shell: bash
+        working-directory: .github/scripts
+        if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          SPEC_PATH: ${{ env.SPEC_PATH_PRESCRIBING }}
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+          PROXYGEN_PRIVATE_KEY_NAME: FhirPrescribingProxygenPrivateKey
+          PROXYGEN_KID: fhir-prescribing
+          DRY_RUN: false
+        run: ./deploy_api.sh
+  
+      - name: Deploy fhir-dispensing API
+        shell: bash
+        working-directory: .github/scripts
+        if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          SPEC_PATH: ${{ env.SPEC_PATH_DISPENSING }}
+          STACK_NAME: ${{ inputs.STACK_NAME }}
+          AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+          PROXYGEN_PRIVATE_KEY_NAME: FhirDispensingProxygenPrivateKey
+          PROXYGEN_KID: fhir-dispensing
+          DRY_RUN: false
+        run: ./deploy_api.sh
+
+      - uses: actions/upload-artifact@v4
+        name: Upload specs
+        with:
+          name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs
+          path: |
+            ${{ env.SPEC_PATH_DISPENSING }}
+            ${{ env.SPEC_PATH_PRESCRIBING }}
+  
+  prescribing_regression_tests:
+    if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    name: Prescribing Regression Tests
+    uses: ./.github/workflows/run_regression_tests.yml
+    needs: release_code_and_api
+    with:
+      ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      PRODUCT: EPS-FHIR-PRESCRIBING
+    secrets:
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+
+  dispensing_regression_tests:
+    if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    name: Dispensing Regression Tests
+    uses: ./.github/workflows/run_regression_tests.yml
+    needs: release_code_and_api
+    with:
+      ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      PRODUCT: EPS-FHIR-DISPENSING
+    secrets:
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+
+  pact_tests:
+    if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    name: Pact Tests
+    uses: ./.github/workflows/run_pact_tests.yml
+    needs: release_code_and_api
+    with:
+      APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+      IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+    secrets:
+      API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.SIGNING_CERT }}

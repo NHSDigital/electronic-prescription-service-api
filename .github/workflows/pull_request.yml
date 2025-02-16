@@ -65,7 +65,7 @@ jobs:
 
   package_code:
     needs: [get_issue_number, get_commit_id]
-    uses: ./.github/workflows/run_package_code_and_api.yml
+    uses: ./.github/workflows/cdk_package_code.yml
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -73,7 +73,7 @@ jobs:
 
   release_code:
     needs: [get_issue_number, package_code, get_commit_id]
-    uses: ./.github/workflows/run_release_code_and_api.yml
+    uses: ./.github/workflows/cdk_release_code.yml
     with:
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
@@ -99,6 +99,7 @@ jobs:
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
       API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}

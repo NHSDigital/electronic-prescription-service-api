@@ -301,6 +301,7 @@ lint-api: build-api
 	npm run lint --workspace packages/e2e-tests
 	npm run lint --workspace packages/bdd-tests
 	npm run lint --workspace packages/models
+	npm run lint --workspace packages/cdk
 
 lint-epsat:
 	npm run lint --workspace packages/tool/site/client
