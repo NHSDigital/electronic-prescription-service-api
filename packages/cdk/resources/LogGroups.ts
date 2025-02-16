@@ -1,6 +1,6 @@
 import {Construct} from "constructs"
 
-import {IRole, ManagedPolicy} from "aws-cdk-lib/aws-iam"
+import {IRole} from "aws-cdk-lib/aws-iam"
 import {IKey} from "aws-cdk-lib/aws-kms"
 import {RemovalPolicy} from "aws-cdk-lib"
 import {
@@ -34,7 +34,6 @@ export class LogGroups extends Construct {
 
     // Resources
 
-    // kms key for the table
     const coordinatorLogGroup = new LogGroup(this, "CoordinatorLogGroup", {
       encryptionKey: props.cloudWatchLogsKmsKey,
       logGroupName: `/aws/ecs/${props.stackName!}-coordinator`,

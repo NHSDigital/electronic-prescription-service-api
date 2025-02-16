@@ -49,7 +49,7 @@ export const nagSuppressions = (stack: Stack) => {
 
   safeAddNagSuppression(
     stack,
-    "/prescribe-dispense/TaskDef/Resource",
+    "/prescribe-dispense/ecsTasks/TaskDef/Resource",
     [
       {
         id: "AwsSolutions-ECS2",

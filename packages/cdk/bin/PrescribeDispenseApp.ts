@@ -11,7 +11,6 @@ const version = app.node.tryGetContext("VERSION_NUMBER")
 const commit = app.node.tryGetContext("COMMIT_ID")
 const accountId = app.node.tryGetContext("accountId")
 
-
 // add cdk-nag to everything
 Aspects.of(app).add(new AwsSolutionsChecks({verbose: true}))
 

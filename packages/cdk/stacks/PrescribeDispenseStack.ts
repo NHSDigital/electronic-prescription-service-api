@@ -18,16 +18,7 @@ import {
   SubnetType,
   Vpc
 } from "aws-cdk-lib/aws-ec2"
-import {
-  Cluster,
-  ContainerImage,
-  CpuArchitecture,
-  FargateTaskDefinition,
-  LogDrivers,
-  OperatingSystemFamily,
-  Protocol,
-  Secret as ecsSecret
-} from "aws-cdk-lib/aws-ecs"
+import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {
   ApplicationLoadBalancer,
@@ -41,7 +32,8 @@ import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
 import {nagSuppressions} from "../nagSuppressions"
-import { LogGroups } from "../resources/LogGroups"
+import {LogGroups} from "../resources/LogGroups"
+import {ECSTasks} from "../resources/ECSTasks"
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
     readonly serviceName: string
@@ -113,14 +105,6 @@ export class PrescribeDispenseStack extends Stack {
       "validator-repo"
     )
 
-    const logGroups = new LogGroups(this, "logGroups", {
-      stackName: props.stackName,
-      cloudWatchLogsKmsKey: cloudWatchLogsKmsKey,
-      logRetentionInDays: logRetentionInDays,
-      splunkDeliveryStream: splunkDeliveryStream,
-      splunkSubscriptionFilterRole: splunkSubscriptionFilterRole
-    })
-
     const spinePrivateKey = Secret.fromSecretCompleteArn(this, "spinePrivateKey", spinePrivateKeyImport)
     const spinePublicCertificate = Secret.fromSecretCompleteArn(
       this,
@@ -129,9 +113,15 @@ export class PrescribeDispenseStack extends Stack {
     )
     const spineCAChain = Secret.fromSecretCompleteArn(this, "spineCAChain", spineCAChainImport)
     const epsSigningCertChain = Secret.fromSecretCompleteArn(this, "epsSigningCertChain", epsSigningCertChainImport)
-    // resources
 
-    // log groups
+    // resources
+    const logGroups = new LogGroups(this, "logGroups", {
+      stackName: props.stackName,
+      cloudWatchLogsKmsKey: cloudWatchLogsKmsKey,
+      logRetentionInDays: logRetentionInDays,
+      splunkDeliveryStream: splunkDeliveryStream,
+      splunkSubscriptionFilterRole: splunkSubscriptionFilterRole
+    })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
       clusterName: `${props.stackName!}-cluster`,
@@ -203,81 +193,31 @@ export class PrescribeDispenseStack extends Stack {
       ],
       roleName: `${props.stackName!}-ecsTaskExecutionRole`
     })
-    const taskDefinition = new FargateTaskDefinition(this, "TaskDef", {
-      cpu: 2048,
-      memoryLimitMiB: 4096,
-      executionRole: ecsTaskExecutionRole,
-      runtimePlatform: {
-        cpuArchitecture: CpuArchitecture.X86_64,
-        operatingSystemFamily: OperatingSystemFamily.LINUX
-      }
-    })
 
-    taskDefinition.addContainer("coordinator", {
-      image: ContainerImage.fromEcrRepository(
-        fhirFacadeRepo,
-        dockerImageTag),
-      containerName: `${props.stackName!}-coordinator`,
-      disableNetworking: false,
-      portMappings: [
-        {
-          containerPort: containerPort,
-          protocol: Protocol.TCP
-        }
-      ],
-      environment: {
-        VALIDATOR_HOST: `${props.stackName!}-validator`,
-        TARGET_SPINE_SERVER:  targetSpineServer,
-        MTLS_SPINE_CLIENT: "True",
-        PRESCRIBE_ENABLED: "true",
-        DISPENSE_ENABLED: "true",
-        COMMIT_ID: commitId,
-        CRL_DISTRIBUTION_DOMAIN: "crl.nhs.uk",
-        CRL_DISTRIBUTION_PROXY: "crl.nhs.uk",
-        DEPLOYED_VERSION: props.version,
-        DOSE_TO_TEXT_MODE: "AUDIT",
-        ENVIRONMENT: "internal-dev",
-        LOG_LEVEL: logLevel,
-        NODE_ENV: "production",
-        SANDBOX: "0",
-        TO_ASID: toAsid,
-        TO_PARTY_KEY: toPartyKey,
-        USE_SHA256_PREPARE: "false",
-        ENABLE_DEFAULT_ASID_PARTY_KEY: enableDefaultAsidPartyKey,
-        DEFAULT_PTL_ASID: defaultPTLAsid,
-        DEFAULT_PTL_PARTY_KEY: defaultPTLPartyKey
-      },
-      secrets: {
-        SpinePrivateKey: ecsSecret.fromSecretsManager(spinePrivateKey),
-        SpinePublicCertificate: ecsSecret.fromSecretsManager(spinePublicCertificate),
-        spineCAChain: ecsSecret.fromSecretsManager(spineCAChain),
-        epsSigningCertChain: ecsSecret.fromSecretsManager(epsSigningCertChain)
-      },
-      logging:  LogDrivers.awsLogs({
-        streamPrefix: "ecs",
-        logGroup: logGroups.coordinatorLogGroup
-      })
-    })
-
-    taskDefinition.addContainer("validator", {
-      image: ContainerImage.fromEcrRepository(
-        validatorRepo,
-        dockerImageTag),
-      containerName: `${props.stackName!}-validator`,
-      disableNetworking: false,
-      portMappings: [
-        {
-          containerPort: containerPortValidator,
-          protocol: Protocol.TCP
-        }
-      ],
-      environment: {
-        LOG_LEVEL: validatorLogLevel
-      },
-      logging:  LogDrivers.awsLogs({
-        streamPrefix: "ecs",
-        logGroup: logGroups.validatorLogGroup
-      })
+    const ecsTasks = new ECSTasks(this, "ecsTasks", {
+      stackName: props.stackName,
+      fhirFacadeRepo: fhirFacadeRepo,
+      validatorRepo: validatorRepo,
+      dockerImageTag: dockerImageTag,
+      ecsTaskExecutionRole: ecsTaskExecutionRole,
+      containerPort: containerPort,
+      containerPortValidator: containerPortValidator,
+      targetSpineServer: targetSpineServer,
+      commitId: commitId,
+      version: props.version,
+      logLevel: logLevel,
+      validatorLogLevel: validatorLogLevel,
+      toAsid: toAsid,
+      toPartyKey: toPartyKey,
+      enableDefaultAsidPartyKey: enableDefaultAsidPartyKey,
+      defaultPTLAsid: defaultPTLAsid,
+      defaultPTLPartyKey: defaultPTLPartyKey,
+      spinePrivateKey: spinePrivateKey,
+      spinePublicCertificate: spinePublicCertificate,
+      spineCAChain: spineCAChain,
+      epsSigningCertChain: epsSigningCertChain,
+      coordinatorLogGroup: logGroups.coordinatorLogGroup,
+      validatorLogGroup: logGroups.validatorLogGroup
     })
 
     const loadBalancedFargateService = new ApplicationLoadBalancedFargateService(this, "Service", {
@@ -296,7 +236,7 @@ export class PrescribeDispenseStack extends Stack {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
       memoryLimitMiB: 4096,
-      taskDefinition: taskDefinition,
+      taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
       healthCheck: {
         command: [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ],
