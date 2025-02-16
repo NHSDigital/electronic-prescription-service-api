@@ -79,6 +79,7 @@ export class PrescribeDispenseStack extends Stack {
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
     const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
+    const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -201,7 +202,8 @@ export class PrescribeDispenseStack extends Stack {
     const albTrustStore = new TrustStore(this, "Store", {
       bucket: trustStoreBucket,
       key: trustStoreFile,
-      trustStoreName: `${props.stackName!}-ts`
+      trustStoreName: `${props.stackName!}-ts`,
+      version: trustStoreVersion
     })
 
     const alb = new ApplicationLoadBalancer(this, "ALB", {

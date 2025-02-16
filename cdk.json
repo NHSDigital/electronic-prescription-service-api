@@ -89,6 +89,7 @@
     "enableDefaultAsidPartyKey": "foo",
     "defaultPTLAsid": "foo",
     "defaultPTLPartyKey": "foo",
-    "enableMutualTls": true
+    "enableMutualTls": true,
+    "trustStoreVersion": "foo"
   }
 }

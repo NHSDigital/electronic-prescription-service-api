@@ -244,7 +244,8 @@ jobs:
           --arg logRetentionInDays "${{ inputs.LOG_RETENTION_DAYS }}" \
           --arg vpcId "${vpc_id}" \
           --arg trustStoreBucketArn "${TRUSTSTORE_BUCKET_ARN}" \
-          --arg trustStoreFile "${LATEST_TRUSTSTORE_VERSION}" \
+          --arg trustStoreFile "${TRUSTSTORE_FILE}" \
+          --arg trustStoreVersion "${LATEST_TRUSTSTORE_VERSION}" \
           --arg commitId "${{ inputs.COMMIT_ID }}" \
           --arg dockerImageTag "${{ inputs.DOCKER_IMAGE_TAG }}" \
           --arg targetSpineServer "${{ inputs.TARGET_SPINE_SERVER }}" \
