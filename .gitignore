@@ -33,3 +33,4 @@ packages/tool/site/client/static/examples
 .aws-sam
 cfn_guard_output/
 cdk.out
+nhsd-rules-deny.txt
