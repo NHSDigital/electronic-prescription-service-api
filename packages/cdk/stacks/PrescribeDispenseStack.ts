@@ -64,7 +64,7 @@ export class PrescribeDispenseStack extends Stack {
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
     const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
-    //const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
+    const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -123,16 +123,6 @@ export class PrescribeDispenseStack extends Stack {
       splunkSubscriptionFilterRole: splunkSubscriptionFilterRole
     })
 
-    const ecsCluster = new Cluster(this, "EcsCluster", {
-      clusterName: `${props.stackName!}-cluster`,
-      vpc: defaultVpc
-    })
-
-    const albCertificate = new Certificate(this, "AlbCertificate", {
-      domainName: `${props.stackName}.${epsDomainNameImport}`,
-      validation: CertificateValidation.fromDns(hostedZone)
-    })
-
     const loadBalancerSecurityGroup = new SecurityGroup(this, "LoadBalancerSecurityGroup", {
       vpc: defaultVpc,
       description: "Allow inbound HTTPS traffic",
@@ -143,14 +133,7 @@ export class PrescribeDispenseStack extends Stack {
     loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443), "ipv4 https frm anywhere")
     loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443), "ipv6 https frm anywhere")
 
-    const albTrustStore = new TrustStore(this, "Store", {
-      bucket: trustStoreBucket,
-      key: trustStoreFile,
-      trustStoreName: `${props.stackName!}-ts`
-      //      version: trustStoreVersion
-    })
-
-    const alb = new ApplicationLoadBalancer(this, "ALB", {
+    const fhirFacadeAlb = new ApplicationLoadBalancer(this, "fhirFacadeAlb", {
       vpc: defaultVpc,
       internetFacing: false,
       securityGroup: loadBalancerSecurityGroup,
@@ -159,8 +142,8 @@ export class PrescribeDispenseStack extends Stack {
       },
       idleTimeout: Duration.seconds(60)
     })
-    alb.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
-    alb.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
+    fhirFacadeAlb.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
+    fhirFacadeAlb.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
 
     const ecsTasks = new ECSTasks(this, "ecsTasks", {
       stackName: props.stackName,
@@ -187,9 +170,19 @@ export class PrescribeDispenseStack extends Stack {
       validatorLogGroup: logGroups.validatorLogGroup
     })
 
+    const ecsCluster = new Cluster(this, "EcsCluster", {
+      clusterName: `${props.stackName!}-cluster`,
+      vpc: defaultVpc
+    })
+
+    const fhirFacadeAlbCertificate = new Certificate(this, "fhirFacadeAlbCertificate", {
+      domainName: `${props.stackName}.${epsDomainNameImport}`,
+      validation: CertificateValidation.fromDns(hostedZone)
+    })
+
     const loadBalancedFargateService = new ApplicationLoadBalancedFargateService(this, "Service", {
       assignPublicIp: false,
-      certificate: albCertificate,
+      certificate: fhirFacadeAlbCertificate,
       cluster: ecsCluster,
       cpu: 2048,
       desiredCount: 2,
@@ -198,7 +191,7 @@ export class PrescribeDispenseStack extends Stack {
       enableECSManagedTags: true,
       ipAddressType: IpAddressType.DUAL_STACK,
       listenerPort: 443,
-      loadBalancer: alb,
+      loadBalancer: fhirFacadeAlb,
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
@@ -214,16 +207,23 @@ export class PrescribeDispenseStack extends Stack {
       }
     })
 
-    const listener = alb.addListener("listener", {
+    const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
+      bucket: trustStoreBucket,
+      key: trustStoreFile,
+      trustStoreName: `${props.stackName!}-ts`,
+      version: trustStoreVersion
+    })
+
+    const listener = fhirFacadeAlb.addListener("listener", {
       port: 443,
       protocol: ApplicationProtocol.HTTPS,
       certificates: [
-        albCertificate
+        fhirFacadeAlbCertificate
       ],
       ...(enableMutualTls) && {mutualAuthentication: {
         ignoreClientCertificateExpiry: false,
         mutualAuthenticationMode: MutualAuthenticationMode.VERIFY,
-        trustStore: albTrustStore
+        trustStore: fhirFacadeAlbTrustStore
       }},
       sslPolicy: SslPolicy.TLS13_EXT2
     })
