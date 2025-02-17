@@ -260,6 +260,7 @@ jobs:
           --arg defaultPTLPartyKey "${{ secrets.DEFAULT_PTL_PARTY_KEY }}" \
           --argjson enableMutualTls "${{ inputs.ENABLE_MUTUAL_TLS }}" \
           --arg sandboxModeEnabled "${{ inputs.SANDBOX_MODE_ENABLED }}" \
+          --arg SHA1EnabledApplicationIds "{{ inputs.SHA1_ENABLED_APPLICATION_IDS }}" \
           '.context += {
             "serviceName": $serviceName,
             "VERSION_NUMBER": $VERSION_NUMBER,
@@ -280,7 +281,8 @@ jobs:
             "defaultPTLAsid": $defaultPTLAsid,
             "defaultPTLPartyKey": $defaultPTLPartyKey,
             "sandboxModeEnabled": $sandboxModeEnabled,
-            "enableMutualTls": $enableMutualTls
+            "enableMutualTls": $enableMutualTls,
+            "SHA1EnabledApplicationIds": $SHA1EnabledApplicationIds
             }' \
           .build/cdk.json > .build/cdk.new.json
           mv .build/cdk.new.json .build/cdk.json
