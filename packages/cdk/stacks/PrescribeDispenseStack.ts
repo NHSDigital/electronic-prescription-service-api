@@ -169,7 +169,7 @@ export class PrescribeDispenseStack extends Stack {
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
       healthCheck: {
-        command: [ "CMD-SHELL", "curl -f http://localhost/ || exit 1" ],
+        command: [ "CMD-SHELL", "curl -f http://localhost/_status || exit 1" ],
         interval: Duration.seconds(10),
         startPeriod: Duration.minutes(5),
         timeout: Duration.seconds(5),
