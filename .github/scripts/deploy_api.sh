@@ -36,7 +36,7 @@ fi
 
 is_pull_request=false
 instance_suffix=""
-if [[ ${STACK_NAME} == prescribe-dispense-pr-* ]]; then
+if [[ ${STACK_NAME} =~ ^prescribe-dispense-(sandbox-)?pr-.* ]]; then
     is_pull_request=true
     # Extracting the PR ID from $STACK_NAME
     pr_id=$(echo "${STACK_NAME}" | cut -d'-' -f4)
