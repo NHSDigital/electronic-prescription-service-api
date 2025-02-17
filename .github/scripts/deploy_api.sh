@@ -39,7 +39,7 @@ instance_suffix=""
 if [[ ${STACK_NAME} =~ ^prescribe-dispense-(sandbox-)?pr-.* ]]; then
     is_pull_request=true
     # Extracting the PR ID from $STACK_NAME
-    pr_id=$(echo "${STACK_NAME}" | cut -d'-' -f4)
+    pr_id=$(echo "$STACK_NAME" | awk -F'-' '{print $NF}')
     instance_suffix=-"pr-${pr_id}"
 fi
 
