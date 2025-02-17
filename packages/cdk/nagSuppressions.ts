@@ -16,7 +16,7 @@ export const nagSuppressions = (stack: Stack) => {
 
   safeAddNagSuppression(
     stack,
-    "/prescribe-dispense/LoadBalancerSecurityGroup/Resource",
+    "/prescribe-dispense/fhirFacadeService/LB/SecurityGroup/Resource",
     [
       {
         id: "AwsSolutions-EC23",

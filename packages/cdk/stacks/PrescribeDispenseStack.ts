@@ -124,28 +124,6 @@ export class PrescribeDispenseStack extends Stack {
       splunkSubscriptionFilterRole: splunkSubscriptionFilterRole
     })
 
-    const loadBalancerSecurityGroup = new SecurityGroup(this, "LoadBalancerSecurityGroup", {
-      vpc: defaultVpc,
-      description: "Allow inbound HTTPS traffic",
-      allowAllOutbound: false,
-      securityGroupName: `${props.stackName!}-lb-sg`
-    })
-
-    loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv4(), Port.tcp(443), "ipv4 https frm anywhere")
-    loadBalancerSecurityGroup.addIngressRule(Peer.anyIpv6(), Port.tcp(443), "ipv6 https frm anywhere")
-
-    const fhirFacadeAlb = new ApplicationLoadBalancer(this, "fhirFacadeAlb", {
-      vpc: defaultVpc,
-      internetFacing: false,
-      securityGroup: loadBalancerSecurityGroup,
-      vpcSubnets: {
-        subnetType: SubnetType.PUBLIC
-      },
-      idleTimeout: Duration.seconds(60)
-    })
-    fhirFacadeAlb.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
-    fhirFacadeAlb.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
-
     const ecsTasks = new ECSTasks(this, "ecsTasks", {
       stackName: props.stackName,
       fhirFacadeRepo: fhirFacadeRepo,
@@ -183,7 +161,7 @@ export class PrescribeDispenseStack extends Stack {
     })
 
     const fhirFacadeService = new ApplicationLoadBalancedFargateService(this, "fhirFacadeService", {
-      assignPublicIp: false,
+      assignPublicIp: true,
       certificate: fhirFacadeAlbCertificate,
       cluster: ecsCluster,
       cpu: 2048,
@@ -193,7 +171,6 @@ export class PrescribeDispenseStack extends Stack {
       enableECSManagedTags: true,
       ipAddressType: IpAddressType.DUAL_STACK,
       listenerPort: 443,
-      loadBalancer: fhirFacadeAlb,
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
@@ -208,6 +185,9 @@ export class PrescribeDispenseStack extends Stack {
         retries: 2
       }
     })
+
+    fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
+    fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
 
     const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
       bucket: trustStoreBucket,
