@@ -79,7 +79,7 @@ jobs:
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
-      ENABLE_MUTUAL_TLS: false
+      ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
@@ -118,7 +118,7 @@ jobs:
       ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
-      ENABLE_MUTUAL_TLS: false
+      ENABLE_MUTUAL_TLS: true
       BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
@@ -130,7 +130,7 @@ jobs:
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
-      RUN_REGRESSION_TEST: true
+      RUN_REGRESSION_TEST: false
       TO_ASID: unused
       TO_PARTY_KEY: unused
       IS_PULL_REQUEST: true
