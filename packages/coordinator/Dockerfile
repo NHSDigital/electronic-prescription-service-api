@@ -25,6 +25,7 @@ COPY --from=build /build/package.json /app
 COPY --from=build /build/package-lock.json /app
 COPY --from=build /build/packages/coordinator/package.json /app/packages/coordinator/package.json
 COPY --from=build /build/packages/coordinator/dist/ /app/packages/coordinator/dist
+COPY --from=build /build/packages/coordinator/package.json /app/packages/coordinator/dist/package.json
 RUN npm ci --ignore-scripts --only=production --workspace packages/coordinator
 
 RUN mkdir -p /.npm && chown -R nobody:nogroup /.npm
