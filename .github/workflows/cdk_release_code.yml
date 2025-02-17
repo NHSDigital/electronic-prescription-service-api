@@ -366,8 +366,8 @@ jobs:
         with:
           name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs
           path: |
-            ${{ env.SPEC_PATH_DISPENSING }}
-            ${{ env.SPEC_PATH_PRESCRIBING }}
+            ./.build/packages/specification/dist/fhir-dispensing.resolved.json
+            ./.build/packages/specification/dist/fhir-prescribing.resolved.json
   
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
