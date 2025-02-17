@@ -160,7 +160,7 @@ export class PrescribeDispenseStack extends Stack {
       domainName: fhirFacadeHostname,
       domainZone: hostedZone,
       enableECSManagedTags: true,
-      ipAddressType: IpAddressType.DUAL_STACK,
+      ipAddressType: IpAddressType.IPV4,
       listenerPort: 443,
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
