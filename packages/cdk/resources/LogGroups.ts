@@ -36,7 +36,7 @@ export class LogGroups extends Construct {
 
     const coordinatorLogGroup = new LogGroup(this, "CoordinatorLogGroup", {
       encryptionKey: props.cloudWatchLogsKmsKey,
-      logGroupName: `/aws/ecs/${props.stackName!}-coordinator`,
+      logGroupName: `/aws/ecs/${props.stackName}-coordinator`,
       retention: props.logRetentionInDays,
       removalPolicy: RemovalPolicy.DESTROY
     })
@@ -60,7 +60,7 @@ export class LogGroups extends Construct {
 
     const validatorLogGroup = new LogGroup(this, "ValidatorLogGroup", {
       encryptionKey: props.cloudWatchLogsKmsKey,
-      logGroupName: `/aws/ecs/${props.stackName!}-validator`,
+      logGroupName: `/aws/ecs/${props.stackName}-validator`,
       retention: props.logRetentionInDays,
       removalPolicy: RemovalPolicy.DESTROY
     })

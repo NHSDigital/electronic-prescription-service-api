@@ -83,7 +83,7 @@ export class ECSTasks extends Construct {
         lambdaDecryptSecretsKMSPolicy,
         epsSigningCertChainManagedPolicy
       ],
-      roleName: `${props.stackName!}-ecsTaskExecutionRole`
+      roleName: `${props.stackName}-ecsTaskExecutionRole`
     })
 
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
@@ -100,7 +100,7 @@ export class ECSTasks extends Construct {
       image: ContainerImage.fromEcrRepository(
         props.fhirFacadeRepo,
         props.dockerImageTag),
-      containerName: `${props.stackName!}-coordinator`,
+      containerName: `${props.stackName}-coordinator`,
       disableNetworking: false,
       portMappings: [
         {
@@ -109,7 +109,7 @@ export class ECSTasks extends Construct {
         }
       ],
       environment: {
-        VALIDATOR_HOST: `${props.stackName!}-validator`,
+        VALIDATOR_HOST: `${props.stackName}-validator`,
         TARGET_SPINE_SERVER:  props.targetSpineServer,
         MTLS_SPINE_CLIENT: "True",
         PRESCRIBE_ENABLED: "true",
@@ -147,7 +147,7 @@ export class ECSTasks extends Construct {
       image: ContainerImage.fromEcrRepository(
         props.validatorRepo,
         props.dockerImageTag),
-      containerName: `${props.stackName!}-validator`,
+      containerName: `${props.stackName}-validator`,
       disableNetworking: false,
       portMappings: [
         {

@@ -142,7 +142,7 @@ export class PrescribeDispenseStack extends Stack {
     })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
-      clusterName: `${props.stackName!}-cluster`,
+      clusterName: `${props.stackName}-cluster`,
       vpc: defaultVpc
     })
 
@@ -184,7 +184,7 @@ export class PrescribeDispenseStack extends Stack {
       const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
         bucket: trustStoreBucket,
         key: trustStoreFile,
-        trustStoreName: `${props.stackName!}-ts`,
+        trustStoreName: `${props.stackName}-ts`,
         version: trustStoreVersion
       })
 
