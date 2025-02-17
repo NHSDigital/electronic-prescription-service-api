@@ -50,7 +50,7 @@ export class PrescribeDispenseStack extends Stack {
     const enableDefaultAsidPartyKey: string = this.node.tryGetContext("enableDefaultAsidPartyKey")
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
-    //const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
+    const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
     const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
     const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
 
@@ -178,19 +178,21 @@ export class PrescribeDispenseStack extends Stack {
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
 
-    const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
-      bucket: trustStoreBucket,
-      key: trustStoreFile,
-      trustStoreName: `${props.stackName!}-ts`,
-      version: trustStoreVersion
-    })
+    if (enableMutualTls) {
+      const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
+        bucket: trustStoreBucket,
+        key: trustStoreFile,
+        trustStoreName: `${props.stackName!}-ts`,
+        version: trustStoreVersion
+      })
 
-    const CFNfhirFacadeListener = fhirFacadeService.listener.node.defaultChild as CfnListener
-    CFNfhirFacadeListener.addPropertyOverride("MutualAuthentication.IgnoreClientCertificateExpiry", "False")
-    CFNfhirFacadeListener.addPropertyOverride("MutualAuthentication.Mode", "verify")
-    CFNfhirFacadeListener.addPropertyOverride(
-      "MutualAuthentication.TrustStoreArn", fhirFacadeAlbTrustStore.trustStoreArn
-    )
+      const CFNfhirFacadeListener = fhirFacadeService.listener.node.defaultChild as CfnListener
+      CFNfhirFacadeListener.addPropertyOverride("MutualAuthentication.IgnoreClientCertificateExpiry", "False")
+      CFNfhirFacadeListener.addPropertyOverride("MutualAuthentication.Mode", "verify")
+      CFNfhirFacadeListener.addPropertyOverride(
+        "MutualAuthentication.TrustStoreArn", fhirFacadeAlbTrustStore.trustStoreArn
+      )
+    }
 
     nagSuppressions(this)
   }

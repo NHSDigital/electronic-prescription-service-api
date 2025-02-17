@@ -97,6 +97,7 @@ jobs:
       IS_PULL_REQUEST: true
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SANDBOX_MODE_ENABLED: 0
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -111,32 +112,40 @@ jobs:
   
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
-    uses: ./.github/workflows/run_release_code_and_api.yml
+    uses: ./.github/workflows/cdk_release_code.yml
     with:
-      STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
-      ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      STACK_NAME: prescribe-dispense-sandbox-pr-${{needs.get_issue_number.outputs.issue_number}}
+      ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: false
-      BUILD_ARTIFACT: packaged_sandbox_code
+      BUILD_ARTIFACT: packaged_code
       SPEC_ARTIFACT: specification_code
-      TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
-      TARGET_SPINE_SERVER: sandbox
+      TARGET_SPINE_SERVER: unused
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
-      RUN_REGRESSION_TEST: false
-      TO_ASID: 567456789789
-      TO_PARTY_KEY: YES-0000806
+      RUN_REGRESSION_TEST: true
+      TO_ASID: unused
+      TO_PARTY_KEY: unused
       IS_PULL_REQUEST: true
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SANDBOX_MODE_ENABLED: 1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
       DEFAULT_PTL_ASID: unused
       DEFAULT_PTL_PARTY_KEY: unused
 

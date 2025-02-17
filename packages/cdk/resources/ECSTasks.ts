@@ -39,6 +39,7 @@ export interface ECSTasksProps {
   readonly coordinatorLogGroup: ILogGroup
   readonly validatorLogGroup: ILogGroup
   readonly SHA1EnabledApplicationIds: string
+  readonly sandboxModeEnabled: string
 }
 
 /**
@@ -121,14 +122,14 @@ export class ECSTasks extends Construct {
         ENVIRONMENT: "internal-dev",
         LOG_LEVEL: props.logLevel,
         NODE_ENV: "production",
-        SANDBOX: "0",
         TO_ASID: props.toAsid,
         TO_PARTY_KEY: props.toPartyKey,
         USE_SHA256_PREPARE: "false",
         ENABLE_DEFAULT_ASID_PARTY_KEY: props.enableDefaultAsidPartyKey,
         DEFAULT_PTL_ASID: props.defaultPTLAsid,
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
-        SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds
+        SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
+        SANDBOX: props.sandboxModeEnabled
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
