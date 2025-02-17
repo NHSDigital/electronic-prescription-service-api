@@ -229,63 +229,28 @@ jobs:
         working-directory: .github/scripts
         run: |
           ./check_ecr_image_scan_results.sh
-
   
       - name: fix cdk.json for deployment
         run: |
-          # shellcheck disable=SC2140
-          TRUSTSTORE_BUCKET_ARN=$(aws cloudformation describe-stacks --stack-name account-resources --query "Stacks[0].Outputs[?OutputKey=='TrustStoreBucket'].OutputValue" --output text)
-          TRUSTSTORE_BUCKET_NAME=$(echo "${TRUSTSTORE_BUCKET_ARN}" | cut -d ":" -f 6)
-          TRUSTSTORE_FILE=${{ inputs.TRUSTSTORE_FILE }}
-          LATEST_TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKET_NAME}" --prefix "${TRUSTSTORE_FILE}" --query 'Versions[?IsLatest].[VersionId]' --output text)
-          vpc_id=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "vpc-resources:VpcId") | .Value')
-          jq \
-          --arg serviceName "${{ inputs.STACK_NAME }}" \
-          --arg VERSION_NUMBER "${{ inputs.VERSION_NUMBER }}" \
-          --arg accountId "${{ env.ACCOUNT_ID }}" \
-          --arg logRetentionInDays "${{ inputs.LOG_RETENTION_DAYS }}" \
-          --arg vpcId "${vpc_id}" \
-          --arg trustStoreBucketArn "${TRUSTSTORE_BUCKET_ARN}" \
-          --arg trustStoreFile "${TRUSTSTORE_FILE}" \
-          --arg trustStoreVersion "${LATEST_TRUSTSTORE_VERSION}" \
-          --arg commitId "${{ inputs.COMMIT_ID }}" \
-          --arg dockerImageTag "${{ inputs.DOCKER_IMAGE_TAG }}" \
-          --arg targetSpineServer "${{ inputs.TARGET_SPINE_SERVER }}" \
-          --arg logLevel "${{ inputs.LOG_LEVEL }}" \
-          --arg toAsid "${{ inputs.TO_ASID }}" \
-          --arg toPartyKey "${{ inputs.TO_PARTY_KEY }}" \
-          --arg validatorLogLevel "${{ inputs.VALIDATOR_LOG_LEVEL }}" \
-          --arg enableDefaultAsidPartyKey "${{ inputs.ENABLE_DEFAULT_ASID_PARTY_KEY }}" \
-          --arg defaultPTLAsid "${{ secrets.DEFAULT_PTL_ASID }}" \
-          --arg defaultPTLPartyKey "${{ secrets.DEFAULT_PTL_PARTY_KEY }}" \
-          --argjson enableMutualTls "${{ inputs.ENABLE_MUTUAL_TLS }}" \
-          --arg sandboxModeEnabled "${{ inputs.SANDBOX_MODE_ENABLED }}" \
-          --arg SHA1EnabledApplicationIds "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}" \
-          '.context += {
-            "serviceName": $serviceName,
-            "VERSION_NUMBER": $VERSION_NUMBER,
-            "accountId": $accountId,
-            "logRetentionInDays": $logRetentionInDays,
-            "vpcId": $vpcId,
-            "trustStoreBucketArn": $trustStoreBucketArn,
-            "trustStoreFile": $trustStoreFile,
-            "trustStoreVersion": $trustStoreVersion,
-            "commitId": $commitId,
-            "dockerImageTag": $dockerImageTag,
-            "targetSpineServer": $targetSpineServer,
-            "logLevel": $logLevel,
-            "toAsid": $toAsid,
-            "toPartyKey": $toPartyKey,
-            "validatorLogLevel": $validatorLogLevel,
-            "enableDefaultAsidPartyKey": $enableDefaultAsidPartyKey,
-            "defaultPTLAsid": $defaultPTLAsid,
-            "defaultPTLPartyKey": $defaultPTLPartyKey,
-            "sandboxModeEnabled": $sandboxModeEnabled,
-            "enableMutualTls": $enableMutualTls,
-            "SHA1EnabledApplicationIds": $SHA1EnabledApplicationIds
-            }' \
-          .build/cdk.json > .build/cdk.new.json
-          mv .build/cdk.new.json .build/cdk.json
+          ./.github/scripts/fix_cdk_json.sh
+        env:
+          TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
+          SERVICE_NAME: "${{ inputs.STACK_NAME }}"
+          VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
+          LOG_RETENTION_IN_DAYS: "${{ inputs.LOG_RETENTION_DAYS }}"
+          COMMIT_ID: "${{ inputs.COMMIT_ID }}"
+          DOCKER_IMAGE_TAG: "${{ inputs.DOCKER_IMAGE_TAG }}"
+          TARGET_SPINE_SERVER: "${{ inputs.TARGET_SPINE_SERVER }}"
+          LOG_LEVEL: "${{ inputs.LOG_LEVEL }}"
+          TO_ASID: "${{ inputs.TO_ASID }}"
+          TO_PARTY_KEY: "${{ inputs.TO_PARTY_KEY }}"
+          VALIDATOR_LOG_LEVEL: "${{ inputs.VALIDATOR_LOG_LEVEL }}"
+          ENABLE_DEFAULT_ASID_PARTY_KEY: "${{ inputs.ENABLE_DEFAULT_ASID_PARTY_KEY }}"
+          DEFAULT_PTL_ASID: "${{ secrets.DEFAULT_PTL_ASID }}"
+          DEFAULT_PTL_PARTY_KEY: "${{ secrets.DEFAULT_PTL_PARTY_KEY }}"
+          SANDBOX_MODE_ENABLED: "${{ inputs.SANDBOX_MODE_ENABLED }}"
+          ENABLE_MUTUAL_TLS: "${{ inputs.ENABLE_MUTUAL_TLS }}"
+          SHA1_ENABLED_APPLICATION_IDS:  "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}"
 
       - name: Show diff
         run: |
