@@ -9,6 +9,8 @@ echo "Apigee environment: ${APIGEE_ENVIRONMENT}"
 echo "Proxygen private key name: ${PROXYGEN_PRIVATE_KEY_NAME}"
 echo "Proxygen KID: ${PROXYGEN_KID}"
 echo "Dry run: ${DRY_RUN}"
+echo "ENABLE_MUTUAL_TLS: ${ENABLE_MUTUAL_TLS}"
+
 
 client_private_key=$(cat ~/.proxygen/tmp/client_private_key)
 client_cert=$(cat ~/.proxygen/tmp/client_cert)
@@ -93,7 +95,7 @@ echo "Retrieving proxygen credentials"
 # Retrieve the proxygen private key and client private key and cert from AWS Secrets Manager
 proxygen_private_key_arn=$(aws cloudformation list-exports --query "Exports[?Name=='secrets:${PROXYGEN_PRIVATE_KEY_NAME}'].Value" --output text)
 
-if [[ "${is_pull_request}" == "false" ]]; then
+if [[ "${ENABLE_MUTUAL_TLS}" == "true" ]]; then
     echo
     echo "Store the secret used for mutual TLS to AWS using Proxygen proxy lambda"
     if [[ "${DRY_RUN}" == "false" ]]; then

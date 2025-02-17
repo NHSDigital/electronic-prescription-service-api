@@ -331,33 +331,33 @@ jobs:
 
       - name: Deploy fhir-prescribing API
         shell: bash
-        working-directory: .github/scripts
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          SPEC_PATH: ../.build/packages/specification/dist/fhir-prescribing.resolved.json
+          SPEC_PATH: ./.build/packages/specification/dist/fhir-prescribing.resolved.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PROXYGEN_PRIVATE_KEY_NAME: FhirPrescribingProxygenPrivateKey
           PROXYGEN_KID: fhir-prescribing
           DRY_RUN: false
-        run: ./deploy_api.sh
+          ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+        run: ./.github/scripts/deploy_api.sh
   
       - name: Deploy fhir-dispensing API
         shell: bash
-        working-directory: .github/scripts
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          SPEC_PATH: ../.build/packages/specification/dist/fhir-dispensing.resolved.json
+          SPEC_PATH: ./.build/packages/specification/dist/fhir-dispensing.resolved.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PROXYGEN_PRIVATE_KEY_NAME: FhirDispensingProxygenPrivateKey
           PROXYGEN_KID: fhir-dispensing
           DRY_RUN: false
-        run: ./deploy_api.sh
+          ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+        run: ./.github/scripts/deploy_api.sh
 
       - uses: actions/upload-artifact@v4
         name: Upload specs
