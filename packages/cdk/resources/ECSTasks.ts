@@ -111,7 +111,7 @@ export class ECSTasks extends Construct {
       environment: {
         VALIDATOR_HOST: `${props.stackName}-validator`,
         TARGET_SPINE_SERVER:  props.targetSpineServer,
-        MTLS_SPINE_CLIENT: "True",
+        MTLS_SPINE_CLIENT: "true",
         PRESCRIBE_ENABLED: "true",
         DISPENSE_ENABLED: "true",
         COMMIT_ID: props.commitId,
