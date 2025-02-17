@@ -11,21 +11,10 @@ import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificateman
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
-import {
-  Peer,
-  Port,
-  SecurityGroup,
-  SubnetType,
-  Vpc
-} from "aws-cdk-lib/aws-ec2"
+import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
-import {
-  ApplicationLoadBalancer,
-  CfnListener,
-  IpAddressType,
-  TrustStore
-} from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import {CfnListener, IpAddressType, TrustStore} from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
