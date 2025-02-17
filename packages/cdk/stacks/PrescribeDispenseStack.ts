@@ -53,6 +53,7 @@ export class PrescribeDispenseStack extends Stack {
     const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
     const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
     const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
+    const sandboxModeEnabled: string = this.node.tryGetContext("sandboxModeEnabled")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -136,7 +137,8 @@ export class PrescribeDispenseStack extends Stack {
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
       validatorLogGroup: logGroups.validatorLogGroup,
-      SHA1EnabledApplicationIds: SHA1EnabledApplicationIds
+      SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
+      sandboxModeEnabled: sandboxModeEnabled
     })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
