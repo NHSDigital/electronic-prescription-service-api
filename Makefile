@@ -153,6 +153,7 @@ test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
 
 test-all: test-api test-epsat
+	npm run test --workspace packages/cdk
 
 test-coordinator:
 	npm run test --workspace packages/coordinator
