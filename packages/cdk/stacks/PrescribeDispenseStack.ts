@@ -184,7 +184,6 @@ export class PrescribeDispenseStack extends Stack {
       const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
         bucket: trustStoreBucket,
         key: trustStoreFile,
-        trustStoreName: `${props.stackName}-ts`,
         version: trustStoreVersion
       })
 
