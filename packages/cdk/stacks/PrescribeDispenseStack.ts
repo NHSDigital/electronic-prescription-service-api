@@ -63,6 +63,7 @@ export class PrescribeDispenseStack extends Stack {
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
     //const enableMutualTls: boolean = this.node.tryGetContext("enableMutualTls")
     const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
+    const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -168,6 +169,7 @@ export class PrescribeDispenseStack extends Stack {
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
       validatorLogGroup: logGroups.validatorLogGroup
+      SHA1EnabledApplicationIds: SHA1EnabledApplicationIds
     })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
@@ -178,13 +180,6 @@ export class PrescribeDispenseStack extends Stack {
     const fhirFacadeAlbCertificate = new Certificate(this, "fhirFacadeAlbCertificate", {
       domainName: fhirFacadeHostname,
       validation: CertificateValidation.fromDns(hostedZone)
-    })
-
-    const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
-      bucket: trustStoreBucket,
-      key: trustStoreFile,
-      trustStoreName: `${props.stackName!}-ts`,
-      version: trustStoreVersion
     })
 
     const fhirFacadeService = new ApplicationLoadBalancedFargateService(this, "fhirFacadeService", {
@@ -212,6 +207,13 @@ export class PrescribeDispenseStack extends Stack {
         timeout: Duration.seconds(5),
         retries: 2
       }
+    })
+
+    const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
+      bucket: trustStoreBucket,
+      key: trustStoreFile,
+      trustStoreName: `${props.stackName!}-ts`,
+      version: trustStoreVersion
     })
 
     const CFNfhirFacadeListener = fhirFacadeService.listener.node.defaultChild as CfnListener

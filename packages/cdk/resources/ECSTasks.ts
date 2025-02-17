@@ -38,6 +38,7 @@ export interface ECSTasksProps {
   readonly epsSigningCertChain: ISecret
   readonly coordinatorLogGroup: ILogGroup
   readonly validatorLogGroup: ILogGroup
+  readonly SHA1EnabledApplicationIds: string
 }
 
 /**
@@ -126,7 +127,8 @@ export class ECSTasks extends Construct {
         USE_SHA256_PREPARE: "false",
         ENABLE_DEFAULT_ASID_PARTY_KEY: props.enableDefaultAsidPartyKey,
         DEFAULT_PTL_ASID: props.defaultPTLAsid,
-        DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey
+        DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
+        SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
