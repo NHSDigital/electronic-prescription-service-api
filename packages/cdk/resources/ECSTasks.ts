@@ -135,7 +135,7 @@ export class ECSTasks extends Construct {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
         SpinePublicCertificate: ecsSecret.fromSecretsManager(props.spinePublicCertificate),
         spineCAChain: ecsSecret.fromSecretsManager(props.spineCAChain),
-        epsSigningCertChain: ecsSecret.fromSecretsManager(props.epsSigningCertChain)
+        SUBCACC_CERT: ecsSecret.fromSecretsManager(props.epsSigningCertChain)
       },
       logging:  LogDrivers.awsLogs({
         streamPrefix: "ecs",
