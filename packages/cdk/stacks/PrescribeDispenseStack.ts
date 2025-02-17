@@ -167,19 +167,19 @@ export class PrescribeDispenseStack extends Stack {
       },
       memoryLimitMiB: 4096,
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
-      minHealthyPercent: 100,
-      healthCheck: {
-        command: [ "CMD-SHELL", "curl -f http://localhost/_status || exit 1" ],
-        interval: Duration.seconds(10),
-        startPeriod: Duration.minutes(5),
-        timeout: Duration.seconds(5),
-        retries: 2
-      }
+      minHealthyPercent: 100
     })
 
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
 
+    fhirFacadeService.targetGroup.configureHealthCheck({
+      path: "/_healthcheck",
+      interval: Duration.seconds(10),
+      timeout: Duration.seconds(5),
+      unhealthyThresholdCount: 2,
+      healthyThresholdCount: 2
+    })
     if (enableMutualTls) {
       const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
         bucket: trustStoreBucket,
