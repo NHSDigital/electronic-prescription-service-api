@@ -242,7 +242,6 @@ jobs:
           jq \
           --arg serviceName "${{ inputs.STACK_NAME }}" \
           --arg VERSION_NUMBER "${{ inputs.VERSION_NUMBER }}" \
-          --arg COMMIT_ID "${{ inputs.COMMIT_ID }}" \
           --arg accountId "${{ env.ACCOUNT_ID }}" \
           --arg logRetentionInDays "${{ inputs.LOG_RETENTION_DAYS }}" \
           --arg vpcId "${vpc_id}" \
@@ -264,7 +263,6 @@ jobs:
           '.context += {
             "serviceName": $serviceName,
             "VERSION_NUMBER": $VERSION_NUMBER,
-            "COMMIT_ID": $COMMIT_ID,
             "accountId": $accountId,
             "logRetentionInDays": $logRetentionInDays,
             "vpcId": $vpcId,

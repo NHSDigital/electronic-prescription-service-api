@@ -8,7 +8,7 @@ const app = new cdk.App()
 
 const serviceName = app.node.tryGetContext("serviceName")
 const version = app.node.tryGetContext("VERSION_NUMBER")
-const commit = app.node.tryGetContext("COMMIT_ID")
+const commit = app.node.tryGetContext("commitId")
 const accountId = app.node.tryGetContext("accountId")
 
 // add cdk-nag to everything
