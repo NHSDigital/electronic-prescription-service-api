@@ -168,7 +168,7 @@ export class PrescribeDispenseStack extends Stack {
       spineCAChain: spineCAChain,
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
-      validatorLogGroup: logGroups.validatorLogGroup
+      validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds
     })
 
