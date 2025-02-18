@@ -19,7 +19,7 @@ fix_string_key() {
     mv .build/cdk.new.json .build/cdk.json
 }
 
-# helper function to set boolean values
+# helper function to set boolean and number values (without quotes)
 fix_boolean_number_key() {
     KEY_NAME=$1
     KEY_VALUE=$2
