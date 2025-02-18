@@ -193,7 +193,7 @@ export class PrescribeDispenseStack extends Stack {
     // create scaling policy
     const fhirFacadeServiceScalableTarget = new ScalableTarget(this, "fhirFacadeServiceScalableTarget", {
       serviceNamespace: ServiceNamespace.ECS,
-      resourceId: `service/${fhirFacadeService.service.serviceName}/${fhirFacadeService.cluster.clusterName}`,
+      resourceId: `service/${fhirFacadeService.cluster.clusterName}/${fhirFacadeService.service.serviceName}`,
       scalableDimension: "ecs:service:DesiredCount",
       minCapacity: desiredFhirFacadeCount,
       maxCapacity: 10
