@@ -20,7 +20,7 @@ fix_string_key() {
 }
 
 # helper function to set boolean values
-fix_boolean_key() {
+fix_boolean_number_key() {
     KEY_NAME=$1
     KEY_VALUE=$2
     if [ -z "${KEY_VALUE}" ]; then
@@ -61,8 +61,8 @@ fix_string_key enableDefaultAsidPartyKey "${ENABLE_DEFAULT_ASID_PARTY_KEY}"
 fix_string_key defaultPTLAsid "${DEFAULT_PTL_ASID}"
 fix_string_key defaultPTLPartyKey "${DEFAULT_PTL_PARTY_KEY}"
 fix_string_key sandboxModeEnabled "${SANDBOX_MODE_ENABLED}"
-fix_boolean_key enableMutualTls "${ENABLE_MUTUAL_TLS}"
+fix_boolean_number_key enableMutualTls "${ENABLE_MUTUAL_TLS}"
 fix_string_key SHA1EnabledApplicationIds "${SHA1_ENABLED_APPLICATION_IDS}"
-fix_string_key desiredFhirFacadeCount "${DESIRED_FHIR_FACADE_COUNT}"
-fix_string_key fhirFacadeCpu "${FHIR_FACADE_CPU}"
-fix_string_key fhirFacadeMemory "${FHIR_FACADE_MEMORY}"
+fix_boolean_number_key desiredFhirFacadeCount "${DESIRED_FHIR_FACADE_COUNT}"
+fix_boolean_number_key fhirFacadeCpu "${FHIR_FACADE_CPU}"
+fix_boolean_number_key fhirFacadeMemory "${FHIR_FACADE_MEMORY}"
