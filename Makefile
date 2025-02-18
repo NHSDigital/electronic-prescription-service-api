@@ -415,32 +415,6 @@ mark-jira-released: guard-release_version
 update-snapshots: install-all
 	npm run update-snapshots --workspace packages/tool/site/client
 
-sam-build: sam-validate
-	sam build --template-file SAMtemplates/main_template.yaml --region eu-west-2
-
-sam-validate: 
-	sam validate --template-file SAMtemplates/main_template.yaml --region eu-west-2
-
-sam-build-sandbox: sam-validate-sandbox
-	sam build --template-file SAMtemplates/sandbox_template.yaml --region eu-west-2
-
-sam-validate-sandbox:
-	sam validate --template-file SAMtemplates/sandbox_template.yaml --region eu-west-2
-
-sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-stack_name guard-template_file guard-cloud_formation_execution_role guard-LATEST_TRUSTSTORE_VERSION guard-TRUSTSTORE_FILE guard-VERSION_NUMBER guard-COMMIT_ID guard-TARGET_ENVIRONMENT guard-DOMAIN_NAME_EXPORT guard-ZONE_ID_EXPORT
-	sam deploy \
-		--template-file $$template_file \
-		--stack-name $$stack_name \
-		--capabilities CAPABILITY_NAMED_IAM CAPABILITY_AUTO_EXPAND \
-		--region eu-west-2 \
-		--s3-bucket $$artifact_bucket \
-		--s3-prefix $$artifact_bucket_prefix \
-		--config-file samconfig_package_and_deploy.toml \
-		--no-fail-on-empty-changeset \
-		--role-arn $$cloud_formation_execution_role \
-		--no-confirm-changeset \
-		--force-upload \
-		--tags "version=$$VERSION_NUMBER" 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
 
