@@ -733,11 +733,14 @@ paths:
       responses:
         "200":
           description: "Dummy response"
-      security: []
+      security:
+        - app-level0: []
 components:
   securitySchemes:
     nhs-cis2-aal3:
       $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
+    app-level0:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
   parameters:
     BearerAuthorization:
       in: header
@@ -1330,6 +1333,7 @@ components:
           $ref: "schemas/components/Location/CreateLocation.yaml"
 security:
   - nhs-cis2-aal3: []
+  - app-level0: []
 x-nhsd-apim:
   temporary: false
   monitoring: false
