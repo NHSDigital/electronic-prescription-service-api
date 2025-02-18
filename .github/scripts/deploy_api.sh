@@ -70,12 +70,13 @@ jq --arg stack_name "${STACK_NAME}" --arg aws_env "${AWS_ENVIRONMENT}" '.["x-nhs
 if [[ "${APIGEE_ENVIRONMENT}" == "prod" ]]; then
     jq --arg inst "${instance}" '.servers = [ { "url": "https://api.service.nhs.uk/\($inst)" } ]' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     jq '.components.securitySchemes."nhs-cis2-aal3" = {"$ref": "https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3"}' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+    jq '.components.securitySchemes."app-level0" = {"$ref": "https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0"}' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     jq '(."x-nhsd-apim"."target-attributes"[] | select(.name == "asid") | .required) |= true' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     jq '(."x-nhsd-apim"."target-attributes"[] | select(.name == "party-key") | .required) |= true' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
-
 else
     jq --arg env "${APIGEE_ENVIRONMENT}" --arg inst "${instance}" '.servers = [ { "url": "https://\($env).api.service.nhs.uk/\($inst)" } ]' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     jq '.components.securitySchemes."nhs-cis2-aal3" = {"$ref": "https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3"}' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+    jq '.components.securitySchemes."app-level0" = {"$ref": "https://proxygen.ptl.api.platform.nhs.uk/components/securitySchemes/app-level0"}' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     jq '(."x-nhsd-apim"."target-attributes"[] | select(.name == "asid") | .required) |= false' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     jq '(."x-nhsd-apim"."target-attributes"[] | select(.name == "party-key") | .required) |= false' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 fi
