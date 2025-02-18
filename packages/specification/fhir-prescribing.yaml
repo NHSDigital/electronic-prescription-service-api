@@ -1214,9 +1214,9 @@ x-nhsd-apim:
     - name: asid
       required: true
       header: nhsd-asid
-    - name: scope
+    - name: apiproxy.name
       required: true
-      header: nhsd-scope
+      header: apiproxy
     - name: id
       required: true
       header: nhsd-application-id
