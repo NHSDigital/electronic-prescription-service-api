@@ -3,6 +3,7 @@ import * as fs from "fs"
 import path from "path"
 import pino from "pino"
 import {isEpsHostedContainer} from "../utils/feature-flags"
+import {getApplicationName} from "../utils/headers"
 
 const VERSION = process.env.DEPLOYED_VERSION
 
@@ -240,7 +241,6 @@ function createPrescribingCapabilityStatement(manifest: Manifest) {
   }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function createDispensingCapabilityStatement(manifest: Manifest) {
   return {
     "resourceType": "CapabilityStatement",
@@ -364,9 +364,18 @@ export default [{
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const manifest = JSON.parse(readManifestFile(request.logger))
     if (isEpsHostedContainer()) {
-      return h.response({
-        capabilityStatement: createPrescribingCapabilityStatement(manifest)
-      }).code(200)
+      const applicationName = getApplicationName(request.headers)
+      if (applicationName === "EPS-FHIR-DISPENSING") {
+        return h.response({
+          capabilityStatement: createDispensingCapabilityStatement(manifest)
+        }).code(200)
+      }
+      if (applicationName === "EPS-FHIR-PRESCRIBING") {
+        return h.response({
+          capabilityStatement: createPrescribingCapabilityStatement(manifest)
+        }).code(200)
+      }
+      return h.response().code(404)
     }
     return h.response({
       capabilityStatement: createCombinedCapabilityStatement(manifest)
