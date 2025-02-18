@@ -3,11 +3,11 @@ import routes from "./routes"
 import HapiPino from "hapi-pino"
 import {isLocal} from "./utils/environment"
 import {
-  logIncomingRequest,
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
   switchContentTypeForSmokeTest
 } from "./utils/server-extensions"
+import {isEpsHostedContainer} from "./utils/feature-flags"
 
 export const createServer = ({collectLogs}: {collectLogs?: boolean}): Hapi.Server => {
   const server = Hapi.server({
@@ -33,13 +33,6 @@ export const createServer = ({collectLogs}: {collectLogs?: boolean}): Hapi.Serve
 
   server.route(routes)
 
-  server.ext([
-    {type: "onRequest", method: rejectInvalidProdHeaders},
-    {type: "onRequest", method: logIncomingRequest},
-    {type: "onPreResponse", method: reformatUserErrorsToFhir},
-    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
-  ])
-
   return server
 }
 
@@ -64,13 +57,19 @@ const configureLogging = async (server: Hapi.Server) => {
     }),
     // Redact Authorization headers, see https://getpino.io/#/docs/redaction
     redact: ["req.headers.authorization"],
-    wrapSerializers: false
+    wrapSerializers: false,
+    logPayload: isEpsHostedContainer()
   })
 }
 
 export const init = async (): Promise<void> => {
   const server = createServer({})
   await configureLogging(server)
+  server.ext([
+    {type: "onRequest", method: rejectInvalidProdHeaders},
+    {type: "onPreResponse", method: reformatUserErrorsToFhir},
+    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
+  ])
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
 }
