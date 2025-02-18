@@ -3,6 +3,7 @@ import routes from "./routes"
 import HapiPino from "hapi-pino"
 import {isLocal} from "./utils/environment"
 import {
+  logIncomingRequest,
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
   switchContentTypeForSmokeTest
@@ -34,6 +35,7 @@ export const createServer = ({collectLogs}: {collectLogs?: boolean}): Hapi.Serve
 
   server.ext([
     {type: "onRequest", method: rejectInvalidProdHeaders},
+    {type: "onRequest", method: logIncomingRequest},
     {type: "onPreResponse", method: reformatUserErrorsToFhir},
     {type: "onPreResponse", method: switchContentTypeForSmokeTest}
   ])

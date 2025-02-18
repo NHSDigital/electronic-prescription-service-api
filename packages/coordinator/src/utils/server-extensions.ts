@@ -4,6 +4,7 @@ import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
+import {isEpsHostedContainer} from "./feature-flags"
 
 export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
@@ -85,6 +86,23 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
         .type(ContentTypes.FHIR)
         .takeover()
     }
+  }
+  return responseToolkit.continue
+}
+
+export const logIncomingRequest: Hapi.Lifecycle.Method = (
+  request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
+) => {
+  const logger = request.logger
+  if (isEpsHostedContainer()) {
+    logger.info({
+      "incomingRequest" : {
+        "headers": request.headers,
+        "method": request.method,
+        "url": request.url,
+        "body": request.payload
+      }
+    }, "incoming request")
   }
   return responseToolkit.continue
 }
