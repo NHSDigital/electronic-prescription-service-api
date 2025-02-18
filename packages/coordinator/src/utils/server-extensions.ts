@@ -9,30 +9,29 @@ export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject | symbol {
   const response = request.response
+  const logger = request.logger
   if (response instanceof processingErrors.InconsistentValuesError) {
-    request.log("info", response)
+    logger.info({response}, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
-    request.log("info", response)
+    logger.info({response}, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
-    request.log("error", response)
+    logger.error({response}, "Boom")
   } else {
     if (response.statusCode >= 400) {
-      request.log("warn", {
-        msg: "error or warning response",
-        error: {
-          res: {
-            statusCode: response.statusCode,
-            body: response.source,
-            Headers: response.headers
-          }
+      logger.warn({"error": {
+        res: {
+          statusCode: response.statusCode,
+          body: response.source,
+          Headers: response.headers
         }
-      })
+      }
+      }, "error or warning response")
     }
   }
   return responseToolkit.continue

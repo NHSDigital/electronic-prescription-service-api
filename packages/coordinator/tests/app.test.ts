@@ -116,6 +116,26 @@ describe("reformatUserErrorsToFhir extension", () => {
   server.route([successRoute, processingErrorRoute, otherErrorRoute])
   server.ext("onPreResponse", reformatUserErrorsToFhir)
 
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      transport: {
+        target: "pino-pretty",
+        options: {
+          colorize: true,
+          minimumLevel: "info",
+          levelFirst: true,
+          messageFormat: true,
+          timestampKey: "time",
+          translateTime: true,
+          singleLine: false,
+          mkdir: true,
+          append: true
+        }
+      },
+      wrapSerializers: false
+    })
+  })
+
   test("formats processing errors", async () => {
     const response = await server.inject({url: "/processing-error"})
     expect(response.payload).toContain("OperationOutcome")
