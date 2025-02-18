@@ -7,6 +7,11 @@ set -e
 fix_string_key() {
     KEY_NAME=$1
     KEY_VALUE=$2
+    if [ -z "${KEY_VALUE}" ]; then
+        echo "${KEY_NAME} value is unset or set to the empty string"
+        exit 1
+    fi
+    echo "Setting ${KEY_NAME}"
     jq \
         --arg key_value "${KEY_VALUE}" \
         --arg key_name "${KEY_NAME}" \
@@ -18,6 +23,11 @@ fix_string_key() {
 fix_boolean_key() {
     KEY_NAME=$1
     KEY_VALUE=$2
+    if [ -z "${KEY_VALUE}" ]; then
+        echo "${KEY_NAME} value is unset or set to the empty string"
+        exit 1
+    fi
+    echo "Setting ${KEY_NAME}"
     jq \
         --argjson key_value "${KEY_VALUE}" \
         --arg key_name "${KEY_NAME}" \
@@ -32,7 +42,6 @@ TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKE
 VPC_ID=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "vpc-resources:VpcId") | .Value')
 
 # go through all the key values we need to set
-
 fix_string_key serviceName "${SERVICE_NAME}"
 fix_string_key VERSION_NUMBER "${VERSION_NUMBER}"
 fix_string_key accountId "${ACCOUNT_ID}"
