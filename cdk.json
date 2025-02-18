@@ -89,7 +89,12 @@
     "enableDefaultAsidPartyKey": "foo",
     "defaultPTLAsid": "foo",
     "defaultPTLPartyKey": "foo",
-    "enableMutualTls": true,
-    "trustStoreVersion": "foo"
+    "enableMutualTls": false,
+    "trustStoreVersion": "foo",
+    "SHA1EnabledApplicationIds": "",
+    "sandboxModeEnabled": "0",
+    "desiredFhirFacadeCount": 1,
+    "fhirFacadeCpu": 2048,
+    "fhirFacadeMemory": 4096
   }
 }

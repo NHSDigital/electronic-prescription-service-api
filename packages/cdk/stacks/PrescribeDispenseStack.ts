@@ -21,6 +21,12 @@ import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-pattern
 import {nagSuppressions} from "../nagSuppressions"
 import {LogGroups} from "../resources/LogGroups"
 import {ECSTasks} from "../resources/ECSTasks"
+import {
+  ScalableTarget,
+  PredefinedMetric,
+  ServiceNamespace,
+  TargetTrackingScalingPolicy
+} from "aws-cdk-lib/aws-applicationautoscaling"
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
     readonly serviceName: string
@@ -54,6 +60,9 @@ export class PrescribeDispenseStack extends Stack {
     const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
     const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
     const sandboxModeEnabled: string = this.node.tryGetContext("sandboxModeEnabled")
+    const desiredFhirFacadeCount: number = this.node.tryGetContext("desiredFhirFacadeCount")
+    const fhirFacadeCpu: number = this.node.tryGetContext("fhirFacadeCpu")
+    const fhirFacadeMemory: number = this.node.tryGetContext("fhirFacadeMemory")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -152,11 +161,11 @@ export class PrescribeDispenseStack extends Stack {
     })
 
     const fhirFacadeService = new ApplicationLoadBalancedFargateService(this, "fhirFacadeService", {
-      assignPublicIp: true,
+      assignPublicIp: false,
       certificate: fhirFacadeAlbCertificate,
       cluster: ecsCluster,
-      cpu: 2048,
-      desiredCount: 2,
+      cpu: fhirFacadeCpu,
+      desiredCount: desiredFhirFacadeCount,
       domainName: fhirFacadeHostname,
       domainZone: hostedZone,
       enableECSManagedTags: true,
@@ -165,7 +174,7 @@ export class PrescribeDispenseStack extends Stack {
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
-      memoryLimitMiB: 4096,
+      memoryLimitMiB: fhirFacadeMemory,
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100
     })
@@ -180,6 +189,26 @@ export class PrescribeDispenseStack extends Stack {
       unhealthyThresholdCount: 2,
       healthyThresholdCount: 2
     })
+
+    // create scaling policy
+    const fhirFacadeServiceScalableTarget = new ScalableTarget(this, "fhirFacadeServiceScalableTarget", {
+      serviceNamespace: ServiceNamespace.ECS,
+      resourceId: `service/${fhirFacadeService.service.serviceName}/${fhirFacadeService.cluster.clusterName}`,
+      scalableDimension: "ecs:service:DesiredCount",
+      minCapacity: desiredFhirFacadeCount,
+      maxCapacity: 10
+    })
+
+    // // scale up if average cpu goes above 70%
+    new TargetTrackingScalingPolicy(this, "fhirFacadeScalingPolicy", {
+      scalingTarget: fhirFacadeServiceScalableTarget,
+      targetValue: 70,
+      disableScaleIn: false,
+      scaleOutCooldown: Duration.seconds(60),
+      scaleInCooldown: Duration.seconds(60),
+      predefinedMetric: PredefinedMetric.ECS_SERVICE_AVERAGE_CPU_UTILIZATION
+    })
+
     if (enableMutualTls) {
       const fhirFacadeAlbTrustStore = new TrustStore(this, "fhirFacadeAlbTrustStore", {
         bucket: trustStoreBucket,
