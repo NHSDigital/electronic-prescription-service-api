@@ -1,5 +1,7 @@
-docker_service_cpu: 1024
-docker_service_memory: 4096
+docker_service_cpu: 4096
+docker_service_memory: 8192
+# change the below to scale up at month end
+docker_service_desired_capacity: "{{ 2 if APIGEE_ENVIRONMENT in ('ref', 'prod') else 1 }}"
 docker_service_autoscaling_prod:
   service_metric: ECSServiceAverageCPUUtilization
   target_value: 70
@@ -51,6 +53,9 @@ docker_service:
   - name: eps-validator
     port: 9001
     expose: false
+    environment:
+      - name: LOG_LEVEL
+        value: INFO
     health_check:
       matcher: "200"
       path: "/_status"

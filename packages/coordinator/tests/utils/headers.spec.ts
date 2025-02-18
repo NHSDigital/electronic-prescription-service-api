@@ -10,7 +10,7 @@ import {
   DEFAULT_SCOPE,
   AWS_SCOPE
 } from "../../src/utils/headers"
-import {validTestHeaders} from "../resources/test-resources"
+import {validTestHeaders, validTestHeadersWithoutAsidPartyKey} from "../resources/test-resources"
 
 const guidRegex = /^[0-9a-f]{8}[-]?(?:[0-9a-f]{4}[-]?){3}[0-9a-f]{12}$/
 describe("header functions do the right thing", () => {
@@ -53,6 +53,23 @@ describe("header functions do the right thing", () => {
     expect(asid).toBe("200000001285")
   })
 
+  test("getAsid gets correct value when not in sandbox but in PTL hosted container", () => {
+    process.env.SANDBOX = "0"
+    process.env.MTLS_SPINE_CLIENT = "true"
+    process.env.ENABLE_DEFAULT_ASID_PARTY_KEY = "true"
+    const asid = getAsid(validTestHeadersWithoutAsidPartyKey)
+    expect(asid).toBe("DEFAULT_PTL_ASID")
+  })
+
+  test("getAsid throws error when it can not get asid", () => {
+    process.env.SANDBOX = "0"
+    process.env.MTLS_SPINE_CLIENT = "true"
+    process.env.ENABLE_DEFAULT_ASID_PARTY_KEY = "false"
+    expect(() => {
+      getAsid(validTestHeadersWithoutAsidPartyKey)
+    }).toThrow(new Error("Could not get ASID"))
+  })
+
   test("getPartyKey gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
     const partyKey = getPartyKey(validTestHeaders)
@@ -62,7 +79,24 @@ describe("header functions do the right thing", () => {
   test("getPartyKey gets correct value when is sandbox", () => {
     process.env.SANDBOX = "1"
     const partyKey = getPartyKey(validTestHeaders)
-    expect(partyKey).toBe("T141D-822234")
+    expect(partyKey).toBe("DEFAULT_SANDBOX_PARTY_KEY")
+  })
+
+  test("getPartyKey gets correct value when not in sandbox but in PTL hosted container", () => {
+    process.env.SANDBOX = "0"
+    process.env.MTLS_SPINE_CLIENT = "true"
+    process.env.ENABLE_DEFAULT_ASID_PARTY_KEY = "true"
+    const asid = getPartyKey(validTestHeadersWithoutAsidPartyKey)
+    expect(asid).toBe("DEFAULT_PTL_PARTY_KEY")
+  })
+
+  test("getPartyKey throws error when it can not get party key", () => {
+    process.env.SANDBOX = "0"
+    process.env.MTLS_SPINE_CLIENT = "true"
+    process.env.ENABLE_DEFAULT_ASID_PARTY_KEY = "false"
+    expect(() => {
+      getPartyKey(validTestHeadersWithoutAsidPartyKey)
+    }).toThrow(new Error("Could not get party key"))
   })
 
   test("getSdsUserUniqueId gets correct value when not sandbox", () => {
@@ -95,6 +129,7 @@ describe("header functions do the right thing", () => {
 
   test("getScope gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
+    process.env.MTLS_SPINE_CLIENT = "false"
     const newHeaders = validTestHeaders
     newHeaders["nhsd-scope"] = "scope1 scope2"
     const scope = getScope(validTestHeaders)
@@ -103,6 +138,7 @@ describe("header functions do the right thing", () => {
 
   test("getScope gets correct value when is sandbox", () => {
     process.env.SANDBOX = "1"
+    process.env.MTLS_SPINE_CLIENT = "false"
     const scope = getScope(validTestHeaders)
     expect(scope).toBe(DEFAULT_SCOPE)
   })

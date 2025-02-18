@@ -1,5 +1,7 @@
 docker_service_cpu: 2048
 docker_service_memory: 4096
+# change the below to scale up for load testing
+docker_service_desired_capacity: "{{ 2 if APIGEE_ENVIRONMENT in ('ref', 'prod') else 1 }}"
 docker_service_autoscaling_prod:
   service_metric: ECSServiceAverageCPUUtilization
   target_value: 70
@@ -40,7 +42,7 @@ docker_service:
       # 5ad18b73-df45-4d41-9a1e-764d5a2b8671 = qa-eps-fhir-facade-sha1
       # 5a5e8a3d-8272-4d59-985e-5b2df5c08176 = int-eps-fhir-facade-sha1
       # 4515047f-fdbf-486f-bafe-dfae62482526  = ref-eps-fhir-facade-sha1
-        value: "486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,5ad18b73-df45-4d41-9a1e-764d5a2b8671,5a5e8a3d-8272-4d59-985e-5b2df5c08176,4515047f-fdbf-486f-bafe-dfae62482526"
+        value: "486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,5ad18b73-df45-4d41-9a1e-764d5a2b8671,5a5e8a3d-8272-4d59-985e-5b2df5c08176,4515047f-fdbf-486f-bafe-dfae62482526,2e40b553-b3b5-4905-bb71-df376993f03f"
     secrets:
       - name: SPINE_URL
         valueFrom: "/{{ account }}/platform-common/egress/hosts/spine-prescriptions-{{ SPINE_ENV }}"
@@ -62,6 +64,9 @@ docker_service:
   - name: eps-validator
     port: 9001
     expose: false
+    environment:
+      - name: LOG_LEVEL
+        value: INFO
     health_check:
       matcher: "200"
       path: "/_status"

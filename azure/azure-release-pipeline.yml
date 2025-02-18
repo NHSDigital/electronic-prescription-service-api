@@ -69,8 +69,6 @@ extends:
         secret_file_ids:
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_certificate.crt
           - ptl/api-deployment/electronic-prescription-api/int/eps_int_test_private.key
-        jinja_templates:
-          REQUIRE_ASID: true
         post_deploy:
           - template: ./templates/run_tests.yml
       - environment: ref

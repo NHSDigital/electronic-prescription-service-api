@@ -438,24 +438,7 @@ sam-deploy-package: guard-artifact_bucket guard-artifact_bucket_prefix guard-sta
 		--role-arn $$cloud_formation_execution_role \
 		--no-confirm-changeset \
 		--force-upload \
-		--tags "version=$$VERSION_NUMBER" \
-		--parameter-overrides \
-			TruststoreBucketName=$$TRUSTSTORE_BUCKET_NAME \
-			TruststoreVersion=$$LATEST_TRUSTSTORE_VERSION \
-			TruststoreFile=$$TRUSTSTORE_FILE \
-			EnableMutualTLS=$$enable_mutual_tls \
-			VersionNumber=$$VERSION_NUMBER \
-			CommitId=$$COMMIT_ID \
-			LogLevel=$$LOG_LEVEL \
-			LogRetentionInDays=$$LOG_RETENTION_DAYS \
-			Env=$$TARGET_ENVIRONMENT \
-			DomainNameExport=$$DOMAIN_NAME_EXPORT \
-			ZoneIDExport=$$ZONE_ID_EXPORT \
-			TargetSpineServer=$$TARGET_SPINE_SERVER \
-			DockerImageTag=$$DOCKER_IMAGE_TAG \
-			ToAsid=$$TO_ASID \
-			ToPartyKey=$$TO_PARTY_KEY
-
+		--tags "version=$$VERSION_NUMBER" 
 cfn-guard:
 	./scripts/run_cfn_guard.sh
 

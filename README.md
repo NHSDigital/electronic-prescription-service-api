@@ -24,6 +24,7 @@ This is a RESTful HL7® FHIR® API specification for the _Electronic Prescriptio
 - `.vscode` Contains vscode workspace file
 - `SAMtemplates` Contains AWS resource definitions
 
+
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://digital.nhs.uk/developer/api-catalogue).
 
 ## Contributing

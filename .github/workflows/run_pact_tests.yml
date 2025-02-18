@@ -9,6 +9,9 @@ on:
       VERSION_NUMBER:
         required: true
         type: string
+      IS_PULL_REQUEST:
+        type: boolean
+        default: false
     secrets:
       API_CLIENT_ID:
         required: true
@@ -115,8 +118,8 @@ jobs:
         env:
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PACT_VERSION: electronic-prescriptions-${{ inputs.VERSION_NUMBER }}
-          PACT_PROVIDER_PRESCRIBING_URL: https://internal-dev.api.service.nhs.uk/fhir-prescribing-${{ inputs.VERSION_NUMBER }}
-          PACT_PROVIDER_DISPENSING_URL: https://internal-dev.api.service.nhs.uk/fhir-dispensing-${{ inputs.VERSION_NUMBER }}
+          PACT_PROVIDER_PRESCRIBING_URL: https://${{ inputs.APIGEE_ENVIRONMENT }}.api.service.nhs.uk/fhir-prescribing${{ (inputs.IS_PULL_REQUEST == true || inputs.IS_PULL_REQUEST == 'true') && format('-{0}', inputs.VERSION_NUMBER) || '' }}
+          PACT_PROVIDER_DISPENSING_URL: https://${{ inputs.APIGEE_ENVIRONMENT }}.api.service.nhs.uk/fhir-dispensing${{ (inputs.IS_PULL_REQUEST == true || inputs.IS_PULL_REQUEST == 'true') && format('-{0}', inputs.VERSION_NUMBER) || '' }}
           PACT_CONSUMER: eps-test-client
           PACT_PROVIDER: eps
           API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
@@ -128,7 +131,7 @@ jobs:
         name: Upload pact_tests
         if: success() || failure()
         with:
-          name: pact_tests
+          name: pact_tests_${{ inputs.APIGEE_ENVIRONMENT }}
           path: |
             packages/e2e-tests/prescriptions*.txt
             packages/e2e-tests/pact

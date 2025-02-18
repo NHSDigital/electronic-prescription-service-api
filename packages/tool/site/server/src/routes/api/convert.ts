@@ -2,6 +2,7 @@ import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import * as fhir from "fhir/r4"
 import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession} from "../../services/session"
+import {getCorrelationId} from "../util"
 
 export default [
   {
@@ -14,7 +15,8 @@ export default [
       const epsClient = getEpsClient(accessToken, request)
 
       request.logger.debug(`Received Resource with id: ${resource.id}. Sending to Convert.`)
-      const convertedResource = await epsClient.makeConvertRequest(resource)
+      const correlationId = getCorrelationId(request)
+      const convertedResource = await epsClient.makeConvertRequest(resource, correlationId)
       request.logger.debug(`Converted ${resource.id}`)
 
       return responseToolkit.response(convertedResource).code(200)

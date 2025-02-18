@@ -30,6 +30,9 @@ Parameters:
   LogLevel:
     Type: String
     Default: "info"
+  ValidatorLogLevel:
+    Type: String
+    Default: "INFO"
 
   LogRetentionInDays:
     Type: Number
@@ -57,6 +60,16 @@ Parameters:
       - 2922
       - 3288
       - 3653
+  Environment:
+    Type: String
+    AllowedValues:
+      - dev
+      - test
+      - qa
+      - int
+      - ref
+      - prod
+    Default: dev
   TargetSpineServer:
     Type: String
     Default: "xxx"
@@ -66,6 +79,14 @@ Parameters:
   ToAsid:
     Type: String
   ToPartyKey:
+    Type: String
+  EnableDefaultAsidPartyKey:
+    Type: String
+  DefaultPtlAsid:
+    Type: String
+  DefaultPtlPartyKey:
+    Type: String
+  SHA1EnabledApplicationIds:
     Type: String
 
 Resources:
@@ -82,11 +103,17 @@ Resources:
         VersionNumber: !Ref VersionNumber
         CommitId: !Ref CommitId
         LogLevel: !Ref LogLevel
+        ValidatorLogLevel: !Ref ValidatorLogLevel
         LogRetentionInDays: !Ref LogRetentionInDays
         TargetSpineServer: !Ref TargetSpineServer
         DockerImageTag: !Ref DockerImageTag
         ToAsid: !Ref ToAsid
         ToPartyKey: !Ref ToPartyKey
+        EnableDefaultAsidPartyKey: !Ref EnableDefaultAsidPartyKey
+        DefaultPtlAsid: !Ref DefaultPtlAsid
+        DefaultPtlPartyKey: !Ref DefaultPtlPartyKey
+        Environment: !Ref Environment
+        SHA1EnabledApplicationIds: !Ref SHA1EnabledApplicationIds
 
 Outputs:
   LoadBalancerEndpoint:

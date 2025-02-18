@@ -41,15 +41,12 @@ extends:
         proxy_path: sandbox
       - environment: internal-qa
         depends_on:
-          - internal_dev
           - qa_manual_approval
       - environment: sandbox
         proxy_path: sandbox
         depends_on:
-          - internal_qa
           - ptl_manual_approval
       - environment: int
         proxy_path: live
         depends_on:
-          - internal_qa
           - ptl_manual_approval

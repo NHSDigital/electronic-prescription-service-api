@@ -7,6 +7,12 @@ import "chromedriver"
 import "geckodriver"
 import {Builder, ThenableWebDriver} from "selenium-webdriver"
 import * as firefox from "selenium-webdriver/firefox"
+import {
+  beforeAll,
+  beforeEach,
+  expect,
+  afterEach
+} from "@jest/globals"
 
 import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
 

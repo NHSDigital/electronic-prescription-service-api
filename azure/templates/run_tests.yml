@@ -274,8 +274,16 @@ steps:
     displayName: Regression Tests
     condition: succeeded()
   - bash: |
+      mkdir -p packages/bdd-tests/resources/
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         npm run test --workspace packages/bdd-tests
       fi
     displayName: Run BDD Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+  - task: PublishBuildArtifacts@1
+    displayName: "Publish bdd results"
+    inputs:
+      pathToPublish: "packages/bdd-tests/resources/"
+      artifactName: "bdd-tests"
+      publishLocation: "Container"
+    condition: and(always(), eq(variables['run_smoke_tests'], 'true'))

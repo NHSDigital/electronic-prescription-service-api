@@ -5,7 +5,7 @@ import * as pino from "pino"
 import * as cancelResponseTranslator from "./cancellation/cancellation-response"
 import * as releaseResponseTranslator from "./release/release-response"
 import {getStatusCode} from "../../../utils/status-code"
-import {convertTelecom} from "./common"
+import {convertTelecom, generateResourceId} from "./common"
 import {createOrganization} from "./organization"
 import {TranslationResponseResult} from "./release/release-response"
 import {DispenseProposalReturnFactory, ReturnFactory} from "../request/return/return-factory"
@@ -102,6 +102,7 @@ export class SpineResponseHandler<T> {
       logger.error("Trying to return bad request response with no error details")
       return SpineResponseHandler.createServerErrorResponse()
     }
+    logger.info({issues}, "Issues found in spine response. Returning non successful result")
     return SpineResponseHandler.createResponseForIssues(issues)
   }
 
@@ -634,7 +635,17 @@ export class ReleaseRejectionHandler extends SpineResponseHandler<hl7V3.Prescrip
   ): fhir.Organization {
     const releaseRejection = sendMessagePayload.ControlActEvent.subject.PrescriptionReleaseReject
     const rejectionReason = releaseRejection.pertinentInformation.pertinentRejectionReason
-    const v3Org = rejectionReason.performer.AgentPerson.representedOrganization
-    return createOrganization(v3Org)
+    const v3Org = rejectionReason.performer?.AgentPerson.representedOrganization
+    if (v3Org) {
+      return createOrganization(v3Org)
+    } else {
+      const organization: fhir.Organization = {
+        id: generateResourceId(),
+        resourceType: "Organization",
+        name: "UNKNOWN",
+        identifier: [{system: "https://fhir.nhs.uk/Id/ods-organization-code", value: "UNKNOWN"}]
+      }
+      return organization
+    }
   }
 }
