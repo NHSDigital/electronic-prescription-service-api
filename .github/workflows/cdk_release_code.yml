@@ -6,9 +6,6 @@ on:
       STACK_NAME:
         required: true
         type: string
-      ARTIFACT_BUCKET_PREFIX:
-        required: true
-        type: string
       AWS_ENVIRONMENT:
         required: true
         type: string
@@ -18,12 +15,6 @@ on:
       ENABLE_MUTUAL_TLS:
         required: true
         type: boolean
-      BUILD_ARTIFACT:
-        required: true
-        type: string
-      SPEC_ARTIFACT:
-        required: true
-        type: string
       TRUSTSTORE_FILE:
         required: true
         type: string
