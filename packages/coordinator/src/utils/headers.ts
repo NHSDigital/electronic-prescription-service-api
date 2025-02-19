@@ -24,7 +24,7 @@ export enum RequestHeaders {
   SKIP_VALIDATION = "x-skip-validation",
   SHOW_VALIDATION_WARNINGS = "x-show-validation-warnings",
   SMOKE_TEST = "x-smoke-test",
-  PROXY_NAME = " apiproxy"
+  PROXY_NAME = "apiproxy"
 }
 
 export const DEFAULT_SANDBOX_ASID = "200000001285"
