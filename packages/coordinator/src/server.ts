@@ -32,6 +32,12 @@ export const createServer = ({collectLogs}: {collectLogs?: boolean}): Hapi.Serve
 
   server.route(routes)
 
+  server.ext([
+    {type: "onRequest", method: rejectInvalidProdHeaders},
+    {type: "onPreResponse", method: reformatUserErrorsToFhir},
+    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
+  ])
+
   return server
 }
 
@@ -56,20 +62,13 @@ const configureLogging = async (server: Hapi.Server) => {
     }),
     // Redact Authorization headers, see https://getpino.io/#/docs/redaction
     redact: ["req.headers.authorization"],
-    wrapSerializers: false,
-    mergeHapiLogData: true
+    wrapSerializers: false
   })
 }
 
 export const init = async (): Promise<void> => {
   const server = createServer({})
   await configureLogging(server)
-  // add server extensions after configuring logging so they have access to the logger object
-  server.ext([
-    {type: "onRequest", method: rejectInvalidProdHeaders},
-    {type: "onPreResponse", method: reformatUserErrorsToFhir},
-    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
-  ])
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
 }
