@@ -1,7 +1,7 @@
 docker_service_cpu: 4096
 docker_service_memory: 8192
 # change the below to scale up at month end
-docker_service_desired_capacity: "{{ 2 if APIGEE_ENVIRONMENT in ('ref', 'prod') else 1 }}"
+docker_service_desired_capacity: "{{ 6 if APIGEE_ENVIRONMENT in ('ref', 'prod') else 1 }}"
 docker_service_autoscaling_prod:
   service_metric: ECSServiceAverageCPUUtilization
   target_value: 70
