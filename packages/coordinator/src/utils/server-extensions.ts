@@ -14,16 +14,14 @@ export function reformatUserErrorsToFhir(
   const logPayload = isEpsHostedContainer()
   if (response instanceof processingErrors.InconsistentValuesError) {
     logger.info({
-      payload: logPayload ? request.payload : {},
-      response
+      payload: logPayload ? request.payload.toString() : {}
     }, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
     logger.info({
-      payload: logPayload ? request.payload.toString() : {},
-      response
+      payload: logPayload ? request.payload.toString() : {}
     }, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
