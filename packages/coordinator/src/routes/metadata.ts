@@ -364,7 +364,7 @@ export default [{
   handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
     const manifest = JSON.parse(readManifestFile(request.logger))
     if (isEpsHostedContainer()) {
-      const applicationName = getApplicationName(request.headers)
+      const applicationName = getApplicationName(request.headers, request.logger)
       if (applicationName === "EPS-FHIR-DISPENSING") {
         return h.response({
           capabilityStatement: createDispensingCapabilityStatement(manifest)

@@ -8,6 +8,7 @@ import {
   TRACKER_USER_SCOPE
 } from "../services/validation/scope-validator"
 import {enableDefaultAsidPartyKey, isEpsHostedContainer, isSandbox} from "./feature-flags"
+import pino from "pino"
 
 export enum RequestHeaders {
   APPLICATION_ID = "nhsd-application-id",
@@ -104,7 +105,10 @@ export function getApplicationId(headers: Hapi.Utils.Dictionary<string>): string
   return process.env.SANDBOX === "1" ? DEFAULT_APPLICATION_ID : headers[RequestHeaders.APPLICATION_ID]
 }
 
-export function getApplicationName(headers: Hapi.Utils.Dictionary<string>): string {
+export function getApplicationName(headers: Hapi.Utils.Dictionary<string>, logger: pino.Logger): string {
+  logger.info({headers}, "headers in getApplicationName")
+  logger.info(`The header we are looking for is ${RequestHeaders.PROXY_NAME}`)
+  logger.info(`The value is ${headers[RequestHeaders.PROXY_NAME]}`)
   if (isEpsHostedContainer()) {
     if (headers[RequestHeaders.PROXY_NAME].includes("fhir-dispensing")) {
       return "EPS-FHIR-DISPENSING"
