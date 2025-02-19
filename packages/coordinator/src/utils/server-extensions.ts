@@ -92,7 +92,6 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   const logPayload = isEpsHostedContainer()
-  const logger = request.logger
   if (isProd()) {
     const listOfInvalidHeaders = Object.keys(request.headers).filter(
       requestHeader => invalidProdHeaders.includes(requestHeader as RequestHeaders)
@@ -103,10 +102,12 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
       } had invalid header(s): ${
         listOfInvalidHeaders
       }`
-      logger.warn({
+      request.log("error", {
+        msg: "invalid headers",
         payload: getPayload(request, logPayload),
         errorMessage
-      }, "invalid headers")
+      })
+
       const issue = validationErrors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
       return responseToolkit
         .response(fhir.createOperationOutcome([issue]))
