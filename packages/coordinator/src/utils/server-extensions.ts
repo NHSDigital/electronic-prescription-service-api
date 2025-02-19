@@ -4,33 +4,40 @@ import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
+import {isEpsHostedContainer} from "./feature-flags"
 
 export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject | symbol {
   const response = request.response
   const logger = request.logger
+  const logPayload = isEpsHostedContainer()
   if (response instanceof processingErrors.InconsistentValuesError) {
-    logger.info({response}, "InconsistentValuesError")
+    logger.info({
+      payload: logPayload ? request.payload : {},
+      response
+    }, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
-    logger.info({response}, "FhirMessageProcessingError")
+    logger.info({
+      payload: logPayload ? request.payload : {},
+      response
+    }, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
-    logger.error({response}, "Boom")
+    logger.info({
+      payload: logPayload ? request.payload : {},
+      response
+    }, "Boom")
   } else {
     if (response.statusCode >= 400) {
-      logger.warn({"error": {
-        res: {
-          statusCode: response.statusCode,
-          body: response.source,
-          Headers: response.headers
-        }
-      }
+      logger.warn({
+        payload: logPayload ? request.payload : {},
+        response
       }, "error or warning response")
     }
   }
@@ -66,6 +73,8 @@ export const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RES
 export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
+  const logPayload = isEpsHostedContainer()
+  const logger = request.logger
   if (isProd()) {
     const listOfInvalidHeaders = Object.keys(request.headers).filter(
       requestHeader => invalidProdHeaders.includes(requestHeader as RequestHeaders)
@@ -76,7 +85,10 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
       } had invalid header(s): ${
         listOfInvalidHeaders
       }`
-      request.logger.error(errorMessage)
+      logger.warn({
+        payload: logPayload ? request.payload : {},
+        errorMessage
+      }, "invalid headers")
       const issue = validationErrors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
       return responseToolkit
         .response(fhir.createOperationOutcome([issue]))
