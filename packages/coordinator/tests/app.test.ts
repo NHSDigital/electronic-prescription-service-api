@@ -11,17 +11,24 @@ import {
   rejectInvalidProdHeaders,
   switchContentTypeForSmokeTest
 } from "../src/utils/server-extensions"
-import HapiPino from "hapi-pino"
+import {isEpsHostedContainer} from "../src/utils/feature-flags"
 
 jest.mock("../src/utils/environment", () => ({
-  isProd: jest.fn()
+  isProd: jest.fn(),
+  isEpsHostedContainer: jest.fn()
+}))
+
+jest.mock("../src/utils/feature-flags", () => ({
+  isEpsHostedContainer: jest.fn(),
+  isSandbox: jest.fn(() => false)
 }))
 
 const newIsProd = isProd as jest.MockedFunction<typeof isProd>
+const newIsEpsHostedContainer = isEpsHostedContainer as jest.MockedFunction<typeof isEpsHostedContainer>
 
 describe("rejectInvalidProdHeaders extension", () => {
-  process.env.MTLS_SPINE_CLIENT = "false"
   const server = Hapi.server()
+  server.ext("onRequest", rejectInvalidProdHeaders)
   server.route({
     method: "GET",
     path: "/test",
@@ -30,26 +37,8 @@ describe("rejectInvalidProdHeaders extension", () => {
     }
   })
 
-  beforeAll(async () => {
-    await HapiPino.register(server, {
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          minimumLevel: "info",
-          levelFirst: true,
-          messageFormat: true,
-          timestampKey: "time",
-          translateTime: true,
-          singleLine: false,
-          mkdir: true,
-          append: true
-        }
-      },
-      wrapSerializers: false
-    })
-
-    server.ext("onRequest", rejectInvalidProdHeaders)
+  beforeEach(() => {
+    newIsEpsHostedContainer.mockImplementation(() => false)
   })
 
   test.each(invalidProdHeaders)(
@@ -90,8 +79,8 @@ describe("rejectInvalidProdHeaders extension", () => {
 })
 
 describe("reformatUserErrorsToFhir extension", () => {
-  process.env.MTLS_SPINE_CLIENT = "false"
   const server = Hapi.server()
+  server.ext("onPreResponse", reformatUserErrorsToFhir)
   const successRoute: Hapi.ServerRoute = {
     method: "GET",
     path: "/test",
@@ -117,25 +106,8 @@ describe("reformatUserErrorsToFhir extension", () => {
   }
   server.route([successRoute, processingErrorRoute, otherErrorRoute])
 
-  beforeAll(async () => {
-    await HapiPino.register(server, {
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          minimumLevel: "info",
-          levelFirst: true,
-          messageFormat: true,
-          timestampKey: "time",
-          translateTime: true,
-          singleLine: false,
-          mkdir: true,
-          append: true
-        }
-      },
-      wrapSerializers: false
-    })
-    server.ext("onPreResponse", reformatUserErrorsToFhir)
+  beforeEach(() => {
+    newIsEpsHostedContainer.mockImplementation(() => false)
   })
 
   test("formats processing errors", async () => {
@@ -159,7 +131,6 @@ describe("reformatUserErrorsToFhir extension", () => {
 })
 
 describe("switchContentTypeForSmokeTest extension", () => {
-  process.env.MTLS_SPINE_CLIENT = "false"
   const server = Hapi.server()
   const fhirRoute: Hapi.ServerRoute = {
     method: "GET",
@@ -177,6 +148,10 @@ describe("switchContentTypeForSmokeTest extension", () => {
   }
   server.route([fhirRoute, xmlRoute])
   server.ext("onPreResponse", switchContentTypeForSmokeTest)
+
+  beforeEach(() => {
+    newIsEpsHostedContainer.mockImplementation(() => false)
+  })
 
   test("updates FHIR responses", async () => {
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
@@ -201,8 +176,11 @@ describe("switchContentTypeForSmokeTest extension", () => {
 })
 
 describe("logs payload on proxygen deployed", () => {
-  process.env.MTLS_SPINE_CLIENT = "true"
   const server = Hapi.server()
+  server.ext("onPreResponse", reformatUserErrorsToFhir)
+
+  const loggerSpy = jest.fn()
+  server.events.on({name: "request", channels: "app"}, loggerSpy)
   const successRoute: Hapi.ServerRoute = {
     method: "GET",
     path: "/test",
@@ -249,34 +227,9 @@ describe("logs payload on proxygen deployed", () => {
     warningRoute
   ])
 
-  const loggerSpy = jest.fn()
-
-  server.events.on({name: "request", channels: "app"}, loggerSpy)
-
-  beforeAll(async () => {
-    await HapiPino.register(server, {
-      transport: {
-        target: "pino-pretty",
-        options: {
-          colorize: true,
-          minimumLevel: "info",
-          levelFirst: true,
-          messageFormat: true,
-          timestampKey: "time",
-          translateTime: true,
-          singleLine: false,
-          mkdir: true,
-          append: true
-        }
-      },
-      wrapSerializers: false,
-      mergeHapiLogData: true
-    })
-    server.ext("onPreResponse", reformatUserErrorsToFhir)
-  })
-
   beforeEach(() => {
     loggerSpy.mockReset()
+    newIsEpsHostedContainer.mockImplementation(() => true)
   })
 
   test("logs FhirMessageProcessingError", async () => {
@@ -394,6 +347,185 @@ describe("logs payload on proxygen deployed", () => {
           "payload": {
             "foo": "bar"
           },
+          "response": expect.anything()
+        },
+        "request": expect.anything(),
+        "tags": [
+          "info"
+        ],
+        "timestamp": expect.anything()
+      },
+      {"info": true}
+    )
+  })
+
+})
+
+describe("does not log payload on non proxygen deployed", () => {
+  const server = Hapi.server()
+  server.ext("onPreResponse", reformatUserErrorsToFhir)
+  const successRoute: Hapi.ServerRoute = {
+    method: "GET",
+    path: "/test",
+    handler: (_, responseToolkit) => {
+      return responseToolkit.response("success")
+    }
+  }
+  const processingErrorRoute: Hapi.ServerRoute = {
+    method: "POST",
+    path: "/processing-error",
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    handler: (_, h) => {
+      throw new InvalidValueError("")
+    }
+  }
+  const inconsistentValueErrorRoute: Hapi.ServerRoute = {
+    method: "POST",
+    path: "/inconsistentValue-error",
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    handler: (_, h) => {
+      throw new InconsistentValuesError("")
+    }
+  }
+  const warningRoute: Hapi.ServerRoute = {
+    method: "POST",
+    path: "/warning",
+    handler: (_, responseToolkit) => {
+      return responseToolkit.response("warning").code(400)
+    }
+  }
+  const otherErrorRoute: Hapi.ServerRoute = {
+    method: "POST",
+    path: "/other-error",
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    handler: (_, h) => {
+      throw new Error("")
+    }
+  }
+  server.route([
+    successRoute,
+    processingErrorRoute,
+    otherErrorRoute,
+    inconsistentValueErrorRoute,
+    warningRoute
+  ])
+
+  const loggerSpy = jest.fn()
+
+  server.events.on({name: "request", channels: "app"}, loggerSpy)
+
+  beforeEach(() => {
+    loggerSpy.mockReset()
+    newIsEpsHostedContainer.mockImplementation(() => false)
+  })
+
+  test("logs FhirMessageProcessingError", async () => {
+    const response = await server.inject({
+      url: "/processing-error",
+      payload: {foo: "bar"},
+      method: "POST"
+    })
+    expect(response.payload).toContain("OperationOutcome")
+    expect(response.statusCode).toBe(400)
+    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        "channel": "app",
+        "data": {
+          "msg": "FhirMessageProcessingError",
+          "payload": {}
+        },
+        "request": expect.anything(),
+        "tags": [
+          "info"
+        ],
+        "timestamp": expect.anything()
+      },
+      {"info": true}
+    )
+  })
+
+  test("logs InconsistentValuesError", async () => {
+    const response = await server.inject({
+      url: "/inconsistentValue-error",
+      payload: {foo: "bar"},
+      method: "POST"
+    })
+    expect(response.payload).toContain("OperationOutcome")
+    expect(response.statusCode).toBe(400)
+    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        "channel": "app",
+        "data": {
+          "msg": "InconsistentValuesError",
+          "payload": {}
+        },
+        "request": expect.anything(),
+        "tags": [
+          "info"
+        ],
+        "timestamp": expect.anything()
+      },
+      {"info": true}
+    )
+  })
+
+  test("doesn't log on success", async () => {
+    const response = await server.inject({url: "/test"})
+    expect(response.payload).toBe("success")
+    expect(response.statusCode).toBe(200)
+    expect(loggerSpy).not.toHaveBeenCalled()
+  })
+
+  test("logs boom errors", async () => {
+    const response = await server.inject({
+      url: "/other-error",
+      method: "POST",
+      payload: {
+        "foo": "bar"
+      }
+    })
+    expect(response.payload).not.toContain("OperationOutcome")
+    expect(response.statusCode).toBe(500)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        "channel": "app",
+        "data": {
+          "msg": "Boom",
+          "payload": {},
+          "response": expect.anything()
+        },
+        "request": expect.anything(),
+        "tags": [
+          "error"
+        ],
+        "timestamp": expect.anything()
+      },
+      {"error": true}
+    )
+  })
+
+  test("logs 400 errors", async () => {
+    const response = await server.inject({
+      url: "/warning",
+      method: "POST",
+      payload: {
+        "foo": "bar"
+      }
+    })
+    expect(response.payload).not.toContain("OperationOutcome")
+    expect(response.statusCode).toBe(400)
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.anything(),
+      {
+        "channel": "app",
+        "data": {
+          "msg": "ErrorOrWarningResponse",
+          "payload": {},
           "response": expect.anything()
         },
         "request": expect.anything(),
