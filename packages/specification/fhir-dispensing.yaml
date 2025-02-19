@@ -1364,5 +1364,5 @@ x-nhsd-apim:
       required: true
       header: apiproxy
     - name: id
-      required: true
+      required: false
       header: nhsd-application-id
