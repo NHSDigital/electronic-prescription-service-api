@@ -12,6 +12,9 @@ import {
   switchContentTypeForSmokeTest
 } from "../src/utils/server-extensions"
 import {isEpsHostedContainer} from "../src/utils/feature-flags"
+import HapiPino from "hapi-pino"
+import pino, {DestinationStream} from "pino"
+import split from "split2"
 
 jest.mock("../src/utils/environment", () => ({
   isProd: jest.fn(),
@@ -26,15 +29,42 @@ jest.mock("../src/utils/feature-flags", () => ({
 const newIsProd = isProd as jest.MockedFunction<typeof isProd>
 const newIsEpsHostedContainer = isEpsHostedContainer as jest.MockedFunction<typeof isEpsHostedContainer>
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function sink(spyFunc: (...args: Array<any>) => void) {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const result = split((data: any) => {
+    try {
+      return JSON.parse(data)
+    } catch (err) {
+      console.log(err)
+      console.log(data)
+    }
+  })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  result.on("data", (data: any) => spyFunc(data))
+  return result
+}
+
+const spyOnPinoOutput = jest.fn()
+const spyStream: DestinationStream = sink(spyOnPinoOutput)
+
+const logger = pino(spyStream)
+
 describe("rejectInvalidProdHeaders extension", () => {
   const server = Hapi.server()
-  server.ext("onRequest", rejectInvalidProdHeaders)
   server.route({
     method: "GET",
     path: "/test",
     handler: (_, responseToolkit) => {
       return responseToolkit.response("success")
     }
+  })
+
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
+    server.ext("onRequest", rejectInvalidProdHeaders)
   })
 
   beforeEach(() => {
@@ -80,7 +110,6 @@ describe("rejectInvalidProdHeaders extension", () => {
 
 describe("reformatUserErrorsToFhir extension", () => {
   const server = Hapi.server()
-  server.ext("onPreResponse", reformatUserErrorsToFhir)
   const successRoute: Hapi.ServerRoute = {
     method: "GET",
     path: "/test",
@@ -106,7 +135,15 @@ describe("reformatUserErrorsToFhir extension", () => {
   }
   server.route([successRoute, processingErrorRoute, otherErrorRoute])
 
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
+    server.ext("onPreResponse", reformatUserErrorsToFhir)
+  })
+
   beforeEach(() => {
+    spyOnPinoOutput.mockReset()
     newIsEpsHostedContainer.mockImplementation(() => false)
   })
 
@@ -147,9 +184,16 @@ describe("switchContentTypeForSmokeTest extension", () => {
     }
   }
   server.route([fhirRoute, xmlRoute])
-  server.ext("onPreResponse", switchContentTypeForSmokeTest)
+
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
+    server.ext("onPreResponse", switchContentTypeForSmokeTest)
+  })
 
   beforeEach(() => {
+    spyOnPinoOutput.mockReset()
     newIsEpsHostedContainer.mockImplementation(() => false)
   })
 
@@ -177,10 +221,7 @@ describe("switchContentTypeForSmokeTest extension", () => {
 
 describe("logs payload on proxygen deployed", () => {
   const server = Hapi.server()
-  server.ext("onPreResponse", reformatUserErrorsToFhir)
 
-  const loggerSpy = jest.fn()
-  server.events.on({name: "request", channels: "app"}, loggerSpy)
   const successRoute: Hapi.ServerRoute = {
     method: "GET",
     path: "/test",
@@ -227,8 +268,16 @@ describe("logs payload on proxygen deployed", () => {
     warningRoute
   ])
 
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
+
+    server.ext("onPreResponse", reformatUserErrorsToFhir)
+  })
+
   beforeEach(() => {
-    loggerSpy.mockReset()
+    spyOnPinoOutput.mockReset()
     newIsEpsHostedContainer.mockImplementation(() => true)
   })
 
@@ -241,24 +290,15 @@ describe("logs payload on proxygen deployed", () => {
     expect(response.payload).toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
     expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "FhirMessageProcessingError",
-          "payload": {
-            "foo": "bar"
-          }
-        },
-        "request": expect.anything(),
-        "tags": [
-          "info"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"info": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": "FhirMessageProcessingError",
+      "payload": {"foo": "bar"},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("logs InconsistentValuesError", async () => {
@@ -270,31 +310,30 @@ describe("logs payload on proxygen deployed", () => {
     expect(response.payload).toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
     expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "InconsistentValuesError",
-          "payload": {
-            "foo": "bar"
-          }
-        },
-        "request": expect.anything(),
-        "tags": [
-          "info"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"info": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": "InconsistentValuesError",
+      "payload": {"foo": "bar"},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("doesn't log on success", async () => {
     const response = await server.inject({url: "/test"})
     expect(response.payload).toBe("success")
     expect(response.statusCode).toBe(200)
-    expect(loggerSpy).not.toHaveBeenCalled()
+    expect(spyOnPinoOutput).not.toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": expect.anything(),
+      "payload": expect.anything(),
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("logs boom errors", async () => {
@@ -307,25 +346,16 @@ describe("logs payload on proxygen deployed", () => {
     })
     expect(response.payload).not.toContain("OperationOutcome")
     expect(response.statusCode).toBe(500)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "Boom",
-          "payload": {
-            "foo": "bar"
-          },
-          "response": expect.anything()
-        },
-        "request": expect.anything(),
-        "tags": [
-          "error"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"error": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 50,
+      "msg": "Boom",
+      "payload": {"foo": "bar"},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "response": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("logs 400 errors", async () => {
@@ -338,25 +368,16 @@ describe("logs payload on proxygen deployed", () => {
     })
     expect(response.payload).not.toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "ErrorOrWarningResponse",
-          "payload": {
-            "foo": "bar"
-          },
-          "response": expect.anything()
-        },
-        "request": expect.anything(),
-        "tags": [
-          "info"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"info": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": "ErrorOrWarningResponse",
+      "payload": {"foo": "bar"},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "response": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
 })
@@ -410,12 +431,16 @@ describe("does not log payload on non proxygen deployed", () => {
     warningRoute
   ])
 
-  const loggerSpy = jest.fn()
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
 
-  server.events.on({name: "request", channels: "app"}, loggerSpy)
+    server.ext("onPreResponse", reformatUserErrorsToFhir)
+  })
 
   beforeEach(() => {
-    loggerSpy.mockReset()
+    spyOnPinoOutput.mockReset()
     newIsEpsHostedContainer.mockImplementation(() => false)
   })
 
@@ -428,22 +453,15 @@ describe("does not log payload on non proxygen deployed", () => {
     expect(response.payload).toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
     expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "FhirMessageProcessingError",
-          "payload": {}
-        },
-        "request": expect.anything(),
-        "tags": [
-          "info"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"info": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": "FhirMessageProcessingError",
+      "payload": {},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("logs InconsistentValuesError", async () => {
@@ -455,29 +473,31 @@ describe("does not log payload on non proxygen deployed", () => {
     expect(response.payload).toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
     expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "InconsistentValuesError",
-          "payload": {}
-        },
-        "request": expect.anything(),
-        "tags": [
-          "info"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"info": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": "InconsistentValuesError",
+      "payload": {},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("doesn't log on success", async () => {
     const response = await server.inject({url: "/test"})
     expect(response.payload).toBe("success")
     expect(response.statusCode).toBe(200)
-    expect(loggerSpy).not.toHaveBeenCalled()
+    expect(spyOnPinoOutput).not.toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": expect.anything(),
+      "payload": expect.anything(),
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "response": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("logs boom errors", async () => {
@@ -490,23 +510,16 @@ describe("does not log payload on non proxygen deployed", () => {
     })
     expect(response.payload).not.toContain("OperationOutcome")
     expect(response.statusCode).toBe(500)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "Boom",
-          "payload": {},
-          "response": expect.anything()
-        },
-        "request": expect.anything(),
-        "tags": [
-          "error"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"error": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 50,
+      "msg": "Boom",
+      "payload": {},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "response": expect.anything(),
+      "time": expect.anything()
+    })
   })
 
   test("logs 400 errors", async () => {
@@ -519,23 +532,15 @@ describe("does not log payload on non proxygen deployed", () => {
     })
     expect(response.payload).not.toContain("OperationOutcome")
     expect(response.statusCode).toBe(400)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      expect.anything(),
-      {
-        "channel": "app",
-        "data": {
-          "msg": "ErrorOrWarningResponse",
-          "payload": {},
-          "response": expect.anything()
-        },
-        "request": expect.anything(),
-        "tags": [
-          "info"
-        ],
-        "timestamp": expect.anything()
-      },
-      {"info": true}
-    )
+    expect(spyOnPinoOutput).toHaveBeenCalledWith({
+      "hostname": expect.anything(),
+      "level": 40,
+      "msg": "ErrorOrWarningResponse",
+      "payload": {},
+      "pid": expect.anything(),
+      "req": expect.anything(),
+      "response": expect.anything(),
+      "time": expect.anything()
+    })
   })
-
 })
