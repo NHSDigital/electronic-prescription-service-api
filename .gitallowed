@@ -20,6 +20,19 @@ const token = await getAuthToken()
 throw new Error\(`Cannot retrieve auth token: \${requestUrl} returned \${response.data}`\)
 throw `Could not retrieve token: \${result.data}
 
+# ignore dummy account id in cdk.json
+ "accountId": "766544332211"
+
+# ignore cidr and dummy account id in cdk.context.json
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"vpc-provider:account=766544332211:filter.vpc-id=vpc-53412ffeeddccbb12:region=eu-west-2:returnAsymmetricSubnets=true"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"vpcCidrBlock": "10\.190\.0\.0\/16"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"cidr": "10\.190\.96\.0\/19"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"cidr": "10\.190\.128\.0\/19"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"cidr": "10\.190\.160\.0\/19"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"cidr": "10\.190\.0\.0\/19"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"cidr": "10\.190\.32\.0\/19"
+^([a-f0-9]{40}:)?cdk\.context\.json:.*"cidr": "10\.190\.64\.0\/19"
+
 # ignore all xml and json examples, tests, resources
 ^[a-f0-9]{40}:examples\/.*\.xml:\d+:
 ^[a-f0-9]{40}:examples\/.*\.json:\d+:
