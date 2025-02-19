@@ -22,7 +22,7 @@ export function reformatUserErrorsToFhir(
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
     logger.info({
-      payload: logPayload ? request.payload : {},
+      payload: logPayload ? request.payload.toString() : {},
       response
     }, "FhirMessageProcessingError")
     return responseToolkit.response(
@@ -30,13 +30,13 @@ export function reformatUserErrorsToFhir(
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     logger.info({
-      payload: logPayload ? request.payload : {},
+      payload: logPayload ? request.payload.toString() : {},
       response
     }, "Boom")
   } else {
     if (response.statusCode >= 400) {
       logger.warn({
-        payload: logPayload ? request.payload : {},
+        payload: logPayload ? request.payload.toString() : {},
         response
       }, "error or warning response")
     }
@@ -86,7 +86,7 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
         listOfInvalidHeaders
       }`
       logger.warn({
-        payload: logPayload ? request.payload : {},
+        payload: logPayload ? request.payload.toString() : {},
         errorMessage
       }, "invalid headers")
       const issue = validationErrors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
