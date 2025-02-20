@@ -24,7 +24,7 @@
   },
   "devDependencies": {
     "@pact-foundation/pact": "^13.2.0",
-    "@pact-foundation/pact-core": "^15.2.1",
+    "@pact-foundation/pact-core": "^16.0.0",
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.8",
     "@types/lossless-json": "2.0.0",
