@@ -282,6 +282,14 @@ export class PrescribeDispenseStack extends Stack {
     claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
     claimsService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}_claims/connection`)
 
+    claimsService.targetGroup.configureHealthCheck({
+      path: "/_healthcheck",
+      interval: Duration.seconds(10),
+      timeout: Duration.seconds(5),
+      unhealthyThresholdCount: 2,
+      healthyThresholdCount: 2
+    })
+
     const claimsServiceScalableTarget = new ScalableTarget(this, "claimsServiceScalableTarget", {
       serviceNamespace: ServiceNamespace.ECS,
       resourceId: `service/${claimsService.cluster.clusterName}/${claimsService.service.serviceName}`,
