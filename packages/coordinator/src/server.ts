@@ -8,9 +8,12 @@ import {
   switchContentTypeForSmokeTest
 } from "./utils/server-extensions"
 
-export const createServer = ({collectLogs}: {collectLogs?: boolean}): Hapi.Server => {
+export const createServer = (
+  {collectLogs}: {collectLogs?: boolean},
+  port: number
+): Hapi.Server => {
   const server = Hapi.server({
-    port: 9000,
+    port: port,
     host: "0.0.0.0",
     routes: {
       cors: true, // Won't run as Apigee hosted target without this
@@ -67,7 +70,7 @@ const configureLogging = async (server: Hapi.Server) => {
 }
 
 export const init = async (): Promise<void> => {
-  const server = createServer({})
+  const server = createServer({}, 9000)
   await configureLogging(server)
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
