@@ -47,11 +47,12 @@ function createTemplateCapabilityStatement(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   operation: any,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  messaging: any
+  messaging: any,
+  id: string
 ) {
   return {
     "resourceType": "CapabilityStatement",
-    "id": "apim-electronic-prescription-service",
+    "id": id,
     "name": manifestName,
     "status": "active",
     "date": "2021-08-13T00:00:00+00:00",
@@ -161,7 +162,14 @@ function createCombinedCapabilityStatement(manifest: Manifest) {
       ]
     }
   ]
-  return createTemplateCapabilityStatement(manifest, "EPS FHIR API", resource, operation, messaging)
+  return createTemplateCapabilityStatement(
+    manifest,
+    "EPS FHIR API",
+    resource,
+    operation,
+    messaging,
+    "apim-electronic-prescription-service"
+  )
 }
 
 function createPrescribingCapabilityStatement(manifest: Manifest) {
@@ -210,7 +218,14 @@ function createPrescribingCapabilityStatement(manifest: Manifest) {
       ]
     }
   ]
-  return createTemplateCapabilityStatement(manifest, "FHIR Prescribing API", resource, operation, messaging)
+  return createTemplateCapabilityStatement(
+    manifest,
+    "FHIR Prescribing API",
+    resource,
+    operation,
+    messaging,
+    "apim-fhir-prescribing-service"
+  )
 }
 
 function createDispensingCapabilityStatement(manifest: Manifest) {
@@ -284,8 +299,14 @@ function createDispensingCapabilityStatement(manifest: Manifest) {
     }
   ]
 
-  return createTemplateCapabilityStatement(manifest, "FHIR Dispensing API", resource, operation, messaging)
-
+  return createTemplateCapabilityStatement(
+    manifest,
+    "FHIR Dispensing API",
+    resource,
+    operation,
+    messaging,
+    "apim-fhir-dispensing-service"
+  )
 }
 
 export function getCapabilityStatement(
