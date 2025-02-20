@@ -44,10 +44,10 @@ export function reformatUserErrorsToFhir(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
-    // we DO log response here as we are sending back the same response
+    // we log the original response here but we send back a different response
     logger.error({
       payload: getPayload(request, logPayload),
-      response
+      originalResponse: response
     }, "Boom")
     return responseToolkit.response(
       fatalResponse
