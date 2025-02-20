@@ -31,7 +31,7 @@ describe.each(TestResources.specification)(
     let logs: Array<Hapi.RequestLog>
 
     beforeAll(async () => {
-      server = createServer({collectLogs: true})
+      server = createServer({collectLogs: true}, 9001)
       await configureLogging(server)
       await server.start()
 
