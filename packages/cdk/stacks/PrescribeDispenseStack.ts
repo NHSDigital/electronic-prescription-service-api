@@ -154,7 +154,10 @@ export class PrescribeDispenseStack extends Stack {
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
       validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
-      sandboxModeEnabled: sandboxModeEnabled
+      sandboxModeEnabled: sandboxModeEnabled,
+      cpu: fhirFacadeCpu,
+      memory: fhirFacadeMemory,
+      taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -181,7 +184,10 @@ export class PrescribeDispenseStack extends Stack {
       coordinatorLogGroup: logGroups.claimsCoordinatorLogGroup,
       validatorLogGroup: logGroups.claimsValidatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
-      sandboxModeEnabled: sandboxModeEnabled
+      sandboxModeEnabled: sandboxModeEnabled,
+      cpu: fhirFacadeCpu,
+      memory: fhirFacadeMemory,
+      taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`
     })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
@@ -198,7 +204,6 @@ export class PrescribeDispenseStack extends Stack {
       assignPublicIp: false,
       certificate: fhirFacadeAlbCertificate,
       cluster: ecsCluster,
-      cpu: fhirFacadeCpu,
       desiredCount: desiredFhirFacadeCount,
       domainName: fhirFacadeHostname,
       domainZone: hostedZone,
@@ -208,7 +213,6 @@ export class PrescribeDispenseStack extends Stack {
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
-      memoryLimitMiB: fhirFacadeMemory,
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100
     })
@@ -263,7 +267,6 @@ export class PrescribeDispenseStack extends Stack {
     const claimsService = new ApplicationLoadBalancedFargateService(this, "claimsService", {
       assignPublicIp: false,
       cluster: ecsCluster,
-      cpu: fhirFacadeCpu,
       desiredCount: desiredFhirFacadeCount,
       enableECSManagedTags: true,
       ipAddressType: IpAddressType.IPV4,
@@ -271,7 +274,6 @@ export class PrescribeDispenseStack extends Stack {
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
-      memoryLimitMiB: fhirFacadeMemory,
       taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
       publicLoadBalancer: false

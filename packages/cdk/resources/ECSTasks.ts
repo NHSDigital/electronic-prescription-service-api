@@ -40,6 +40,9 @@ export interface ECSTasksProps {
   readonly validatorLogGroup: ILogGroup
   readonly SHA1EnabledApplicationIds: string
   readonly sandboxModeEnabled: string
+  readonly cpu: number
+  readonly memory: number
+  readonly taskExecutionRoleName: string
 }
 
 /**
@@ -83,12 +86,12 @@ export class ECSTasks extends Construct {
         lambdaDecryptSecretsKMSPolicy,
         epsSigningCertChainManagedPolicy
       ],
-      roleName: `${props.stackName}-ecsTaskExecutionRole`
+      roleName: props.taskExecutionRoleName
     })
 
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
-      cpu: 2048,
-      memoryLimitMiB: 4096,
+      cpu: props.cpu,
+      memoryLimitMiB: props.memory,
       executionRole: ecsTaskExecutionRole,
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.X86_64,
