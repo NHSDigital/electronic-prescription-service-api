@@ -120,9 +120,9 @@ export function getProxyName(headers: Hapi.Utils.Dictionary<string>): string {
       if (proxyName.includes("fhir-prescribing")) {
         return ProxyName.EPS_FHIR_PRESCRIBING
       }
-      // we do not know what it is so just return dispensing
-      return ProxyName.EPS_FHIR_DISPENSING
     }
+    // we do not know what it is so just return dispensing
+    return ProxyName.EPS_FHIR_DISPENSING
   }
   return ProxyName.EPS_FHIR
 }
