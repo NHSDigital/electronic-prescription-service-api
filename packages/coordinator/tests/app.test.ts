@@ -50,15 +50,84 @@ const spyStream: DestinationStream = sink(spyOnPinoOutput)
 
 const logger = pino(spyStream)
 
+const successRoute: Hapi.ServerRoute = {
+  method: "GET",
+  path: "/test",
+  handler: (_, responseToolkit) => {
+    return responseToolkit.response("success")
+  }
+}
+
+const processingErrorRoute: Hapi.ServerRoute = {
+  method: "GET",
+  path: "/processing-error",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handler: (_, h) => {
+    throw new InvalidValueError("")
+  }
+}
+
+const processingErrorRoutePost: Hapi.ServerRoute = {
+  method: "POST",
+  path: "/processing-error",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handler: (_, h) => {
+    throw new InvalidValueError("")
+  }
+}
+const otherErrorRoute: Hapi.ServerRoute = {
+  method: "GET",
+  path: "/other-error",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handler: (_, h) => {
+    throw new Error("")
+  }
+}
+
+const otherErrorRoutePost: Hapi.ServerRoute = {
+  method: "POST",
+  path: "/other-error",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handler: (_, h) => {
+    throw new Error("")
+  }
+}
+
+const inconsistentValueErrorRoutePost: Hapi.ServerRoute = {
+  method: "POST",
+  path: "/inconsistentValue-error",
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  handler: (_, h) => {
+    throw new InconsistentValuesError("")
+  }
+}
+
+const warningRoutePost: Hapi.ServerRoute = {
+  method: "POST",
+  path: "/warning",
+  handler: (_, responseToolkit) => {
+    return responseToolkit.response("warning").code(400)
+  }
+}
+const fhirRoute: Hapi.ServerRoute = {
+  method: "GET",
+  path: "/fhir",
+  handler: (_, responseToolkit) => {
+    return responseToolkit.response("success").type(ContentTypes.FHIR)
+  }
+}
+
+const xmlRoute: Hapi.ServerRoute = {
+  method: "GET",
+  path: "/xml",
+  handler: (_, responseToolkit) => {
+    return responseToolkit.response("success").type(ContentTypes.XML)
+  }
+}
+
 describe("rejectInvalidProdHeaders extension", () => {
   const server = Hapi.server()
-  server.route({
-    method: "GET",
-    path: "/test",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("success")
-    }
-  })
+  server.route([successRoute])
 
   beforeAll(async () => {
     await HapiPino.register(server, {
@@ -110,29 +179,7 @@ describe("rejectInvalidProdHeaders extension", () => {
 
 describe("reformatUserErrorsToFhir extension", () => {
   const server = Hapi.server()
-  const successRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/test",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("success")
-    }
-  }
-  const processingErrorRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/processing-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new InvalidValueError("")
-    }
-  }
-  const otherErrorRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/other-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new Error("")
-    }
-  }
+
   server.route([successRoute, processingErrorRoute, otherErrorRoute])
 
   beforeAll(async () => {
@@ -169,20 +216,7 @@ describe("reformatUserErrorsToFhir extension", () => {
 
 describe("switchContentTypeForSmokeTest extension", () => {
   const server = Hapi.server()
-  const fhirRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/fhir",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("success").type(ContentTypes.FHIR)
-    }
-  }
-  const xmlRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/xml",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("success").type(ContentTypes.XML)
-    }
-  }
+
   server.route([fhirRoute, xmlRoute])
 
   beforeAll(async () => {
@@ -219,53 +253,15 @@ describe("switchContentTypeForSmokeTest extension", () => {
   })
 })
 
-describe("logs payload on proxygen deployed", () => {
+describe("logs payload in correct situations", () => {
   const server = Hapi.server()
 
-  const successRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/test",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("success")
-    }
-  }
-  const processingErrorRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/processing-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new InvalidValueError("")
-    }
-  }
-  const inconsistentValueErrorRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/inconsistentValue-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new InconsistentValuesError("")
-    }
-  }
-  const warningRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/warning",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("warning").code(400)
-    }
-  }
-  const otherErrorRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/other-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new Error("")
-    }
-  }
   server.route([
     successRoute,
-    processingErrorRoute,
-    otherErrorRoute,
-    inconsistentValueErrorRoute,
-    warningRoute
+    processingErrorRoutePost,
+    otherErrorRoutePost,
+    inconsistentValueErrorRoutePost,
+    warningRoutePost
   ])
 
   beforeAll(async () => {
@@ -278,269 +274,130 @@ describe("logs payload on proxygen deployed", () => {
 
   beforeEach(() => {
     spyOnPinoOutput.mockReset()
-    newIsEpsHostedContainer.mockImplementation(() => true)
   })
 
-  test("logs FhirMessageProcessingError", async () => {
-    const response = await server.inject({
-      url: "/processing-error",
-      payload: {foo: "bar"},
-      method: "POST"
-    })
-    expect(response.payload).toContain("OperationOutcome")
-    expect(response.statusCode).toBe(400)
-    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": "FhirMessageProcessingError",
-      "payload": {"foo": "bar"},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("logs InconsistentValuesError", async () => {
-    const response = await server.inject({
-      url: "/inconsistentValue-error",
-      payload: {foo: "bar"},
-      method: "POST"
-    })
-    expect(response.payload).toContain("OperationOutcome")
-    expect(response.statusCode).toBe(400)
-    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": "InconsistentValuesError",
-      "payload": {"foo": "bar"},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("doesn't log on success", async () => {
-    const response = await server.inject({url: "/test"})
-    expect(response.payload).toBe("success")
-    expect(response.statusCode).toBe(200)
-    expect(spyOnPinoOutput).not.toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": expect.anything(),
-      "payload": expect.anything(),
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("logs boom errors", async () => {
-    const response = await server.inject({
-      url: "/other-error",
-      method: "POST",
-      payload: {
-        "foo": "bar"
-      }
-    })
-    expect(response.payload).not.toContain("OperationOutcome")
-    expect(response.statusCode).toBe(500)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 50,
-      "msg": "Boom",
-      "payload": {"foo": "bar"},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "response": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("logs 400 errors", async () => {
-    const response = await server.inject({
-      url: "/warning",
-      method: "POST",
-      payload: {
-        "foo": "bar"
-      }
-    })
-    expect(response.payload).not.toContain("OperationOutcome")
-    expect(response.statusCode).toBe(400)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": "ErrorOrWarningResponse",
-      "payload": {"foo": "bar"},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "response": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-})
-
-describe("does not log payload on non proxygen deployed", () => {
-  const server = Hapi.server()
-  server.ext("onPreResponse", reformatUserErrorsToFhir)
-  const successRoute: Hapi.ServerRoute = {
-    method: "GET",
-    path: "/test",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("success")
+  test.each([true, false])(
+    "logs correct details for FhirMessageProcessingError when isEpsDeployment is set to %p",
+    async (isEpsDeploymentValue: boolean) => {
+      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
+      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
+      const response = await server.inject({
+        url: "/processing-error",
+        payload: {foo: "bar"},
+        method: "POST"
+      })
+      expect(response.payload).toContain("OperationOutcome")
+      expect(response.statusCode).toBe(400)
+      expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
+      expect(spyOnPinoOutput).toHaveBeenCalledWith({
+        "hostname": expect.anything(),
+        "level": 40,
+        "msg": "FhirMessageProcessingError",
+        "payload": expectedPayload,
+        "pid": expect.anything(),
+        "req": expect.anything(),
+        "time": expect.anything()
+      })
     }
-  }
-  const processingErrorRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/processing-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new InvalidValueError("")
+  )
+
+  test.each([true, false])(
+    "logs correct details for InconsistentValuesError when isEpsDeployment is set to %p",
+    async (isEpsDeploymentValue: boolean) => {
+      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
+      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
+      const response = await server.inject({
+        url: "/inconsistentValue-error",
+        payload: {foo: "bar"},
+        method: "POST"
+      })
+      expect(response.payload).toContain("OperationOutcome")
+      expect(response.statusCode).toBe(400)
+      expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
+      expect(spyOnPinoOutput).toHaveBeenCalledWith({
+        "hostname": expect.anything(),
+        "level": 40,
+        "msg": "InconsistentValuesError",
+        "payload": expectedPayload,
+        "pid": expect.anything(),
+        "req": expect.anything(),
+        "time": expect.anything()
+      })
     }
-  }
-  const inconsistentValueErrorRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/inconsistentValue-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new InconsistentValuesError("")
+  )
+
+  test.each([true, false])(
+    "does not log on success when isEpsDeployment is set to %p",
+    async (isEpsDeploymentValue: boolean) => {
+      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
+      const response = await server.inject({url: "/test"})
+      expect(response.payload).toBe("success")
+      expect(response.statusCode).toBe(200)
+      expect(spyOnPinoOutput).not.toHaveBeenCalledWith({
+        "hostname": expect.anything(),
+        "level": 40,
+        "msg": expect.anything(),
+        "payload": expect.anything(),
+        "pid": expect.anything(),
+        "req": expect.anything(),
+        "time": expect.anything()
+      })
     }
-  }
-  const warningRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/warning",
-    handler: (_, responseToolkit) => {
-      return responseToolkit.response("warning").code(400)
+  )
+
+  test.each([true, false])(
+    "logs correct details for boom errors when isEpsDeployment is set to %p",
+    async (isEpsDeploymentValue: boolean) => {
+      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
+      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
+      const response = await server.inject({
+        url: "/other-error",
+        method: "POST",
+        payload: {
+          "foo": "bar"
+        }
+      })
+      expect(response.payload).not.toContain("OperationOutcome")
+      expect(response.payload).not.toContain("OperationOutcome")
+      expect(response.statusCode).toBe(500)
+      expect(spyOnPinoOutput).toHaveBeenCalledWith({
+        "hostname": expect.anything(),
+        "level": 50,
+        "msg": "Boom",
+        "payload": expectedPayload,
+        "pid": expect.anything(),
+        "req": expect.anything(),
+        "response": expect.anything(),
+        "time": expect.anything()
+      })
     }
-  }
-  const otherErrorRoute: Hapi.ServerRoute = {
-    method: "POST",
-    path: "/other-error",
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    handler: (_, h) => {
-      throw new Error("")
+  )
+
+  test.each([true, false])(
+    "logs correct details for 400 results when isEpsDeployment is set to %p",
+    async (isEpsDeploymentValue: boolean) => {
+      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
+      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
+      const response = await server.inject({
+        url: "/warning",
+        method: "POST",
+        payload: {
+          "foo": "bar"
+        }
+      })
+      expect(response.payload).not.toContain("OperationOutcome")
+      expect(response.statusCode).toBe(400)
+      expect(spyOnPinoOutput).toHaveBeenCalledWith({
+        "hostname": expect.anything(),
+        "level": 40,
+        "msg": "ErrorOrWarningResponse",
+        "payload": expectedPayload,
+        "pid": expect.anything(),
+        "req": expect.anything(),
+        "response": expect.anything(),
+        "time": expect.anything()
+      })
     }
-  }
-  server.route([
-    successRoute,
-    processingErrorRoute,
-    otherErrorRoute,
-    inconsistentValueErrorRoute,
-    warningRoute
-  ])
+  )
 
-  beforeAll(async () => {
-    await HapiPino.register(server, {
-      instance: logger
-    })
-
-    server.ext("onPreResponse", reformatUserErrorsToFhir)
-  })
-
-  beforeEach(() => {
-    spyOnPinoOutput.mockReset()
-    newIsEpsHostedContainer.mockImplementation(() => false)
-  })
-
-  test("logs FhirMessageProcessingError", async () => {
-    const response = await server.inject({
-      url: "/processing-error",
-      payload: {foo: "bar"},
-      method: "POST"
-    })
-    expect(response.payload).toContain("OperationOutcome")
-    expect(response.statusCode).toBe(400)
-    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": "FhirMessageProcessingError",
-      "payload": {},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("logs InconsistentValuesError", async () => {
-    const response = await server.inject({
-      url: "/inconsistentValue-error",
-      payload: {foo: "bar"},
-      method: "POST"
-    })
-    expect(response.payload).toContain("OperationOutcome")
-    expect(response.statusCode).toBe(400)
-    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": "InconsistentValuesError",
-      "payload": {},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("doesn't log on success", async () => {
-    const response = await server.inject({url: "/test"})
-    expect(response.payload).toBe("success")
-    expect(response.statusCode).toBe(200)
-    expect(spyOnPinoOutput).not.toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": expect.anything(),
-      "payload": expect.anything(),
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "response": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("logs boom errors", async () => {
-    const response = await server.inject({
-      url: "/other-error",
-      method: "POST",
-      payload: {
-        "foo": "bar"
-      }
-    })
-    expect(response.payload).not.toContain("OperationOutcome")
-    expect(response.statusCode).toBe(500)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 50,
-      "msg": "Boom",
-      "payload": {},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "response": expect.anything(),
-      "time": expect.anything()
-    })
-  })
-
-  test("logs 400 errors", async () => {
-    const response = await server.inject({
-      url: "/warning",
-      method: "POST",
-      payload: {
-        "foo": "bar"
-      }
-    })
-    expect(response.payload).not.toContain("OperationOutcome")
-    expect(response.statusCode).toBe(400)
-    expect(spyOnPinoOutput).toHaveBeenCalledWith({
-      "hostname": expect.anything(),
-      "level": 40,
-      "msg": "ErrorOrWarningResponse",
-      "payload": {},
-      "pid": expect.anything(),
-      "req": expect.anything(),
-      "response": expect.anything(),
-      "time": expect.anything()
-    })
-  })
 })
