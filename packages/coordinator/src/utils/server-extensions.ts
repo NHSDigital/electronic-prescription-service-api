@@ -6,6 +6,25 @@ import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
 import {isEpsHostedContainer} from "./feature-flags"
 
+export const fatalResponse = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      severity: "fatal",
+      code: "exception",
+      details: {
+        coding: [
+          {
+            system: "https://fhir.nhs.uk/CodeSystem/http-error-codes",
+            code: "SERVER_ERROR",
+            display: "500: The Server has encountered an error processing the request."
+          }
+        ]
+      }
+    }
+  ]
+}
+
 export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject | symbol {
@@ -30,6 +49,9 @@ export function reformatUserErrorsToFhir(
       payload: getPayload(request, logPayload),
       response
     }, "Boom")
+    return responseToolkit.response(
+      fatalResponse
+    ).code(500).type(ContentTypes.FHIR)
   } else {
     if (response.statusCode >= 400) {
     // we DO log response here as we are sending back the same response

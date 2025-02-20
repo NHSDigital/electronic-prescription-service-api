@@ -6,6 +6,7 @@ import {isProd} from "../src/utils/environment"
 import {InconsistentValuesError, InvalidValueError} from "../../models/errors/processing-errors"
 import {ContentTypes} from "../src/routes/util"
 import {
+  fatalResponse,
   invalidProdHeaders,
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
@@ -106,7 +107,7 @@ const warningRoutePost: Hapi.ServerRoute = {
   method: "POST",
   path: "/warning",
   handler: (_, responseToolkit) => {
-    return responseToolkit.response("warning").code(400)
+    return responseToolkit.response("warning - OperationOutcome").code(400).type(ContentTypes.FHIR)
   }
 }
 const fhirRoute: Hapi.ServerRoute = {
@@ -207,9 +208,9 @@ describe("reformatUserErrorsToFhir extension", () => {
     expect(response.statusCode).toBe(200)
   })
 
-  test("doesn't change other errors", async () => {
+  test("returns valid FHIR for other errors", async () => {
     const response = await server.inject({url: "/other-error"})
-    expect(response.payload).not.toContain("OperationOutcome")
+    expect(response.payload).toBe(JSON.stringify(fatalResponse))
     expect(response.statusCode).toBe(500)
   })
 })
@@ -259,6 +260,7 @@ describe("logs payload in correct situations", () => {
   server.route([
     successRoute,
     processingErrorRoutePost,
+    processingErrorRoute,
     otherErrorRoutePost,
     inconsistentValueErrorRoutePost,
     warningRoutePost
@@ -276,53 +278,103 @@ describe("logs payload in correct situations", () => {
     spyOnPinoOutput.mockReset()
   })
 
-  test.each([true, false])(
-    "logs correct details for FhirMessageProcessingError when isEpsDeployment is set to %p",
-    async (isEpsDeploymentValue: boolean) => {
-      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
-      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
-      const response = await server.inject({
-        url: "/processing-error",
-        payload: {foo: "bar"},
-        method: "POST"
-      })
-      expect(response.payload).toContain("OperationOutcome")
-      expect(response.statusCode).toBe(400)
-      expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-      expect(spyOnPinoOutput).toHaveBeenCalledWith({
-        "hostname": expect.anything(),
-        "level": 40,
-        "msg": "FhirMessageProcessingError",
-        "payload": expectedPayload,
-        "pid": expect.anything(),
-        "req": expect.anything(),
-        "time": expect.anything()
-      })
-    }
-  )
+  const logTestCases = [
+    {
+      isEpsDeployment: true,
+      url: "/processing-error",
+      method: "POST",
+      expectedMessage: "FhirMessageProcessingError",
+      expectedLevel: 40,
+      expectedReturnStatus: 400,
+      scenarioDescription: "logs correct details for processing error when is EpsDeployment"
+    },
+    {
+      isEpsDeployment: false,
+      url: "/processing-error",
+      method: "POST",
+      expectedMessage: "FhirMessageProcessingError",
+      expectedLevel: 40,
+      expectedReturnStatus: 400,
+      scenarioDescription: "logs correct details for processing error when is not EpsDeployment"
+    },
+    {
+      isEpsDeployment: true,
+      url: "/inconsistentValue-error",
+      method: "POST",
+      expectedMessage: "InconsistentValuesError",
+      expectedLevel: 40,
+      expectedReturnStatus: 400,
+      scenarioDescription: "logs correct details for inconsistent value error when is EpsDeployment"
+    },
+    {
+      isEpsDeployment: false,
+      url: "/inconsistentValue-error",
+      method: "POST",
+      expectedMessage: "InconsistentValuesError",
+      expectedLevel: 40,
+      expectedReturnStatus: 400,
+      scenarioDescription: "logs correct details for inconsistent value error when is not EpsDeployment"
+    },
 
-  test.each([true, false])(
-    "logs correct details for InconsistentValuesError when isEpsDeployment is set to %p",
-    async (isEpsDeploymentValue: boolean) => {
-      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
-      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
+    {
+      isEpsDeployment: true,
+      url: "/other-error",
+      method: "POST",
+      expectedMessage: "Boom",
+      expectedLevel: 50,
+      expectedReturnStatus: 500,
+      scenarioDescription: "logs correct details for other error when is EpsDeployment"
+    },
+    {
+      isEpsDeployment: false,
+      url: "/other-error",
+      method: "POST",
+      expectedMessage: "Boom",
+      expectedLevel: 50,
+      expectedReturnStatus: 500,
+      scenarioDescription: "logs correct details for other error when is not EpsDeployment"
+    },
+
+    {
+      isEpsDeployment: true,
+      url: "/warning",
+      method: "POST",
+      expectedMessage: "ErrorOrWarningResponse",
+      expectedLevel: 40,
+      expectedReturnStatus: 400,
+      scenarioDescription: "logs correct details for warning when is EpsDeployment"
+    },
+    {
+      isEpsDeployment: false,
+      url: "/warning",
+      method: "POST",
+      expectedMessage: "ErrorOrWarningResponse",
+      expectedLevel: 40,
+      expectedReturnStatus: 400,
+      scenarioDescription: "logs correct details for warning when is not EpsDeployment"
+    }
+
+  ]
+
+  test.each(logTestCases)(
+    "$scenarioDescription", async function(logTestCase) {
+      newIsEpsHostedContainer.mockImplementation(() => logTestCase.isEpsDeployment)
+      const expectedPayload = logTestCase.isEpsDeployment ? {"foo": "bar"} : {}
       const response = await server.inject({
-        url: "/inconsistentValue-error",
+        url: logTestCase.url,
         payload: {foo: "bar"},
-        method: "POST"
+        method: logTestCase.method
       })
       expect(response.payload).toContain("OperationOutcome")
-      expect(response.statusCode).toBe(400)
+      expect(response.statusCode).toBe(logTestCase.expectedReturnStatus)
       expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-      expect(spyOnPinoOutput).toHaveBeenCalledWith({
-        "hostname": expect.anything(),
-        "level": 40,
-        "msg": "InconsistentValuesError",
-        "payload": expectedPayload,
-        "pid": expect.anything(),
-        "req": expect.anything(),
-        "time": expect.anything()
-      })
+      expect(spyOnPinoOutput).toHaveBeenCalledWith(expect.objectContaining(
+        {
+          "level": logTestCase.expectedLevel,
+          "msg": logTestCase.expectedMessage,
+          "payload": expectedPayload
+        }
+      ))
     }
   )
 
@@ -333,71 +385,28 @@ describe("logs payload in correct situations", () => {
       const response = await server.inject({url: "/test"})
       expect(response.payload).toBe("success")
       expect(response.statusCode).toBe(200)
-      expect(spyOnPinoOutput).not.toHaveBeenCalledWith({
-        "hostname": expect.anything(),
+      expect(spyOnPinoOutput).not.toHaveBeenCalledWith(
+        expect.objectContaining({
+          "level": 40
+        }))
+    }
+  )
+
+  test("does not break when there is no payload", async () => {
+    newIsEpsHostedContainer.mockImplementation(() => true)
+    const response = await server.inject({
+      url: "/processing-error",
+      method: "GET"
+    })
+    expect(response.payload).toContain("OperationOutcome")
+    expect(response.statusCode).toBe(400)
+    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
+    expect(spyOnPinoOutput).toHaveBeenCalledWith(expect.objectContaining(
+      {
         "level": 40,
-        "msg": expect.anything(),
-        "payload": expect.anything(),
-        "pid": expect.anything(),
-        "req": expect.anything(),
-        "time": expect.anything()
-      })
-    }
-  )
-
-  test.each([true, false])(
-    "logs correct details for boom errors when isEpsDeployment is set to %p",
-    async (isEpsDeploymentValue: boolean) => {
-      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
-      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
-      const response = await server.inject({
-        url: "/other-error",
-        method: "POST",
-        payload: {
-          "foo": "bar"
-        }
-      })
-      expect(response.payload).not.toContain("OperationOutcome")
-      expect(response.payload).not.toContain("OperationOutcome")
-      expect(response.statusCode).toBe(500)
-      expect(spyOnPinoOutput).toHaveBeenCalledWith({
-        "hostname": expect.anything(),
-        "level": 50,
-        "msg": "Boom",
-        "payload": expectedPayload,
-        "pid": expect.anything(),
-        "req": expect.anything(),
-        "response": expect.anything(),
-        "time": expect.anything()
-      })
-    }
-  )
-
-  test.each([true, false])(
-    "logs correct details for 400 results when isEpsDeployment is set to %p",
-    async (isEpsDeploymentValue: boolean) => {
-      newIsEpsHostedContainer.mockImplementation(() => isEpsDeploymentValue)
-      const expectedPayload = isEpsDeploymentValue ? {"foo": "bar"} : {}
-      const response = await server.inject({
-        url: "/warning",
-        method: "POST",
-        payload: {
-          "foo": "bar"
-        }
-      })
-      expect(response.payload).not.toContain("OperationOutcome")
-      expect(response.statusCode).toBe(400)
-      expect(spyOnPinoOutput).toHaveBeenCalledWith({
-        "hostname": expect.anything(),
-        "level": 40,
-        "msg": "ErrorOrWarningResponse",
-        "payload": expectedPayload,
-        "pid": expect.anything(),
-        "req": expect.anything(),
-        "response": expect.anything(),
-        "time": expect.anything()
-      })
-    }
-  )
-
+        "msg": "FhirMessageProcessingError",
+        "payload": {}
+      }
+    ))
+  })
 })
