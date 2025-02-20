@@ -30,8 +30,10 @@ import {
   ScalableTarget,
   PredefinedMetric,
   ServiceNamespace,
-  TargetTrackingScalingPolicy
+  TargetTrackingScalingPolicy,
+  Schedule
 } from "aws-cdk-lib/aws-applicationautoscaling"
+
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
     readonly serviceName: string
@@ -256,6 +258,8 @@ export class PrescribeDispenseStack extends Stack {
       )
     }
 
+    // create the claims service
+    // note - this has publicLoadBalancer set to false
     const claimsService = new ApplicationLoadBalancedFargateService(this, "claimsService", {
       assignPublicIp: false,
       cluster: ecsCluster,
@@ -273,12 +277,47 @@ export class PrescribeDispenseStack extends Stack {
       publicLoadBalancer: false
     })
 
-    const listener = fhirFacadeService.listener
+    claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
+    claimsService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}_claims/connection`)
 
+    const claimsServiceScalableTarget = new ScalableTarget(this, "claimsServiceScalableTarget", {
+      serviceNamespace: ServiceNamespace.ECS,
+      resourceId: `service/${claimsService.cluster.clusterName}/${claimsService.service.serviceName}`,
+      scalableDimension: "ecs:service:DesiredCount",
+      minCapacity: desiredFhirFacadeCount,
+      maxCapacity: 10
+    })
+
+    // scale up if average cpu goes above 70%
+    new TargetTrackingScalingPolicy(this, "claimsScalingPolicy", {
+      scalingTarget: claimsServiceScalableTarget,
+      targetValue: 70,
+      disableScaleIn: false,
+      scaleOutCooldown: Duration.seconds(60),
+      scaleInCooldown: Duration.seconds(60),
+      predefinedMetric: PredefinedMetric.ECS_SERVICE_AVERAGE_CPU_UTILIZATION
+    })
+
+    const monthEndDays = "20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5"
+    claimsServiceScalableTarget.scaleOnSchedule("claimsScaleOut", {
+      schedule: Schedule.cron({day: monthEndDays, hour: "7", minute: "0"}),
+      minCapacity: desiredFhirFacadeCount + 1,
+      maxCapacity: 10
+    })
+
+    claimsServiceScalableTarget.scaleOnSchedule("claimsScaleIn", {
+      schedule: Schedule.cron({day: monthEndDays, hour: "19", minute: "0"}),
+      minCapacity: desiredFhirFacadeCount,
+      maxCapacity: 10
+    })
+
+    // add a route from main listener to claims service
+    const listener = fhirFacadeService.listener
     listener.addTargets("ClaimsTarget", {
       priority: 10, // Priority must be unique
       conditions: [ListenerCondition.pathPatterns(["/FHIR/R4/Claim*"])],
       targets: [claimsService.service],
+      port: claimsService.listener.port,
       healthCheck: {
         path: "/_healthcheck",
         interval: Duration.seconds(10),

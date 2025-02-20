@@ -27,6 +27,16 @@ export const nagSuppressions = (stack: Stack) => {
 
   safeAddNagSuppression(
     stack,
+    "/prescribe-dispense/claimsService/LB/SecurityGroup/Resource",
+    [
+      {
+        id: "AwsSolutions-EC23",
+        reason: "Suppress error for large CIDR security group"
+      }
+    ]
+  )
+  safeAddNagSuppression(
+    stack,
     "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/Resource",
     [
       {
