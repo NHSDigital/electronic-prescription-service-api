@@ -4,38 +4,77 @@ import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
+import {isEpsHostedContainer} from "./feature-flags"
+
+export const fatalResponse = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      severity: "fatal",
+      code: "exception",
+      details: {
+        coding: [
+          {
+            system: "https://fhir.nhs.uk/CodeSystem/http-error-codes",
+            code: "SERVER_ERROR",
+            display: "500: The Server has encountered an error processing the request."
+          }
+        ]
+      }
+    }
+  ]
+}
 
 export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject | symbol {
   const response = request.response
+  const logPayload = isEpsHostedContainer()
+  const logger = request.logger
   if (response instanceof processingErrors.InconsistentValuesError) {
-    request.log("info", response)
+    // we do not log response here as we are sending back a different response
+    logger.warn({payload: getPayload(request, logPayload)}, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
-    request.log("info", response)
+    // we do not log response here as we are sending back a different response
+    logger.warn({payload: getPayload(request, logPayload)}, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
-    request.log("error", response)
+    // we log the original response here but we send back a different response
+    logger.error({
+      payload: getPayload(request, logPayload),
+      originalResponse: response
+    }, "Boom")
+    return responseToolkit.response(
+      fatalResponse
+    ).code(500).type(ContentTypes.FHIR)
   } else {
     if (response.statusCode >= 400) {
-      request.log("warn", {
-        msg: "error or warning response",
-        error: {
-          res: {
-            statusCode: response.statusCode,
-            body: response.source,
-            Headers: response.headers
-          }
-        }
-      })
+    // we DO log response here as we are sending back the same response
+      logger.warn({
+        payload: getPayload(request, logPayload),
+        response
+      }, "ErrorOrWarningResponse")
     }
   }
   return responseToolkit.continue
+}
+
+function getPayload(request: Hapi.Request<Hapi.ReqRefDefaults>, logPayload: boolean) {
+  if (!logPayload) {
+    return {}
+  }
+  if (request.payload) {
+    if (request.payload instanceof Buffer) {
+      return request.payload.toString()
+    }
+    return request.payload
+  }
+  return {}
 }
 
 export function switchContentTypeForSmokeTest(
@@ -67,6 +106,8 @@ export const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RES
 export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
+  const logPayload = isEpsHostedContainer()
+  const logger = request.logger
   if (isProd()) {
     const listOfInvalidHeaders = Object.keys(request.headers).filter(
       requestHeader => invalidProdHeaders.includes(requestHeader as RequestHeaders)
@@ -77,7 +118,11 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
       } had invalid header(s): ${
         listOfInvalidHeaders
       }`
-      request.logger.error(errorMessage)
+      logger.error({
+        payload: getPayload(request, logPayload),
+        errorMessage
+      }, "invalid headers")
+
       const issue = validationErrors.invalidHeaderOperationOutcome(listOfInvalidHeaders)
       return responseToolkit
         .response(fhir.createOperationOutcome([issue]))
