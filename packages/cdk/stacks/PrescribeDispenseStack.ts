@@ -12,9 +12,14 @@ import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
-import {Cluster, FargateService} from "aws-cdk-lib/aws-ecs"
+import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
-import {CfnListener, IpAddressType, TrustStore} from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import {
+  CfnListener,
+  IpAddressType,
+  ListenerCondition,
+  TrustStore
+} from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
@@ -251,15 +256,37 @@ export class PrescribeDispenseStack extends Stack {
       )
     }
 
-    // new FargateService(this, "API Fargate Service", {
-    //   serviceName: "claims-service",
-    //   cluster: ecsCluster,
-    //   securityGroups: [securityGroup],
-    //   desiredCount: 1,
-    //   taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition
-    // })
+    const claimsService = new ApplicationLoadBalancedFargateService(this, "claimsService", {
+      assignPublicIp: false,
+      cluster: ecsCluster,
+      cpu: fhirFacadeCpu,
+      desiredCount: desiredFhirFacadeCount,
+      enableECSManagedTags: true,
+      ipAddressType: IpAddressType.IPV4,
+      listenerPort: 443,
+      taskSubnets: {
+        subnetType: SubnetType.PRIVATE_WITH_EGRESS
+      },
+      memoryLimitMiB: fhirFacadeMemory,
+      taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition,
+      minHealthyPercent: 100,
+      publicLoadBalancer: false
+    })
 
-    // fhirFacadeService.loadBalancer.add
+    const listener = fhirFacadeService.listener
+
+    listener.addTargets("ClaimsTarget", {
+      priority: 10, // Priority must be unique
+      conditions: [ListenerCondition.pathPatterns(["/FHIR/R4/Claim*"])],
+      targets: [claimsService.service],
+      healthCheck: {
+        path: "/_healthcheck",
+        interval: Duration.seconds(10),
+        timeout: Duration.seconds(5),
+        unhealthyThresholdCount: 2,
+        healthyThresholdCount: 2
+      }
+    })
     nagSuppressions(this)
   }
 }
