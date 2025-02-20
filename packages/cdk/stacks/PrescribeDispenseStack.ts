@@ -12,7 +12,7 @@ import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
-import {Cluster} from "aws-cdk-lib/aws-ecs"
+import {Cluster, FargateService} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {CfnListener, IpAddressType, TrustStore} from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
@@ -150,6 +150,33 @@ export class PrescribeDispenseStack extends Stack {
       sandboxModeEnabled: sandboxModeEnabled
     })
 
+    const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
+      stackName: props.stackName,
+      fhirFacadeRepo: fhirFacadeRepo,
+      validatorRepo: validatorRepo,
+      dockerImageTag: dockerImageTag,
+      containerPort: containerPort,
+      containerPortValidator: containerPortValidator,
+      targetSpineServer: targetSpineServer,
+      commitId: commitId,
+      version: props.version,
+      logLevel: logLevel,
+      validatorLogLevel: validatorLogLevel,
+      toAsid: toAsid,
+      toPartyKey: toPartyKey,
+      enableDefaultAsidPartyKey: enableDefaultAsidPartyKey,
+      defaultPTLAsid: defaultPTLAsid,
+      defaultPTLPartyKey: defaultPTLPartyKey,
+      spinePrivateKey: spinePrivateKey,
+      spinePublicCertificate: spinePublicCertificate,
+      spineCAChain: spineCAChain,
+      epsSigningCertChain: epsSigningCertChain,
+      coordinatorLogGroup: logGroups.claimsCoordinatorLogGroup,
+      validatorLogGroup: logGroups.claimsValidatorLogGroup,
+      SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
+      sandboxModeEnabled: sandboxModeEnabled
+    })
+
     const ecsCluster = new Cluster(this, "EcsCluster", {
       clusterName: `${props.stackName}-cluster`,
       vpc: defaultVpc
@@ -224,6 +251,15 @@ export class PrescribeDispenseStack extends Stack {
       )
     }
 
+    // new FargateService(this, "API Fargate Service", {
+    //   serviceName: "claims-service",
+    //   cluster: ecsCluster,
+    //   securityGroups: [securityGroup],
+    //   desiredCount: 1,
+    //   taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition
+    // })
+
+    // fhirFacadeService.loadBalancer.add
     nagSuppressions(this)
   }
 }

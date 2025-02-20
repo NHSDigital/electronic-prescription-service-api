@@ -28,6 +28,8 @@ export interface LogGroupProps {
 export class LogGroups extends Construct {
   public readonly coordinatorLogGroup: ILogGroup
   public readonly validatorLogGroup: ILogGroup
+  public readonly claimsCoordinatorLogGroup: ILogGroup
+  public readonly claimsValidatorLogGroup: ILogGroup
 
   public constructor(scope: Construct, id: string, props: LogGroupProps) {
     super(scope, id)
@@ -81,8 +83,59 @@ export class LogGroups extends Construct {
         role: props.splunkSubscriptionFilterRole
       })
     })
+
+    const claimsCoordinatorLogGroup = new LogGroup(this, "ClaimsCoordinatorLogGroup", {
+      encryptionKey: props.cloudWatchLogsKmsKey,
+      logGroupName: `/aws/ecs/${props.stackName}-claims-coordinator`,
+      retention: props.logRetentionInDays,
+      removalPolicy: RemovalPolicy.DESTROY
+    })
+
+    const cfnClaimsCoordinatorLogGroup = claimsCoordinatorLogGroup.node.defaultChild as CfnLogGroup
+    cfnClaimsCoordinatorLogGroup.cfnOptions.metadata = {
+      guard: {
+        SuppressedRules: [
+          "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
+        ]
+      }
+    }
+
+    new SubscriptionFilter(this, "ClaimsCoordinatorSplunkSubscriptionFilter", {
+      logGroup: claimsCoordinatorLogGroup,
+      filterPattern: FilterPattern.allTerms(),
+      destination: new KinesisDestination(props.splunkDeliveryStream, {
+        role: props.splunkSubscriptionFilterRole
+      })
+    })
+
+    const claimsValidatorLogGroup = new LogGroup(this, "ClaimsValidatorLogGroup", {
+      encryptionKey: props.cloudWatchLogsKmsKey,
+      logGroupName: `/aws/ecs/${props.stackName}-claims-validator`,
+      retention: props.logRetentionInDays,
+      removalPolicy: RemovalPolicy.DESTROY
+    })
+
+    const cfnClaimsValidatorLogGroup = claimsValidatorLogGroup.node.defaultChild as CfnLogGroup
+    cfnClaimsValidatorLogGroup.cfnOptions.metadata = {
+      guard: {
+        SuppressedRules: [
+          "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
+        ]
+      }
+    }
+
+    new SubscriptionFilter(this, "ClaimsValidatorSplunkSubscriptionFilter", {
+      logGroup: validatorLogGroup,
+      filterPattern: FilterPattern.allTerms(),
+      destination: new KinesisDestination(props.splunkDeliveryStream, {
+        role: props.splunkSubscriptionFilterRole
+      })
+    })
+
     // Outputs
     this.coordinatorLogGroup = coordinatorLogGroup
     this.validatorLogGroup = validatorLogGroup
+    this.claimsCoordinatorLogGroup = claimsCoordinatorLogGroup
+    this.claimsValidatorLogGroup = claimsValidatorLogGroup
   }
 }

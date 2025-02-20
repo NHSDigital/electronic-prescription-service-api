@@ -38,7 +38,29 @@ export const nagSuppressions = (stack: Stack) => {
 
   safeAddNagSuppression(
     stack,
+    "/prescribe-dispense/claimsEcsTasks/EcsTaskExecutionRole/Resource",
+    [
+      {
+        id: "AwsSolutions-IAM4",
+        reason: "Suppress error for using AWS managed policy"
+      }
+    ]
+  )
+
+  safeAddNagSuppression(
+    stack,
     "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource",
+    [
+      {
+        id: "AwsSolutions-IAM5",
+        reason: "Suppress error for wildcard policy"
+      }
+    ]
+  )
+
+  safeAddNagSuppression(
+    stack,
+    "/prescribe-dispense/claimsEcsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource",
     [
       {
         id: "AwsSolutions-IAM5",
@@ -58,6 +80,16 @@ export const nagSuppressions = (stack: Stack) => {
     ]
   )
 
+  safeAddNagSuppression(
+    stack,
+    "/prescribe-dispense/claimsEcsTasks/TaskDef/Resource",
+    [
+      {
+        id: "AwsSolutions-ECS2",
+        reason: "its ok to use environment variables here"
+      }
+    ]
+  )
 }
 
 const safeAddNagSuppression = (stack: Stack, path: string, suppressions: Array<NagPackSuppression>) => {
