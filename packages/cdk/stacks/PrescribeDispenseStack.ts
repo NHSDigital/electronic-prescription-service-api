@@ -15,6 +15,7 @@ import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {
+  ApplicationProtocol,
   CfnListener,
   IpAddressType,
   ListenerCondition,
@@ -68,8 +69,11 @@ export class PrescribeDispenseStack extends Stack {
     const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
     const sandboxModeEnabled: string = this.node.tryGetContext("sandboxModeEnabled")
     const desiredFhirFacadeCount: number = this.node.tryGetContext("desiredFhirFacadeCount")
-    const fhirFacadeCpu: number = this.node.tryGetContext("fhirFacadeCpu")
-    const fhirFacadeMemory: number = this.node.tryGetContext("fhirFacadeMemory")
+    const desiredClaimsCount: number = this.node.tryGetContext("desiredClaimsCount")
+    const desiredPeakClaimsCount: number = this.node.tryGetContext("desiredPeakClaimsCount")
+    const desiredOffPeakClaimsCount: number = this.node.tryGetContext("desiredOffPeakClaimsCount")
+    const serviceCpu: number = this.node.tryGetContext("serviceCpu")
+    const serviceMemory: number = this.node.tryGetContext("serviceMemory")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -155,8 +159,8 @@ export class PrescribeDispenseStack extends Stack {
       validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
       sandboxModeEnabled: sandboxModeEnabled,
-      cpu: fhirFacadeCpu,
-      memory: fhirFacadeMemory,
+      cpu: serviceCpu,
+      memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`
     })
 
@@ -185,8 +189,8 @@ export class PrescribeDispenseStack extends Stack {
       validatorLogGroup: logGroups.claimsValidatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
       sandboxModeEnabled: sandboxModeEnabled,
-      cpu: fhirFacadeCpu,
-      memory: fhirFacadeMemory,
+      cpu: serviceCpu,
+      memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`
     })
 
@@ -267,10 +271,10 @@ export class PrescribeDispenseStack extends Stack {
     const claimsService = new ApplicationLoadBalancedFargateService(this, "claimsService", {
       assignPublicIp: false,
       cluster: ecsCluster,
-      desiredCount: desiredFhirFacadeCount,
+      desiredCount: desiredClaimsCount,
       enableECSManagedTags: true,
       ipAddressType: IpAddressType.IPV4,
-      listenerPort: 80,
+      listenerPort: 443,
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
@@ -294,7 +298,7 @@ export class PrescribeDispenseStack extends Stack {
       serviceNamespace: ServiceNamespace.ECS,
       resourceId: `service/${claimsService.cluster.clusterName}/${claimsService.service.serviceName}`,
       scalableDimension: "ecs:service:DesiredCount",
-      minCapacity: desiredFhirFacadeCount,
+      minCapacity: desiredClaimsCount,
       maxCapacity: 10
     })
 
@@ -311,13 +315,13 @@ export class PrescribeDispenseStack extends Stack {
     const monthEndDays = "20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5"
     claimsServiceScalableTarget.scaleOnSchedule("claimsScaleOut", {
       schedule: Schedule.cron({day: monthEndDays, hour: "7", minute: "0"}),
-      minCapacity: desiredFhirFacadeCount + 1,
+      minCapacity: desiredPeakClaimsCount,
       maxCapacity: 10
     })
 
     claimsServiceScalableTarget.scaleOnSchedule("claimsScaleIn", {
       schedule: Schedule.cron({day: monthEndDays, hour: "19", minute: "0"}),
-      minCapacity: desiredFhirFacadeCount,
+      minCapacity: desiredOffPeakClaimsCount,
       maxCapacity: 10
     })
 
@@ -328,6 +332,7 @@ export class PrescribeDispenseStack extends Stack {
       conditions: [ListenerCondition.pathPatterns(["/FHIR/R4/Claim*"])],
       targets: [claimsService.service],
       port: claimsService.listener.port,
+      protocol: ApplicationProtocol.HTTP,
       healthCheck: {
         path: "/_healthcheck",
         interval: Duration.seconds(10),
