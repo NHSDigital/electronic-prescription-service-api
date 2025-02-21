@@ -11,7 +11,7 @@ import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificateman
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
-import {CfnSecurityGroup, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
+import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {CfnListener, IpAddressType, TrustStore} from "aws-cdk-lib/aws-elasticloadbalancingv2"
@@ -214,8 +214,6 @@ export class PrescribeDispenseStack extends Stack {
 
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
-    const cfnFhirFacadeServiceTargetGroup = fhirFacadeService.targetGroup.node.defaultChild as CfnSecurityGroup
-    cfnFhirFacadeServiceTargetGroup.tags.setTag("Name", `${props.stackName}-fhirFacade-lb-sg`)
 
     fhirFacadeService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
@@ -279,9 +277,6 @@ export class PrescribeDispenseStack extends Stack {
     claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
     claimsService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}_claims/connection`)
 
-    const cfnClaimServiceTargetGroup = claimsService.targetGroup.node.defaultChild as CfnSecurityGroup
-    cfnClaimServiceTargetGroup.tags.setTag("Name", `${props.stackName}-claim-lb-sg`)
-
     claimsService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
       interval: Duration.seconds(10),
@@ -337,13 +332,13 @@ export class PrescribeDispenseStack extends Stack {
     //   }
     // })
 
-    // const fhirFacadeSG = fhirFacadeService.service.connections.securityGroups[0]
-    // const claimsSG = claimsService.service.connections.securityGroups[0]
-    // claimsSG.addIngressRule(
-    //   fhirFacadeSG,
-    //   Port.tcp(9000), // Change this if your service listens on a different port
-    //   "Allow traffic from FHIR Facade to Claims Service"
-    // )
+    const fhirFacadeSG = fhirFacadeService.service.connections.securityGroups[0]
+    const claimsSG = claimsService.service.connections.securityGroups[0]
+    claimsSG.addIngressRule(
+      fhirFacadeSG,
+      Port.tcp(9000), // Change this if your service listens on a different port
+      "Allow traffic from FHIR Facade to Claims Service"
+    )
     nagSuppressions(this)
   }
 }
