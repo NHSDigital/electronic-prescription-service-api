@@ -11,7 +11,7 @@ import {renderWithContext} from "../renderWithContext"
 import DispensePage from "../../src/pages/dispensePage"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
-import {MemoryRouter} from "react-router-dom"
+import {MemoryRouter} from "react-router"
 
 jest.mock("uuid")
 ;(v4 as jest.Mock).mockImplementation(() => "test-uuid")
