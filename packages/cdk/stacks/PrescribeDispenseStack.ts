@@ -215,7 +215,7 @@ export class PrescribeDispenseStack extends Stack {
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
     const cfnFhirFacadeServiceTargetGroup = fhirFacadeService.targetGroup.node.defaultChild as CfnSecurityGroup
-    cfnFhirFacadeServiceTargetGroup.tags.setTag("name", `${props.stackName}-fhirFacade-lb-sg`)
+    cfnFhirFacadeServiceTargetGroup.tags.setTag("Name", `${props.stackName}-fhirFacade-lb-sg`)
 
     fhirFacadeService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
@@ -280,7 +280,7 @@ export class PrescribeDispenseStack extends Stack {
     claimsService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}_claims/connection`)
 
     const cfnClaimServiceTargetGroup = claimsService.targetGroup.node.defaultChild as CfnSecurityGroup
-    cfnClaimServiceTargetGroup.tags.setTag("name", `${props.stackName}-claim-lb-sg`)
+    cfnClaimServiceTargetGroup.tags.setTag("Name", `${props.stackName}-claim-lb-sg`)
 
     claimsService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
