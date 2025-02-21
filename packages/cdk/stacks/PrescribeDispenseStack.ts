@@ -312,9 +312,10 @@ export class PrescribeDispenseStack extends Stack {
       predefinedMetric: PredefinedMetric.ECS_SERVICE_AVERAGE_CPU_UTILIZATION
     })
 
-    const monthEndDays = "20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5"
+    //const monthEndDays = "20,21,22,23,24,25,26,27,28,29,30,31,1,2,3,4,5"
+    const monthEndDays = "21"
     claimsServiceScalableTarget.scaleOnSchedule("claimsScaleOut", {
-      schedule: Schedule.cron({day: monthEndDays, hour: "7", minute: "0"}),
+      schedule: Schedule.cron({day: monthEndDays, hour: "16", minute: "30"}),
       minCapacity: desiredPeakClaimsCount,
       maxCapacity: 10
     })
