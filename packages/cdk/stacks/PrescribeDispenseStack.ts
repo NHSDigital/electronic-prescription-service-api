@@ -14,12 +14,7 @@ import {Role} from "aws-cdk-lib/aws-iam"
 import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
-import {
-  CfnListener,
-  IpAddressType,
-  ListenerCondition,
-  TrustStore
-} from "aws-cdk-lib/aws-elasticloadbalancingv2"
+import {CfnListener, IpAddressType, TrustStore} from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
@@ -321,21 +316,21 @@ export class PrescribeDispenseStack extends Stack {
       maxCapacity: 10
     })
 
-    // add a route from main listener to claims service
-    const listener = fhirFacadeService.listener
-    listener.addTargets("ClaimsTarget", {
-      priority: 10, // Priority must be unique
-      conditions: [ListenerCondition.pathPatterns(["/FHIR/R4/Claim*"])],
-      targets: [claimsService.service],
-      port: claimsService.listener.port,
-      healthCheck: {
-        path: "/_healthcheck",
-        interval: Duration.seconds(10),
-        timeout: Duration.seconds(5),
-        unhealthyThresholdCount: 2,
-        healthyThresholdCount: 2
-      }
-    })
+    // // add a route from main listener to claims service
+    // const listener = fhirFacadeService.listener
+    // listener.addTargets("ClaimsTarget", {
+    //   priority: 10, // Priority must be unique
+    //   conditions: [ListenerCondition.pathPatterns(["/FHIR/R4/Claim*"])],
+    //   targets: [claimsService.service],
+    //   port: claimsService.listener.port,
+    //   healthCheck: {
+    //     path: "/_healthcheck",
+    //     interval: Duration.seconds(10),
+    //     timeout: Duration.seconds(5),
+    //     unhealthyThresholdCount: 2,
+    //     healthyThresholdCount: 2
+    //   }
+    //})
     nagSuppressions(this)
   }
 }
