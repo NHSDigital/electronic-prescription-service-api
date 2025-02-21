@@ -270,7 +270,7 @@ export class PrescribeDispenseStack extends Stack {
       desiredCount: desiredFhirFacadeCount,
       enableECSManagedTags: true,
       ipAddressType: IpAddressType.IPV4,
-      listenerPort: 443,
+      listenerPort: 80,
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
@@ -337,17 +337,17 @@ export class PrescribeDispenseStack extends Stack {
       }
     })
 
-    const fhirFacadeSG = fhirFacadeService.loadBalancer.connections.securityGroups[0]
+    const fhirFacadeLoadBalancerSG = fhirFacadeService.loadBalancer.connections.securityGroups[0]
     const claimsSG = claimsService.service.connections.securityGroups[0]
     claimsSG.addIngressRule(
-      fhirFacadeSG,
-      Port.tcp(9000), // Change this if your service listens on a different port
-      "Allow traffic from FHIR Facade to Claims Service"
+      fhirFacadeLoadBalancerSG,
+      Port.tcp(containerPort),
+      "Allow traffic from FHIR Facade load balancer to Claims Service"
     )
-    fhirFacadeSG.addEgressRule(
+    fhirFacadeLoadBalancerSG.addEgressRule(
       claimsSG,
-      Port.tcp(9000), // Change this if your service listens on a different port
-      "Allow traffic from FHIR Facade to Claims Service"
+      Port.tcp(containerPort),
+      "Allow traffic to Claims Service from FHIR Facade load balancer"
     )
     nagSuppressions(this)
   }
