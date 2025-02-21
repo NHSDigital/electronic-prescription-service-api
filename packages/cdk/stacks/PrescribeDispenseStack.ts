@@ -332,10 +332,15 @@ export class PrescribeDispenseStack extends Stack {
     //   }
     // })
 
-    const fhirFacadeSG = fhirFacadeService.service.connections.securityGroups[0]
+    const fhirFacadeSG = fhirFacadeService.loadBalancer.connections.securityGroups[0]
     const claimsSG = claimsService.service.connections.securityGroups[0]
     claimsSG.addIngressRule(
       fhirFacadeSG,
+      Port.tcp(9000), // Change this if your service listens on a different port
+      "Allow traffic from FHIR Facade to Claims Service"
+    )
+    fhirFacadeSG.addEgressRule(
+      claimsSG,
       Port.tcp(9000), // Change this if your service listens on a different port
       "Allow traffic from FHIR Facade to Claims Service"
     )
