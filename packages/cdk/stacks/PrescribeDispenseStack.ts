@@ -12,7 +12,7 @@ import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
-import {Cluster} from "aws-cdk-lib/aws-ecs"
+import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {CfnListener, IpAddressType, TrustStore} from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
@@ -152,7 +152,8 @@ export class PrescribeDispenseStack extends Stack {
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
       clusterName: `${props.stackName}-cluster`,
-      vpc: defaultVpc
+      vpc: defaultVpc,
+      containerInsightsV2: ContainerInsights.ENHANCED
     })
 
     const fhirFacadeAlbCertificate = new Certificate(this, "fhirFacadeAlbCertificate", {
