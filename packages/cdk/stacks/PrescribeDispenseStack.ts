@@ -238,6 +238,8 @@ export class PrescribeDispenseStack extends Stack {
       CFNfhirFacadeListener.addPropertyOverride(
         "MutualAuthentication.TrustStoreArn", fhirFacadeAlbTrustStore.trustStoreArn
       )
+      // add dependency on truststore to fhir facade service so they get deleted in the correct order
+      fhirFacadeService.node.addDependency(fhirFacadeAlbTrustStore)
     }
 
     nagSuppressions(this)
