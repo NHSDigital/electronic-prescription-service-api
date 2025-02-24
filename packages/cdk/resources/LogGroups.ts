@@ -81,6 +81,14 @@ export class LogGroups extends Construct {
         role: props.splunkSubscriptionFilterRole
       })
     })
+
+    // log group for insights
+    new LogGroup(this, "insightsLogGroup", {
+      encryptionKey: props.cloudWatchLogsKmsKey,
+      logGroupName: `/aws/ecs/containerinsights/${props.stackName}-cluster/performance`,
+      retention: props.logRetentionInDays,
+      removalPolicy: RemovalPolicy.DESTROY
+    })
     // Outputs
     this.coordinatorLogGroup = coordinatorLogGroup
     this.validatorLogGroup = validatorLogGroup
