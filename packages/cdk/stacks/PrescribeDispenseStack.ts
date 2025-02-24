@@ -3,6 +3,7 @@ import {
   Duration,
   Environment,
   Fn,
+  RemovalPolicy,
   Stack,
   StackProps
 } from "aws-cdk-lib"
@@ -27,6 +28,7 @@ import {
   ServiceNamespace,
   TargetTrackingScalingPolicy
 } from "aws-cdk-lib/aws-applicationautoscaling"
+import {LogGroup} from "aws-cdk-lib/aws-logs"
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
     readonly serviceName: string
@@ -153,11 +155,22 @@ export class PrescribeDispenseStack extends Stack {
       taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`
     })
 
+    // log group for insights
+    const insightLogGroups = new LogGroup(this, "insightsLogGroup", {
+      encryptionKey: cloudWatchLogsKmsKey,
+      logGroupName: `/aws/ecs/containerinsights/${props.stackName}-cluster/performance`,
+      retention: logRetentionInDays,
+      removalPolicy: RemovalPolicy.DESTROY
+    })
+
     const ecsCluster = new Cluster(this, "EcsCluster", {
       clusterName: `${props.stackName}-cluster`,
       vpc: defaultVpc,
       containerInsightsV2: ContainerInsights.ENHANCED
     })
+
+    // add dependency on insight log groups for the cluster as we want our own insight log group not an auto created one
+    ecsCluster.node.addDependency(insightLogGroups)
 
     const fhirFacadeAlbCertificate = new Certificate(this, "fhirFacadeAlbCertificate", {
       domainName: fhirFacadeHostname,
