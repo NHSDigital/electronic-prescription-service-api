@@ -94,7 +94,7 @@
     "SHA1EnabledApplicationIds": "",
     "sandboxModeEnabled": "0",
     "desiredFhirFacadeCount": 1,
-    "fhirFacadeCpu": 2048,
-    "fhirFacadeMemory": 4096
+    "serviceCpu": 2048,
+    "serviceMemory": 4096
   }
 }

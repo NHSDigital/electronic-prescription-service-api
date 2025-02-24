@@ -78,10 +78,10 @@ on:
       DESIRED_FHIR_FACADE_COUNT:
         type: number
         required: true
-      FHIR_FACADE_CPU:
+      SERVICE_CPU:
         type: number
         required: true
-      FHIR_FACADE_MEMORY:
+      SERVICE_MEMORY:
         type: number
         required: true
     secrets:
@@ -245,8 +245,8 @@ jobs:
           ENABLE_MUTUAL_TLS: "${{ inputs.ENABLE_MUTUAL_TLS }}"
           SHA1_ENABLED_APPLICATION_IDS: "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}"
           DESIRED_FHIR_FACADE_COUNT: "${{ inputs.DESIRED_FHIR_FACADE_COUNT }}"
-          FHIR_FACADE_CPU: "${{ inputs.FHIR_FACADE_CPU }}"
-          FHIR_FACADE_MEMORY: ${{ inputs.FHIR_FACADE_MEMORY }}
+          SERVICE_CPU: "${{ inputs.SERVICE_CPU }}"
+          SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
 
       - name: Show diff
         run: |

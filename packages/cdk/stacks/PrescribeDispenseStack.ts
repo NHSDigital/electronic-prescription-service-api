@@ -61,8 +61,8 @@ export class PrescribeDispenseStack extends Stack {
     const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
     const sandboxModeEnabled: string = this.node.tryGetContext("sandboxModeEnabled")
     const desiredFhirFacadeCount: number = this.node.tryGetContext("desiredFhirFacadeCount")
-    const fhirFacadeCpu: number = this.node.tryGetContext("fhirFacadeCpu")
-    const fhirFacadeMemory: number = this.node.tryGetContext("fhirFacadeMemory")
+    const serviceCpu: number = this.node.tryGetContext("serviceCpu")
+    const serviceMemory: number = this.node.tryGetContext("serviceMemory")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -147,7 +147,10 @@ export class PrescribeDispenseStack extends Stack {
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
       validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
-      sandboxModeEnabled: sandboxModeEnabled
+      sandboxModeEnabled: sandboxModeEnabled,
+      cpu: serviceCpu,
+      memory: serviceMemory,
+      taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`
     })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
@@ -165,7 +168,6 @@ export class PrescribeDispenseStack extends Stack {
       assignPublicIp: false,
       certificate: fhirFacadeAlbCertificate,
       cluster: ecsCluster,
-      cpu: fhirFacadeCpu,
       desiredCount: desiredFhirFacadeCount,
       domainName: fhirFacadeHostname,
       domainZone: hostedZone,
@@ -175,7 +177,6 @@ export class PrescribeDispenseStack extends Stack {
       taskSubnets: {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
-      memoryLimitMiB: fhirFacadeMemory,
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100
     })
