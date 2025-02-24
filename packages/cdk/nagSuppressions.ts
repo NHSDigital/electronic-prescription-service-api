@@ -14,9 +14,12 @@ export const nagSuppressions = (stack: Stack) => {
     ]
   )
 
-  safeAddNagSuppression(
+  safeAddNagSuppressionGroup(
     stack,
-    "/prescribe-dispense/fhirFacadeService/LB/SecurityGroup/Resource",
+    [
+      "/prescribe-dispense/fhirFacadeService/LB/SecurityGroup/Resource",
+      "/prescribe-dispense/claimsService/LB/SecurityGroup/Resource"
+    ],
     [
       {
         id: "AwsSolutions-EC23",
@@ -25,19 +28,12 @@ export const nagSuppressions = (stack: Stack) => {
     ]
   )
 
-  safeAddNagSuppression(
+  safeAddNagSuppressionGroup(
     stack,
-    "/prescribe-dispense/claimsService/LB/SecurityGroup/Resource",
     [
-      {
-        id: "AwsSolutions-EC23",
-        reason: "Suppress error for large CIDR security group"
-      }
-    ]
-  )
-  safeAddNagSuppression(
-    stack,
-    "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/Resource",
+      "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/Resource",
+      "/prescribe-dispense/claimsEcsTasks/EcsTaskExecutionRole/Resource"
+    ],
     [
       {
         id: "AwsSolutions-IAM4",
@@ -46,20 +42,12 @@ export const nagSuppressions = (stack: Stack) => {
     ]
   )
 
-  safeAddNagSuppression(
+  safeAddNagSuppressionGroup(
     stack,
-    "/prescribe-dispense/claimsEcsTasks/EcsTaskExecutionRole/Resource",
     [
-      {
-        id: "AwsSolutions-IAM4",
-        reason: "Suppress error for using AWS managed policy"
-      }
-    ]
-  )
-
-  safeAddNagSuppression(
-    stack,
-    "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource",
+      "/prescribe-dispense/ecsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource",
+      "/prescribe-dispense/claimsEcsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource"
+    ],
     [
       {
         id: "AwsSolutions-IAM5",
@@ -68,31 +56,12 @@ export const nagSuppressions = (stack: Stack) => {
     ]
   )
 
-  safeAddNagSuppression(
+  safeAddNagSuppressionGroup(
     stack,
-    "/prescribe-dispense/claimsEcsTasks/EcsTaskExecutionRole/DefaultPolicy/Resource",
     [
-      {
-        id: "AwsSolutions-IAM5",
-        reason: "Suppress error for wildcard policy"
-      }
-    ]
-  )
-
-  safeAddNagSuppression(
-    stack,
-    "/prescribe-dispense/ecsTasks/TaskDef/Resource",
-    [
-      {
-        id: "AwsSolutions-ECS2",
-        reason: "its ok to use environment variables here"
-      }
-    ]
-  )
-
-  safeAddNagSuppression(
-    stack,
-    "/prescribe-dispense/claimsEcsTasks/TaskDef/Resource",
+      "/prescribe-dispense/ecsTasks/TaskDef/Resource",
+      "/prescribe-dispense/claimsEcsTasks/TaskDef/Resource"
+    ],
     [
       {
         id: "AwsSolutions-ECS2",
@@ -113,7 +82,6 @@ const safeAddNagSuppression = (stack: Stack, path: string, suppressions: Array<N
 }
 
 // Apply the same nag suppression to multiple resources
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const safeAddNagSuppressionGroup = (stack: Stack, path: Array<string>, suppressions: Array<NagPackSuppression>) => {
   for (const p of path) {
     safeAddNagSuppression(stack, p, suppressions)
