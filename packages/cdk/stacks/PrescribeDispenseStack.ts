@@ -65,6 +65,7 @@ export class PrescribeDispenseStack extends Stack {
     const desiredFhirFacadeCount: number = this.node.tryGetContext("desiredFhirFacadeCount")
     const serviceCpu: number = this.node.tryGetContext("serviceCpu")
     const serviceMemory: number = this.node.tryGetContext("serviceMemory")
+    const ApigeeEnvironment: string = this.node.tryGetContext("ApigeeEnvironment")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -152,7 +153,8 @@ export class PrescribeDispenseStack extends Stack {
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
-      taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`
+      taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`,
+      ApigeeEnvironment: ApigeeEnvironment
     })
 
     // log group for insights

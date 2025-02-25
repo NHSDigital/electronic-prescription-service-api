@@ -43,6 +43,7 @@ export interface ECSTasksProps {
   readonly cpu: number
   readonly memory: number
   readonly taskExecutionRoleName: string
+  readonly ApigeeEnvironment: string
 }
 
 /**
@@ -122,7 +123,7 @@ export class ECSTasks extends Construct {
         CRL_DISTRIBUTION_PROXY: "crl.nhs.uk",
         DEPLOYED_VERSION: props.version,
         DOSE_TO_TEXT_MODE: "AUDIT",
-        ENVIRONMENT: "internal-dev",
+        ENVIRONMENT: props.ApigeeEnvironment,
         LOG_LEVEL: props.logLevel,
         NODE_ENV: "production",
         TO_ASID: props.toAsid,
