@@ -95,7 +95,7 @@ export class PrescribeDispenseStack extends Stack {
       this, "SplunkDeliveryStream", splunkDeliveryStreamImport)
 
     const splunkSubscriptionFilterRole = Role.fromRoleArn(
-      this, `${props.stackName}_splunkSubscriptionFilterRole`, splunkSubscriptionFilterRoleImport)
+      this, "SplunkSubscriptionFilterRole", splunkSubscriptionFilterRoleImport)
     const trustStoreBucket = Bucket.fromBucketArn(this, "trustStoreBucket", trustStoreBucketArn)
     const albLoggingBucket = Bucket.fromBucketName(this, "albLoggingBucket", albLoggingBucketNameImport)
 
