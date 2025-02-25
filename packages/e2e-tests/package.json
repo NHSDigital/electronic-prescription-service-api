@@ -26,7 +26,7 @@
     "@pact-foundation/pact": "^14.0.0",
     "@pact-foundation/pact-core": "^16.0.0",
     "@types/jsdom": "^21.1.7",
-    "@types/jsonwebtoken": "^9.0.8",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/lossless-json": "2.0.0",
     "axios": "^1.7.9",
     "axios-cookiejar-support": "^5.0.5",
