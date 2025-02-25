@@ -5,12 +5,10 @@ import {IKey} from "aws-cdk-lib/aws-kms"
 import {RemovalPolicy} from "aws-cdk-lib"
 import {
   CfnLogGroup,
-  FilterPattern,
   ILogGroup,
   LogGroup,
-  SubscriptionFilter
+  CfnSubscriptionFilter
 } from "aws-cdk-lib/aws-logs"
-import {KinesisDestination} from "aws-cdk-lib/aws-logs-destinations"
 import {IStream} from "aws-cdk-lib/aws-kinesis"
 
 export interface LogGroupProps {
@@ -52,12 +50,11 @@ export class LogGroups extends Construct {
       }
     }
 
-    new SubscriptionFilter(this, "CoordinatorSplunkSubscriptionFilter", {
-      logGroup: coordinatorLogGroup,
-      filterPattern: FilterPattern.allTerms(),
-      destination: new KinesisDestination(props.splunkDeliveryStream, {
-        role: props.splunkSubscriptionFilterRole
-      })
+    new CfnSubscriptionFilter(this, "CoordinatorSplunkSubscriptionFilter", {
+      destinationArn: props.splunkDeliveryStream.streamArn,
+      filterPattern: "",
+      logGroupName: coordinatorLogGroup.logGroupName,
+      roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
     const validatorLogGroup = new LogGroup(this, "ValidatorLogGroup", {
@@ -76,12 +73,11 @@ export class LogGroups extends Construct {
       }
     }
 
-    new SubscriptionFilter(this, "ValidatorSplunkSubscriptionFilter", {
-      logGroup: validatorLogGroup,
-      filterPattern: FilterPattern.allTerms(),
-      destination: new KinesisDestination(props.splunkDeliveryStream, {
-        role: props.splunkSubscriptionFilterRole
-      })
+    new CfnSubscriptionFilter(this, "ValidatorSplunkSubscriptionFilter", {
+      destinationArn: props.splunkDeliveryStream.streamArn,
+      filterPattern: "",
+      logGroupName: validatorLogGroup.logGroupName,
+      roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
     const claimsCoordinatorLogGroup = new LogGroup(this, "ClaimsCoordinatorLogGroup", {
