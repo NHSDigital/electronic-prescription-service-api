@@ -78,7 +78,7 @@ jobs:
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
-      ENABLE_MUTUAL_TLS: true
+      ENABLE_MUTUAL_TLS: false
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -117,7 +117,7 @@ jobs:
       STACK_NAME: prescribe-dispense-sandbox-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
-      ENABLE_MUTUAL_TLS: true
+      ENABLE_MUTUAL_TLS: false
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
