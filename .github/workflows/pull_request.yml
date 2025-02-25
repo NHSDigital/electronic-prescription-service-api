@@ -114,7 +114,7 @@ jobs:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
-      STACK_NAME: prescribe-dispense-sandbox-pr-${{needs.get_issue_number.outputs.issue_number}}
+      STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: false

@@ -6,37 +6,31 @@
 REPO_NAME=electronic-prescription-service-api
 
 # regex used in jq command that parses the output from aws cloudformation list-stacks and just captures stacks we are interested in
-CAPTURE_REGEX="^prescribe-dispense(-sandbox)?-pr-(\\d+)$"
-OLD_CAPTURE_REGEX="^prescribe-dispense-pr-(\\d+)(-sandbox)?$"
-
+CAPTURE_REGEX="^prescribe-dispense-pr-(\\d+)(-sandbox)?$"
 
 # regex that is used to get the pull request id from the cloud formation stack name
 # this is used in a replace command to replace the stack name so what is left is just the pull request id
-PULL_REQUEST_STACK_REGEX="prescribe-dispense-pr-"
-OLD_PULL_REQUEST_STACK_REGEX="prescribe-dispense-sandbox-pr-"
+PULL_REQUEST_STACK_REGEX=prescribe-dispense-pr-
 
 # this should be a query to get old CNAME records to delete
 CNAME_QUERY=prescribe-dispense-pr-
 
 main() {
-  delete_cloudformation_stacks "${CAPTURE_REGEX}" "${PULL_REQUEST_STACK_REGEX}"
-  delete_cloudformation_stacks "${OLD_CAPTURE_REGEX}" "${OLD_PULL_REQUEST_STACK_REGEX}"
+  delete_cloudformation_stacks
   delete_cname_records
 }
 
 delete_cloudformation_stacks() {
-  LOCAL_CAPTURE_REGEX=$1
-  LOCAL_PULL_REQUEST_STACK_REGEX=$2
   echo "checking cloudformation stacks"
   echo
-  ACTIVE_STACKS=$(aws cloudformation list-stacks | jq -r --arg CAPTURE_REGEX "${LOCAL_CAPTURE_REGEX}" '.StackSummaries[] | select ( .StackStatus != "DELETE_COMPLETE" ) | select( .StackName | capture($CAPTURE_REGEX) ) | .StackName ')
+  ACTIVE_STACKS=$(aws cloudformation list-stacks | jq -r --arg CAPTURE_REGEX "${CAPTURE_REGEX}" '.StackSummaries[] | select ( .StackStatus != "DELETE_COMPLETE" ) | select( .StackName | capture($CAPTURE_REGEX) ) | .StackName ')
 
   mapfile -t ACTIVE_STACKS_ARRAY <<< "$ACTIVE_STACKS"
 
   for i in "${ACTIVE_STACKS_ARRAY[@]}"
   do 
     echo "Checking if stack $i has open pull request"
-    PULL_REQUEST=${i//${LOCAL_PULL_REQUEST_STACK_REGEX}/}
+    PULL_REQUEST=${i//${PULL_REQUEST_STACK_REGEX}/}
     PULL_REQUEST=${PULL_REQUEST//-sandbox/}
     echo "Checking pull request id ${PULL_REQUEST}"
     URL="https://api.github.com/repos/NHSDigital/${REPO_NAME}/pulls/${PULL_REQUEST}"
