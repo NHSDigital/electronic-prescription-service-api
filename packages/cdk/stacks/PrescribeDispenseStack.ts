@@ -1,5 +1,6 @@
 import {
   App,
+  CfnResource,
   Duration,
   Environment,
   Fn,
@@ -95,7 +96,7 @@ export class PrescribeDispenseStack extends Stack {
       this, "SplunkDeliveryStream", splunkDeliveryStreamImport)
 
     const splunkSubscriptionFilterRole = Role.fromRoleArn(
-      this, `${props.stackName}_splunkSubscriptionFilterRole`, splunkSubscriptionFilterRoleImport)
+      this, "SplunkSubscriptionFilterRole", splunkSubscriptionFilterRoleImport)
     const trustStoreBucket = Bucket.fromBucketArn(this, "trustStoreBucket", trustStoreBucketArn)
     const albLoggingBucket = Bucket.fromBucketName(this, "albLoggingBucket", albLoggingBucketNameImport)
 
@@ -243,6 +244,13 @@ export class PrescribeDispenseStack extends Stack {
       // add dependency on truststore to fhir facade service so they get deleted in the correct order
       fhirFacadeService.node.addDependency(fhirFacadeAlbTrustStore)
     }
+
+    // remove the splunk subscription role policy as its not needed as its set in account-resources
+    // the childId is based on
+    // Policy + name of resource passed to this construct + name passed to splunkSubscriptionRole construct + 1F424E8F
+    const childId = "PolicyprescribedispenseSplunkSubscriptionFilterRole1F424E8F"
+    const splunkSubscriptionRolePolicy = splunkSubscriptionFilterRole.node.findChild(childId) as CfnResource
+    splunkSubscriptionRolePolicy.node.tryRemoveChild("splunkSubscriptionRolePolicy")
 
     nagSuppressions(this)
   }
