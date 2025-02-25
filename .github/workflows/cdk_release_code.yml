@@ -259,6 +259,7 @@ jobs:
           DESIRED_OFF_PEAK_CLAIMS_COUNT: "${{ inputs.DESIRED_OFF_PEAK_CLAIMS_COUNT }}"
           SERVICE_CPU: "${{ inputs.SERVICE_CPU }}"
           SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
 
       - name: Show diff
         run: |

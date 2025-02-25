@@ -74,6 +74,7 @@ export class PrescribeDispenseStack extends Stack {
     const desiredOffPeakClaimsCount: number = this.node.tryGetContext("desiredOffPeakClaimsCount")
     const serviceCpu: number = this.node.tryGetContext("serviceCpu")
     const serviceMemory: number = this.node.tryGetContext("serviceMemory")
+    const ApigeeEnvironment: string = this.node.tryGetContext("ApigeeEnvironment")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -161,7 +162,8 @@ export class PrescribeDispenseStack extends Stack {
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
-      taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`
+      taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`,
+      ApigeeEnvironment: ApigeeEnvironment
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -191,7 +193,8 @@ export class PrescribeDispenseStack extends Stack {
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
-      taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`
+      taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`,
+      ApigeeEnvironment: ApigeeEnvironment
     })
 
     const ecsCluster = new Cluster(this, "EcsCluster", {
