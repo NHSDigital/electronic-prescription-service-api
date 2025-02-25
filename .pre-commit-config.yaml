@@ -36,6 +36,15 @@ repos:
         types_or: [ts, tsx, javascript, jsx, json]
         pass_filenames: false
 
+      - id: lint-cdk
+        name: Lint cdk
+        entry: npm
+        args: ["run", "--prefix=packages/cdk", "lint"]
+        language: system
+        files: ^packages\/cdk
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
       - id: lint-epsat-client
         name: Lint EPSAT client
         entry: npm

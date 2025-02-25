@@ -1,4 +1,4 @@
-name: package code and api
+name: cdk package code
 
 on:
   workflow_call:
@@ -10,8 +10,9 @@ on:
         required: true
         type: string
 
+
 jobs:
-  package_code_and_api:
+  package_code:
     runs-on: ubuntu-22.04
     permissions:
       id-token: write
@@ -27,7 +28,7 @@ jobs:
       - name: Install asdf
         uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
         with:
-          asdf_branch: v0.11.3
+          asdf_branch: v0.14.1
   
       - name: Cache asdf
         uses: actions/cache@v4
@@ -36,82 +37,18 @@ jobs:
             ~/.asdf
           key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
           restore-keys: |
-            ${{ runner.os }}-asdf-
+            ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
 
       - name: Install asdf dependencies in .tool-versions
         uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
         with:
-          asdf_branch: v0.11.3
+          asdf_branch: v0.14.1
         env:
           PYTHON_CONFIGURE_OPTS: --enable-shared
-      
-      - name: Run make install
-        run: |
-          make install-api
 
-      - name: Package code
-        shell: bash
+      - name: make install
         run: |
-          cp .tool-versions ~/
-          rm -rf .aws-sam
-          export PATH=$PATH:$PWD/node_modules/.bin
-          make build-api
-          make sam-build
-          make build-proxygen-specification
-          cp Makefile .aws-sam/build/
-          cp samconfig_package_and_deploy.toml .aws-sam/build/
-          mkdir -p .aws-sam/build/specification
-          cp packages/specification/dist/fhir-prescribing.resolved.json .aws-sam/build/specification/
-          cp packages/specification/dist/fhir-dispensing.resolved.json .aws-sam/build/specification/
-      
-      # Readme is included to stop the action flattening the folder structure of aws-sam/build when it is the only item to upload
-      - uses: actions/upload-artifact@v4
-        name: Upload build artifact
-        with:
-          name: packaged_code
-          path: |
-            .aws-sam/build
-            README.md
-      
-      - uses: actions/upload-artifact@v4
-        name: Upload specification artifact
-        with:
-          name: specification_code
-          path: |
-            .aws-sam/build/specification
-      
-      - uses: actions/upload-artifact@v4
-        name: Upload python dependency files
-        with:
-          name: python_dependency_files
-          path: |
-            .tool-versions
-            poetry.lock
-            poetry.toml
-            pyproject.toml
-      
-      - name: Package sandbox
-        shell: bash
-        run: |
-          cp .tool-versions ~/
-          rm -rf .aws-sam
-          export PATH=$PATH:$PWD/node_modules/.bin
-          make build-proxygen-specification
-          make sam-build-sandbox
-          cp Makefile .aws-sam/build/
-          cp samconfig_package_and_deploy.toml .aws-sam/build/
-          mkdir -p .aws-sam/build/specification
-          cp packages/specification/dist/fhir-prescribing.resolved.json .aws-sam/build/specification/
-          cp packages/specification/dist/fhir-dispensing.resolved.json .aws-sam/build/specification/
-      
-      # Readme is included to stop the action flattening the folder structure of aws-sam/build when it is the only item to upload
-      - uses: actions/upload-artifact@v4
-        name: Upload sandbox build artifact
-        with:
-          name: packaged_sandbox_code
-          path: |
-            .aws-sam/build
-            README.md
+          make install build-proxygen-specification
 
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
@@ -137,7 +74,25 @@ jobs:
           docker build -t "validator-repo:${{ inputs.VERSION_NUMBER }}" -f Dockerfile .
           docker images
           docker save "validator-repo:${{ inputs.VERSION_NUMBER }}" -o validator_docker.img   
-    
+
+      - name: 'package cdk'
+        run: |
+          tar -rf artifact.tar \
+            .tool-versions \
+            packages/cdk \
+            packages/specification \
+            node_modules \
+            package.json \
+            package-lock.json \
+            Makefile \
+            cdk.json
+
+      - uses: actions/upload-artifact@v4
+        name: upload build artifact
+        with:
+          name: cdk_artifact
+          path: artifact.tar
+
       - uses: actions/upload-artifact@v4
         name: Upload docker images
         with:

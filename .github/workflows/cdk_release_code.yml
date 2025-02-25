@@ -1,12 +1,9 @@
-name: release code and api
+name: cdk release code
 
 on:
   workflow_call:
     inputs:
       STACK_NAME:
-        required: true
-        type: string
-      ARTIFACT_BUCKET_PREFIX:
         required: true
         type: string
       AWS_ENVIRONMENT:
@@ -18,12 +15,6 @@ on:
       ENABLE_MUTUAL_TLS:
         required: true
         type: boolean
-      BUILD_ARTIFACT:
-        required: true
-        type: string
-      SPEC_ARTIFACT:
-        required: true
-        type: string
       TRUSTSTORE_FILE:
         required: true
         type: string
@@ -34,9 +25,8 @@ on:
         required: true
         type: string
       LOG_LEVEL:
-        required: false
+        required: true
         type: string
-        default: info
       VALIDATOR_LOG_LEVEL:
         required: false
         type: string
@@ -59,12 +49,6 @@ on:
       DEPLOY_APIGEE:
         type: boolean
         default: true
-      DOMAIN_NAME_EXPORT:
-        required: false
-        type: string
-      ZONE_ID_EXPORT:
-        required: false
-        type: string
       TARGET_SPINE_SERVER:
         required: true
         type: string
@@ -82,14 +66,28 @@ on:
         type: string
       IS_PULL_REQUEST:
         type: boolean
-        default: false
+        default: true
       ENABLE_DEFAULT_ASID_PARTY_KEY:
         type: boolean
       SHA1_ENABLED_APPLICATION_IDS:
         type: string
-        required: false
+        required: true
+      SANDBOX_MODE_ENABLED:
+        type: string
+        required: true
+      DESIRED_FHIR_FACADE_COUNT:
+        type: number
+        required: true
+      SERVICE_CPU:
+        type: number
+        required: true
+      SERVICE_MEMORY:
+        type: number
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
+        required: true
+      CDK_PULL_IMAGE_ROLE:
         required: true
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
         required: false
@@ -119,6 +117,7 @@ jobs:
   release_code_and_api:
     runs-on: ubuntu-22.04
     environment: ${{ inputs.AWS_ENVIRONMENT }}
+    name: deploy to ${{ inputs.AWS_ENVIRONMENT }}
     permissions:
       id-token: write
       contents: write
@@ -133,69 +132,31 @@ jobs:
             .github
 
       - name: Configure AWS Credentials
+        id: connect-aws-pull-image
         uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-2
-          role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
-          role-session-name: fhir-facade-cloud-formation-deploy
+          role-to-assume: ${{ secrets.CDK_PULL_IMAGE_ROLE }}
+          role-session-name: prescription-clinical-tracker-ui-pull-image
 
-      - name: Download build artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.BUILD_ARTIFACT }}
-          path: .
+      - name: Retrieve AWS Account ID
+        id: retrieve-pull-image-account-id
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
 
-      - name: Download specification artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: ${{ inputs.SPEC_ARTIFACT }}
-          path: .
-
-      - name: Download python dependency artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: python_dependency_files
-          path: .
-  
-      # using git commit sha for version of action to ensure we have stable version
-      - name: Install asdf
-        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
-        with:
-          asdf_branch: v0.11.3
-  
-      - name: Cache asdf
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      - name: Install asdf dependencies in .tool-versions
-        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
-        with:
-          asdf_branch: v0.11.3
-        env:
-          PYTHON_CONFIGURE_OPTS: --enable-shared
-
-      - name: Run make install-python
+      - name: Login to Amazon ECR
+        id: login-ecr-pull-image
         run: |
-          make install-python
-  
-      - name: Export specification paths
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+
+      - name: Pull cdk-utils-build from Amazon ECR
         run: |
-          SPEC_PATH="$(pwd)/electronic-prescription-service-api.resolved.json"
-          echo "EPS FHIR specification location: $SPEC_PATH"
-          echo "SPEC_PATH=${SPEC_PATH}" >> "$GITHUB_ENV"
+          docker pull "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest"
+          docker tag "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest" cdk-utils-build-repo:latest
 
-          SPEC_PATH_PRESCRIBING="$(pwd)/fhir-prescribing.resolved.json"
-          echo "FHIR Prescribing specification location: $SPEC_PATH_PRESCRIBING"
-          echo "SPEC_PATH_PRESCRIBING=${SPEC_PATH_PRESCRIBING}" >> "$GITHUB_ENV"
-
-          SPEC_PATH_DISPENSING="$(pwd)/fhir-dispensing.resolved.json"
-          echo "FHIR Dispensing specification location: $SPEC_PATH_DISPENSING"
-          echo "SPEC_PATH_DISPENSING=${SPEC_PATH_DISPENSING}" >> "$GITHUB_ENV"
+      - name: build_artifact download
+        uses: actions/download-artifact@v4
+        with:
+          name: cdk_artifact
 
       - name: docker_artifact download
         uses: actions/download-artifact@v4
@@ -213,12 +174,26 @@ jobs:
         run: |
           docker load -i validator_docker.img
 
+      - name: extract build_artifact
+        run: |
+          mkdir -p .build
+          tar -xf artifact.tar -C .build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        id: connect-aws-deploy
+        with:
+          aws-region: eu-west-2
+          role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
+          role-session-name: fhir-facade-cloud-formation-deploy
+          output-credentials: true
+
       - name: Retrieve AWS Account ID
-        id: retrieve-account-id
+        id: retrieve-deploy-account-id
         run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
        
       - name: Login to Amazon ECR
-        id: login-ecr
+        id: login-ecr-push-image
         run: |
           aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
 
@@ -247,33 +222,60 @@ jobs:
         working-directory: .github/scripts
         run: |
           ./check_ecr_image_scan_results.sh
-
-      - name: Release code
-        shell: bash
-        working-directory: .github/scripts
+  
+      - name: fix cdk.json for deployment
+        run: |
+          ./.github/scripts/fix_cdk_json.sh
         env:
-          artifact_bucket_prefix: electronic_prescription_service/${{ inputs.ARTIFACT_BUCKET_PREFIX }}
-          COMMIT_ID: ${{ inputs.COMMIT_ID }}
-          enable_mutual_tls: ${{ inputs.ENABLE_MUTUAL_TLS }}
-          LOG_LEVEL: ${{ inputs.LOG_LEVEL }}
-          VALIDATOR_LOG_LEVEL: ${{ inputs.VALIDATOR_LOG_LEVEL }}
-          LOG_RETENTION_DAYS: ${{ inputs.LOG_RETENTION_DAYS }}
-          stack_name: ${{ inputs.STACK_NAME }}
-          TARGET_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
-          template_file: template.yaml
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
-          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          DOMAIN_NAME_EXPORT: ${{ inputs.DOMAIN_NAME_EXPORT }}
-          ZONE_ID_EXPORT: ${{ inputs.ZONE_ID_EXPORT }}
-          TARGET_SPINE_SERVER: ${{ inputs.TARGET_SPINE_SERVER }}
-          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
-          TO_PARTY_KEY: ${{ inputs.TO_PARTY_KEY }}
-          TO_ASID: ${{ inputs.TO_ASID }}
-          ENABLE_DEFAULT_ASID_PARTY_KEY: ${{ inputs.ENABLE_DEFAULT_ASID_PARTY_KEY }}
-          DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
-          DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
-          SHA1_ENABLED_APPLICATION_IDS: ${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}
-        run: ./release_code.sh
+          SERVICE_NAME: "${{ inputs.STACK_NAME }}"
+          VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
+          LOG_RETENTION_IN_DAYS: "${{ inputs.LOG_RETENTION_DAYS }}"
+          COMMIT_ID: "${{ inputs.COMMIT_ID }}"
+          DOCKER_IMAGE_TAG: "${{ inputs.DOCKER_IMAGE_TAG }}"
+          TARGET_SPINE_SERVER: "${{ inputs.TARGET_SPINE_SERVER }}"
+          LOG_LEVEL: "${{ inputs.LOG_LEVEL }}"
+          TO_ASID: "${{ inputs.TO_ASID }}"
+          TO_PARTY_KEY: "${{ inputs.TO_PARTY_KEY }}"
+          VALIDATOR_LOG_LEVEL: "${{ inputs.VALIDATOR_LOG_LEVEL }}"
+          ENABLE_DEFAULT_ASID_PARTY_KEY: "${{ inputs.ENABLE_DEFAULT_ASID_PARTY_KEY }}"
+          DEFAULT_PTL_ASID: "${{ secrets.DEFAULT_PTL_ASID }}"
+          DEFAULT_PTL_PARTY_KEY: "${{ secrets.DEFAULT_PTL_PARTY_KEY }}"
+          SANDBOX_MODE_ENABLED: "${{ inputs.SANDBOX_MODE_ENABLED }}"
+          ENABLE_MUTUAL_TLS: "${{ inputs.ENABLE_MUTUAL_TLS }}"
+          SHA1_ENABLED_APPLICATION_IDS: "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}"
+          DESIRED_FHIR_FACADE_COUNT: "${{ inputs.DESIRED_FHIR_FACADE_COUNT }}"
+          SERVICE_CPU: "${{ inputs.SERVICE_CPU }}"
+          SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+
+      - name: Show diff
+        run: |
+          docker run \
+          -v "$(pwd)/.build":/home/cdkuser/workspace/ \
+          -e AWS_ACCESS_KEY_ID=${{ steps.connect-aws-deploy.outputs.aws-access-key-id }} \
+          -e AWS_SECRET_ACCESS_KEY=${{ steps.connect-aws-deploy.outputs.aws-secret-access-key }} \
+          -e AWS_SESSION_TOKEN=${{ steps.connect-aws-deploy.outputs.aws-session-token }} \
+          -e AWS_REGION="eu-west-2" \
+          -e SHOW_DIFF="true" \
+          -e DEPLOY_CODE="false" \
+          -e CDK_APP_PATH="packages/cdk/bin/PrescribeDispenseApp.ts" \
+          cdk-utils-build-repo:latest
+        shell: bash
+
+      - name: Deploy code
+        run: |
+          docker run \
+          -v "$(pwd)/.build":/home/cdkuser/workspace/ \
+          -e AWS_ACCESS_KEY_ID=${{ steps.connect-aws-deploy.outputs.aws-access-key-id }} \
+          -e AWS_SECRET_ACCESS_KEY=${{ steps.connect-aws-deploy.outputs.aws-secret-access-key }} \
+          -e AWS_SESSION_TOKEN=${{ steps.connect-aws-deploy.outputs.aws-session-token }} \
+          -e AWS_REGION="eu-west-2" \
+          -e SHOW_DIFF="false" \
+          -e DEPLOY_CODE="true" \
+          -e CDK_APP_PATH="packages/cdk/bin/PrescribeDispenseApp.ts" \
+          cdk-utils-build-repo:latest
+        shell: bash
 
       - name: Get mtls secrets
         shell: bash
@@ -293,41 +295,41 @@ jobs:
 
       - name: Deploy fhir-prescribing API
         shell: bash
-        working-directory: .github/scripts
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          SPEC_PATH: ${{ env.SPEC_PATH_PRESCRIBING }}
+          SPEC_PATH: ./.build/packages/specification/dist/fhir-prescribing.resolved.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PROXYGEN_PRIVATE_KEY_NAME: FhirPrescribingProxygenPrivateKey
           PROXYGEN_KID: fhir-prescribing
           DRY_RUN: false
-        run: ./deploy_api.sh
+          ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+        run: ./.github/scripts/deploy_api.sh
   
       - name: Deploy fhir-dispensing API
         shell: bash
-        working-directory: .github/scripts
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          SPEC_PATH: ${{ env.SPEC_PATH_DISPENSING }}
+          SPEC_PATH: ./.build/packages/specification/dist/fhir-dispensing.resolved.json
           STACK_NAME: ${{ inputs.STACK_NAME }}
           AWS_ENVIRONMENT: ${{ inputs.AWS_ENVIRONMENT }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           PROXYGEN_PRIVATE_KEY_NAME: FhirDispensingProxygenPrivateKey
           PROXYGEN_KID: fhir-dispensing
           DRY_RUN: false
-        run: ./deploy_api.sh
+          ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+        run: ./.github/scripts/deploy_api.sh
 
       - uses: actions/upload-artifact@v4
         name: Upload specs
         with:
           name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs
           path: |
-            ${{ env.SPEC_PATH_DISPENSING }}
-            ${{ env.SPEC_PATH_PRESCRIBING }}
+            ./.build/packages/specification/dist/fhir-dispensing.resolved.json
+            ./.build/packages/specification/dist/fhir-prescribing.resolved.json
   
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}

@@ -17,12 +17,12 @@ This is a RESTful HL7® FHIR® API specification for the _Electronic Prescriptio
 - `packages/tool/scripts` Useful scripts
 - `packages/tool/site` Code for EPSAT - split into client and server
 - `packages/tool/specification` API spec for EPSAT - needed for Apigee deployment
+- `packages/cdk` CDK code to deploy the stack in EPS AWS account
 - `proxies/` Apigee API Proxies for the API
 - `scripts/` Utilities helpful to developers of this specification
 - `.devcontainer` Contains a dockerfile and vscode devcontainer definition
 - `.github` Contains github workflows that are used for building and deploying from pull requests and releases
 - `.vscode` Contains vscode workspace file
-- `SAMtemplates` Contains AWS resource definitions
 
 
 Consumers of the API will find developer documentation on the [NHS Digital Developer Hub](https://digital.nhs.uk/developer/api-catalogue).
@@ -256,15 +256,10 @@ This is not valid for -all target.
 - `publish` Placeholder target for publishing
 - `mark-jira-released` Marks Jira issues as released
 
-#### SAM targets
-These are mostly called from CI pipelines to build and deploy resources to our AWS accounts via SAM
+#### CDK targets
+These are mostly called from CI pipelines to build and deploy resources to our AWS accounts via CDK
 
-- `sam-build` Builds deployable Cloudformation files from the main SAM template
-- `sam-build-sandbox`Builds deployable Cloudformation files from the sandbox SAM template
-- `sam-validate` Validates the main SAM templates
-- `sam-validate-sandbox` Validates the sandbox SAM templates
-- `sam-deploy-package` Deploys a Cloudformation stack of defined resources from the chosen SAM template
-
+- `cdk-synth` Runs cdk synth. Note - this uses cdk.json and cdk.context.json to set dummy values for VPC so we do not need to connect to AWS when this is run
 
 #### Clean and deep-clean targets
 
@@ -277,7 +272,7 @@ These are mostly called from CI pipelines to build and deploy resources to our A
 - `lint-api` Lints the API components
 - `lint-epsat` Lints epsat components
 - `lint-all` Lints all components
-- `cfn-guard` runs cfn-guard for sam and cloudformation templates
+- `cfn-guard` runs cfn-guard for output from cdk synth
 
 
 #### Check licenses and versions targets
@@ -380,9 +375,9 @@ Workflows are in the `/.github/workflows` folder
 - `pull_request.yml` Workflow for building, testing and deploying resources to AWS from a pull request
 - `pr_title_check.yml` Checks that pull requests title matches the desired format
 - `pr-link.yml` Links the raised PR with the associated Jira ticket
-- `release.yml` Runs on demand to create a release and deploy to all environments
-- `run_package_code_and_api.yml` Packages code and api and uploads to a github artifact for later deployment.
-- `run_release_code_and_api.yml` Release code and api built by run_package_code_and_api.yml to an environment.
+- `release.yml` Runs on merge to main to create a release and deploy to all environments
+- `cdk_package_code.yml` Packages CDK code, docker images and specifications and uploads to a github artifact for later deployment.
+- `cdk_release_code.yml` Deploys CDK code and api built by cdk_package_code.yml to an environment.
 
 Issue templates are in the `.github/ISSUE_TEMPLATE` folder
 
