@@ -221,7 +221,8 @@ export class PrescribeDispenseStack extends Stack {
         subnetType: SubnetType.PRIVATE_WITH_EGRESS
       },
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
-      minHealthyPercent: 100
+      minHealthyPercent: 100,
+      healthCheckGracePeriod: Duration.seconds(300)
     })
 
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
