@@ -96,12 +96,11 @@ export class LogGroups extends Construct {
       }
     }
 
-    new SubscriptionFilter(this, "ClaimsCoordinatorSplunkSubscriptionFilter", {
-      logGroup: claimsCoordinatorLogGroup,
-      filterPattern: FilterPattern.allTerms(),
-      destination: new KinesisDestination(props.splunkDeliveryStream, {
-        role: props.splunkSubscriptionFilterRole
-      })
+    new CfnSubscriptionFilter(this, "ClaimsCoordinatorSplunkSubscriptionFilter", {
+      destinationArn: props.splunkDeliveryStream.streamArn,
+      filterPattern: "",
+      logGroupName: claimsCoordinatorLogGroup.logGroupName,
+      roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
     const claimsValidatorLogGroup = new LogGroup(this, "ClaimsValidatorLogGroup", {
@@ -120,12 +119,11 @@ export class LogGroups extends Construct {
       }
     }
 
-    new SubscriptionFilter(this, "ClaimsValidatorSplunkSubscriptionFilter", {
-      logGroup: validatorLogGroup,
-      filterPattern: FilterPattern.allTerms(),
-      destination: new KinesisDestination(props.splunkDeliveryStream, {
-        role: props.splunkSubscriptionFilterRole
-      })
+    new CfnSubscriptionFilter(this, "ClaimsValidatorSplunkSubscriptionFilter", {
+      destinationArn: props.splunkDeliveryStream.streamArn,
+      filterPattern: "",
+      logGroupName: validatorLogGroup.logGroupName,
+      roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
     // Outputs
