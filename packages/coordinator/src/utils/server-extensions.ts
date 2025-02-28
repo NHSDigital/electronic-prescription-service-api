@@ -51,14 +51,12 @@ export function reformatUserErrorsToFhir(
       fatalResponse
     ).code(500).type(ContentTypes.FHIR)
   } else {
-    if (!(request.response instanceof Boom)) {
-      if (request.response.statusCode >= 400) {
-        // we DO log response here as we are sending back the same response
-        logger.warn({
-          payload: getPayload(request),
-          response
-        }, "ErrorOrWarningResponse")
-      }
+    if (response.statusCode >= 400) {
+      // we DO log response here as we are sending back the same response
+      logger.warn({
+        payload: getPayload(request),
+        response
+      }, "ErrorOrWarningResponse")
     }
   }
   return responseToolkit.continue
