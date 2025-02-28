@@ -31,7 +31,7 @@ semver = "^3.0.4"
 gitpython = "^3.1.44"
 pytest = "^8.3.4"
 requests = "^2.32.3"
-boto3 = "^1.37.1"
+boto3 = "^1.37.2"
 argparse = "^1.4.0"
 pre-commit = "^3.5.0"
 
