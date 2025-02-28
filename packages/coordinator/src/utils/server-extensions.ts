@@ -4,7 +4,6 @@ import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
-import {isEpsHostedContainer} from "./feature-flags"
 
 export const fatalResponse = {
   resourceType: "OperationOutcome",
@@ -29,24 +28,23 @@ export function reformatUserErrorsToFhir(
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ): Hapi.ResponseObject | symbol {
   const response = request.response
-  const logPayload = isEpsHostedContainer()
   const logger = request.logger
   if (response instanceof processingErrors.InconsistentValuesError) {
     // we do not log response here as we are sending back a different response
-    logger.warn({payload: getPayload(request, logPayload)}, "InconsistentValuesError")
+    logger.warn({payload: getPayload(request)}, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
     // we do not log response here as we are sending back a different response
-    logger.warn({payload: getPayload(request, logPayload)}, "FhirMessageProcessingError")
+    logger.warn({payload: getPayload(request)}, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     // we log the original response here but we send back a different response
     logger.error({
-      payload: getPayload(request, logPayload),
+      payload: getPayload(request),
       originalResponse: response
     }, "Boom")
     return responseToolkit.response(
@@ -56,7 +54,7 @@ export function reformatUserErrorsToFhir(
     if (response.statusCode >= 400) {
     // we DO log response here as we are sending back the same response
       logger.warn({
-        payload: getPayload(request, logPayload),
+        payload: getPayload(request),
         response
       }, "ErrorOrWarningResponse")
     }
@@ -64,10 +62,7 @@ export function reformatUserErrorsToFhir(
   return responseToolkit.continue
 }
 
-function getPayload(request: Hapi.Request<Hapi.ReqRefDefaults>, logPayload: boolean) {
-  if (!logPayload) {
-    return {}
-  }
+function getPayload(request: Hapi.Request<Hapi.ReqRefDefaults>) {
   if (request.payload) {
     if (request.payload instanceof Buffer) {
       return request.payload.toString()
@@ -106,7 +101,6 @@ export const invalidProdHeaders: Array<RequestHeaders> = [RequestHeaders.RAW_RES
 export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
-  const logPayload = isEpsHostedContainer()
   const logger = request.logger
   if (isProd()) {
     const listOfInvalidHeaders = Object.keys(request.headers).filter(
@@ -119,7 +113,7 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
         listOfInvalidHeaders
       }`
       logger.error({
-        payload: getPayload(request, logPayload),
+        payload: getPayload(request),
         errorMessage
       }, "invalid headers")
 

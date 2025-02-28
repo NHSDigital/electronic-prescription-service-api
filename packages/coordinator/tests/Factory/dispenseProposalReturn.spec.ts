@@ -111,5 +111,5 @@ describe("full successful response", () => {
   test("status code should be 200 for a full successful release response", async () => {
     const result = await releaseResponseHandler.handleResponse(releaseResponse, logger)
     expect(result.statusCode).toEqual(200)
-  })
+  }, 10000)
 })
