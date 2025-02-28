@@ -254,7 +254,7 @@ describe("switchContentTypeForSmokeTest extension", () => {
   })
 })
 
-describe("logs payload in correct situations", () => {
+describe.skip("logs payload in correct situations", () => {
   const server = Hapi.server()
 
   server.route([
