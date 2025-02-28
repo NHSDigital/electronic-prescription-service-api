@@ -29,7 +29,6 @@ export function reformatUserErrorsToFhir(
 ): Hapi.ResponseObject | symbol {
   const response = request.response
   const logger = request.logger
-  logger.warn({response}, "DebugResponse")
   if (response instanceof processingErrors.InconsistentValuesError) {
     // we do not log response here as we are sending back a different response
     logger.warn({payload: getPayload(request)}, "InconsistentValuesError")
