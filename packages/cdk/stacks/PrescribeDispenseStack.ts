@@ -3,6 +3,7 @@ import {
   Duration,
   Environment,
   Fn,
+  RemovalPolicy,
   Stack,
   StackProps
 } from "aws-cdk-lib"
@@ -12,7 +13,7 @@ import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
-import {Cluster} from "aws-cdk-lib/aws-ecs"
+import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {
   ApplicationProtocol,
@@ -34,6 +35,7 @@ import {
   TargetTrackingScalingPolicy,
   Schedule
 } from "aws-cdk-lib/aws-applicationautoscaling"
+import {LogGroup} from "aws-cdk-lib/aws-logs"
 
 export interface PrescribeDispenseStackProps extends StackProps {
     readonly env: Environment
@@ -197,10 +199,22 @@ export class PrescribeDispenseStack extends Stack {
       ApigeeEnvironment: ApigeeEnvironment
     })
 
+    // log group for insights
+    const insightLogGroups = new LogGroup(this, "insightsLogGroup", {
+      encryptionKey: cloudWatchLogsKmsKey,
+      logGroupName: `/aws/ecs/containerinsights/${props.stackName}-cluster/performance`,
+      retention: logRetentionInDays,
+      removalPolicy: RemovalPolicy.DESTROY
+    })
+
     const ecsCluster = new Cluster(this, "EcsCluster", {
       clusterName: `${props.stackName}-cluster`,
-      vpc: defaultVpc
+      vpc: defaultVpc,
+      containerInsightsV2: ContainerInsights.ENHANCED
     })
+
+    // add dependency on insight log groups for the cluster as we want our own insight log group not an auto created one
+    ecsCluster.node.addDependency(insightLogGroups)
 
     const fhirFacadeAlbCertificate = new Certificate(this, "fhirFacadeAlbCertificate", {
       domainName: fhirFacadeHostname,
@@ -269,6 +283,8 @@ export class PrescribeDispenseStack extends Stack {
       CFNfhirFacadeListener.addPropertyOverride(
         "MutualAuthentication.TrustStoreArn", fhirFacadeAlbTrustStore.trustStoreArn
       )
+
+      fhirFacadeService.node.addDependency(fhirFacadeAlbTrustStore)
     }
 
     // create the claims service
