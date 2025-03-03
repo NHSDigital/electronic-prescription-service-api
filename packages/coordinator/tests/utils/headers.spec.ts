@@ -8,7 +8,9 @@ import {
   getScope,
   getShowValidationWarnings,
   DEFAULT_SCOPE,
-  AWS_SCOPE
+  AWS_SCOPE,
+  getProxyName,
+  ProxyName
 } from "../../src/utils/headers"
 import {validTestHeaders, validTestHeadersWithoutAsidPartyKey} from "../resources/test-resources"
 
@@ -163,4 +165,49 @@ describe("header functions do the right thing", () => {
     expect(showValidationWarnings).toBe("false")
   })
 
+  const getProxyNameTestCases = [
+    {
+      "proxyHeaderValue": "fhir-dispensing--internal-dev--fhir-dispensing-pr-3094",
+      "isEpsHostedContainer": "true",
+      "expectedValue": ProxyName.EPS_FHIR_DISPENSING
+    },
+    {
+      "proxyHeaderValue": "fhir-dispensing--internal-dev--fhir-dispensing",
+      "isEpsHostedContainer": "true",
+      "expectedValue": ProxyName.EPS_FHIR_DISPENSING
+    },
+    {
+      "proxyHeaderValue": "fhir-prescribing--internal-dev--fhir-prescribing-pr-3094",
+      "isEpsHostedContainer": "true",
+      "expectedValue": ProxyName.EPS_FHIR_PRESCRIBING
+    },
+    {
+      "proxyHeaderValue": "fhir-prescribing--internal-dev--fhir-prescribing",
+      "isEpsHostedContainer": "true",
+      "expectedValue": ProxyName.EPS_FHIR_PRESCRIBING
+    },
+    {
+      "proxyHeaderValue": null,
+      "isEpsHostedContainer": "true",
+      "expectedValue": ProxyName.EPS_FHIR_DISPENSING
+    },
+    {
+      "proxyHeaderValue": "fhir-prescribing--internal-dev--fhir-prescribing",
+      "isEpsHostedContainer": "false",
+      "expectedValue": ProxyName.EPS_FHIR
+    }
+  ]
+
+  test.each(getProxyNameTestCases)(
+    // eslint-disable-next-line max-len
+    "getProxyName returns $expectedValue when isEpsHostedContainer set to $isEpsHostedContainer and proxyHeaderValue set to $proxyHeaderValue",
+    function (testCase) {
+      process.env.MTLS_SPINE_CLIENT = testCase.isEpsHostedContainer
+      const proxyHeader = {
+        "apiproxy": testCase.proxyHeaderValue
+      }
+      const proxyName = getProxyName(proxyHeader)
+      expect(proxyName).toBe(testCase.expectedValue)
+
+    })
 })
