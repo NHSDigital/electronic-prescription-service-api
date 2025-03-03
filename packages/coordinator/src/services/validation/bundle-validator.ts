@@ -263,6 +263,7 @@ function isPlanOrReflex(intent:fhir.MedicationRequestIntent):boolean {
   )
 }
 
+// HERE?
 export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.OperationOutcomeIssue> {
   const medicationRequests = getMedicationRequests(bundle)
 
