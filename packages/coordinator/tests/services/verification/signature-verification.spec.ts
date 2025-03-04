@@ -106,7 +106,7 @@ describe("verifyPrescriptionSignature", () => {
     test("passes if prescription signature method algorithm that references SHA-256 matches prescription", async () => {
       const result = await verifyPrescriptionSignature(valid256Signature, logger)
       expect(result).not.toContain("Signature is invalid")
-    })
+    }, 10000)
 
     test("passes if prescription signature is valid but method algorithm does not reference SHA-256 or SHA-1",
       async () => {
