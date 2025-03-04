@@ -46,7 +46,7 @@ extends:
       - task: NodeTool@0
         displayName: Use Node v20.10.0
         inputs:
-          versionSpec: "20.10.0"
+          versionSpec: "23.9.0"
       - task: UseDotNet@2
         inputs:
           version: "3.1.x"
