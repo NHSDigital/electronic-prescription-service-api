@@ -24,6 +24,7 @@ function createStatusResponse(
   return h.response({
     status: responseStatus,
     commitId: process.env.COMMIT_ID,
+    versionNumber: process.env.DEPLOYED_VERSION,
     checks: checks
   }).code(responseCode)
 }
