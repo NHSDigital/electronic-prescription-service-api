@@ -269,7 +269,7 @@ CONFIG.sessionKey
 ^[a-f0-9]{40}:packages\/coordinator\/src\/server\.ts:14
 ^[a-f0-9]{40}:packages\/coordinator\/src\/services\/translation\/response\/provenance\.ts:37
 ^[a-f0-9]{40}:packages\/coordinator\/src\/services\/translation\/response\/provenance\.ts:29
-^[a-f0-9]{40}:packages\/coordinator\/src\/services\/verification\/certificate-revocation\/utils\.ts:24
+^([a-f0-9]{40}:)?packages\/coordinator\/src\/services\/verification\/certificate-revocation\/utils\.ts:24
 ^[a-f0-9]{40}:packages\/coordinator\/src\/services\/verification\/certificate-revocation\/utils\.ts:9
 ^[a-f0-9]{40}:packages\/coordinator\/src\/services\/verification\/certificate-revocation\/utils\.ts:25
 ^[a-f0-9]{40}:packages\/coordinator\/src\/services\/verification\/certificate-revocation\/utils\.ts:11

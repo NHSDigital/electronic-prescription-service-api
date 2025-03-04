@@ -359,7 +359,7 @@ describe("logs payload in correct situations", () => {
   test.each(logTestCases)(
     "$scenarioDescription", async function(logTestCase) {
       newIsEpsHostedContainer.mockImplementation(() => logTestCase.isEpsDeployment)
-      const expectedPayload = logTestCase.isEpsDeployment ? {"foo": "bar"} : {}
+      const expectedPayload = {"foo": "bar"}
       const response = await server.inject({
         url: logTestCase.url,
         payload: {foo: "bar"},

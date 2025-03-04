@@ -75,7 +75,9 @@ const getX509IssuerId = (x509Certificate: X509): Hex => {
   return x509Certificate.getExtAuthorityKeyIdentifier().kid
 }
 
-const getSubCaCerts = (): Array<string> => process.env.SUBCACC_CERT.split(",")
+const getSubCaCerts = (): Array<string> => {
+  return process.env.SUBCACC_CERT ? process.env.SUBCACC_CERT.split(",") : []
+}
 
 export {
   getCertificateFromPrescription,
