@@ -1,5 +1,11 @@
 import path from "path"
-import {Configuration, ProvidePlugin} from "webpack"
+import webpack from "webpack"
+import {fileURLToPath} from "url"
+import type {Configuration} from "webpack"
+
+// Compute __dirname
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 const config: Configuration = {
   entry: "./src/index.tsx",
@@ -27,7 +33,7 @@ const config: Configuration = {
   },
   devtool: "source-map",
   plugins: [
-    new ProvidePlugin({
+    new webpack.ProvidePlugin({
       Buffer: ["buffer", "Buffer"]
     })
   ],
