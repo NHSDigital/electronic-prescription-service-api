@@ -80,7 +80,7 @@
   <PostClientFlow>
     <Response>
       <Step>
-        <Name>FlowCallout.LogToSplunkRequestContentBody</Name>
+        <Name>FlowCallout.LogToSplunk</Name>
       </Step>
     </Response>
   </PostClientFlow>

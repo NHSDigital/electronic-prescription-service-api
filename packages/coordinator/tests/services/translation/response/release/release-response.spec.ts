@@ -54,6 +54,9 @@ const setupMockData = async (releaseExampleName: string): Promise<TranslationRes
   return result
 }
 
+// set a longer timeout for before all hook
+const beforeAllHookTimeout = 10000
+
 describe("outer bundle", () => {
   let loggerSpy: jest.SpyInstance
   let returnFactoryCreateFunctionSpy: jest.SpyInstance
@@ -117,7 +120,7 @@ describe("outer bundle", () => {
   }
 
   describe("passed prescriptions", () => {
-    beforeAll(getBeforeAllCallback("release_success.xml", "passedPrescriptions"))
+    beforeAll(getBeforeAllCallback("release_success.xml", "passedPrescriptions"), beforeAllHookTimeout)
 
     afterAll(afterAllCallback)
 
@@ -133,7 +136,7 @@ describe("outer bundle", () => {
   })
 
   describe("failed prescriptions", () => {
-    beforeAll(getBeforeAllCallback("release_invalid.xml", "failedPrescriptions"))
+    beforeAll(getBeforeAllCallback("release_invalid.xml", "failedPrescriptions"), beforeAllHookTimeout)
 
     afterAll(afterAllCallback)
 
