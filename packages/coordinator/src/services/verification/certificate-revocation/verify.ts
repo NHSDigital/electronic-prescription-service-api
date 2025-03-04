@@ -89,7 +89,12 @@ const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescr
 }
 
 const getSubCaCert = (certificate: X509, serialNumber: string, logger: pino.Logger): X509 => {
-  const subCaCerts = getSubCaCerts().map(c => new X509(c))
+  const subCaCertsArray = getSubCaCerts()
+  if (subCaCertsArray.length === 0) {
+    logger.error(`Cannot retrieve CA issuer cert serial from certificate with serial ${serialNumber}.`)
+    return undefined
+  }
+  const subCaCerts = subCaCertsArray.map(c => new X509(c))
 
   const caIssuerCertSerial = getX509IssuerId(certificate)
   if (!caIssuerCertSerial) {
