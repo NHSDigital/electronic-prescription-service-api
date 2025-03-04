@@ -252,33 +252,13 @@ function createDispensingCapabilityStatement(manifest: Manifest) {
   ]
   const operation = [
     {
-      "name": "release-message",
-      "definition": "http://hl7.org/fhir/OperationDefinition/MessageHeader-release-message"
-    },
-    {
-      "name": "dispense-notification",
-      "definition": "https://fhir.nhs.uk/OperationDefinition/MessageHeader-dispense-notification-message"
-    },
-    {
-      "name": "claim",
-      "definition": "https://fhir.nhs.uk/OperationDefinition/MessageHeader-claim-message"
-    },
-    {
-      "name": "return",
-      "definition": "https://fhir.nhs.uk/OperationDefinition/MessageHeader-return-message"
-    },
-    {
-      "name": "withdraw",
-      "definition": "https://fhir.nhs.uk/OperationDefinition/MessageHeader-withdraw-message"
+      "name": "process-message",
+      "definition": "http://hl7.org/fhir/OperationDefinition/MessageHeader-process-message"
     }
   ]
   const messaging = [
     {
       "supportedMessage":  [
-        {
-          "mode": "receiver",
-          "definition": "https://fhir.nhs.uk/MessageDefinition/release"
-        },
         {
           "mode": "receiver",
           "definition": "https://fhir.nhs.uk/MessageDefinition/dispense-notification"
