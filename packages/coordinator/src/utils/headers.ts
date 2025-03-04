@@ -23,6 +23,7 @@ export enum RequestHeaders {
   SKIP_VALIDATION = "x-skip-validation",
   SHOW_VALIDATION_WARNINGS = "x-show-validation-warnings",
   SMOKE_TEST = "x-smoke-test",
+  PROXY_NAME = "apiproxy"
 }
 
 export const DEFAULT_SANDBOX_ASID = "200000001285"
@@ -101,4 +102,27 @@ export function getShowValidationWarnings(headers: Hapi.Utils.Dictionary<string>
 
 export function getApplicationId(headers: Hapi.Utils.Dictionary<string>): string {
   return process.env.SANDBOX === "1" ? DEFAULT_APPLICATION_ID : headers[RequestHeaders.APPLICATION_ID]
+}
+
+export enum ProxyName {
+  EPS_FHIR_DISPENSING = "EPS-FHIR-DISPENSING",
+  EPS_FHIR_PRESCRIBING = "EPS-FHIR-PRESCRIBING",
+  EPS_FHIR = "EPS-FHIR",
+}
+
+export function getProxyName(headers: Hapi.Utils.Dictionary<string>): string {
+  if (isEpsHostedContainer()) {
+    const proxyName = headers[RequestHeaders.PROXY_NAME]
+    if (proxyName) {
+      if (proxyName.includes("fhir-dispensing")) {
+        return ProxyName.EPS_FHIR_DISPENSING
+      }
+      if (proxyName.includes("fhir-prescribing")) {
+        return ProxyName.EPS_FHIR_PRESCRIBING
+      }
+    }
+    // we do not know what it is so just return dispensing
+    return ProxyName.EPS_FHIR_DISPENSING
+  }
+  return ProxyName.EPS_FHIR
 }

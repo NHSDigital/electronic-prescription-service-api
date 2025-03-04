@@ -724,11 +724,23 @@ paths:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
         - nhs-cis2-aal3: []
-
+  /metadata:
+    get:
+      operationId: metadata
+      summary: dummy operation for path
+      description: |
+        this is a dummy method so things go to the backend correctly
+      responses:
+        "200":
+          description: "Dummy response"
+      security:
+        - app-level0: []
 components:
   securitySchemes:
     nhs-cis2-aal3:
       $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
+    app-level0:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
   parameters:
     BearerAuthorization:
       in: header
@@ -1321,6 +1333,7 @@ components:
           $ref: "schemas/components/Location/CreateLocation.yaml"
 security:
   - nhs-cis2-aal3: []
+  - app-level0: []
 x-nhsd-apim:
   temporary: false
   monitoring: false
@@ -1347,6 +1360,9 @@ x-nhsd-apim:
     - name: asid
       required: true
       header: nhsd-asid
-    - name: id
+    - name: apiproxy.name
       required: true
+      header: apiproxy
+    - name: id
+      required: false
       header: nhsd-application-id
