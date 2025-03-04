@@ -65,7 +65,7 @@ jobs:
 
   package_code:
     needs: [get_issue_number, get_commit_id]
-    uses: ./.github/workflows/run_package_code_and_api.yml
+    uses: ./.github/workflows/cdk_package_code.yml
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -73,15 +73,12 @@ jobs:
 
   release_code:
     needs: [get_issue_number, package_code, get_commit_id]
-    uses: ./.github/workflows/run_release_code_and_api.yml
+    uses: ./.github/workflows/cdk_release_code.yml
     with:
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
-      ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: false
-      BUILD_ARTIFACT: packaged_code
-      SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -97,8 +94,13 @@ jobs:
       IS_PULL_REQUEST: true
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SANDBOX_MODE_ENABLED: 0
+      DESIRED_FHIR_FACADE_COUNT: 1
+      SERVICE_CPU: 2048
+      SERVICE_MEMORY: 4096
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
       API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
@@ -110,15 +112,12 @@ jobs:
   
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
-    uses: ./.github/workflows/run_release_code_and_api.yml
+    uses: ./.github/workflows/cdk_release_code.yml
     with:
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
-      ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: false
-      BUILD_ARTIFACT: packaged_sandbox_code
-      SPEC_ARTIFACT: specification_code
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -126,16 +125,27 @@ jobs:
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
-      TARGET_SPINE_SERVER: sandbox
+      TARGET_SPINE_SERVER: unused
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
       RUN_REGRESSION_TEST: false
-      TO_ASID: 567456789789
-      TO_PARTY_KEY: YES-0000806
+      TO_ASID: unused
+      TO_PARTY_KEY: unused
       IS_PULL_REQUEST: true
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SANDBOX_MODE_ENABLED: 1
+      DESIRED_FHIR_FACADE_COUNT: 1
+      SERVICE_CPU: 2048
+      SERVICE_MEMORY: 4096
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
       DEFAULT_PTL_ASID: unused
       DEFAULT_PTL_PARTY_KEY: unused
 
@@ -144,32 +154,38 @@ jobs:
   # release_ref_code:
   #   needs: [get_issue_number, package_code, get_commit_id]
   #   uses: ./.github/workflows/run_release_code_and_api.yml
-  #   with:
-  #     STACK_NAME: prescribe-dispense
-  #     ARTIFACT_BUCKET_PREFIX: PR-${{needs.get_issue_number.outputs.issue_number}}
-  #     AWS_ENVIRONMENT: ref
-  #     APIGEE_ENVIRONMENT: ref
-  #     ENABLE_MUTUAL_TLS: true
-  #     BUILD_ARTIFACT: packaged_code
-  #     SPEC_ARTIFACT: specification_code
-  #     TRUSTSTORE_FILE: fhirfacade-truststore.pem
-  #     VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
-  #     COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-  #     LOG_LEVEL: debug
-  #     VALIDATOR_LOG_LEVEL: INFO
-  #     LOG_RETENTION_DAYS: 30
-  #     DEPLOY_APIGEE: true
-  #     TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
-  #     DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
-  #     RUN_REGRESSION_TEST: false
-  #     TO_ASID: 567456789789
-  #     TO_PARTY_KEY: YES-0000806
-  #     IS_PULL_REQUEST: true
-  #   secrets:
-  #     CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
-  #     PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
-  #     REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
-  #     API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
-  #     API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
-  #     SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
-  #     SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
+  # uses: ./.github/workflows/cdk_release_code.yml
+  # with:
+  #   ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
+  #   STACK_NAME: prescribe-dispense
+  #   AWS_ENVIRONMENT: ref
+  #   APIGEE_ENVIRONMENT: ref
+  #   ENABLE_MUTUAL_TLS: true
+  #   BUILD_ARTIFACT: packaged_code
+  #   SPEC_ARTIFACT: specification_code
+  #   TRUSTSTORE_FILE: fhirfacade-truststore.pem
+  #   VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+  #   COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+  #   LOG_LEVEL: debug
+  #   VALIDATOR_LOG_LEVEL: INFO
+  #   LOG_RETENTION_DAYS: 30
+  #   DEPLOY_APIGEE: true
+  #   TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
+  #   DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+  #   RUN_REGRESSION_TEST: false
+  #   TO_ASID: 567456789789
+  #   TO_PARTY_KEY: YES-0000806
+  #   IS_PULL_REQUEST: false
+  #   ENABLE_DEFAULT_ASID_PARTY_KEY: true
+  #   SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b 
+  #   SANDBOX_MODE_ENABLED: 0
+  #   DESIRED_FHIR_FACADE_COUNT: 3
+  #   SERVICE_CPU: 4096
+  #   SERVICE_MEMORY: 8192
+  # secrets:
+  #   CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+  #   CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+  #   PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+  #   REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+  #   DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+  #   DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}

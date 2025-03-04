@@ -14,21 +14,13 @@ mkdir -p cfn_guard_output
 declare -a rulesets=("ncsc" "ncsc-cafv3" "wa-Reliability-Pillar" "wa-Security-Pillar")
 for ruleset in "${rulesets[@]}"
     do
+    echo "Checking all templates in cdk.out folder with ruleest $ruleset"
 
-    while IFS= read -r -d '' file
-    do
-        echo "checking SAM template $file with ruleset $ruleset"
-        mkdir -p "$(dirname cfn_guard_output/"$file")"
-
-        # transform the SAM template to cloudformation and then run through cfn-guard
-        SAM_OUPUT=$(sam validate -t "$file" --region eu-west-2 --debug 2>&1 | \
-            grep -Pazo '(?s)AWSTemplateFormatVersion.*\n\/' | tr -d '\0')
-        echo "${SAM_OUPUT::-1}" | ~/.guard/bin/cfn-guard validate \
-            --rules "/tmp/ruleset/output/$ruleset.guard" \
-            --show-summary fail \
-            > "cfn_guard_output/${file}_${ruleset}.txt"
-
-    done <   <(find ./SAMtemplates -name '*.y*ml' -print0)
+    ~/.guard/bin/cfn-guard validate \
+        --data cdk.out \
+        --rules "/tmp/ruleset/output/$ruleset.guard" \
+        --show-summary fail \
+        > "cfn_guard_output/cdk.out_$ruleset.txt"
 
 done
 

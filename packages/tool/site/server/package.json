@@ -18,7 +18,7 @@
     "@types/hapi__cookie": "^12.0.5",
     "@types/hapi__inert": "^5.2.10",
     "@types/hapi__yar": "^10.1.6",
-    "@types/jsonwebtoken": "^9.0.8",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/uuid": "^10.0.0"
   },
   "engines": {
@@ -32,7 +32,7 @@
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
     "@hapi/yar": "^11.0.2",
-    "axios": "^1.7.9",
+    "axios": "^1.8.1",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
     "handlebars": "^4.7.7",
