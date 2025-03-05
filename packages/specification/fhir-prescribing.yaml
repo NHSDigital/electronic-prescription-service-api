@@ -265,7 +265,7 @@ paths:
                 value:
                   $ref: examples/spec/prepare/eRD-primary-example-req.json
               responsible-party-org:
-                summary: Responsible practitioner org 
+                summary: Responsible practitioner org
                 description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Prepare-Request-200_OK.json
@@ -331,7 +331,7 @@ paths:
         "200":
           description: "Dummy response"
       security:
-       - nhs-cis2-aal3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/$validate:
     post:
       operationId: validate
@@ -347,7 +347,7 @@ paths:
         "200":
           description: "Dummy response"
       security:
-       - nhs-cis2-aal3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/$process-message#prescription-order:
     post:
       operationId: send-prescription-order-message
@@ -360,7 +360,7 @@ paths:
 
         The `#prescription-order` in the URL has been added to distinguish this from the other operations which
         can be performed using the [`$process-message` endpoint](https://simplifier.net/guide/NHSDigital/Home/FHIRAssets/AllAssets/OperationDefinition/process-message). It is not required in requests to the API.
-        
+
         The only difference between the prepare requests and create request should be the inclusion of the provenance resource.
 
         To generate a Provenance resource, guidance can be found at this link [here](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/how-to-embed-a-signature-within-a-prescription).
@@ -399,7 +399,7 @@ paths:
                 value:
                   $ref: examples/spec/prescribing/prescription-order/eRD-primary-example-req.json
               responsible-party-org:
-                summary: Responsible practitioner org 
+                summary: Responsible practitioner org
                 description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/3-Process-Request-Send-200_OK.json
@@ -502,7 +502,7 @@ paths:
                 value:
                   $ref: examples/spec/prescribing/prescription-order-update/eRD-primary-example-req.json
               responsible-party-org:
-                summary: Responsible practitioner org 
+                summary: Responsible practitioner org
                 description: A valid example with an organisation as the responsible practitioner.
                 value:
                   $ref: examples/primary-care/acute/nominated-pharmacy/responsible-party-org/cancellations/3-Process-Request-Cancel-200_OK.json
@@ -576,7 +576,7 @@ paths:
           description: "Dummy response"
       security:
         - app-level0: []
-  /FHIR/R4/$convert :
+  /FHIR/R4/$convert:
     post:
       operationId: convert
       summary: dummy operation for path
@@ -591,7 +591,7 @@ paths:
         "200":
           description: "Dummy response"
       security:
-       - nhs-cis2-aal3: []
+        - nhs-cis2-aal3: []
 
 components:
   securitySchemes:
@@ -1196,9 +1196,9 @@ x-nhsd-apim:
   temporary: false
   monitoring: false
   access:
-  - title: FHIR Prescribing Service API User Restricted
-    grants:
-      nhs-cis2-aal3: []
+    - title: FHIR Prescribing Service API User Restricted
+      grants:
+        nhs-cis2-aal3: []
   target:
     type: external
     healthcheck: /_status
@@ -1224,3 +1224,10 @@ x-nhsd-apim:
     - name: id
       required: false
       header: nhsd-application-id
+  ratelimiting:
+    proxy:
+      limit: 20000
+      timeunit: minute
+    app-default:
+      limit: 20000
+      timeunit: minute
