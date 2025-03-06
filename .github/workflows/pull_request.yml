@@ -21,7 +21,7 @@ jobs:
     needs: quality_checks
     outputs:
       issue_number: ${{ steps.get_issue_number.outputs.result }}
-      version: ${{ steps.get_issue_number.outputs.version_number }} 
+      version: ${{ steps.get_issue_number.outputs.version_number }}
 
     steps:
       - uses: actions/github-script@v7
@@ -45,23 +45,23 @@ jobs:
           result-encoding: string
 
   get_commit_id:
-   runs-on: ubuntu-22.04
-   outputs:
-     commit_id: ${{ steps.commit_id.outputs.commit_id }}
-     sha_short: ${{ steps.commit_id.outputs.sha_short }}
+    runs-on: ubuntu-22.04
+    outputs:
+      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+      sha_short: ${{ steps.commit_id.outputs.sha_short }}
 
-   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ env.BRANCH_NAME }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ env.BRANCH_NAME }}
 
-    - name: Get Commit ID
-      id: commit_id
-      run: |
-        #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
-        echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
-        echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
+      - name: Get Commit ID
+        id: commit_id
+        run: |
+          #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
+          echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+          echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   package_code:
     needs: [get_issue_number, get_commit_id]
@@ -69,7 +69,6 @@ jobs:
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-
 
   release_code:
     needs: [get_issue_number, package_code, get_commit_id]
@@ -93,7 +92,7 @@ jobs:
       TO_PARTY_KEY: YES-0000806
       IS_PULL_REQUEST: true
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
-      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       SERVICE_CPU: 2048
@@ -109,7 +108,7 @@ jobs:
       SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
       DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
       DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
-  
+
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id]
     uses: ./.github/workflows/cdk_release_code.yml
@@ -132,7 +131,7 @@ jobs:
       TO_PARTY_KEY: unused
       IS_PULL_REQUEST: true
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
-      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
       SANDBOX_MODE_ENABLED: 1
       DESIRED_FHIR_FACADE_COUNT: 1
       SERVICE_CPU: 2048
@@ -151,41 +150,37 @@ jobs:
 
   # uncomment the block below if you want to release a build from a branch to ref
   # note - you will still need to approve the release to ref in github actions - it wont be automatically released
-  # release_ref_code:
-  #   needs: [get_issue_number, package_code, get_commit_id]
-  #   uses: ./.github/workflows/run_release_code_and_api.yml
-  # uses: ./.github/workflows/cdk_release_code.yml
-  # with:
-  #   ARTIFACT_BUCKET_PREFIX: ${{needs.tag_release.outputs.spec_version}}
-  #   STACK_NAME: prescribe-dispense
-  #   AWS_ENVIRONMENT: ref
-  #   APIGEE_ENVIRONMENT: ref
-  #   ENABLE_MUTUAL_TLS: true
-  #   BUILD_ARTIFACT: packaged_code
-  #   SPEC_ARTIFACT: specification_code
-  #   TRUSTSTORE_FILE: fhirfacade-truststore.pem
-  #   VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
-  #   COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
-  #   LOG_LEVEL: debug
-  #   VALIDATOR_LOG_LEVEL: INFO
-  #   LOG_RETENTION_DAYS: 30
-  #   DEPLOY_APIGEE: true
-  #   TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
-  #   DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
-  #   RUN_REGRESSION_TEST: false
-  #   TO_ASID: 567456789789
-  #   TO_PARTY_KEY: YES-0000806
-  #   IS_PULL_REQUEST: false
-  #   ENABLE_DEFAULT_ASID_PARTY_KEY: true
-  #   SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b 
-  #   SANDBOX_MODE_ENABLED: 0
-  #   DESIRED_FHIR_FACADE_COUNT: 3
-  #   SERVICE_CPU: 4096
-  #   SERVICE_MEMORY: 8192
-  # secrets:
-  #   CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
-  #   CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
-  #   PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
-  #   REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
-  #   DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
-  #   DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
+  release_ref_code:
+    needs: [get_issue_number, package_code, get_commit_id]
+    uses: ./.github/workflows/cdk_release_code.yml
+    with:
+      STACK_NAME: prescribe-dispense
+      AWS_ENVIRONMENT: ref
+      APIGEE_ENVIRONMENT: ref
+      ENABLE_MUTUAL_TLS: true
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
+      VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
+      LOG_RETENTION_DAYS: 30
+      DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
+      DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
+      RUN_REGRESSION_TEST: false
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b
+      SANDBOX_MODE_ENABLED: 0
+      DESIRED_FHIR_FACADE_COUNT: 3
+      SERVICE_CPU: 4096
+      SERVICE_MEMORY: 8192
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}

@@ -27,6 +27,7 @@
     "@peculiar/x509": "^1.12.3",
     "@xmldom/xmldom": "^0.9.8",
     "axios": "^1.8.1",
+    "axios-retry": "^4.5.0",
     "crypto-js": "^4.2.0",
     "fhirpath": "^3.17.1",
     "hapi-pino": "^12.1.0",
