@@ -76,7 +76,8 @@ export const init = async (): Promise<void> => {
   server.log("info", `Server running on ${server.info.uri}`)
 
   // handle shutdown gracefully
-  process.on("SIGINT", function () {
+  // note - we use console.log here rather than server.log as the server will have died
+  process.on("SIGTERM", function () {
     const stopTimeoutInSeconds = 10
     console.log(`stopping server with a timeout of ${stopTimeoutInSeconds}`)
 
