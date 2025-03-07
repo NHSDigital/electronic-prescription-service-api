@@ -84,5 +84,6 @@ export const init = async (): Promise<void> => {
     console.log(`Gracefully stopping server with a timeout of ${serverStopTimeout} seconds`)
     await server.stop({timeout: serverStopTimeout * 1000})
     console.log("Server stopped")
+    process.exit(0)
   })
 }
