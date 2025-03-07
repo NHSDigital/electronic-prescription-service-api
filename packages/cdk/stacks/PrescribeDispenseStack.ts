@@ -69,8 +69,8 @@ export class PrescribeDispenseStack extends Stack {
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
-    const splunkDeliveryStreamImport = Fn.importValue("lambda-resources:SplunkDeliveryStream")
-    const splunkSubscriptionFilterRoleImport = Fn.importValue("lambda-resources:SplunkSubscriptionFilterRole")
+    const splunkDeliveryStreamImport = Fn.importValue("lambda-resources-pr-988:SplunkDeliveryStream")
+    const splunkSubscriptionFilterRoleImport = Fn.importValue("lambda-resources-pr-988:SplunkSubscriptionFilterRole")
     const epsHostedZoneIdImport: string = Fn.importValue("eps-route53-resources:EPS-ZoneID")
     const epsDomainNameImport: string = Fn.importValue("eps-route53-resources:EPS-domain")
     const albLoggingBucketNameImport = Fn.importValue("account-resources:ALBLoggingBucketName")
