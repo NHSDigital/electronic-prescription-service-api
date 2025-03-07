@@ -43,6 +43,8 @@ export const createServer = (
     {type: "onPreResponse", method: switchContentTypeForSmokeTest}
   ])
 
+  // set keep alive timeout to be 65 seconds so that it is higher than ALB connection idle timeout
+  server.listener.keepAliveTimeout = 65000
   return server
 }
 
