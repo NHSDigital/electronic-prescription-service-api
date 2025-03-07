@@ -77,13 +77,10 @@ export const init = async (): Promise<void> => {
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
 
-  process.on("SIGTERM", function () {
-    const stopTimeoutInSeconds = 10
-    console.log(`stopping server with a timeout of ${stopTimeoutInSeconds}`)
-
-    server.stop({timeout: stopTimeoutInSeconds * 1000})
-      .then(function () {
-        console.log("server stopped")
-      })
+  process.on("SIGTERM", async () => {
+    const serverStopTimeout: number = 5
+    console.log(`Gracefully stopping server with a timeout of ${serverStopTimeout} seconds`)
+    await server.stop({timeout: serverStopTimeout * 1000})
+    console.log("Server stopped")
   })
 }
