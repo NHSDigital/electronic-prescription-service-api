@@ -242,6 +242,8 @@ export class PrescribeDispenseStack extends Stack {
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
     fhirFacadeService.loadBalancer.setAttribute("routing.http.drop_invalid_header_fields.enabled", "true")
+    // set idle timeout on alb to be less than default keepalive in node to avoid 502
+    fhirFacadeService.loadBalancer.setAttribute("idle_timeout.timeout_seconds", "4")
 
     fhirFacadeService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
@@ -307,6 +309,8 @@ export class PrescribeDispenseStack extends Stack {
 
     claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
     claimsService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}_claims/connection`)
+    // set idle timeout on alb to be less than default keepalive in node to avoid 502
+    claimsService.loadBalancer.setAttribute("idle_timeout.timeout_seconds", "4")
 
     claimsService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
