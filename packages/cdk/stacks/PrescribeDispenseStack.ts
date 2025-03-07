@@ -200,6 +200,7 @@ export class PrescribeDispenseStack extends Stack {
     fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
     fhirFacadeService.loadBalancer.setAttribute("routing.http.drop_invalid_header_fields.enabled", "true")
+    fhirFacadeService.loadBalancer.setAttribute("idle_timeout.timeout_seconds", "4")
 
     fhirFacadeService.targetGroup.configureHealthCheck({
       path: "/_healthcheck",
