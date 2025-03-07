@@ -183,6 +183,30 @@ describe("MtlsSpineClient communication", () => {
 
     loggerSpy.mockRestore()
   })
+
+  test("should return error when a network error", async() => {
+    mock.onPost().networkError()
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spine.isPollable(spineResponse)).toBe(false)
+    expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
+  })
+
+  test("should return success when there is a network error once", async() => {
+    mock.onPost()
+      .networkErrorOnce()
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+    mock.onGet().reply(200, "foo")
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spine.isPollable(spineResponse)).toBe(false)
+    expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(200)
+    expect(mock.history.post.length).toBe(2)
+  })
 })
 
 function readFileAsString(filename: string): string {
