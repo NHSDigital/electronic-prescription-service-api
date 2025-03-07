@@ -74,4 +74,15 @@ export const init = async (): Promise<void> => {
   await configureLogging(server)
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
+
+  // handle shutdown gracefully
+  process.on("SIGINT", function () {
+    const stopTimeoutInSeconds = 10
+    console.log(`stopping server with a timeout of ${stopTimeoutInSeconds}`)
+
+    server.stop({timeout: stopTimeoutInSeconds * 1000})
+      .then(function () {
+        console.log("server stopped")
+      })
+  })
 }
