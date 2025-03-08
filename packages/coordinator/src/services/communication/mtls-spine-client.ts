@@ -1,10 +1,16 @@
 import {fhir, spine} from "@models"
-import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosResponse,
+  RawAxiosRequestHeaders
+} from "axios"
 import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {Agent} from "https"
+import axiosRetry from "axios-retry"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER
@@ -25,7 +31,8 @@ export class MtlsSpineClient implements SpineClient {
   private readonly spineEndpoint: string
   private readonly spinePath: string
   private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest) => string
-  private httpsAgent: Agent
+  private readonly axiosInstance: AxiosInstance
+  private readonly httpsAgent: Agent
 
   constructor(
     spineEndpoint: string = null,
@@ -36,10 +43,6 @@ export class MtlsSpineClient implements SpineClient {
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
 
-    this.initHttpsAgent()
-  }
-
-  private initHttpsAgent() {
     const privateKey = process.env.SpinePrivateKey
     const publicCert = process.env.SpinePublicCertificate
     const caChain = process.env.SpineCAChain
@@ -48,8 +51,18 @@ export class MtlsSpineClient implements SpineClient {
       key: privateKey,
       cert: publicCert,
       ca: caChain,
-      rejectUnauthorized: true
+      rejectUnauthorized: true,
+      keepAlive: true
     })
+
+    this.axiosInstance = axios.create({
+      httpsAgent: this.httpsAgent
+    })
+    axiosRetry(this.axiosInstance, {
+      retries: 3,
+      retryCondition: (error) => error.code !== "ECONNABORTED"
+    })
+
   }
 
   private prepareSpineRequest(req: spine.ClientRequest): {
@@ -78,12 +91,11 @@ export class MtlsSpineClient implements SpineClient {
     try {
       logger.info({headers}, `Attempting to send message to ${address}`)
 
-      const response = await axios.post<string>(
+      const response = await this.axiosInstance.post<string>(
         address,
         body,
         {
-          headers: headers,
-          httpsAgent: this.httpsAgent
+          headers: headers
         }
       )
       return await this.handlePollableOrImmediateResponse(response, logger, fromAsid, 0)
@@ -116,13 +128,12 @@ export class MtlsSpineClient implements SpineClient {
     logger.info(`Attempting to send polling message to ${address}`)
 
     try {
-      const result = await axios.get<string>(
+      const result = await this.axiosInstance.get<string>(
         address,
         {
           headers: {
             "nhsd-asid": fromAsid
-          },
-          httpsAgent: this.httpsAgent
+          }
         }
       )
       return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, pollCount + 1, path)

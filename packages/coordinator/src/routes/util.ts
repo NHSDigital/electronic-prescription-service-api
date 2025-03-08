@@ -14,6 +14,7 @@ import {
   isParameters,
   isTask
 } from "../utils/type-guards"
+import axiosRetry from "axios-retry"
 
 type HapiPayload = string | object | Buffer | stream
 
@@ -25,6 +26,8 @@ export enum ContentTypes {
 }
 export const VALIDATOR_HOST = "http://localhost:9001"
 export const BASE_PATH = "/FHIR/R4"
+
+axiosRetry(axios, {retries: 3})
 
 export async function handleResponse<T>(
   request: Hapi.Request,

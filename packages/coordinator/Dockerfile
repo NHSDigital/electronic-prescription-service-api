@@ -33,4 +33,6 @@ RUN mkdir -p /.npm && chown -R nobody:nogroup /.npm
 RUN chown -R nobody:nogroup /app
 USER nobody
 ENV npm_config_cache=/.npm
-CMD ["npm", "run", "start", "--workspace", "packages/coordinator"]
+# use node command directly rather than npm start so SIGTERM signal handled correctly
+# see https://github.com/nodejs/docker-node/blob/main/docs/BestPractices.md#cmd
+CMD ["node", "--enable-source-maps", "packages/coordinator/dist/coordinator/src/app.js", "--use_strict"]
