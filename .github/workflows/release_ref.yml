@@ -1,0 +1,84 @@
+name: deploy_pr
+
+on:
+  workflow_dispatch:
+    inputs:
+      workflowRunID:
+        description: "The github workflow run id of a FHIR build and deployment to release to REF environment"
+        required: true
+      versionNumber:
+        description: "Version number to give the deployment to ref"
+        required: true
+      commitId:
+        description: "Commit id to give the deployment to ref"
+        required: true
+
+jobs:
+  download_artifacts:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: build_artifact download
+        uses: actions/download-artifact@v4
+        with:
+          name: cdk_artifact
+          path: .
+          run_id: ${{ inputs.workflowRunID }}
+
+      - name: docker_artifact download
+        uses: actions/download-artifact@v4
+        with:
+          name: docker_artifact
+          path: .
+          run_id: ${{ inputs.workflowRunID }}
+
+      - uses: actions/upload-artifact@v4
+        name: upload build artifact
+        with:
+          name: cdk_artifact
+          path: artifact.tar
+
+      - uses: actions/upload-artifact@v4
+        name: Upload docker images
+        with:
+          name: docker_artifact
+          path: |
+            FHIR_facade_docker.img
+            validator_docker.img
+
+  release_ref_code:
+    needs: [download_artifacts]
+    uses: ./.github/workflows/cdk_release_code.yml
+    with:
+      STACK_NAME: prescribe-dispense
+      AWS_ENVIRONMENT: ref
+      APIGEE_ENVIRONMENT: ref
+      ENABLE_MUTUAL_TLS: true
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
+      VERSION_NUMBER: ${{ inputs.versionNumber }}
+      COMMIT_ID: ${{ inputs.commitId}}
+      LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
+      LOG_RETENTION_DAYS: 30
+      DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
+      DOCKER_IMAGE_TAG: ${{ inputs.versionNumber }}-${{ inputs.commitId }}
+      RUN_REGRESSION_TEST: false
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b
+      SANDBOX_MODE_ENABLED: 0
+      DESIRED_FHIR_FACADE_COUNT: 2
+      DESIRED_CLAIMS_COUNT: 2
+      DESIRED_PEAK_CLAIMS_COUNT: 2
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
+      SERVICE_CPU: 4096
+      SERVICE_MEMORY: 8192
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
