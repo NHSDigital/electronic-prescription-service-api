@@ -334,7 +334,7 @@ paths:
         "200":
           description: "Dummy response"
       security:
-       - nhs-cis2-aal3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/Task#return:
     post:
       operationId: return
@@ -442,7 +442,7 @@ paths:
         "200":
           description: "Dummy response"
       security:
-       - nhs-cis2-aal3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/$validate:
     post:
       operationId: validate
@@ -458,7 +458,7 @@ paths:
         "200":
           description: "Dummy response"
       security:
-       - nhs-cis2-aal3: []
+        - nhs-cis2-aal3: []
   /FHIR/R4/$process-message#dispense-notification:
     post:
       operationId: send-dispense-notification-message
@@ -1338,9 +1338,9 @@ x-nhsd-apim:
   temporary: false
   monitoring: false
   access:
-  - title: FHIR Dispensing Service API User Restricted
-    grants:
-      nhs-cis2-aal3: []
+    - title: FHIR Dispensing Service API User Restricted
+      grants:
+        nhs-cis2-aal3: []
   target:
     type: external
     healthcheck: /_status
@@ -1366,3 +1366,10 @@ x-nhsd-apim:
     - name: id
       required: false
       header: nhsd-application-id
+  ratelimiting:
+    proxy:
+      limit: 20000
+      timeunit: minute
+    app-default:
+      limit: 20000
+      timeunit: minute

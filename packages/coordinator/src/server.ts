@@ -8,6 +8,8 @@ import {
   switchContentTypeForSmokeTest
 } from "./utils/server-extensions"
 
+// force a change so pr can be created
+
 export const createServer = (
   {collectLogs}: {collectLogs?: boolean},
   port: number
@@ -71,7 +73,17 @@ const configureLogging = async (server: Hapi.Server) => {
 
 export const init = async (): Promise<void> => {
   const server = createServer({}, 9000)
+  // need to set the keep alive timeout higher than the ALB idle timeout
+  server.listener.keepAliveTimeout = 65000
   await configureLogging(server)
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
+
+  process.on("SIGTERM", async () => {
+    const serverStopTimeout: number = 5
+    console.log(`Gracefully stopping server with a timeout of ${serverStopTimeout} seconds`)
+    await server.stop({timeout: serverStopTimeout * 1000})
+    console.log("Server stopped")
+    process.exit(0)
+  })
 }
