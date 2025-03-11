@@ -15,6 +15,7 @@ import {
   isParameters,
   isTask
 } from "../utils/type-guards"
+import axiosRetry from "axios-retry"
 
 type HapiPayload = string | object | Buffer | stream
 

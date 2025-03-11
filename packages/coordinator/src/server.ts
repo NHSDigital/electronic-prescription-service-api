@@ -73,12 +73,14 @@ const configureLogging = async (server: Hapi.Server) => {
 
 export const init = async (): Promise<void> => {
   const server = createServer({}, 9000)
-  // need to set the keep alive timeout higher than the ALB idle timeout
+  // need to set the keep alive timeout higher than the ALB idle timeout to avoid 502 errors
   server.listener.keepAliveTimeout = 65000
   await configureLogging(server)
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
 
+  // handle shutdown gracefully
+  // note - we use console.log here rather than server.log as the server may not be available
   process.on("SIGTERM", async () => {
     const serverStopTimeout: number = 5
     console.log(`Gracefully stopping server with a timeout of ${serverStopTimeout} seconds`)

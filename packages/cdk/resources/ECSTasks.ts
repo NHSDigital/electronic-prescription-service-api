@@ -141,7 +141,7 @@ export class ECSTasks extends Construct {
         SpineCAChain: ecsSecret.fromSecretsManager(props.spineCAChain),
         SUBCACC_CERT: ecsSecret.fromSecretsManager(props.epsSigningCertChain)
       },
-      logging:  LogDrivers.awsLogs({
+      logging: LogDrivers.awsLogs({
         streamPrefix: "ecs",
         logGroup: props.coordinatorLogGroup
       })
@@ -162,7 +162,7 @@ export class ECSTasks extends Construct {
       environment: {
         LOG_LEVEL: props.validatorLogLevel
       },
-      logging:  LogDrivers.awsLogs({
+      logging: LogDrivers.awsLogs({
         streamPrefix: "ecs",
         logGroup: props.validatorLogGroup
       })

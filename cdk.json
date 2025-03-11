@@ -94,6 +94,9 @@
     "SHA1EnabledApplicationIds": "",
     "sandboxModeEnabled": "0",
     "desiredFhirFacadeCount": 1,
+    "desiredClaimsCount": 1,
+    "desiredPeakClaimsCount": 1,
+    "desiredOffPeakClaimsCount": 1,
     "serviceCpu": 2048,
     "serviceMemory": 4096
   }

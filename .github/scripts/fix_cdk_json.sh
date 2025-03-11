@@ -64,6 +64,18 @@ fix_string_key sandboxModeEnabled "${SANDBOX_MODE_ENABLED}"
 fix_boolean_number_key enableMutualTls "${ENABLE_MUTUAL_TLS}"
 fix_string_key SHA1EnabledApplicationIds "${SHA1_ENABLED_APPLICATION_IDS}"
 fix_boolean_number_key desiredFhirFacadeCount "${DESIRED_FHIR_FACADE_COUNT}"
+
+# for claims we want to set the desired count to peak claims count if in peak days to avoid lowering it during deployment
+day=$(date +%d)  # Get the day of the month
+if [[ $day -le 5 || $day -ge 20 ]]; then
+    fix_boolean_number_key desiredClaimsCount "${DESIRED_PEAK_CLAIMS_COUNT}"
+else
+    fix_boolean_number_key desiredClaimsCount "${DESIRED_CLAIMS_COUNT}"
+fi
+fix_boolean_number_key desiredPeakClaimsCount "${DESIRED_PEAK_CLAIMS_COUNT}"
+fix_boolean_number_key desiredOffPeakClaimsCount "${DESIRED_OFF_PEAK_CLAIMS_COUNT}"
+fix_boolean_number_key serviceCpu "${SERVICE_CPU}"
+fix_boolean_number_key serviceMemory "${SERVICE_MEMORY}"
 fix_boolean_number_key serviceCpu "${SERVICE_CPU}"
 fix_boolean_number_key serviceMemory "${SERVICE_MEMORY}"
 fix_string_key ApigeeEnvironment "${APIGEE_ENVIRONMENT}"
