@@ -46,12 +46,13 @@ export function reformatUserErrorsToFhir(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
-    // we log the original response here but we send back a different response
-    // specifying stack on node 22 works
+    // Boom is an unhandled error that gets handled gracefully in hapi
+    // we log the original response here but we send back a FHIR compliant response
+    // we also log a stack trace so we can see where the error came from
     logger.error({
       requestPayload: getPayload(request),
       originalResponse: response,
-      errorStack: response.stack
+      stackTrace: response.stack
     }, "Boom")
     return responseToolkit.response(
       fatalResponse
