@@ -27,11 +27,11 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@hapi/cookie": "^12.0.1",
-    "@hapi/hapi": "^21.3.12",
+    "@hapi/hapi": "^21.4.0",
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
     "@hapi/yar": "^11.0.2",
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
     "handlebars": "^4.7.7",
