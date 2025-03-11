@@ -50,7 +50,8 @@ export function reformatUserErrorsToFhir(
     // does not show stack trace on node 23
     logger.error({
       requestPayload: getPayload(request),
-      originalResponse: response
+      originalResponse: response,
+      stack: response.stack
     }, "Boom")
     return responseToolkit.response(
       fatalResponse
