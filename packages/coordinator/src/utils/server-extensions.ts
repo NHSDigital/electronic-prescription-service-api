@@ -47,11 +47,11 @@ export function reformatUserErrorsToFhir(
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     // we log the original response here but we send back a different response
-    // does not show stack trace on node 23
+    // specifying stack on node 22 works
     logger.error({
       requestPayload: getPayload(request),
       originalResponse: response,
-      stack: response.stack
+      errorStack: response.stack
     }, "Boom")
     return responseToolkit.response(
       fatalResponse
