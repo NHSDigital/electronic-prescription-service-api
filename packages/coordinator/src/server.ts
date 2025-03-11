@@ -64,7 +64,7 @@ const configureLogging = async (server: Hapi.Server) => {
       }
     }),
     // Redact Authorization headers, see https://getpino.io/#/docs/redaction
-    redact: ["req.headers.authorization"],
+    redact: ["req.headers.authorization", "req.headers.x-amzn-mtls-clientcert-leaf"],
     wrapSerializers: false
   })
 }

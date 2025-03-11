@@ -150,6 +150,7 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
+    throw new Error("throwing an error")
     const showWarnings = getShowValidationWarnings(request.headers) === "true"
     const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {

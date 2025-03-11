@@ -35,6 +35,7 @@ function sink(spyFunc: (...args: Array<any>) => void) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result = split((data: any) => {
     try {
+      console.log(data)
       return JSON.parse(data)
     } catch (err) {
       console.log(err)
@@ -372,7 +373,7 @@ describe("logs payload in correct situations", () => {
         {
           "level": logTestCase.expectedLevel,
           "msg": logTestCase.expectedMessage,
-          "payload": expectedPayload
+          "requestPayload": expectedPayload
         }
       ))
     }
@@ -392,7 +393,7 @@ describe("logs payload in correct situations", () => {
     }
   )
 
-  test("does not break when there is no payload", async () => {
+  test("does not error when there is no payload", async () => {
     newIsEpsHostedContainer.mockImplementation(() => true)
     const response = await server.inject({
       url: "/processing-error",
@@ -405,7 +406,7 @@ describe("logs payload in correct situations", () => {
       {
         "level": 40,
         "msg": "FhirMessageProcessingError",
-        "payload": {}
+        "requestPayload": {}
       }
     ))
   })

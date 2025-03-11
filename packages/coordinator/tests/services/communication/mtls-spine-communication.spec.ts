@@ -177,9 +177,21 @@ describe("MtlsSpineClient communication", () => {
 
     expect(spineResponse.statusCode).toBe(500)
 
-    const expectedError = `Failed post request for spine client send. Error: Error: Request failed with status code 500`
-
-    expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), expect.stringContaining(expectedError))
+    // eslint-disable-next-line max-len
+    const expectedErrorMessage = `Failed post request for spine client send. Error: Error: Request failed with status code 500`
+    const expectedError = {
+      error: expect.objectContaining({
+        message: "Request failed with status code 500",
+        name: "Error",
+        stack: expect.anything(),
+        status: 500
+      }),
+      response: expect.objectContaining({
+        data: "Internal Server Error",
+        status: 500
+      })
+    }
+    expect(loggerSpy).toHaveBeenCalledWith(expectedError, expect.stringContaining(expectedErrorMessage))
 
     loggerSpy.mockRestore()
   })

@@ -31,20 +31,24 @@ export function reformatUserErrorsToFhir(
   const logger = request.logger
   if (response instanceof processingErrors.InconsistentValuesError) {
     // we do not log response here as we are sending back a different response
-    logger.warn({payload: getPayload(request)}, "InconsistentValuesError")
+    logger.warn({
+      requestPayload: getPayload(request)
+    }, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
     // we do not log response here as we are sending back a different response
-    logger.warn({payload: getPayload(request)}, "FhirMessageProcessingError")
+    logger.warn({
+      requestPayload: getPayload(request)
+    }, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     // we log the original response here but we send back a different response
     logger.error({
-      payload: getPayload(request),
+      requestPayload: getPayload(request),
       originalResponse: response
     }, "Boom")
     return responseToolkit.response(
@@ -54,8 +58,12 @@ export function reformatUserErrorsToFhir(
     if (response.statusCode >= 400) {
       // we DO log response here as we are sending back the same response
       logger.warn({
-        payload: getPayload(request),
-        response
+        requestPayload: getPayload(request),
+        response: {
+          headers: response.headers,
+          payload: response.source,
+          statusCode: response.statusCode
+        }
       }, "ErrorOrWarningResponse")
     }
   }
