@@ -31,21 +31,28 @@ export function reformatUserErrorsToFhir(
   const logger = request.logger
   if (response instanceof processingErrors.InconsistentValuesError) {
     // we do not log response here as we are sending back a different response
-    logger.warn({payload: getPayload(request)}, "InconsistentValuesError")
+    logger.warn({
+      requestPayload: getPayload(request)
+    }, "InconsistentValuesError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeError(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
     // we do not log response here as we are sending back a different response
-    logger.warn({payload: getPayload(request)}, "FhirMessageProcessingError")
+    logger.warn({
+      requestPayload: getPayload(request)
+    }, "FhirMessageProcessingError")
     return responseToolkit.response(
       processingErrors.toOperationOutcomeFatal(response)
     ).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
-    // we log the original response here but we send back a different response
+    // Boom is an unhandled error that gets handled gracefully in hapi
+    // we log the original response here but we send back a FHIR compliant response
+    // we also log a stack trace so we can see where the error came from
     logger.error({
-      payload: getPayload(request),
-      originalResponse: response
+      requestPayload: getPayload(request),
+      originalResponse: response,
+      stackTrace: response.stack
     }, "Boom")
     return responseToolkit.response(
       fatalResponse
@@ -54,8 +61,12 @@ export function reformatUserErrorsToFhir(
     if (response.statusCode >= 400) {
       // we DO log response here as we are sending back the same response
       logger.warn({
-        payload: getPayload(request),
-        response
+        requestPayload: getPayload(request),
+        response: {
+          headers: response.headers,
+          payload: response.source,
+          statusCode: response.statusCode
+        }
       }, "ErrorOrWarningResponse")
     }
   }

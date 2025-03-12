@@ -35,6 +35,7 @@ function sink(spyFunc: (...args: Array<any>) => void) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const result = split((data: any) => {
     try {
+      console.log(data)
       return JSON.parse(data)
     } catch (err) {
       console.log(err)
@@ -286,6 +287,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "FhirMessageProcessingError",
       expectedLevel: 40,
       expectedReturnStatus: 400,
+      includeStackTrace: false,
       scenarioDescription: "logs correct details for processing error when is EpsDeployment"
     },
     {
@@ -295,6 +297,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "FhirMessageProcessingError",
       expectedLevel: 40,
       expectedReturnStatus: 400,
+      includeStackTrace: false,
       scenarioDescription: "logs correct details for processing error when is not EpsDeployment"
     },
     {
@@ -304,6 +307,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "InconsistentValuesError",
       expectedLevel: 40,
       expectedReturnStatus: 400,
+      includeStackTrace: false,
       scenarioDescription: "logs correct details for inconsistent value error when is EpsDeployment"
     },
     {
@@ -313,6 +317,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "InconsistentValuesError",
       expectedLevel: 40,
       expectedReturnStatus: 400,
+      includeStackTrace: false,
       scenarioDescription: "logs correct details for inconsistent value error when is not EpsDeployment"
     },
 
@@ -323,6 +328,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "Boom",
       expectedLevel: 50,
       expectedReturnStatus: 500,
+      includeStackTrace: true,
       scenarioDescription: "logs correct details for other error when is EpsDeployment"
     },
     {
@@ -332,6 +338,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "Boom",
       expectedLevel: 50,
       expectedReturnStatus: 500,
+      includeStackTrace: true,
       scenarioDescription: "logs correct details for other error when is not EpsDeployment"
     },
 
@@ -342,6 +349,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "ErrorOrWarningResponse",
       expectedLevel: 40,
       expectedReturnStatus: 400,
+      includeStackTrace: false,
       scenarioDescription: "logs correct details for warning when is EpsDeployment"
     },
     {
@@ -351,6 +359,7 @@ describe("logs payload in correct situations", () => {
       expectedMessage: "ErrorOrWarningResponse",
       expectedLevel: 40,
       expectedReturnStatus: 400,
+      includeStackTrace: false,
       scenarioDescription: "logs correct details for warning when is not EpsDeployment"
     }
 
@@ -368,13 +377,23 @@ describe("logs payload in correct situations", () => {
       expect(response.payload).toContain("OperationOutcome")
       expect(response.statusCode).toBe(logTestCase.expectedReturnStatus)
       expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
-      expect(spyOnPinoOutput).toHaveBeenCalledWith(expect.objectContaining(
-        {
+      let expectedLog
+      if (logTestCase.includeStackTrace) {
+        expectedLog = {
           "level": logTestCase.expectedLevel,
           "msg": logTestCase.expectedMessage,
-          "payload": expectedPayload
+          "requestPayload": expectedPayload,
+          "stackTrace": expect.anything()
         }
-      ))
+      } else {
+        expectedLog = {
+          "level": logTestCase.expectedLevel,
+          "msg": logTestCase.expectedMessage,
+          "requestPayload": expectedPayload
+        }
+        expect(spyOnPinoOutput).not.toHaveBeenCalledWith(expect.objectContaining({stackTrace: expect.anything()}))
+      }
+      expect(spyOnPinoOutput).toHaveBeenCalledWith(expect.objectContaining(expectedLog))
     }
   )
 
@@ -392,7 +411,7 @@ describe("logs payload in correct situations", () => {
     }
   )
 
-  test("does not break when there is no payload", async () => {
+  test("does not error when there is no payload", async () => {
     newIsEpsHostedContainer.mockImplementation(() => true)
     const response = await server.inject({
       url: "/processing-error",
@@ -405,7 +424,7 @@ describe("logs payload in correct situations", () => {
       {
         "level": 40,
         "msg": "FhirMessageProcessingError",
-        "payload": {}
+        "requestPayload": {}
       }
     ))
   })
