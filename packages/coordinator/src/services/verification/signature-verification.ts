@@ -23,7 +23,7 @@ export const verifyPrescriptionSignature = async (
   }
 
   const hasSingleCertificate = verifySignatureHasSingleCertificate(signatureRoot)
-  if (hasSingleCertificate) {
+  if (!hasSingleCertificate) {
     return ["Multiple certificates detected"]
   }
 
@@ -91,7 +91,7 @@ function verifySignatureHasCorrectFormat(signatureRoot: ElementCompact): boolean
 function verifySignatureHasSingleCertificate(signatureRoot: ElementCompact): boolean {
   const signature = signatureRoot?.Signature
   const x509Certificate: string = signature?.KeyInfo?.X509Data?.X509Certificate?._text || ""
-  return (x509Certificate.includes("BEGIN CERTIFICATE") || x509Certificate.includes("END CERTIFICATE"))
+  return (!x509Certificate.includes("BEGIN CERTIFICATE") && !x509Certificate.includes("END CERTIFICATE"))
 }
 
 async function verifySignatureDigestMatchesPrescription(
