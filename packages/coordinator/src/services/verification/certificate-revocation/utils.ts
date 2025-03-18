@@ -1,9 +1,13 @@
 import axios from "axios"
 import {X509, Hex} from "jsrsasign"
-import pino from "pino"
+import pino, {Logger} from "pino"
 import {hl7V3} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../translation/common/dateTime"
-import {extractSignatureDateTimeStamp, getCertificateTextFromPrescription} from "../common"
+import {
+  extractSignatureDateTimeStamp,
+  extractSignatureRootFromParentPrescription,
+  getCertificateFromPrescriptionCrypto
+} from "../common"
 import {X509CrlEntry, X509Crl} from "@peculiar/x509"
 
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
@@ -18,14 +22,14 @@ const getPrescriptionSignatureDate = (parentPrescription: hl7V3.ParentPrescripti
   return new Date(convertHL7V3DateTimeToIsoDateTimeString(prescriptionSignedDateTimestamp))
 }
 
-const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescription): X509 => {
+const getCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescription, logger: Logger): X509 => {
   try {
-    const x509CertificateText = getCertificateTextFromPrescription(parentPrescription)
-    const x509CertificatePem = `-----BEGIN CERTIFICATE-----\n${x509CertificateText}\n-----END CERTIFICATE-----`
-    const x509Certificate = new X509(x509CertificatePem)
+    const signatureRoot = extractSignatureRootFromParentPrescription(parentPrescription)
+    const certificate = getCertificateFromPrescriptionCrypto(signatureRoot)
+    const x509Certificate = new X509(certificate.toString())
     return x509Certificate
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
+    logger.error(e)
     return null
   }
 }
@@ -81,7 +85,6 @@ const getSubCaCerts = (): Array<string> => {
 
 export {
   getCertificateFromPrescription,
-  getCertificateTextFromPrescription,
   getPrescriptionId,
   getPrescriptionSignatureDate,
   getRevocationList,
