@@ -1,4 +1,4 @@
-import pino from "pino"
+import pino, {Logger} from "pino"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
 import {CRLReasonCode} from "./crl-reason-code"
@@ -82,8 +82,8 @@ type CertData = {
   serialNumber: string
 }
 
-const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescription): CertData => {
-  const certificate = getCertificateFromPrescription(parentPrescription)
+const parseCertificateFromPrescription = (parentPrescription: hl7V3.ParentPrescription, logger: Logger): CertData => {
+  const certificate = getCertificateFromPrescription(parentPrescription, logger)
   const serialNumber = getX509SerialNumber(certificate)
   return {certificate, serialNumber}
 }
@@ -123,7 +123,7 @@ const isSignatureCertificateAuthorityValid = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
 ): Promise<boolean> => {
-  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
+  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription, logger)
   const subCaCert = getSubCaCert(certificate, serialNumber, logger)
   if (!subCaCert) {
     logger.error(
@@ -149,7 +149,7 @@ const isSignatureCertificateValid = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger
 ): Promise<boolean> => {
-  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription)
+  const {certificate, serialNumber} = parseCertificateFromPrescription(parentPrescription, logger)
   const prescriptionSignedDate = getPrescriptionSignatureDate(parentPrescription)
   const prescriptionId = getPrescriptionId(parentPrescription)
 

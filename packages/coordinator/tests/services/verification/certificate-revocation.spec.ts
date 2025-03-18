@@ -11,7 +11,6 @@ process.env.CRL_DISTRIBUTION_PROXY = "egress.ptl.api.platform.nhs.uk:700"
 import * as TestPrescriptions from "../../resources/test-resources"
 import * as TestCertificates from "../../resources/certificates/test-resources"
 import * as utils from "../../../src/services/verification/certificate-revocation/utils"
-import * as common from "../../../src/services/verification/common"
 import {
   getSubCaCert,
   isSignatureCertificateAuthorityValid,
@@ -20,7 +19,14 @@ import {
 } from "../../../src/services/verification/certificate-revocation"
 import {CRLReasonCode} from "../../../src/services/verification/certificate-revocation/crl-reason-code"
 import {MockCertificates} from "../../resources/certificates/test-resources"
-import {setSubcaccCertEnvVar} from "../../resources/test-helpers"
+import {clone, setSubcaccCertEnvVar} from "../../resources/test-helpers"
+import {isEpsHostedContainer} from "../../../src/utils/feature-flags"
+import {extractSignatureRootFromParentPrescription} from "../../../src/services/verification/common"
+jest.mock("../../../src/utils/feature-flags", () => ({
+  isEpsHostedContainer: jest.fn(),
+  isSandbox: jest.fn(() => false)
+}))
+const newIsEpsHostedContainer = isEpsHostedContainer as jest.MockedFunction<typeof isEpsHostedContainer>
 
 const logger = pino()
 const mock = new MockAdapter(axios)
@@ -142,7 +148,7 @@ beforeEach(() => {
   loggerInfo = logSpies.loggerInfo
   loggerWarn = logSpies.loggerWarn
   loggerError = logSpies.loggerError
-  process.env.MTLS_SPINE_CLIENT = "false"
+  newIsEpsHostedContainer.mockImplementation(() => false)
   mock.resetHistory()
 })
 
@@ -214,6 +220,7 @@ describe("Certificate not on the CRL", () => {
   test("certificate is valid - not in EPS hosted container", async () => {
     // The certificate has NOT been revoked and its serial is NOT on our mock CRL
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    newIsEpsHostedContainer.mockImplementation(() => false)
     const isValid = await isSignatureCertificateValid(prescription, logger)
 
     expect(isValid).toEqual(true)
@@ -222,9 +229,9 @@ describe("Certificate not on the CRL", () => {
   })
 
   test("certificate is valid - in EPS hosted container", async () => {
-    process.env.MTLS_SPINE_CLIENT = "true"
     // The certificate has NOT been revoked and its serial is NOT on our mock CRL
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
+    newIsEpsHostedContainer.mockImplementation(() => true)
     const isValid = await isSignatureCertificateValid(prescription, logger)
 
     expect(isValid).toEqual(true)
@@ -370,7 +377,7 @@ describe("CA certificate ARL", () => {
   })
   test("No sub-CA cert returned when no match for prescription cert.", () => {
     const prescription = TestPrescriptions.parentPrescriptions.invalidSignature.ParentPrescription
-    const {certificate, serialNumber} = parseCertificateFromPrescription(prescription)
+    const {certificate, serialNumber} = parseCertificateFromPrescription(prescription, logger)
 
     const subCaCert = getSubCaCert(certificate, serialNumber, logger)
 
@@ -398,20 +405,18 @@ describe("Certificate verification edge cases", () => {
   // 4 - Unreadable certificate
   test("unreadable certificate is not allowed", async () => {
     const validPrescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-    const validCertificateText = common.getCertificateTextFromPrescription(validPrescription)
-    const unreadableCertText = validCertificateText.slice(1)
+    const clonePrescription = clone(validPrescription)
 
-    // make the function return the unreadable cert instead
-    const certTextSpy = jest.spyOn(common, "getCertificateTextFromPrescription")
-    certTextSpy.mockReturnValue(unreadableCertText)
+    const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+    const signature = signatureRoot?.Signature
+    signature.KeyInfo.X509Data.X509Certificate._text = "foo"
 
-    const isValid = await isSignatureCertificateValid(validPrescription, logger)
+    const isValid = await isSignatureCertificateValid(clonePrescription, logger)
     expect(isValid).toEqual(false)
 
     const expectedLog = "Could not parse X509 certificate from prescription"
     expect(loggerError).toHaveBeenCalledWith(expect.stringContaining(expectedLog))
 
-    certTextSpy.mockRestore()
   })
 
   // 5 - CRL Distribution Point URL not set or unavailable
@@ -419,7 +424,7 @@ describe("Certificate verification edge cases", () => {
     test("no CRL URI on certificate", async () => {
       // This cert does not have a CRL
       const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-      const certificate = utils.getCertificateFromPrescription(prescription)
+      const certificate = utils.getCertificateFromPrescription(prescription, logger)
       const serialNumber = utils.getX509SerialNumber(certificate)
 
       const spy = jest.spyOn(utils, "getX509SerialNumber")

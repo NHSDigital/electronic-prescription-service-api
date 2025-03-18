@@ -50,6 +50,18 @@ describe("verifyPrescriptionSignature", () => {
       const result = await verifyPrescriptionSignature(clonePrescription, logger)
       expect(result).toContain("Invalid signature format")
     })
+
+    test("fails if prescriptions signature has multiple X509Cert", async () => {
+      const clonePrescription = clone(validSignature)
+      const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
+      const currentSignature = signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text
+      signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text =
+        currentSignature +
+        "\n-----END CERTIFICATE-----\n-----BEGIN CERTIFICATE-----\n" +
+        currentSignature
+      const result = await verifyPrescriptionSignature(clonePrescription, logger)
+      expect(result).toContain("Multiple certificates detected")
+    })
   })
 
   describe("Invalid certificate", () => {
