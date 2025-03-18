@@ -10,6 +10,7 @@ import {isSignatureCertificateAuthorityValid, isSignatureCertificateValid} from 
 import {convertHL7V3DateTimeToIsoDateTimeString, isDateInRange} from "../translation/common/dateTime"
 import {HashingAlgorithm, getHashingAlgorithmFromSignatureRoot} from "../translation/common/hashingAlgorithm"
 import {getSubCaCerts} from "./certificate-revocation/utils"
+import {getCertificateFromPrescriptionCrypto} from "./common"
 
 export const verifyPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
@@ -19,6 +20,11 @@ export const verifyPrescriptionSignature = async (
   const validSignatureFormat = verifySignatureHasCorrectFormat(signatureRoot)
   if (!validSignatureFormat) {
     return ["Invalid signature format"]
+  }
+
+  const hasSingleCertificate = verifySignatureHasSingleCertificate(signatureRoot)
+  if (!hasSingleCertificate) {
+    return ["Multiple certificates detected"]
   }
 
   let certificate: crypto.X509Certificate
@@ -82,6 +88,12 @@ function verifySignatureHasCorrectFormat(signatureRoot: ElementCompact): boolean
   return isTruthy(signedInfo) && isTruthy(signatureValue) && isTruthy(x509Certificate)
 }
 
+function verifySignatureHasSingleCertificate(signatureRoot: ElementCompact): boolean {
+  const signature = signatureRoot?.Signature
+  const x509Certificate: string = signature?.KeyInfo?.X509Data?.X509Certificate?._text || ""
+  return (!x509Certificate.includes("BEGIN CERTIFICATE") && !x509Certificate.includes("END CERTIFICATE"))
+}
+
 async function verifySignatureDigestMatchesPrescription(
   parentPrescription: hl7V3.ParentPrescription,
   signatureRoot: ElementCompact
@@ -106,12 +118,6 @@ function verifyCertificateValidWhenSigned(signatureDate: Date, certificate: cryp
   const certificateStartDate = new Date(certificate.validFrom)
   const certificateEndDate = new Date(certificate.validTo)
   return isDateInRange(signatureDate, certificateStartDate, certificateEndDate)
-}
-
-function getCertificateFromPrescriptionCrypto(signatureRoot: ElementCompact): crypto.X509Certificate {
-  const x509CertificateText: string = signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text
-  const x509Certificate = `-----BEGIN CERTIFICATE-----\n${x509CertificateText.trim()}\n-----END CERTIFICATE-----`
-  return new crypto.X509Certificate(x509Certificate)
 }
 
 function extractSignatureDateTimeStamp(parentPrescriptions: hl7V3.ParentPrescription): Date {
