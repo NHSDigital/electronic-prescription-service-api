@@ -44,6 +44,7 @@ export interface ECSTasksProps {
   readonly memory: number
   readonly taskExecutionRoleName: string
   readonly ApigeeEnvironment: string
+  readonly containerNamePrefix: string
 }
 
 /**
@@ -104,7 +105,7 @@ export class ECSTasks extends Construct {
       image: ContainerImage.fromEcrRepository(
         props.fhirFacadeRepo,
         props.dockerImageTag),
-      containerName: `${props.stackName}-coordinator`,
+      containerName: `${props.containerNamePrefix}-coordinator`,
       disableNetworking: false,
       portMappings: [
         {
@@ -113,7 +114,7 @@ export class ECSTasks extends Construct {
         }
       ],
       environment: {
-        VALIDATOR_HOST: `${props.stackName}-validator`,
+        VALIDATOR_HOST: `${props.containerNamePrefix}-validator`,
         TARGET_SPINE_SERVER:  props.targetSpineServer,
         MTLS_SPINE_CLIENT: "true",
         PRESCRIBE_ENABLED: "true",
@@ -151,7 +152,7 @@ export class ECSTasks extends Construct {
       image: ContainerImage.fromEcrRepository(
         props.validatorRepo,
         props.dockerImageTag),
-      containerName: `${props.stackName}-validator`,
+      containerName: `${props.containerNamePrefix}-validator`,
       disableNetworking: false,
       portMappings: [
         {
