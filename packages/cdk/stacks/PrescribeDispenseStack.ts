@@ -165,7 +165,8 @@ export class PrescribeDispenseStack extends Stack {
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`,
-      ApigeeEnvironment: ApigeeEnvironment
+      ApigeeEnvironment: ApigeeEnvironment,
+      containerNamePrefix: "fhirFacade"
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -196,7 +197,8 @@ export class PrescribeDispenseStack extends Stack {
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`,
-      ApigeeEnvironment: ApigeeEnvironment
+      ApigeeEnvironment: ApigeeEnvironment,
+      containerNamePrefix: "claims"
     })
 
     // log group for insights

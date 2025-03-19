@@ -23,7 +23,7 @@ jobs:
         uses: actions/checkout@v4
       - name: Set version
         id: set_version
-        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"   
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
 
   get_commit_id:
     runs-on: ubuntu-22.04
@@ -115,7 +115,7 @@ jobs:
     with:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
-    
+
   release_dev:
     needs: [tag_release, package_code, get_commit_id]
     uses: ./.github/workflows/cdk_release_code.yml
@@ -140,7 +140,7 @@ jobs:
       TO_PARTY_KEY: YES-0000806
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
-      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -186,7 +186,7 @@ jobs:
       TO_PARTY_KEY: unused
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
-      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d 
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
       SANDBOX_MODE_ENABLED: 1
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -235,12 +235,12 @@ jobs:
       TO_PARTY_KEY: YES-0000806
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
-      SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b 
+      SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b
       SANDBOX_MODE_ENABLED: 0
-      DESIRED_FHIR_FACADE_COUNT: 3
-      DESIRED_CLAIMS_COUNT: 3
-      DESIRED_PEAK_CLAIMS_COUNT: 3
-      DESIRED_OFF_PEAK_CLAIMS_COUNT: 3
+      DESIRED_FHIR_FACADE_COUNT: 2
+      DESIRED_CLAIMS_COUNT: 2
+      DESIRED_PEAK_CLAIMS_COUNT: 2
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
     secrets:
@@ -280,7 +280,7 @@ jobs:
       TO_PARTY_KEY: YES-0000806
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
-      SHA1_ENABLED_APPLICATION_IDS: 5ad18b73-df45-4d41-9a1e-764d5a2b8671,8082cea1-1016-4ebf-9d80-5057c8275074 
+      SHA1_ENABLED_APPLICATION_IDS: 5ad18b73-df45-4d41-9a1e-764d5a2b8671,8082cea1-1016-4ebf-9d80-5057c8275074
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -403,20 +403,20 @@ jobs:
       LOG_RETENTION_DAYS: 731
       # MARK_JIRA_RELEASED: true
       # CREATE_PROD_RELEASE_NOTES: true
-      DEPLOY_APIGEE: false
+      DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.spineservices.nhs.uk
       DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
       RUN_REGRESSION_TEST: false
-      TO_ASID: TO_DO
-      TO_PARTY_KEY: TO_DO
+      TO_ASID: 338068513039
+      TO_PARTY_KEY: YEA-0000806
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: false
       SHA1_ENABLED_APPLICATION_IDS: dbc8b146-7cb1-4a72-a4b3-767a118bdc36,759767ba-5951-4470-a191-c360dffecc87,875e2505-6ad5-442a-9e6c-69a299561e33,751450f0-f3b0-4927-882b-ab9f61b50448,da32c882-52d4-41f7-86c2-959b15673aca
       SANDBOX_MODE_ENABLED: 0
-      DESIRED_FHIR_FACADE_COUNT: 3
-      DESIRED_CLAIMS_COUNT: 3
-      DESIRED_PEAK_CLAIMS_COUNT: 6
-      DESIRED_OFF_PEAK_CLAIMS_COUNT: 3
+      DESIRED_FHIR_FACADE_COUNT: 2
+      DESIRED_CLAIMS_COUNT: 2
+      DESIRED_PEAK_CLAIMS_COUNT: 2
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
     secrets:
