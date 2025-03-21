@@ -13,6 +13,7 @@ info:
 
     If you are using this API in [user-restricted mode](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) a healthcare worker must be present and authenticated with an [NHS smartcard or a modern alternative](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/nhs-smartcards-for-developers) to use this API.
 
+
     ### Prescribers in primary and secondary care can: 
     * create a prescription
     * encode data so the prescription is ready to sign
