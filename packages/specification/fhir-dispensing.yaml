@@ -226,9 +226,9 @@ x-spec-publication:
           path: /FHIR/R4/Task#withdraw
 
 servers:
-  - url: "https://sandbox.api.service.nhs.uk/electronic-prescriptions"
+  - url: "https://sandbox.api.service.nhs.uk/fhir-dispensing"
     description: "Sandbox"
-  - url: "https://int.api.service.nhs.uk/electronic-prescriptions"
+  - url: "https://int.api.service.nhs.uk/fhir-dispensing"
     description: "Integration test"
 
 paths:

@@ -211,9 +211,9 @@ x-spec-publication:
           path: /FHIR/R4/$process-message#prescription-order-update
 
 servers:
-  - url: "https://sandbox.api.service.nhs.uk/electronic-prescriptions"
+  - url: "https://sandbox.api.service.nhs.uk/fhir-prescribing"
     description: "Sandbox"
-  - url: "https://int.api.service.nhs.uk/electronic-prescriptions"
+  - url: "https://int.api.service.nhs.uk/fhir-prescribing"
     description: "Integration test"
 
 paths:

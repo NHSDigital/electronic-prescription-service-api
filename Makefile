@@ -378,7 +378,8 @@ npm-audit-fix:
 
 publish-fhir-release-notes-int:
 	dev_tag=$$(curl -s "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	int_tag=$$(curl -s "https://int.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
+    # This should always give the same version as https://int.api.service.nhs.uk/fhir-dispensing/_ping
+	int_tag=$$(curl -s "https://int.api.service.nhs.uk/fhir-prescribing/_ping" | jq --raw-output ".version"); \
 	echo { \"currentTag\": \"$$int_tag\", \"targetTag\": \"$$dev_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"INT\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587367089\", \"releaseNotesPageTitle\": \"Current FHIR API release notes - INT\" } > /tmp/payload.json
 	aws lambda invoke \
 		--function-name "release-notes-createReleaseNotes" \
@@ -396,7 +397,8 @@ publish-fhir-rc-release-notes-int: guard-release_tag guard-current_tag
 
 publish-fhir-release-notes-prod:
 	dev_tag=$$(curl -s "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	prod_tag=$$(curl -s "https://api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
+    # This should always give the same version as https://api.service.nhs.uk/fhir-dispensing/_ping
+	prod_tag=$$(curl -s "https://api.service.nhs.uk/fhir-prescribing/_ping" | jq --raw-output ".version"); \
 	echo { \"currentTag\": \"$$prod_tag\", \"targetTag\": \"$$dev_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"PROD\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587367100\", \"releaseNotesPageTitle\": \"Current FHIR API release notes - PROD\" } > /tmp/payload.json
 	aws lambda invoke \
 		--function-name "release-notes-createReleaseNotes" \
