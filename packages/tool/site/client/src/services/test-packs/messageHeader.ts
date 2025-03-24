@@ -24,7 +24,7 @@ export function createMessageHeader(): fhir.BundleEntry {
       },
       destination: [
         {
-          endpoint: `https://int.api.service.nhs.uk/fhir-prescribing/$post-message`,
+          endpoint: `https://int.api.service.nhs.uk/electronic-prescriptions/$post-message`,
           receiver: {
             identifier: {
               system: "https://fhir.nhs.uk/Id/ods-organization-code",
