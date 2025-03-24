@@ -131,6 +131,7 @@ info:
     To use this access mode, use the following security pattern:
     * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
+    ## Environment and testing
     | Environment      | Base URL                                                            |
     |------------------|---------------------------------------------------------------------|
     | Sandbox          | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
