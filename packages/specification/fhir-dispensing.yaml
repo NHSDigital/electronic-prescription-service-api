@@ -116,11 +116,11 @@ info:
     * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
-    | Environment      | Base URL                                                            |
-    |------------------|---------------------------------------------------------------------|
-    | Sandbox          | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
-    | Integration test | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
-    | Production       | `https://api.service.nhs.uk/electronic-prescriptions`               |
+    | Environment      | Base URL                                                   |
+    |------------------|------------------------------------------------------------|
+    | Sandbox          | `https://sandbox.api.service.nhs.uk/fhir-dispensing`       |
+    | Integration test | `https://int.api.service.nhs.uk/fhir-dispensing`           |
+    | Production       | `https://api.service.nhs.uk/fhir-dispensing`               |
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):

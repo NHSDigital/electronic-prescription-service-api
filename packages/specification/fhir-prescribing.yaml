@@ -101,20 +101,17 @@ info:
     EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
     do not use combined authentication and authorisation.
 
-    The only interaction that is not user-restricted is releasing nominated prescriptions.
-
     ### Application-restricted access
-    Use this access mode to release nominated prescriptions while dispensing. 
 
     To use this access mode, use the following security pattern:
     * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
-    | Environment      | Base URL                                                            |
-    |------------------|---------------------------------------------------------------------|
-    | Sandbox          | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
-    | Integration test | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
-    | Production       | `https://api.service.nhs.uk/electronic-prescriptions`               |
+    | Environment      | Base URL                                                    |
+    |------------------|-------------------------------------------------------------|
+    | Sandbox          | `https://sandbox.api.service.nhs.uk/fhir-prescribing`       |
+    | Integration test | `https://int.api.service.nhs.uk/fhir-prescribing`           |
+    | Production       | `https://api.service.nhs.uk/fhir-prescribing`               |
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
