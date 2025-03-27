@@ -45,7 +45,7 @@ properties:
               example: self
             url:
               type: string
-              example: https://sandbox.api.service.nhs.uk/electronic-prescriptions/Task/$release
+              example: https://sandbox.api.service.nhs.uk/fhir-dispensing/Task/$release
       total:
         type: integer
         description: |
