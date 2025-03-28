@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {fhir, hl7V3} from "@models"
-import pino, {Logger} from "pino"
+import pino from "pino"
 import * as uuid from "uuid"
 import {
   getBundleIdentifierValue,
@@ -124,7 +124,7 @@ class BundleTranslationResultFactory extends SendMessagePayloadFactory {
     return new hl7V3.ParentPrescriptionRoot(parentPrescription)
   }
 
-  private createCancellation(bundle: fhir.Bundle, logger: Logger): hl7V3.CancellationRequestRoot {
+  private createCancellation(bundle: fhir.Bundle, logger: pino.Logger): hl7V3.CancellationRequestRoot {
     const cancellationRequest = convertCancellation(bundle, logger)
     return new hl7V3.CancellationRequestRoot(cancellationRequest)
   }
