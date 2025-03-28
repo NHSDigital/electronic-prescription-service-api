@@ -35,6 +35,7 @@ function convertPatientToPatientPerson(
   convertNameFn = convertName,
   convertGenderFn = convertGender
 ) {
+  //foo
   const patientPerson = new hl7V3.PatientPerson()
   patientPerson.name = patient.name.map(name => convertNameFn(name, "Patient.name"))
   patientPerson.administrativeGenderCode = convertGenderFn(patient.gender, "Patient.gender")
