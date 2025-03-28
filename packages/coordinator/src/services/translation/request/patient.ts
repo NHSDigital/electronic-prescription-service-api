@@ -20,9 +20,6 @@ function convertPatientToProviderPatient(patient: fhir.Patient, logger: Logger) 
     } else {
       hl7V3HealthCareProvider.id = new hl7V3.SdsOrganizationIdentifier(gpIdValue)
     }
-    hl7V3HealthCareProvider.id = gpIdValue === UNKNOWN_GP_ODS_CODE
-      ? hl7V3.Null.UNKNOWN
-      : new hl7V3.SdsOrganizationIdentifier(gpIdValue)
   } else {
     logger.warn("Missing generalPractitioner - replacing with unknown")
     hl7V3HealthCareProvider.id = hl7V3.Null.UNKNOWN
