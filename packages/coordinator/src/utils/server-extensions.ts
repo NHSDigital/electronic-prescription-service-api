@@ -30,21 +30,19 @@ export function reformatUserErrorsToFhir(
   const response = request.response
   const logger = request.logger
   if (response instanceof processingErrors.InconsistentValuesError) {
-    // we do not log response here as we are sending back a different response
+    const newResponse = processingErrors.toOperationOutcomeError(response)
     logger.warn({
-      requestPayload: getPayload(request)
+      requestPayload: getPayload(request),
+      response: newResponse
     }, "InconsistentValuesError")
-    return responseToolkit.response(
-      processingErrors.toOperationOutcomeError(response)
-    ).code(400).type(ContentTypes.FHIR)
+    return responseToolkit.response(newResponse).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof processingErrors.FhirMessageProcessingError) {
-    // we do not log response here as we are sending back a different response
+    const newResponse = processingErrors.toOperationOutcomeFatal(response)
     logger.warn({
-      requestPayload: getPayload(request)
+      requestPayload: getPayload(request),
+      response: newResponse
     }, "FhirMessageProcessingError")
-    return responseToolkit.response(
-      processingErrors.toOperationOutcomeFatal(response)
-    ).code(400).type(ContentTypes.FHIR)
+    return responseToolkit.response(newResponse).code(400).type(ContentTypes.FHIR)
   } else if (response instanceof Boom) {
     // Boom is an unhandled error that gets handled gracefully in hapi
     // we log the original response here but we send back a FHIR compliant response
