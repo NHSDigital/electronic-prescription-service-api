@@ -1,6 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {fhir, hl7V3} from "@models"
-import pino from "pino"
+import pino, {Logger} from "pino"
 import * as uuid from "uuid"
 import {
   getBundleIdentifierValue,
@@ -107,7 +107,7 @@ class BundleTranslationResultFactory extends SendMessagePayloadFactory {
       case fhir.EventCodingCode.CANCELLATION:
         return {
           // TODO: pass logger?
-          content: this.createCancellation(bundle),
+          content: this.createCancellation(bundle, logger),
           interactionId: hl7V3.Hl7InteractionIdentifier.CANCEL_REQUEST
         }
 
@@ -124,8 +124,8 @@ class BundleTranslationResultFactory extends SendMessagePayloadFactory {
     return new hl7V3.ParentPrescriptionRoot(parentPrescription)
   }
 
-  private createCancellation(bundle: fhir.Bundle): hl7V3.CancellationRequestRoot {
-    const cancellationRequest = convertCancellation(bundle)
+  private createCancellation(bundle: fhir.Bundle, logger: Logger): hl7V3.CancellationRequestRoot {
+    const cancellationRequest = convertCancellation(bundle, logger)
     return new hl7V3.CancellationRequestRoot(cancellationRequest)
   }
 

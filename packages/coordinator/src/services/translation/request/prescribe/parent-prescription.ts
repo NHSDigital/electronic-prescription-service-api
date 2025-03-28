@@ -17,7 +17,7 @@ export function convertParentPrescription(
   )
 
   const fhirPatient = getPatient(bundle)
-  const hl7V3Patient = convertPatient(bundle, fhirPatient)
+  const hl7V3Patient = convertPatient(bundle, fhirPatient, logger)
   parentPrescription.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
   const prescription = convertBundleToPrescription(bundle, logger)
