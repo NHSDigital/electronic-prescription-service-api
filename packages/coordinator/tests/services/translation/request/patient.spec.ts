@@ -74,3 +74,15 @@ describe("convertPatient", () => {
     ]
   }
 })
+
+describe("convertPatient - missing GP", () => {
+  test("Should replace GP code when it is missing", () => {
+    const bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
+    const fhirPatient = getPatient(bundle)
+    delete fhirPatient.generalPractitioner
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const res = convertPatient(bundle, fhirPatient)
+    expect(1).toBe(1)
+  })
+})

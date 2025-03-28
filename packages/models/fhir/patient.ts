@@ -4,7 +4,7 @@ import * as common from "./common"
 
 const GP_PRACTICE_CODE_NOT_KNOWN = "V81999"
 
-function unknownGPPractice(): common.IdentifierReference<practitionerRole.Organization> {
+export function unknownGPPractice(): common.IdentifierReference<practitionerRole.Organization> {
   return {
     identifier: {
       system: "https://fhir.nhs.uk/Id/ods-organization-code",

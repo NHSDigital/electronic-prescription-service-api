@@ -154,7 +154,7 @@ CONFIG.sessionKey
 ^[a-f0-9]{40}:coordinator\/tests\/resources\/test-data\/hl7V3\/agentPerson\.ts
 ^[a-f0-9]{40}:coordinator\/tests\/resources\/test-data\/hl7V3\/agentPersonPerson\.ts
 ^[a-f0-9]{40}:coordinator\/tests\/resources\/test-data\/hl7V3\/representedOrganization\.ts
-^[a-f0-9]{40}:coordinator\/tests\/services\/translation\/request\/patient\.spec\.ts
+^([a-f0-9]{40}:)?packages\/coordinator\/tests\/services\/translation\/request\/patient\.spec\.ts
 ^[a-f0-9]{40}:models\/hl7-v3\/codes\.ts
 ^[a-f0-9]{40}:specification\/schemas\/Provenance\/CreateProvenance\.yaml
 ^[a-f0-9]{40}:tests\/e2e\/docs\/Postman\.md

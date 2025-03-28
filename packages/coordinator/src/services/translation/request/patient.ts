@@ -9,7 +9,12 @@ import {convertIsoDateStringToHl7V3Date} from "../common/dateTime"
 import {fhir, hl7V3} from "@models"
 
 function convertPatientToProviderPatient(patient: fhir.Patient) {
-  const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
+  let generalPractitionerId
+  if (patient.generalPractitioner && patient.generalPractitioner.length > 0) {
+    generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
+  } else {
+    generalPractitionerId = fhir.unknownGPPractice()
+  }
   const hl7V3HealthCareProvider = new hl7V3.HealthCareProvider()
   const gpIdValue = generalPractitionerId.identifier.value
   hl7V3HealthCareProvider.id = gpIdValue === UNKNOWN_GP_ODS_CODE
