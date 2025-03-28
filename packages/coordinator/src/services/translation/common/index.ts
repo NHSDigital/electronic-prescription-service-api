@@ -37,7 +37,7 @@ export function getClaimIdentifierValue(claim: fhir.Claim): string {
 
 export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, additionalContext?: string): T {
   if (!iterable) {
-    throw new errors.InvalidValueError("Required field missing.", fhirPath)
+    throw new errors.InvalidValueError("Required field missing in onlyElement.", fhirPath)
   }
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
@@ -154,7 +154,7 @@ export function getIdentifierValueForSystem(
   fhirPath: string
 ): string {
   if (!identifiers) {
-    throw new errors.InvalidValueError("Required field missing.", fhirPath)
+    throw new errors.InvalidValueError("Required field missing in getIdentifierValueForSystem.", fhirPath)
   }
   return onlyElement(
     identifiers.filter(identifier => identifier.system === system),
@@ -220,7 +220,7 @@ export function getCodeableConceptCodingForSystem(
   fhirPath: string
 ): fhir.Coding {
   if (!codeableConcepts) {
-    throw new errors.InvalidValueError("Required field missing.", fhirPath)
+    throw new errors.InvalidValueError("Required field missing in getCodeableConceptCodingForSystem.", fhirPath)
   }
   const coding = codeableConcepts.flatMap(codeableConcept => codeableConcept.coding).filter(isTruthy)
   return getCodingForSystem(coding, system, fhirPath + ".coding")
