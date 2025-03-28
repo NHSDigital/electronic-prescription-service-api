@@ -28,7 +28,7 @@ properties:
       properties:
         endpoint:
           type: string
-          example: https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message
+          example: https://sandbox.api.service.nhs.uk/fhir-prescribing/$post-message
         receiver:
           type: object
           properties:
