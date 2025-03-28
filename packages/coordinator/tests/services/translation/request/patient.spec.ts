@@ -63,6 +63,17 @@ describe("convertPatient", () => {
     expect(actual).toEqual({extension: idValue, root: "1.2.826.0.1285.0.1.10"})
   })
 
+  test("If the GP code is missing, then the Id should have nullFlavor 'UNK'", () => {
+    const newBundle = clone(TestResources.specification[0].fhirMessageUnsigned)
+    const fhirPatient = getPatient(newBundle)
+    delete fhirPatient.generalPractitioner
+
+    const patientsubjectOf = convertPatient(bundle, fhirPatient).patientPerson.playedProviderPatient.subjectOf
+    const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
+
+    expect(actual).toEqual({nullFlavor: "UNK"})
+  })
+
   function createGpWithIdValue(idValue: string) {
     return [
       {
@@ -73,17 +84,4 @@ describe("convertPatient", () => {
       }
     ]
   }
-})
-
-describe("convertPatient - missing GP", () => {
-  test("If the GP code is missing, then the Id should have nullFlavor 'UNK'", () => {
-    const bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
-    const fhirPatient = getPatient(bundle)
-    delete fhirPatient.generalPractitioner
-
-    const patientsubjectOf = convertPatient(bundle, fhirPatient).patientPerson.playedProviderPatient.subjectOf
-    const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
-
-    expect(actual).toEqual({nullFlavor: "UNK"})
-  })
 })
