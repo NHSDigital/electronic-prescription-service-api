@@ -76,13 +76,14 @@ describe("convertPatient", () => {
 })
 
 describe("convertPatient - missing GP", () => {
-  test("Should replace GP code when it is missing", () => {
+  test("If the GP code is missing, then the Id should have nullFlavor 'UNK'", () => {
     const bundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     const fhirPatient = getPatient(bundle)
     delete fhirPatient.generalPractitioner
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const res = convertPatient(bundle, fhirPatient)
-    expect(1).toBe(1)
+    const patientsubjectOf = convertPatient(bundle, fhirPatient).patientPerson.playedProviderPatient.subjectOf
+    const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
+
+    expect(actual).toEqual({nullFlavor: "UNK"})
   })
 })
