@@ -19,8 +19,13 @@ import {SdsUniqueIdentifier} from "../../../../../../models/hl7-v3"
 import {convertOrganizationAndProviderLicense} from "../organization"
 import {convertName, convertTelecom} from "../demographics"
 import {getJobRoleCodeOrName} from "../job-role-code"
+import {Logger} from "pino"
 
-export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = convertPatient): hl7V3.CancellationRequest {
+export function convertCancellation(
+  bundle: fhir.Bundle,
+  logger: Logger,
+  convertPatientFn = convertPatient
+): hl7V3.CancellationRequest {
   const fhirFirstMedicationRequest = getMedicationRequests(bundle)[0]
   const effectiveTime = convertMomentToHl7V3DateTime(moment.utc())
 
@@ -31,7 +36,7 @@ export function convertCancellation(bundle: fhir.Bundle, convertPatientFn = conv
   )
 
   const fhirPatient = getPatient(bundle)
-  const hl7V3Patient = convertPatientFn(bundle, fhirPatient)
+  const hl7V3Patient = convertPatientFn(bundle, fhirPatient, logger)
   cancellationRequest.recordTarget = new hl7V3.RecordTarget(hl7V3Patient)
 
   const hl7V3CancelRequester = convertAuthor(bundle, fhirFirstMedicationRequest)
