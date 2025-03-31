@@ -53,11 +53,11 @@ export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
   if (isSandbox()) {
     return DEFAULT_SANDBOX_ASID
   }
-  if (headers[RequestHeaders.ASID] !== undefined) {
-    return headers[RequestHeaders.ASID]
-  }
   if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
     return DEFAULT_PTL_ASID
+  }
+  if (headers[RequestHeaders.ASID] !== undefined) {
+    return headers[RequestHeaders.ASID]
   }
 
   throw new Error("Could not get ASID")
