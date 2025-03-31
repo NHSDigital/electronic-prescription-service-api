@@ -67,11 +67,11 @@ export function getPartyKey(headers: Hapi.Utils.Dictionary<string>): string {
   if (isSandbox()) {
     return DEFAULT_SANDBOX_PARTY_KEY
   }
-  if (headers[RequestHeaders.PARTY_KEY] !== undefined) {
-    return headers[RequestHeaders.PARTY_KEY]
-  }
   if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
     return DEFAULT_PTL_PARTY_KEY
+  }
+  if (headers[RequestHeaders.PARTY_KEY] !== undefined) {
+    return headers[RequestHeaders.PARTY_KEY]
   }
 
   throw new Error("Could not get party key")
