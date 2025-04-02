@@ -59,7 +59,7 @@ jobs:
       - name: get latest validator release
         id: get_latest_validator_release
         run: |
-          LATEST_VALIDATOR_VERSION=v1.0.231-alpha
+          LATEST_VALIDATOR_VERSION=v1.0.236-alpha
           echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_ENV"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
