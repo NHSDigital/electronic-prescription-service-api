@@ -15,6 +15,8 @@ export function getSessionValue(key: string, request: Hapi.Request): any {
     }
   }
   if (sessionValue && Object.keys(sessionValue).length === 1 && Object.keys(sessionValue)[0] === "arrayValues") {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
     return sessionValue.arrayValues
   }
   return sessionValue
