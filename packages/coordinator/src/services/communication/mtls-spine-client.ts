@@ -1,4 +1,4 @@
-import {fhir, spine} from "@models"
+import {spine} from "@models"
 import axios, {
   AxiosError,
   AxiosInstance,
@@ -11,6 +11,7 @@ import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import {Agent} from "https"
 import axiosRetry from "axios-retry"
+import {notSupportedOperationOutcomePromise, timeoutOperationOutcome} from "./common"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER
@@ -247,50 +248,4 @@ export class MtlsSpineClient implements SpineClient {
 
 function delay(ms: number) {
   return new Promise( resolve => setTimeout(resolve, ms) )
-}
-
-const notSupportedOperationOutcome: fhir.OperationOutcome = {
-  resourceType: "OperationOutcome",
-  issue: [
-    {
-      code: fhir.IssueCodes.INFORMATIONAL,
-      severity: "information",
-      details: {
-        coding: [
-          {
-            code: "INTERACTION_NOT_SUPPORTED_BY_MTLS_CLIENT",
-            display: "Interaction not supported by mtls client",
-            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-            version: "1"
-          }
-        ]
-      }
-    }
-  ]
-}
-
-const timeoutOperationOutcome: fhir.OperationOutcome = {
-  resourceType: "OperationOutcome",
-  issue: [
-    {
-      code: fhir.IssueCodes.EXCEPTION,
-      severity: "error",
-      details: {
-        coding: [
-          {
-            code: "TIMEOUT",
-            display: "Timeout waiting for response",
-            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-            version: "1"
-          }
-        ]
-      }
-    }
-  ]
-}
-function notSupportedOperationOutcomePromise(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
-  return Promise.resolve({
-    statusCode: 400,
-    body: notSupportedOperationOutcome
-  })
 }

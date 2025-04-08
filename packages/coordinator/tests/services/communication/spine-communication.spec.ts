@@ -31,18 +31,79 @@ describe("Spine communication", () => {
     fromPartyKey: "test3"
   }
 
-  test.skip("Successful send response returns pollable result", async () => {
+  test("Successful send response returns non pollable result when spine returns pollable", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
+    mock.onGet().reply(200, "foo")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
-    expect(spineResponse.statusCode).toBe(202)
-    expect(spine.isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as spine.SpinePollableResponse).pollingUrl)
-      .toBe("example.com/eps/_poll/test-content-location")
-  })
+    expect(spineResponse.statusCode).toBe(200)
+    expect(spine.isPollable(spineResponse)).toBe(false)
+  }, 10000)
+
+  test("Successful send response calls polling twice when poll result returned first", async () => {
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+    mock
+      .onGet()
+      .replyOnce(202, "foo")
+      .onGet()
+      .replyOnce(200, "foo")
+
+    const loggerSpy = jest.spyOn(logger, "info")
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spineResponse.statusCode).toBe(200)
+    expect(spine.isPollable(spineResponse)).toBe(false)
+
+    const firstMessage = "First call so delay 0.5 seconds before checking result"
+    const secondMessage = "Waiting 5 seconds before polling again"
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(firstMessage))
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(secondMessage))
+
+    loggerSpy.mockRestore()
+
+  }, 10000)
+
+  test("Failure response when no response after 30 seconds", async () => {
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+    mock
+      .onGet()
+      .reply(202, "foo")
+
+    const loggerSpy = jest.spyOn(logger, "error")
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spineResponse.statusCode).toBe(500)
+    expect((spineResponse as spine.SpineDirectResponse<string>).body).toEqual(
+      {
+        resourceType: "OperationOutcome",
+        issue: [{
+          code: "exception",
+          severity: "error",
+          details: {
+            coding: [
+              {
+                code: "TIMEOUT",
+                display: "Timeout waiting for response",
+                system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                version: "1"
+              }
+            ]
+          }
+        }]}
+    )
+    const expectedError = "No response to poll after 6 attempts"
+
+    expect(loggerSpy).toHaveBeenCalledWith(expect.stringContaining(expectedError))
+  }, 60000)
 
   test("Unsuccessful send response returns non-pollable result", async () => {
     mock.onPost().reply(400)
@@ -51,61 +112,6 @@ describe("Spine communication", () => {
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(400)
-  })
-
-  test.skip("Successful polling pending response returns pollable result", async () => {
-    mock.onGet().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location"
-    })
-
-    const spineResponse = await requestHandler.poll("test", "200000001285", logger)
-
-    expect(spineResponse.statusCode).toBe(202)
-    expect(spine.isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as spine.SpinePollableResponse).pollingUrl)
-      .toBe("example.com/eps/_poll/test-content-location")
-  })
-
-  test.skip("500 polling response returns 202 status", async () => {
-    mock.onGet().reply(500, "500 response")
-
-    const loggerSpy = jest.spyOn(logger, "warn")
-    const spineResponse = await requestHandler.poll("test-polling-location", "200000001285", logger)
-
-    expect(spineResponse.statusCode).toBe(202)
-    expect(spine.isPollable(spineResponse)).toBe(true)
-    expect((spineResponse as spine.SpinePollableResponse).pollingUrl)
-      .toBe("example.com/eps/_poll/test-polling-location")
-    expect(loggerSpy).toHaveBeenCalledWith(
-      {
-        response: expect.objectContaining({
-          data: "500 response",
-          status: 500
-        })
-      },
-      expect.stringContaining("500 response received from polling path")
-    )
-    loggerSpy.mockRestore()
-  })
-
-  test.skip("502 polling response returns an error", async () => {
-    mock.onGet().reply(502, "502 response")
-
-    const loggerSpy = jest.spyOn(logger, "error")
-    const spineResponse = await requestHandler.poll("test_polling_location", "200000001285", logger)
-
-    expect(spineResponse.statusCode).toBe(502)
-    expect(loggerSpy).toHaveBeenCalledWith(
-      {
-        error: expect.anything(),
-        response: expect.objectContaining({
-          data: "502 response",
-          status: 502
-        })
-      },
-      expect.stringContaining("Failed polling request for polling path test_polling_location.")
-    )
-    loggerSpy.mockRestore()
   })
 
   test("Async success messages returned from spine return a 200 response", async () => {
@@ -119,13 +125,30 @@ describe("Spine communication", () => {
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toContain("<hl7:acknowledgement typeCode=\"AA\">")
   })
 
-  test.skip("Successful polling complete response returns non pollable result", async () => {
+  test("Poll function returns not supported", async () => {
     mock.onGet().reply(200, {statusText: "OK", responseText: 'acknowledgement typeCode="AA"'})
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)
 
-    expect(spineResponse.statusCode).toBe(200)
-    expect(spine.isPollable(spineResponse)).toBe(false)
+    expect(spineResponse.statusCode).toBe(400)
+    expect((spineResponse as spine.SpineDirectResponse<string>).body).toEqual(
+      {
+        resourceType: "OperationOutcome",
+        issue: [{
+          code: "informational",
+          severity: "information",
+          details: {
+            coding: [
+              {
+                code: "INTERACTION_NOT_SUPPORTED_BY_MTLS_CLIENT",
+                display: "Interaction not supported by mtls client",
+                system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+                version: "1"
+              }
+            ]
+          }
+        }]}
+    )
   })
 
   test("Status response", async () => {
@@ -145,25 +168,57 @@ describe("Spine communication", () => {
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
   })
-})
 
-describe("Spine responses", () => {
-  test("Messages should be correctly identified as pollable", () => {
-    const message = {
-      statusCode: 200,
-      pollingUrl: "http://test.com"
+  test("Logs error for unsupported status response", async () => {
+    const errorMessage = "Internal Server Error"
+    mock.onPost().reply(500, errorMessage)
+
+    const loggerSpy = jest.spyOn(logger, "error")
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spineResponse.statusCode).toBe(500)
+
+    // eslint-disable-next-line max-len
+    const expectedErrorMessage = `Failed post request for spine client send. Error: Error: Request failed with status code 500`
+    const expectedError = {
+      error: expect.objectContaining({
+        message: "Request failed with status code 500",
+        name: "Error",
+        stack: expect.anything(),
+        status: 500
+      }),
+      response: expect.objectContaining({
+        data: "Internal Server Error",
+        status: 500
+      })
     }
+    expect(loggerSpy).toHaveBeenCalledWith(expectedError, expect.stringContaining(expectedErrorMessage))
 
-    expect(spine.isPollable(message)).toBe(true)
+    loggerSpy.mockRestore()
   })
 
-  test("Messages should be correctly identified as non-pollable", () => {
-    const message = {
-      statusCode: 200,
-      body: "This is a response body"
-    }
+  test("should return error when a network error", async() => {
+    mock.onPost().networkError()
 
-    expect(spine.isPollable(message)).toBe(false)
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spine.isPollable(spineResponse)).toBe(false)
+    expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
+  })
+
+  test("should return success when there is a network error once", async() => {
+    mock.onPost()
+      .networkErrorOnce()
+    mock.onPost().reply(202, 'statusText: "OK"', {
+      "content-location": "/_poll/test-content-location"
+    })
+    mock.onGet().reply(200, "foo")
+
+    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
+
+    expect(spine.isPollable(spineResponse)).toBe(false)
+    expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(200)
+    expect(mock.history.post.length).toBe(2)
   })
 })
 
