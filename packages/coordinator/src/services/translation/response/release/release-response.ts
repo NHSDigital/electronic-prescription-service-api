@@ -7,6 +7,7 @@ import {createBundle} from "../../common/response-bundles"
 import {convertResourceToBundleEntry, generateResourceId} from "../common"
 import {verifyPrescriptionSignature} from "../../../verification/signature-verification"
 import {ReturnFactory} from "../../request/return/return-factory"
+import {GlobalIdentifier} from "../../../../../../models/hl7-v3"
 
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
 // so not legal electronic prescriptions
@@ -89,7 +90,9 @@ export async function translateReleaseResponse(
   returnFactory: ReturnFactory
 ): Promise<TranslationResponseResult> {
   const passedPrescriptions: Array<fhir.Bundle> = []
+  const passedPrescriptionIds: Array<GlobalIdentifier> = []
   const failedPrescriptions: Array<fhir.Bundle|fhir.OperationOutcome> = []
+  const failedPrescriptionIds: Array<GlobalIdentifier> = []
   const dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot> = []
 
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
@@ -108,6 +111,7 @@ export async function translateReleaseResponse(
 
     if (errors.length === 0) {
       passedPrescriptions.push(bundle)
+      passedPrescriptionIds.push(ParentPrescription.id)
     } else {
       const prescriptionId = ParentPrescription.id._attributes.root.toLowerCase()
       logSignatureVerificationFailure(prescriptionId, errors, logger)
@@ -120,6 +124,7 @@ export async function translateReleaseResponse(
         logger)
 
       failedPrescriptions.push(operationOutcome, bundle)
+      failedPrescriptionIds.push(ParentPrescription.id)
       dispenseProposalReturns.push(dispenseProposalReturn)
     }
   }
@@ -136,6 +141,10 @@ export async function translateReleaseResponse(
     failedPrescriptions
   )
 
+  logger.info({
+    passedPrescriptions: passedPrescriptionIds,
+    failedPrescriptions: failedPrescriptionIds
+  }, "Prescription ids returned from release request")
   return {
     translatedResponse: {
       resourceType: "Parameters",
