@@ -204,6 +204,9 @@ export class LiveSpineClient implements SpineClient {
   }
 
   private getSpineEndpoint(requestPath?: string) {
+    if (requestPath.startsWith("/")) {
+      return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${requestPath}`
+    }
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${requestPath}`
   }
 
@@ -216,7 +219,7 @@ export class LiveSpineClient implements SpineClient {
   }
 
   private getSpineUrlForPolling(path: string) {
-    return this.getSpineEndpoint(path)
+    return this.getSpineEndpoint(path.substring(1))
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
