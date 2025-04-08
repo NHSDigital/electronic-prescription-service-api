@@ -1,14 +1,19 @@
-import {spine} from "@models"
-import axios, {AxiosError, AxiosResponse, RawAxiosRequestHeaders} from "axios"
+import {fhir, spine} from "@models"
+import axios, {
+  AxiosError,
+  AxiosInstance,
+  AxiosResponse,
+  RawAxiosRequestHeaders
+} from "axios"
 import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
 import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
+import axiosRetry from "axios-retry"
 
 const SPINE_URL_SCHEME = "https"
 const SPINE_ENDPOINT = process.env.SPINE_URL
 const SPINE_PATH = "Prescription"
-const BASE_PATH = process.env.BASE_PATH
 
 const getClientRequestHeaders = (interactionId: string, messageId: string) => {
   return {
@@ -25,6 +30,7 @@ export class LiveSpineClient implements SpineClient {
   private readonly spineEndpoint: string
   private readonly spinePath: string
   private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest) => string
+  private readonly axiosInstance: AxiosInstance
 
   constructor(
     spineEndpoint: string = null,
@@ -34,6 +40,12 @@ export class LiveSpineClient implements SpineClient {
     this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
     this.spinePath = spinePath || SPINE_PATH
     this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
+
+    this.axiosInstance = axios.create()
+    axiosRetry(this.axiosInstance, {
+      retries: 3,
+      retryCondition: (error) => error.code !== "ECONNABORTED"
+    })
   }
 
   private prepareSpineRequest(req: spine.ClientRequest): {
@@ -69,7 +81,7 @@ export class LiveSpineClient implements SpineClient {
           headers: headers
         }
       )
-      return LiveSpineClient.handlePollableOrImmediateResponse(response, logger)
+      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid, 0)
     } catch (error) {
       // todo: this log line is req.name for tracker request but not for spine client request
       // to work out how to log both, request.name maps to the wrong object
@@ -87,7 +99,16 @@ export class LiveSpineClient implements SpineClient {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+    return notSupportedOperationOutcomePromise()
+  }
+
+  private async handlePollableResponse(
+    path: string,
+    fromAsid: string,
+    pollCount: number,
+    logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
     logger.info(`Attempting to send polling message to ${address}`)
@@ -101,7 +122,7 @@ export class LiveSpineClient implements SpineClient {
           }
         }
       )
-      return LiveSpineClient.handlePollableOrImmediateResponse(result, logger, `/_poll/${path}`)
+      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, pollCount + 1, path)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -111,25 +132,16 @@ export class LiveSpineClient implements SpineClient {
           headers: error.response.headers
         }
       }
-      if (error.response.status === 500) {
-        // treat a 500 response as a 202 response
-        logger.warn({response: responseToLog}, `500 response received from polling path ${path}`)
-        return LiveSpineClient.handlePollableOrImmediateResponse({
-          data: {},
-          status: 202,
-          statusText: "Accepted",
-          headers: {},
-          config: error.response.config
-        }, logger, `/_poll/${path}`)
-      }
       logger.error({error, response: responseToLog}, `Failed polling request for polling path ${path}. Error: ${error}`)
       return LiveSpineClient.handleError(error)
     }
   }
 
-  private static handlePollableOrImmediateResponse(
+  private async handlePollableOrImmediateResponse(
     result: AxiosResponse,
     logger: pino.Logger,
+    fromAsid: string,
+    pollCount: number,
     previousPollingUrl?: string
   ) {
     if (result.status === 200) {
@@ -137,21 +149,35 @@ export class LiveSpineClient implements SpineClient {
     }
 
     if (result.status === 202) {
-      logger.info("Successful request, returning SpinePollableResponse")
+      if (pollCount > 6) {
+        const errorMessage = "No response to poll after 6 attempts"
+        logger.error(errorMessage)
+        return {
+          body: timeoutOperationOutcome,
+          statusCode: 500
+        }
+      }
+      logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
-      logger.info(`Got content location ${contentLocation}. Using polling URL ${relativePollingUrl}`)
-      return {
-        pollingUrl: `${BASE_PATH}${relativePollingUrl}`,
-        statusCode: result.status
+      logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
+      if (previousPollingUrl) {
+        logger.info(`Waiting 5 seconds before polling again. Attempt ${pollCount}`)
+        await delay(5000)
+      } else {
+        logger.info("First call so delay 0.5 seconds before checking result")
+        await delay(500)
       }
+      return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, logger)
     }
 
-    logger.error(`Got the following response from spine:\n${result.data}`)
+    logger.error({
+      result: {headers: result.headers, data: result.data}
+    }, "Received unexpected result from spine")
     throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
   }
 
-  private static handleImmediateResponse(
+  private handleImmediateResponse(
     result: AxiosResponse,
     logger: pino.Logger
   ) {
@@ -197,4 +223,55 @@ export class LiveSpineClient implements SpineClient {
     const url = this.getSpineEndpoint(`healthcheck`)
     return serviceHealthCheck(url, logger, undefined)
   }
+}
+
+function delay(ms: number) {
+  return new Promise( resolve => setTimeout(resolve, ms) )
+}
+
+const notSupportedOperationOutcome: fhir.OperationOutcome = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: fhir.IssueCodes.INFORMATIONAL,
+      severity: "information",
+      details: {
+        coding: [
+          {
+            code: "INTERACTION_NOT_SUPPORTED_BY_MTLS_CLIENT",
+            display: "Interaction not supported by mtls client",
+            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            version: "1"
+          }
+        ]
+      }
+    }
+  ]
+}
+
+const timeoutOperationOutcome: fhir.OperationOutcome = {
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      code: fhir.IssueCodes.EXCEPTION,
+      severity: "error",
+      details: {
+        coding: [
+          {
+            code: "TIMEOUT",
+            display: "Timeout waiting for response",
+            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
+            version: "1"
+          }
+        ]
+      }
+    }
+  ]
+}
+
+function notSupportedOperationOutcomePromise(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
+  return Promise.resolve({
+    statusCode: 400,
+    body: notSupportedOperationOutcome
+  })
 }

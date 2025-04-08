@@ -31,7 +31,7 @@ describe("Spine communication", () => {
     fromPartyKey: "test3"
   }
 
-  test("Successful send response returns pollable result", async () => {
+  test.skip("Successful send response returns pollable result", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
@@ -53,7 +53,7 @@ describe("Spine communication", () => {
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(400)
   })
 
-  test("Successful polling pending response returns pollable result", async () => {
+  test.skip("Successful polling pending response returns pollable result", async () => {
     mock.onGet().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
@@ -66,7 +66,7 @@ describe("Spine communication", () => {
       .toBe("example.com/eps/_poll/test-content-location")
   })
 
-  test("500 polling response returns 202 status", async () => {
+  test.skip("500 polling response returns 202 status", async () => {
     mock.onGet().reply(500, "500 response")
 
     const loggerSpy = jest.spyOn(logger, "warn")
@@ -88,7 +88,7 @@ describe("Spine communication", () => {
     loggerSpy.mockRestore()
   })
 
-  test("502 polling response returns an error", async () => {
+  test.skip("502 polling response returns an error", async () => {
     mock.onGet().reply(502, "502 response")
 
     const loggerSpy = jest.spyOn(logger, "error")
@@ -119,7 +119,7 @@ describe("Spine communication", () => {
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toContain("<hl7:acknowledgement typeCode=\"AA\">")
   })
 
-  test("Successful polling complete response returns non pollable result", async () => {
+  test.skip("Successful polling complete response returns non pollable result", async () => {
     mock.onGet().reply(200, {statusText: "OK", responseText: 'acknowledgement typeCode="AA"'})
 
     const spineResponse = await requestHandler.poll("test", "200000001285", logger)

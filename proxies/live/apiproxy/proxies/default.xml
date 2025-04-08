@@ -18,26 +18,28 @@
   </PostFlow>
   <Flows>
     <Flow name="OptionsPreFlight">
-      <Request/>
+      <Request />
       <Response>
         <Step>
           <Name>AssignMessage.AddCors</Name>
         </Step>
       </Response>
       <Condition>
-        request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
+        request.verb == "OPTIONS" AND request.header.origin != null AND
+        request.header.Access-Control-Request-Method != null
       </Condition>
     </Flow>
     <Flow name="AddPayloadToPing">
-      <Description/>
-      <Request/>
+      <Description />
+      <Request />
       <Response>
         <Step>
           <Name>AssignMessage.AddPayloadToPing</Name>
         </Step>
       </Response>
       <Condition>
-        (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
+        (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb =
+        "HEAD"))
       </Condition>
     </Flow>
   </Flows>
@@ -47,27 +49,15 @@
   </HTTPProxyConnection>
   <RouteRule name="NoRoute">
     <Condition>
-      request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
+      request.verb == "OPTIONS" AND request.header.origin != null AND
+      request.header.Access-Control-Request-Method != null
     </Condition>
   </RouteRule>
   <RouteRule name="NoRoutePing">
     <Condition>
-      (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
+      (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb =
+      "HEAD"))
     </Condition>
-  </RouteRule>
-  <RouteRule name="sync-wrap">
-    <Condition>
-      request.verb = "POST"
-      AND request.header.prefer != "respond-async"
-      AND request.header.x-sync-wrapped != "true"
-      AND (
-        proxy.pathsuffix MatchesPath "/FHIR/R4/$process-message"
-        OR proxy.pathsuffix MatchesPath "/FHIR/R4/Task/$release"
-        OR proxy.pathsuffix MatchesPath "/FHIR/R4/Task"
-        OR proxy.pathsuffix MatchesPath "/FHIR/R4/Claim"
-      )
-    </Condition>
-    <TargetEndpoint>sync-wrap</TargetEndpoint>
   </RouteRule>
   <RouteRule name="apim">
     <TargetEndpoint>apim</TargetEndpoint>
