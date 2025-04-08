@@ -139,8 +139,8 @@ describe("MtlsSpineClient communication", () => {
           details: {
             coding: [
               {
-                code: "INTERACTION_NOT_SUPPORTED_BY_MTLS_CLIENT",
-                display: "Interaction not supported by mtls client",
+                code: "INTERACTION_NOT_SUPPORTED",
+                display: "Interaction not supported",
                 system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
                 version: "1"
               }

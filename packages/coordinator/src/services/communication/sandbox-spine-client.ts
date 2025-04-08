@@ -6,6 +6,7 @@ import {
 } from "@models"
 import {SpineClient} from "./spine-client"
 import {StatusCheckResponse} from "../../utils/status"
+import {notSupportedOperationOutcome, notSupportedOperationOutcomePromise} from "./common"
 
 export class SandboxSpineClient implements SpineClient {
   async send(clientRequest: spine.ClientRequest): Promise<spine.SpineResponse<unknown>> {
@@ -69,31 +70,4 @@ export class SandboxSpineClient implements SpineClient {
         })
     }
   }
-}
-
-const notSupportedOperationOutcome: fhir.OperationOutcome = {
-  resourceType: "OperationOutcome",
-  issue: [
-    {
-      code: fhir.IssueCodes.INFORMATIONAL,
-      severity: "information",
-      details: {
-        coding: [
-          {
-            code: "INTERACTION_NOT_SUPPORTED_BY_SANDBOX",
-            display: "Interaction not supported by sandbox",
-            system: "https://fhir.nhs.uk/R4/CodeSystem/Spine-ErrorOrWarningCode",
-            version: "1"
-          }
-        ]
-      }
-    }
-  ]
-}
-
-function notSupportedOperationOutcomePromise(): Promise<spine.SpineResponse<fhir.OperationOutcome>> {
-  return Promise.resolve({
-    statusCode: 400,
-    body: notSupportedOperationOutcome
-  })
 }

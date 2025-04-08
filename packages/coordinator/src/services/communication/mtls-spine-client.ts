@@ -1,54 +1,27 @@
 import {spine} from "@models"
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosResponse,
-  RawAxiosRequestHeaders
-} from "axios"
+
 import pino from "pino"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
-import {addEbXmlWrapper} from "./ebxml-request-builder"
-import {SpineClient} from "./spine-client"
+
 import {Agent} from "https"
-import axiosRetry from "axios-retry"
-import {notSupportedOperationOutcomePromise, timeoutOperationOutcome} from "./common"
+import {BaseSpineClient} from "./common"
 
 const SPINE_URL_SCHEME = "https"
-const SPINE_ENDPOINT = process.env.TARGET_SPINE_SERVER
-const SPINE_PATH = "Prescription"
 
-const getClientRequestHeaders = (interactionId: string, messageId: string) => {
-  return {
-    "Content-Type": "multipart/related;" +
-      " boundary=\"--=_MIME-Boundary\";" +
-      " type=text/xml;" +
-      " start=ebXMLHeader@spine.nhs.uk",
-    "SOAPAction": `urn:nhs:names:services:mm/${interactionId}`,
-    "NHSD-Request-ID": messageId
-  }
-}
-
-export class MtlsSpineClient implements SpineClient {
-  private readonly spineEndpoint: string
-  private readonly spinePath: string
-  private readonly ebXMLBuilder: (spineRequest: spine.SpineRequest) => string
-  private readonly axiosInstance: AxiosInstance
+export class MtlsSpineClient extends BaseSpineClient {
+  private static readonly SPINE_PATH = "Prescription"
   private readonly httpsAgent: Agent
 
   constructor(
-    spineEndpoint: string = null,
-    spinePath: string = null,
+    spineEndpoint: string = process.env.TARGET_SPINE_SERVER,
+    spinePath: string = MtlsSpineClient.SPINE_PATH,
     ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null
   ) {
-    this.spineEndpoint = spineEndpoint || SPINE_ENDPOINT
-    this.spinePath = spinePath || SPINE_PATH
-    this.ebXMLBuilder = ebXMLBuilder || addEbXmlWrapper
-
     const privateKey = process.env.SpinePrivateKey
     const publicCert = process.env.SpinePublicCertificate
     const caChain = process.env.SpineCAChain
 
-    this.httpsAgent = new Agent({
+    const httpsAgent = new Agent({
       key: privateKey,
       cert: publicCert,
       ca: caChain,
@@ -56,171 +29,20 @@ export class MtlsSpineClient implements SpineClient {
       keepAlive: true
     })
 
-    this.axiosInstance = axios.create({
-      httpsAgent: this.httpsAgent
-    })
-    axiosRetry(this.axiosInstance, {
-      retries: 3,
-      retryCondition: (error) => error.code !== "ECONNABORTED"
-    })
-
+    super(spineEndpoint, spinePath, ebXMLBuilder, {httpsAgent})
+    this.httpsAgent = httpsAgent
   }
 
-  private prepareSpineRequest(req: spine.ClientRequest): {
-    address: string,
-    body: string,
-    headers: RawAxiosRequestHeaders
-  } {
-    if (spine.isTrackerRequest(req)) {
-      return {
-        address: this.getSpineUrlForTracker(),
-        body: req.body,
-        headers: req.headers
-      }
-    } else {
-      return {
-        address: this.getSpineUrlForPrescription(),
-        body: this.ebXMLBuilder(req),
-        headers: getClientRequestHeaders(req.interactionId, req.messageId)
-      }
-    }
+  protected getSpineUrlForPrescription(): string {
+    return this.getSpineEndpoint(this.spinePath)
   }
 
-  async send(req: spine.ClientRequest, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    const {address, body, headers} = this.prepareSpineRequest(req)
-
-    try {
-      logger.info({headers}, `Attempting to send message to ${address}`)
-
-      const response = await this.axiosInstance.post<string>(
-        address,
-        body,
-        {
-          headers: headers
-        }
-      )
-      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid, 0)
-    } catch (error) {
-      let responseToLog
-      if (error.response) {
-        responseToLog = {
-          data: error.response.data,
-          status: error.response.status,
-          headers: error.response.headers
-        }
-      }
-      logger.error({error: {
-        message: error.message,
-        name: error.name,
-        stack: error.stack,
-        status: error.status
-      }, response: responseToLog}, `Failed post request for spine client send. Error: ${error}`)
-      return MtlsSpineClient.handleError(error)
-    }
+  protected getSpineUrlForTracker(): string {
+    return this.getSpineEndpoint("syncservice-mm/mm")
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  async poll(path: string, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    return notSupportedOperationOutcomePromise()
-  }
-
-  private async handlePollableResponse(
-    path: string,
-    fromAsid: string,
-    pollCount: number,
-    logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
-    const address = this.getSpineUrlForPolling(path)
-
-    logger.info(`Attempting to send polling message to ${address}`)
-
-    try {
-      const result = await this.axiosInstance.get<string>(
-        address,
-        {
-          headers: {
-            "nhsd-asid": fromAsid
-          }
-        }
-      )
-      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, pollCount + 1, path)
-    } catch (error) {
-      let responseToLog
-      if (error.response) {
-        responseToLog = {
-          data: error.response.data,
-          status: error.response.status,
-          headers: error.response.headers
-        }
-      }
-      logger.error({error, response: responseToLog}, `Failed polling request for polling path ${path}. Error: ${error}`)
-      return MtlsSpineClient.handleError(error)
-    }
-  }
-
-  private async handlePollableOrImmediateResponse(
-    result: AxiosResponse,
-    logger: pino.Logger,
-    fromAsid: string,
-    pollCount: number,
-    previousPollingUrl?: string
-  ) {
-    if (result.status === 200) {
-      return this.handleImmediateResponse(result, logger)
-    }
-
-    if (result.status === 202) {
-      if (pollCount > 6) {
-        const errorMessage = "No response to poll after 6 attempts"
-        logger.error(errorMessage)
-        return {
-          body: timeoutOperationOutcome,
-          statusCode: 500
-        }
-      }
-      logger.info("Received pollable response")
-      const contentLocation = result.headers["content-location"]
-      const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
-      logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
-      if (previousPollingUrl) {
-        logger.info(`Waiting 5 seconds before polling again. Attempt ${pollCount}`)
-        await delay(5000)
-      } else {
-        logger.info("First call so delay 0.5 seconds before checking result")
-        await delay(500)
-      }
-      return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, logger)
-    }
-
-    logger.error({
-      result: {headers: result.headers, data: result.data}
-    }, "Received unexpected result from spine")
-    throw Error(`Unsupported status, expected 200 or 202, got ${result.status}`)
-  }
-
-  private handleImmediateResponse(
-    result: AxiosResponse,
-    logger: pino.Logger
-  ) {
-    logger.info("Successful request, returning SpineDirectResponse")
-    return {
-      body: result.data,
-      statusCode: result.status
-    }
-  }
-
-  private static handleError(error: Error): spine.SpineDirectResponse<unknown> {
-    const axiosError = error as AxiosError
-    if (axiosError.response) {
-      return {
-        body: axiosError.response.data,
-        statusCode: axiosError.response.status
-      }
-    } else {
-      return {
-        body: axiosError.message,
-        statusCode: 500
-      }
-    }
+  protected getSpineUrlForPolling(path: string): string {
+    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${path}`
   }
 
   private getSpineEndpoint(requestPath?: string) {
@@ -228,24 +50,8 @@ export class MtlsSpineClient implements SpineClient {
     return `${SPINE_URL_SCHEME}://${this.spineEndpoint}/${sanitizedPath}`
   }
 
-  private getSpineUrlForPrescription() {
-    return this.getSpineEndpoint(this.spinePath)
-  }
-
-  private getSpineUrlForTracker() {
-    return this.getSpineEndpoint("syncservice-mm/mm")
-  }
-
-  private getSpineUrlForPolling(requestPath: string) {
-    return `${SPINE_URL_SCHEME}://${this.spineEndpoint}${requestPath}`
-  }
-
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
     const url = this.getSpineEndpoint(`healthcheck`)
     return serviceHealthCheck(url, logger, this.httpsAgent)
   }
-}
-
-function delay(ms: number) {
-  return new Promise( resolve => setTimeout(resolve, ms) )
 }
