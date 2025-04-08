@@ -25,8 +25,7 @@
         </Step>
       </Response>
       <Condition>
-        request.verb == "OPTIONS" AND request.header.origin != null AND
-        request.header.Access-Control-Request-Method != null
+        request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
       </Condition>
     </Flow>
     <Flow name="AddPayloadToPing">
@@ -38,8 +37,7 @@
         </Step>
       </Response>
       <Condition>
-        (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb =
-        "HEAD"))
+        (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
       </Condition>
     </Flow>
   </Flows>
@@ -49,14 +47,12 @@
   </HTTPProxyConnection>
   <RouteRule name="NoRoute">
     <Condition>
-      request.verb == "OPTIONS" AND request.header.origin != null AND
-      request.header.Access-Control-Request-Method != null
+      request.verb == "OPTIONS" AND request.header.origin != null AND request.header.Access-Control-Request-Method != null
     </Condition>
   </RouteRule>
   <RouteRule name="NoRoutePing">
     <Condition>
-      (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb =
-      "HEAD"))
+      (proxy.pathsuffix MatchesPath "/_ping") AND ((request.verb = "GET") or (request.verb = "HEAD"))
     </Condition>
   </RouteRule>
   <RouteRule name="apim">
