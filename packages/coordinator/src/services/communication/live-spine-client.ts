@@ -216,7 +216,7 @@ export class LiveSpineClient implements SpineClient {
   }
 
   private getSpineUrlForPolling(path: string) {
-    return this.getSpineEndpoint(`_poll/${path}`)
+    return this.getSpineEndpoint(path)
   }
 
   async getStatus(logger: pino.Logger): Promise<StatusCheckResponse> {
