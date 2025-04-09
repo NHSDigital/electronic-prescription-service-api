@@ -1192,7 +1192,7 @@ security:
   - app-level0: []
 x-nhsd-apim:
   temporary: false
-  monitoring: false
+  monitoring: true
   access:
     - title: FHIR Prescribing Service API User Restricted
       grants:
