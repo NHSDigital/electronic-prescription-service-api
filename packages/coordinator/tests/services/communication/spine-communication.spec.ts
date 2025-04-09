@@ -3,27 +3,37 @@ import MockAdapter from "axios-mock-adapter"
 import axios from "axios"
 import fs from "fs"
 import {spine} from "@models"
+import {MtlsSpineClient} from "../../../src/services/communication/mtls-spine-client"
 import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
 import path from "path"
 import pino from "pino"
 
 const mock = new MockAdapter(axios)
 
-describe("Spine communication", () => {
+const mtlsRequestHandler = new MtlsSpineClient(
+  "localhost",
+  "Prescription",
+  (spineRequest: spine.SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
+)
 
+const liveSpineClientrequestHandler = new LiveSpineClient(
+  "localhost",
+  "Prescribe",
+  (spineRequest: spine.SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
+)
+
+describe.each([
+  {description: "mtls request handler", requestHandler: mtlsRequestHandler},
+  {description: "live spine client request handler", requestHandler: liveSpineClientrequestHandler}
+])("$description communication", (testCase) => {
+  const requestHandler = testCase.requestHandler
   afterEach(() => {
     mock.reset()
   })
 
-  const requestHandler = new LiveSpineClient(
-    "localhost",
-    "Prescribe",
-    (spineRequest: spine.SpineRequest) => `<wrap>${spineRequest.message}</wrap>`
-  )
-
   const logger = pino()
 
-  const mockRequest = {
+  const mockRequest: spine.SpineRequest = {
     message: "test",
     interactionId: "test2",
     messageId: "DEAD-BEEF",
@@ -199,11 +209,16 @@ describe("Spine communication", () => {
 
   test("should return error when a network error", async() => {
     mock.onPost().networkError()
+    const loggerWarnSpy = jest.spyOn(logger, "warn")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(500)
+    expect(loggerWarnSpy).toHaveBeenCalledWith("Call to spine failed - retrying. Retry count 1")
+    expect(loggerWarnSpy).toHaveBeenCalledWith("Call to spine failed - retrying. Retry count 2")
+    expect(loggerWarnSpy).toHaveBeenCalledWith("Call to spine failed - retrying. Retry count 3")
+    expect(loggerWarnSpy).not.toHaveBeenCalledWith("Call to spine failed - retrying. Retry count 4")
   })
 
   test("should return success when there is a network error once", async() => {
@@ -213,12 +228,14 @@ describe("Spine communication", () => {
       "content-location": "/_poll/test-content-location"
     })
     mock.onGet().reply(200, "foo")
+    const loggerWarnSpy = jest.spyOn(logger, "warn")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spine.isPollable(spineResponse)).toBe(false)
     expect((spineResponse as spine.SpineDirectResponse<string>).statusCode).toBe(200)
     expect(mock.history.post.length).toBe(2)
+    expect(loggerWarnSpy).toHaveBeenCalledWith("Call to spine failed - retrying. Retry count 1")
   })
 })
 
