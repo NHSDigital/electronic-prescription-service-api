@@ -78,12 +78,12 @@ export abstract class BaseSpineClient implements SpineClient {
   protected readonly spinePath: string
   protected readonly ebXMLBuilder: (spineRequest: spine.SpineRequest) => string
   protected readonly axiosInstance: AxiosInstance
+  private logger: pino.Logger
 
   constructor(
     spineEndpoint: string,
     spinePath: string,
     ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null,
-    logger: pino.Logger,
     axiosConfig: object = {}
   ) {
     this.spineEndpoint = spineEndpoint
@@ -93,6 +93,7 @@ export abstract class BaseSpineClient implements SpineClient {
     this.axiosInstance = axios.create(axiosConfig)
     axiosRetry(this.axiosInstance, {
       retries: 3,
+      onRetry: this.onAxiosRetry,
       retryCondition: (error) => error.code !== "ECONNABORTED"
     })
   }
@@ -118,6 +119,7 @@ export abstract class BaseSpineClient implements SpineClient {
   }
 
   async send(req: spine.ClientRequest, fromAsid: string, logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
+    this.logger = logger
     const {address, body, headers} = this.prepareSpineRequest(req)
 
     try {
@@ -254,4 +256,9 @@ export abstract class BaseSpineClient implements SpineClient {
   protected abstract getSpineUrlForPolling(path: string): string;
 
   abstract getStatus(logger: pino.Logger): Promise<StatusCheckResponse>;
+
+  onAxiosRetry = (retryCount: number, error: Error) => {
+    this.logger.warn(error)
+    this.logger.warn(`Call to spine failed - retrying. Retry count ${retryCount}`)
+  }
 }
