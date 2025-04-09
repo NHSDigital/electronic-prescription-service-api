@@ -13,9 +13,10 @@ export class LiveSpineClient extends BaseSpineClient {
   constructor(
     spineEndpoint: string = process.env.SPINE_URL,
     spinePath: string = LiveSpineClient.SPINE_PATH,
-    ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null
+    ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null,
+    logger: pino.Logger = null
   ) {
-    super(spineEndpoint, spinePath, ebXMLBuilder)
+    super(spineEndpoint, spinePath, ebXMLBuilder, logger)
   }
 
   protected getSpineUrlForPrescription(): string {

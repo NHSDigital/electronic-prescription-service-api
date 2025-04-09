@@ -83,6 +83,7 @@ export abstract class BaseSpineClient implements SpineClient {
     spineEndpoint: string,
     spinePath: string,
     ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null,
+    logger: pino.Logger,
     axiosConfig: object = {}
   ) {
     this.spineEndpoint = spineEndpoint

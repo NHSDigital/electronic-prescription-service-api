@@ -15,7 +15,8 @@ export class MtlsSpineClient extends BaseSpineClient {
   constructor(
     spineEndpoint: string = process.env.TARGET_SPINE_SERVER,
     spinePath: string = MtlsSpineClient.SPINE_PATH,
-    ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null
+    ebXMLBuilder: (spineRequest: spine.SpineRequest) => string = null,
+    logger: pino.Logger = null
   ) {
     const privateKey = process.env.SpinePrivateKey
     const publicCert = process.env.SpinePublicCertificate
@@ -29,7 +30,7 @@ export class MtlsSpineClient extends BaseSpineClient {
       keepAlive: true
     })
 
-    super(spineEndpoint, spinePath, ebXMLBuilder, {httpsAgent})
+    super(spineEndpoint, spinePath, ebXMLBuilder, logger, {httpsAgent})
     this.httpsAgent = httpsAgent
   }
 
