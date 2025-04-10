@@ -251,9 +251,22 @@ export abstract class BaseSpineClient implements SpineClient {
     }
   }
 
-  protected abstract getSpineUrlForPrescription(): string;
-  protected abstract getSpineUrlForTracker(): string;
-  protected abstract getSpineUrlForPolling(path: string): string;
+  protected getSpineEndpoint(requestPath?: string) {
+    if (requestPath && requestPath.startsWith("/")) {
+      return `https://${this.spineEndpoint}${requestPath}`
+    }
+    return `https://${this.spineEndpoint}/${requestPath}`
+  }
+
+  protected getSpineUrlForPrescription(): string {
+    return this.getSpineEndpoint(this.spinePath)
+  }
+  protected getSpineUrlForTracker(): string {
+    return this.getSpineEndpoint("syncservice-mm/mm")
+  }
+  protected getSpineUrlForPolling(path: string): string {
+    return this.getSpineEndpoint(path)
+  }
 
   abstract getStatus(logger: pino.Logger): Promise<StatusCheckResponse>;
 
