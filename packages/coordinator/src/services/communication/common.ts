@@ -193,10 +193,13 @@ export abstract class BaseSpineClient implements SpineClient {
     previousPollingUrl?: string
   ) {
     if (result.status === 200) {
-      return this.handleImmediateResponse(result, logger)
+      if (result.data !== "" && result.data !== undefined) {
+        return this.handleImmediateResponse(result, logger)
+      }
+      logger.info("Empty body returned from spine - treating as 202 response")
     }
 
-    if (result.status === 202) {
+    if (result.status === 202 || result.status === 200) {
       if (pollCount > 6) {
         const errorMessage = "No response to poll after 6 attempts"
         logger.error(errorMessage)
