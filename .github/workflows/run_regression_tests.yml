@@ -34,7 +34,7 @@ jobs:
 
       - name: Generate a token to authenticate regression testing
         id: generate-token
-        uses: actions/create-github-app-token@v1
+        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ vars.REGRESSION_TESTS_APP_ID }}
           private-key: ${{ secrets.REGRESSION_TESTS_PEM }}
