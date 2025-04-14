@@ -104,7 +104,7 @@ exports[`Dispense Different Medication checkbox is present for paracetamol 500 (
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -212,7 +212,7 @@ exports[`Fields default to current values 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -309,7 +309,7 @@ exports[`Prescription status is not updated automatically if field has been touc
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -406,7 +406,7 @@ exports[`Prescription status updates to suggested value when line item status is
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -514,7 +514,7 @@ exports[`Quantity field is hidden when status is not set to partial dispensed 1`
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -623,7 +623,7 @@ exports[`Quantity field is shown when status is set to partial dispensed 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -718,7 +718,7 @@ exports[`Reason field is hidden when status is not set to not dispensed 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -839,7 +839,7 @@ exports[`Reason field is shown when status is set to not dispensed 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -947,6 +947,6 @@ exports[`Reason field value is reset when hidden 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-VHjGu hjyFlg"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-Qotzb hBUvLt"><button class="nhsuk-button" aria-disabled="false" type="submit">Dispense</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
