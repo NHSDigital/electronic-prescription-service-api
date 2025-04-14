@@ -58,7 +58,8 @@ const setupMockData = async (releaseExampleName: string): Promise<TranslationRes
 const beforeAllHookTimeout = 10000
 
 describe("outer bundle", () => {
-  let loggerSpy: jest.SpyInstance
+  let loggerErrorSpy: jest.SpyInstance
+  let loggerInfoSpy: jest.SpyInstance
   let returnFactoryCreateFunctionSpy: jest.SpyInstance
 
   let result: TranslationResponseResult
@@ -69,7 +70,8 @@ describe("outer bundle", () => {
 
   function getBeforeAllCallback(mockDataParameter: string, bundleParameter: string): jest.ProvidesHookCallback {
     return async () => {
-      loggerSpy = jest.spyOn(logger, "error")
+      loggerErrorSpy = jest.spyOn(logger, "error")
+      loggerInfoSpy = jest.spyOn(logger, "info")
       returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
 
       result = await setupMockData(mockDataParameter)
@@ -79,7 +81,8 @@ describe("outer bundle", () => {
   }
 
   function afterAllCallback() {
-    loggerSpy.mockRestore()
+    loggerErrorSpy.mockRestore()
+    loggerInfoSpy.mockRestore()
     returnFactoryCreateFunctionSpy.mockRestore()
   }
 
@@ -127,7 +130,15 @@ describe("outer bundle", () => {
     commonTests(1, ["Bundle"])
 
     test("does not log any errors", () => {
-      expect(loggerSpy).toHaveBeenCalledTimes(0)
+      expect(loggerErrorSpy).toHaveBeenCalledTimes(0)
+    })
+
+    test("logs released prescriptions", () => {
+      expect(loggerInfoSpy).toHaveBeenCalledWith({
+        "failedPrescriptions": [],
+        "passedPrescriptions": ["93041E69-2017-4242-B325-CBC9A84D5EF1"]
+      }, "Prescription ids returned from release request"
+      )
     })
 
     test("verify factory to create dispenseProposalReturn is not called", () => {
@@ -154,8 +165,16 @@ describe("outer bundle", () => {
     })
 
     test("logs an error", () => {
-      expect(loggerSpy).toHaveBeenCalledWith(
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
         "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid"
+      )
+    })
+
+    test("logs failed prescriptions", () => {
+      expect(loggerInfoSpy).toHaveBeenCalledWith({
+        "passedPrescriptions": [],
+        "failedPrescriptions": ["93041E69-2017-4242-B325-CBC9A84D5EF1"]
+      }, "Prescription ids returned from release request"
       )
     })
 
@@ -232,7 +251,7 @@ describe("outer bundle", () => {
 
   test("marks prescription as failed if verification throws an error", async () => {
     try {
-      loggerSpy = jest.spyOn(logger, "error")
+      loggerErrorSpy = jest.spyOn(logger, "error")
       throwOnVerification = true
       const result = await translateReleaseResponse(
         getExamplePrescriptionReleaseResponse("release_success.xml"),
@@ -242,9 +261,9 @@ describe("outer bundle", () => {
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
       expect(prescriptions.total).toEqual(2)
-      expect(loggerSpy).toHaveBeenCalledWith(expect.anything(), "Uncaught error during signature verification")
+      expect(loggerErrorSpy).toHaveBeenCalledWith(expect.anything(), "Uncaught error during signature verification")
     } finally {
-      loggerSpy.mockRestore()
+      loggerErrorSpy.mockRestore()
       throwOnVerification = false
     }
   })

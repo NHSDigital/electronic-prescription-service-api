@@ -89,7 +89,9 @@ export async function translateReleaseResponse(
   returnFactory: ReturnFactory
 ): Promise<TranslationResponseResult> {
   const passedPrescriptions: Array<fhir.Bundle> = []
+  const passedPrescriptionIds: Array<string> = []
   const failedPrescriptions: Array<fhir.Bundle|fhir.OperationOutcome> = []
+  const failedPrescriptionIds: Array<string> = []
   const dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot> = []
 
   const releaseRequestId = releaseResponse.inFulfillmentOf.priorDownloadRequestRef.id._attributes.root
@@ -108,6 +110,7 @@ export async function translateReleaseResponse(
 
     if (errors.length === 0) {
       passedPrescriptions.push(bundle)
+      passedPrescriptionIds.push(ParentPrescription.id._attributes.root)
     } else {
       const prescriptionId = ParentPrescription.id._attributes.root.toLowerCase()
       logSignatureVerificationFailure(prescriptionId, errors, logger)
@@ -120,6 +123,7 @@ export async function translateReleaseResponse(
         logger)
 
       failedPrescriptions.push(operationOutcome, bundle)
+      failedPrescriptionIds.push(ParentPrescription.id._attributes.root)
       dispenseProposalReturns.push(dispenseProposalReturn)
     }
   }
@@ -136,6 +140,10 @@ export async function translateReleaseResponse(
     failedPrescriptions
   )
 
+  logger.info({
+    passedPrescriptions: passedPrescriptionIds,
+    failedPrescriptions: failedPrescriptionIds
+  }, "Prescription ids returned from release request")
   return {
     translatedResponse: {
       resourceType: "Parameters",

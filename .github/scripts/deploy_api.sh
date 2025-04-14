@@ -58,6 +58,8 @@ echo "Fixing the spec"
 title=$(jq -r '.info.title' "${SPEC_PATH}")
 if [[ "${is_pull_request}" == "true" ]]; then
     jq --arg title "[PR-${pr_id}] $title" '.info.title = $title' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+    echo "disabling monitoring for pull request deployment"
+    jq '."x-nhsd-apim".monitoring = false' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 fi
 
 # Find and replace the specification version number 

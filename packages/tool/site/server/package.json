@@ -30,7 +30,7 @@
     "@hapi/hapi": "^21.4.0",
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
-    "@hapi/yar": "^11.0.2",
+    "@hapi/yar": "^11.0.3",
     "axios": "^1.8.4",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
