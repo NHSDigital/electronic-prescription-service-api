@@ -15,6 +15,7 @@ RUN apk update; \
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
 RUN npm ci --ignore-scripts --workspace packages/tool/site/client --include-workspace-root
+COPY node_modules/nhsuk-frontend/dist/nhsuk.css ./packages/tool/site/client/static/
 RUN npm run build --workspace packages/tool/site/client
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 

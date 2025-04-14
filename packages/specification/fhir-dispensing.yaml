@@ -1337,7 +1337,7 @@ security:
   - app-level0: []
 x-nhsd-apim:
   temporary: false
-  monitoring: false
+  monitoring: true
   access:
     - title: FHIR Dispensing Service API User Restricted
       grants:
