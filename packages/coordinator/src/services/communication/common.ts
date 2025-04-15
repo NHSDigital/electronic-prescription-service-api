@@ -216,16 +216,17 @@ export abstract class BaseSpineClient implements SpineClient {
           statusCode: 500
         }
       }
+      const retryDelay = result.headers["retry-after"] ? result.headers["retry-after"] : 5000
       logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
       if (previousPollingUrl) {
-        logger.info(`Waiting 5 seconds before polling again. Attempt ${pollCount}`)
-        await delay(5000)
+        logger.info(`Waiting ${retryDelay} milliseconds before polling again. Attempt ${pollCount}`)
+        await delay(retryDelay)
       } else {
-        logger.info("First call so delay 0.5 seconds before checking result")
-        await delay(500)
+        logger.info(`First call, delay ${retryDelay} milliseconds before checking result`)
+        await delay(retryDelay)
       }
       return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, logger)
     }
