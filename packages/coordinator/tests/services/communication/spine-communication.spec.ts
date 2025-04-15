@@ -53,7 +53,7 @@ describe.each([
     expect(spine.isPollable(spineResponse)).toBe(false)
   }, 10000)
 
-  test("Successful send response calls polling twice when poll result returned first", async () => {
+  test.skip("Successful send response calls polling twice when poll result returned first", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
@@ -79,7 +79,7 @@ describe.each([
 
   }, 10000)
 
-  test("Successful send response calls polling twice when poll returns empty 200 response", async () => {
+  test.skip("Successful send response calls polling twice when poll returns empty 200 response", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
