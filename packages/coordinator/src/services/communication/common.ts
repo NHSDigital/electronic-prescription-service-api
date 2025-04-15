@@ -192,6 +192,14 @@ export abstract class BaseSpineClient implements SpineClient {
     pollCount: number,
     previousPollingUrl?: string
   ) {
+    logger.info({
+      response: {
+        headers: result.headers,
+        body: result.data,
+        statusCode: result.status
+      }
+    }, "response in handlePollableOrImmediateResponse"
+    )
     if (result.status === 200) {
       if (result.data !== "" && result.data !== undefined) {
         return this.handleImmediateResponse(result, logger)
