@@ -44,11 +44,11 @@ function return_error() {
 }
 
 function analyze_scan_results() {
-  if [[ -z "$critical" ]]; then
+  if [[ -n "$critical" ]]; then
     echo "ERROR: There are CRITICAL vulnerabilities. Stopping build."
     return_scan_results
     return_error
-  elif [[ -z "$high" ]]; then
+  elif [[ -n "$high" ]]; then
     echo "ERROR: There are HIGH vulnerabilities. Stopping build."
     return_scan_results
     return_error
