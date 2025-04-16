@@ -18,6 +18,8 @@ function wait_for_scan() {
     echo "SCAN IS NOT YET COMPLETE..."
     sleep 3
   done
+  echo "Final sleep to ensure suppressions are applied correctly"
+  sleep 5
 }
 
 function check_for_high_critical_vuln() {
