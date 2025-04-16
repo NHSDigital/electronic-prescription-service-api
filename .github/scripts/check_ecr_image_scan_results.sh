@@ -46,10 +46,21 @@ function return_error() {
 function analyze_scan_results() {
   if [[ -n "$critical" ]]; then
     echo "ERROR: There are CRITICAL vulnerabilities. Stopping build."
+
+    echo "=== BEGIN CRITICAL IMAGE SCAN RESULTS ==="
+    echo "$critical"
+    echo "=== END CRITICAL IMAGE SCAN RESULTS ==="
+
     return_scan_results
+
     return_error
   elif [[ -n "$high" ]]; then
     echo "ERROR: There are HIGH vulnerabilities. Stopping build."
+
+    echo "=== BEGIN HIGH IMAGE SCAN RESULTS ==="
+    echo "$high"
+    echo "=== END HIGH IMAGE SCAN RESULTS ==="
+
     return_scan_results
     return_error
   else
