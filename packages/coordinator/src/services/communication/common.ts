@@ -222,7 +222,7 @@ export abstract class BaseSpineClient implements SpineClient {
           statusCode: 500
         }
       }
-      const retryDelayString = result.headers["retry-after"] ? result.headers["retry-after"] : defaultPollingDelay
+      const retryDelayString = result.headers["retry-after"] ?? defaultPollingDelay
       let retryDelay = Number(retryDelayString)
       if (isNaN(retryDelay)) {
         retryDelay = defaultPollingDelay
