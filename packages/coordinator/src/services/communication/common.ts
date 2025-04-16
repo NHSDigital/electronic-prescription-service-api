@@ -11,6 +11,11 @@ import {addEbXmlWrapper} from "./ebxml-request-builder"
 import {SpineClient} from "./spine-client"
 import axiosRetry from "axios-retry"
 
+// set polling timeout to be 25 seconds
+const pollingTimeout = 25000
+// set default polling delay to be 5 seconds if it is not in response
+const defaultPollingDelay = 5000
+
 export const notSupportedOperationOutcome: fhir.OperationOutcome = {
   resourceType: "OperationOutcome",
   issue: [
@@ -132,7 +137,7 @@ export abstract class BaseSpineClient implements SpineClient {
           headers: headers
         }
       )
-      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid, 0)
+      return await this.handlePollableOrImmediateResponse(response, logger, fromAsid, 0, 0)
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -156,6 +161,7 @@ export abstract class BaseSpineClient implements SpineClient {
     path: string,
     fromAsid: string,
     pollCount: number,
+    totalPollingTime: number,
     logger: pino.Logger): Promise<spine.SpineResponse<unknown>> {
     const address = this.getSpineUrlForPolling(path)
 
@@ -170,7 +176,9 @@ export abstract class BaseSpineClient implements SpineClient {
           }
         }
       )
-      return await this.handlePollableOrImmediateResponse(result, logger, fromAsid, pollCount + 1, path)
+      return await this.handlePollableOrImmediateResponse(
+        result, logger, fromAsid, pollCount + 1, totalPollingTime, path)
+
     } catch (error) {
       let responseToLog
       if (error.response) {
@@ -190,16 +198,9 @@ export abstract class BaseSpineClient implements SpineClient {
     logger: pino.Logger,
     fromAsid: string,
     pollCount: number,
+    totalPollingTime: number,
     previousPollingUrl?: string
   ) {
-    logger.info({
-      response: {
-        headers: result.headers,
-        body: result.data,
-        statusCode: result.status
-      }
-    }, "response in handlePollableOrImmediateResponse"
-    )
     if (result.status === 200) {
       if (result.data !== "" && result.data !== undefined) {
         return this.handleImmediateResponse(result, logger)
@@ -208,27 +209,46 @@ export abstract class BaseSpineClient implements SpineClient {
     }
 
     if (result.status === 202 || result.status === 200) {
-      if (pollCount > 6) {
-        const errorMessage = "No response to poll after 6 attempts"
-        logger.error(errorMessage)
+      if (totalPollingTime > pollingTimeout) {
+        const errorMessage = `No response to poll after ${pollCount} attempts in ${totalPollingTime} milliseconds`
+        logger.error({
+          attempt: pollCount,
+          totalPollingTime
+        },
+        errorMessage)
         return {
           body: timeoutOperationOutcome,
           statusCode: 500
         }
       }
-      const retryDelay = result.headers["retry-after"] ? result.headers["retry-after"] : 5000
+      const retryDelayString = result.headers["retry-after"] ? result.headers["retry-after"] : defaultPollingDelay
+      let retryDelay = Number(retryDelayString)
+      if (isNaN(retryDelay)) {
+        retryDelay = 5000
+      }
+      totalPollingTime = totalPollingTime + retryDelay
       logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
       if (previousPollingUrl) {
-        logger.info(`Waiting ${retryDelay} milliseconds before polling again. Attempt ${pollCount}`)
+        logger.info({
+          retryDelay,
+          attempt: pollCount,
+          totalPollingTime
+        },
+        `Waiting ${retryDelay} milliseconds before polling again. Attempt ${pollCount}`)
         await delay(retryDelay)
       } else {
-        logger.info(`First call, delay ${retryDelay} milliseconds before checking result`)
+        logger.info({
+          retryDelay,
+          attempt: 0,
+          totalPollingTime
+        },
+        `First call, delay ${retryDelay} milliseconds before checking result`)
         await delay(retryDelay)
       }
-      return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, logger)
+      return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, totalPollingTime, logger)
     }
 
     logger.error({
