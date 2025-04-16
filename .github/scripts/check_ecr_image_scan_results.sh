@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -e
 
 if [ -z "${REPOSITORY_NAME}" ]; then
   echo "REPOSITORY_NAME not set"
@@ -21,8 +22,8 @@ function wait_for_scan() {
 
 function check_for_high_critical_vuln() {
   scan_results=$(aws ecr describe-image-scan-findings --repository-name "${REPOSITORY_NAME}" --image-id imageTag="${IMAGE_TAG}")
-  high=$(echo "$scan_results" | jq .imageScanFindings.findingSeverityCounts.HIGH)
-  critical=$(echo "$scan_results" | jq .imageScanFindings.findingSeverityCounts.CRITICAL)
+  high=$(echo "$scan_results" | jq '.imageScanFindings.enhancedFindings[] | select(.severity == "HIGH" and .status != "SUPPRESSED")')
+  critical=$(echo "$scan_results" | jq '.imageScanFindings.enhancedFindings[] | select(.severity == "CRITICAL" and .status != "SUPPRESSED")')
 }
 
 function return_scan_results() {
@@ -35,7 +36,7 @@ function return_error() {
     echo -e "\n**********************************************************"
     echo "**********************************************************"
     echo "**********************************************************"
-    echo "ERROR: There are CRITICAL/HIGH vulnerabilties. Stopping build."
+    echo "ERROR: There are CRITICAL/HIGH vulnerabilities. Stopping build."
     echo "**********************************************************"
     echo "**********************************************************"
     echo "**********************************************************"
@@ -43,12 +44,12 @@ function return_error() {
 }
 
 function analyze_scan_results() {
-  if [[ $critical -gt 0 ]]; then
-    echo "ERROR: There are CRITICAL vulnerabilties. Stopping build."
+  if [[ -z "$critical" ]]; then
+    echo "ERROR: There are CRITICAL vulnerabilities. Stopping build."
     return_scan_results
     return_error
-  elif [[ $high -gt 0 ]]; then
-    echo "ERROR: There are HIGH vulnerabilties. Stopping build."
+  elif [[ -z "$high" ]]; then
+    echo "ERROR: There are HIGH vulnerabilities. Stopping build."
     return_scan_results
     return_error
   else
