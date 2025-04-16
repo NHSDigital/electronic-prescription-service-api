@@ -132,51 +132,21 @@ describe.each([
 
   }, 10000)
 
-  test("Successful send response uses default polling when no retry-after", async () => {
+  test.each([
+    {description: "Successful send response uses default polling when no retry-after",
+      headers: {}},
+    {description: "Successful send response uses default polling when retry-after is not a number",
+      headers: {
+        "retry-after": "bar"
+      }}
+  ])("$description", async (testCase) => {
     mock.onPost().reply(202, 'statusText: "OK"', {
+      ...testCase.headers,
       "content-location": "/_poll/test-content-location"
     })
     mock
       .onGet()
-      .replyOnce(202, "foo")
-      .onGet()
-      .replyOnce(200, "foo")
-
-    const loggerSpy = jest.spyOn(logger, "info")
-
-    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
-
-    expect(spineResponse.statusCode).toBe(200)
-    expect(spine.isPollable(spineResponse)).toBe(false)
-
-    const firstMessage = "First call, delay 5000 milliseconds before checking result"
-    const secondMessage = "Waiting 5000 milliseconds before polling again. Attempt 1"
-    expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 5000,
-      attempt: 0,
-      totalPollingTime: 5000
-    }, firstMessage)
-    expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 5000,
-      attempt: 1,
-      totalPollingTime: 10000
-    },
-    secondMessage)
-
-    loggerSpy.mockRestore()
-
-  }, 15000)
-
-  test("Successful send response uses default polling when retry-after is not a number", async () => {
-    mock.onPost().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location",
-      "retry-after": "bar"
-    })
-    mock
-      .onGet()
-      .replyOnce(202, "foo", {
-        "retry-after": "bar"
-      })
+      .replyOnce(202, "foo", testCase.headers)
       .onGet()
       .replyOnce(200, "foo")
 
