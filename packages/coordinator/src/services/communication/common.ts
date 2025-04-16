@@ -177,7 +177,8 @@ export abstract class BaseSpineClient implements SpineClient {
         }
       )
       return await this.handlePollableOrImmediateResponse(
-        result, logger, fromAsid, pollCount + 1, totalPollingTime, path)
+        result, logger, fromAsid, pollCount + 1, totalPollingTime, path
+      )
 
     } catch (error) {
       let responseToLog
