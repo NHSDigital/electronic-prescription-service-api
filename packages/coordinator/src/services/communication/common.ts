@@ -224,7 +224,7 @@ export abstract class BaseSpineClient implements SpineClient {
       const retryDelayString = result.headers["retry-after"] ? result.headers["retry-after"] : defaultPollingDelay
       let retryDelay = Number(retryDelayString)
       if (isNaN(retryDelay)) {
-        retryDelay = 5000
+        retryDelay = defaultPollingDelay
       }
       totalPollingTime = totalPollingTime + retryDelay
       logger.info("Received pollable response")
