@@ -48,7 +48,7 @@ def generate_timestamp():
 
 def trigger_test_run(env, pr_label, product, auth_header):
     body = {
-        "ref": "main",
+        "ref": "feature/AEA-5030-automated-tests-should-add-pull-request-deployments-to-apigee-product",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
