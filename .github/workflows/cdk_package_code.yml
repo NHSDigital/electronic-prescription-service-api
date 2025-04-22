@@ -10,7 +10,6 @@ on:
         required: true
         type: string
 
-
 jobs:
   package_code:
     runs-on: ubuntu-22.04
@@ -29,7 +28,7 @@ jobs:
         uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
         with:
           asdf_branch: v0.14.1
-  
+
       - name: Cache asdf
         uses: actions/cache@v4
         with:
@@ -54,12 +53,12 @@ jobs:
         id: build-fhir-facade-image
         run: |
           docker build -t "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -f packages/coordinator/Dockerfile .
-          docker save "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -o FHIR_facade_docker.img   
+          docker save "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -o FHIR_facade_docker.img
 
       - name: get latest validator release
         id: get_latest_validator_release
         run: |
-          LATEST_VALIDATOR_VERSION=v1.0.241-alpha
+          LATEST_VALIDATOR_VERSION=v1.0.243-alpha
           echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_ENV"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
@@ -73,9 +72,9 @@ jobs:
         run: |
           docker build -t "validator-repo:${{ inputs.VERSION_NUMBER }}" -f Dockerfile .
           docker images
-          docker save "validator-repo:${{ inputs.VERSION_NUMBER }}" -o validator_docker.img   
+          docker save "validator-repo:${{ inputs.VERSION_NUMBER }}" -o validator_docker.img
 
-      - name: 'package cdk'
+      - name: "package cdk"
         run: |
           tar -rf artifact.tar \
             .tool-versions \
