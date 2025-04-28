@@ -12,7 +12,7 @@
     "dependencies": {
     },
     "devDependencies": {
-      "aws-cdk": "^2.1010.0",
+      "aws-cdk": "^2.1012.0",
       "aws-cdk-lib": "^2.192.0",
       "cdk-nag": "^2.35.82",
       "constructs": "^10.4.2",
