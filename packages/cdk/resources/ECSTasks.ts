@@ -13,7 +13,7 @@ import {
   Secret as ecsSecret
 } from "aws-cdk-lib/aws-ecs"
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager"
-import {Fn} from "aws-cdk-lib"
+import {Duration, Fn} from "aws-cdk-lib"
 
 export interface ECSTasksProps {
   readonly stackName: string
@@ -113,6 +113,14 @@ export class ECSTasks extends Construct {
           protocol: Protocol.TCP
         }
       ],
+      healthCheck: {
+        command: [ "CMD-SHELL", "curl -f http://localhost:9000/_local_status || exit 1" ],
+        // the properties below are optional
+        interval: Duration.seconds(60),
+        retries: 5,
+        startPeriod: Duration.minutes(2),
+        timeout: Duration.minutes(2)
+      },
       environment: {
         VALIDATOR_HOST: `${props.containerNamePrefix}-validator`,
         TARGET_SPINE_SERVER:  props.targetSpineServer,
@@ -160,6 +168,14 @@ export class ECSTasks extends Construct {
           protocol: Protocol.TCP
         }
       ],
+      healthCheck: {
+        command: [ "CMD-SHELL", "curl -f http://localhost:9001/_status || exit 1" ],
+        // the properties below are optional
+        interval: Duration.seconds(60),
+        retries: 5,
+        startPeriod: Duration.minutes(3),
+        timeout: Duration.minutes(2)
+      },
       environment: {
         LOG_LEVEL: props.validatorLogLevel
       },

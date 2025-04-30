@@ -42,6 +42,15 @@ export default [
   },
   {
     method: "GET" as RouteDefMethods,
+    path: "/_local_status",
+    handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      return createStatusResponse(500, {
+        "spine:status": [await spineClient.getStatus(request.logger)]
+      }, h)
+    }
+  },
+  {
+    method: "GET" as RouteDefMethods,
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       return createStatusResponse(500, {
