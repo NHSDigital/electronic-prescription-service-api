@@ -119,7 +119,7 @@ export class ECSTasks extends Construct {
         interval: Duration.seconds(60),
         retries: 5,
         startPeriod: Duration.minutes(2),
-        timeout: Duration.minutes(2)
+        timeout: Duration.seconds(30)
       },
       environment: {
         VALIDATOR_HOST: `${props.containerNamePrefix}-validator`,
@@ -174,7 +174,7 @@ export class ECSTasks extends Construct {
         interval: Duration.seconds(60),
         retries: 5,
         startPeriod: Duration.minutes(3),
-        timeout: Duration.minutes(2)
+        timeout: Duration.seconds(30)
       },
       environment: {
         LOG_LEVEL: props.validatorLogLevel
