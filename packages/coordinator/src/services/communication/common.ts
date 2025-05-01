@@ -14,7 +14,7 @@ import axiosRetry from "axios-retry"
 // set polling timeout to be 25 seconds
 const pollingTimeout = 25000
 // set default polling delay to be 5 seconds if it is not in response
-const defaultPollingDelay = 5000
+const defaultPollingDelay = 5
 
 export const notSupportedOperationOutcome: fhir.OperationOutcome = {
   resourceType: "OperationOutcome",
@@ -223,9 +223,9 @@ export abstract class BaseSpineClient implements SpineClient {
         }
       }
       const retryDelayString = result.headers["retry-after"] ?? defaultPollingDelay
-      let retryDelay = Number(retryDelayString)
+      let retryDelay = Number(retryDelayString)*1000
       if (isNaN(retryDelay)) {
-        retryDelay = defaultPollingDelay
+        retryDelay = defaultPollingDelay*1000
       }
       totalPollingTime = totalPollingTime + retryDelay
       logger.info("Received pollable response")
