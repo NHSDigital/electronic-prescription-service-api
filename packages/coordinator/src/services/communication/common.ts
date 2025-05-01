@@ -14,7 +14,8 @@ import axiosRetry from "axios-retry"
 // set polling timeout to be 25 seconds
 const pollingTimeout = 25000
 // set default polling delay to be 5 seconds if it is not in response
-const defaultPollingDelay = 5
+const defaultPollingDelay = 1000
+const initialPollingDelay = 500
 
 export const notSupportedOperationOutcome: fhir.OperationOutcome = {
   resourceType: "OperationOutcome",
@@ -222,32 +223,29 @@ export abstract class BaseSpineClient implements SpineClient {
           statusCode: 500
         }
       }
-      const retryDelayString = result.headers["retry-after"] ?? defaultPollingDelay
-      let retryDelay = Number(retryDelayString)*1000
-      if (isNaN(retryDelay)) {
-        retryDelay = defaultPollingDelay*1000
-      }
-      totalPollingTime = totalPollingTime + retryDelay
+
       logger.info("Received pollable response")
       const contentLocation = result.headers["content-location"]
       const relativePollingUrl = contentLocation ? contentLocation : previousPollingUrl
       logger.info(`Got content location ${contentLocation}. Calling polling URL ${relativePollingUrl}`)
       if (previousPollingUrl) {
+        totalPollingTime = totalPollingTime + defaultPollingDelay
         logger.info({
-          retryDelay,
+          defaultPollingDelay,
           attempt: pollCount,
           totalPollingTime
         },
-        `Waiting ${retryDelay} milliseconds before polling again. Attempt ${pollCount}`)
-        await delay(retryDelay)
+        `Waiting ${defaultPollingDelay} milliseconds before polling again. Attempt ${pollCount}`)
+        await delay(defaultPollingDelay)
       } else {
+        totalPollingTime = totalPollingTime + initialPollingDelay
         logger.info({
-          retryDelay,
+          initialPollingDelay,
           attempt: 0,
           totalPollingTime
         },
-        `First call, delay ${retryDelay} milliseconds before checking result`)
-        await delay(retryDelay)
+        `First call, delay ${initialPollingDelay} milliseconds before checking result`)
+        await delay(initialPollingDelay)
       }
       return await this.handlePollableResponse(relativePollingUrl, fromAsid, pollCount, totalPollingTime, logger)
     }
