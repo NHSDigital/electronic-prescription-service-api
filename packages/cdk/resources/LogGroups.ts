@@ -122,7 +122,7 @@ export class LogGroups extends Construct {
     new CfnSubscriptionFilter(this, "ClaimsValidatorSplunkSubscriptionFilter", {
       destinationArn: props.splunkDeliveryStream.streamArn,
       filterPattern: "",
-      logGroupName: validatorLogGroup.logGroupName,
+      logGroupName: claimsValidatorLogGroup.logGroupName,
       roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
