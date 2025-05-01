@@ -5,6 +5,7 @@ import fs from "fs"
 import {spine} from "@models"
 import {MtlsSpineClient} from "../../../src/services/communication/mtls-spine-client"
 import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
+import {pollingTimeout, defaultPollingDelay, initialPollingDelay} from "../../../src/services/communication/common"
 import path from "path"
 import pino from "pino"
 
@@ -70,17 +71,17 @@ describe.each([
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isPollable(spineResponse)).toBe(false)
 
-    const firstMessage = "First call, delay 500 milliseconds before checking result"
-    const secondMessage = "Waiting 1000 milliseconds before polling again. Attempt 1"
+    const firstMessage = `First call, delay ${initialPollingDelay} milliseconds before checking result`
+    const secondMessage = `Waiting ${defaultPollingDelay} milliseconds before polling again. Attempt 1`
     expect(loggerSpy).toHaveBeenCalledWith({
-      initialPollingDelay: 500,
+      initialPollingDelay: initialPollingDelay,
       attempt: 0,
-      totalPollingTime: 500
+      totalPollingTime: initialPollingDelay
     }, firstMessage)
     expect(loggerSpy).toHaveBeenCalledWith({
-      defaultPollingDelay: 1000,
+      defaultPollingDelay: defaultPollingDelay,
       attempt: 1,
-      totalPollingTime: 1500
+      totalPollingTime: defaultPollingDelay+initialPollingDelay
     },
     secondMessage)
 
@@ -106,18 +107,18 @@ describe.each([
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toEqual("foo")
     expect(spine.isPollable(spineResponse)).toBe(false)
 
-    const firstMessage = "First call, delay 500 milliseconds before checking result"
-    const secondMessage = "Waiting 1000 milliseconds before polling again. Attempt 1"
+    const firstMessage = `First call, delay ${initialPollingDelay} milliseconds before checking result`
+    const secondMessage = `Waiting ${defaultPollingDelay} milliseconds before polling again. Attempt 1`
     expect(loggerSpy).toHaveBeenCalledWith("Empty body returned from spine - treating as 202 response")
     expect(loggerSpy).toHaveBeenCalledWith({
-      initialPollingDelay: 500,
+      initialPollingDelay: initialPollingDelay,
       attempt: 0,
-      totalPollingTime: 500
+      totalPollingTime: initialPollingDelay
     }, firstMessage)
     expect(loggerSpy).toHaveBeenCalledWith({
-      defaultPollingDelay: 1000,
+      defaultPollingDelay: defaultPollingDelay,
       attempt: 1,
-      totalPollingTime: 1500
+      totalPollingTime: defaultPollingDelay+initialPollingDelay
     },
     secondMessage)
 
@@ -156,11 +157,14 @@ describe.each([
           }
         }]}
     )
-    const expectedError = "No response to poll after 26 attempts in 25500 milliseconds"
+
+    const duration = pollingTimeout+initialPollingDelay
+    const attempts = Math.ceil(duration/defaultPollingDelay)
+    const expectedError =`No response to poll after ${attempts} attempts in ${duration} milliseconds`
 
     expect(loggerSpy).toHaveBeenCalledWith({
-      attempt: 26,
-      totalPollingTime: 25500
+      attempt: attempts,
+      totalPollingTime: duration
     }, expectedError)
   }, 60000)
 

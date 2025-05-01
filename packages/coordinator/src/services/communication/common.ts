@@ -12,10 +12,10 @@ import {SpineClient} from "./spine-client"
 import axiosRetry from "axios-retry"
 
 // set polling timeout to be 25 seconds
-const pollingTimeout = 25000
+export const pollingTimeout = 25000
 // set default polling delay to be 5 seconds if it is not in response
-const defaultPollingDelay = 1000
-const initialPollingDelay = 500
+export const defaultPollingDelay = 1000
+export const initialPollingDelay = 500
 
 export const notSupportedOperationOutcome: fhir.OperationOutcome = {
   resourceType: "OperationOutcome",
