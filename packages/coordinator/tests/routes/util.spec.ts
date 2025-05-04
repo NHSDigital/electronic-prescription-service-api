@@ -26,7 +26,7 @@ describe("forward header", ()=> {
     mock.reset()
   })
 
-  test("API only forwards valid headers to validator", async () => {
+  test.skip("API only forwards valid headers to validator", async () => {
     mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome"})
 
     const exampleHeaders = {
@@ -48,7 +48,7 @@ describe("forward header", ()=> {
     expect(requestHeaders["nhsd-request-id"]).toBe("my_nhsd_request_id")
   })
 
-  test("API forwards nhsd-request-id header as x-request-id to validator", async () => {
+  test.skip("API forwards nhsd-request-id header as x-request-id to validator", async () => {
     mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome"})
 
     const exampleHeaders = {

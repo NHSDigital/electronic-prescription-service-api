@@ -15,6 +15,7 @@ import {
   isTask
 } from "../utils/type-guards"
 import axiosRetry from "axios-retry"
+import {InvokeCommand, LambdaClient, LogType} from "@aws-sdk/client-lambda"
 
 type HapiPayload = string | object | Buffer | stream
 
@@ -76,17 +77,26 @@ export async function callFhirValidator(
   payload: HapiPayload,
   requestHeaders: Hapi.Utils.Dictionary<string>
 ): Promise<fhir.OperationOutcome> {
-  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
-    headers: {
-      "Content-Type": requestHeaders["content-type"],
-      "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
-      "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
-      "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
-      "nhsd-request-id": requestHeaders["nhsd-request-id"]
-    }
+  const client = new LambdaClient({})
+  const headers = {
+    "Content-Type": requestHeaders["content-type"],
+    "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
+    "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
+    "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
+    "nhsd-request-id": requestHeaders["nhsd-request-id"]
+  }
+  const lambdaPayload = {
+    body: payload,
+    headers
+  }
+  const command = new InvokeCommand({
+    FunctionName: process.env["VALIDATOR_LAMBDA_NAME"],
+    Payload: JSON.stringify(lambdaPayload),
+    LogType: LogType.None
   })
+  const {Payload} = await client.send(command)
+  const validatorResponseData = Buffer.from(Payload).toString()
 
-  const validatorResponseData = validatorResponse.data
   if (!validatorResponseData) {
     throw new TypeError("No response from validator")
   }

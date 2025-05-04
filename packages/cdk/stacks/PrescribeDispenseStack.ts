@@ -11,7 +11,7 @@ import {HostedZone} from "aws-cdk-lib/aws-route53"
 import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager"
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
-import {Role} from "aws-cdk-lib/aws-iam"
+import {ManagedPolicy, Role} from "aws-cdk-lib/aws-iam"
 import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
@@ -89,6 +89,9 @@ export class PrescribeDispenseStack extends Stack {
     const spinePublicCertificateImport = Fn.importValue("account-resources:SpinePublicCertificate")
     const spineCAChainImport = Fn.importValue("account-resources:SpineCAChain")
     const epsSigningCertChainImport = Fn.importValue("secrets:epsSigningCertChain")
+    const validatorLambdaName = Fn.importValue("fhir-validator-pr-283:FHIRValidatorNHSDigitalLambdaName")
+    const validatorLambdaExecutePolicyImport = Fn.importValue(
+      "fhir-validator-pr-283:FHIRValidatorNHSDigitalExecuteLambdaPolicyArn")
 
     // cooerce context and imports to relevant types
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "hostedZone", {
@@ -127,6 +130,11 @@ export class PrescribeDispenseStack extends Stack {
     const epsSigningCertChain = Secret.fromSecretCompleteArn(this, "epsSigningCertChain", epsSigningCertChainImport)
 
     const fhirFacadeHostname = `${props.stackName}.${epsDomainNameImport}`
+    const validatorLambdaExecutePolicy = ManagedPolicy.fromManagedPolicyArn(
+      this,
+      "AmazonECSTaskExecutionRolePolicy",
+      validatorLambdaExecutePolicyImport
+    )
 
     // resources
     const logGroups = new LogGroups(this, "logGroups", {
@@ -166,7 +174,9 @@ export class PrescribeDispenseStack extends Stack {
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`,
       ApigeeEnvironment: ApigeeEnvironment,
-      containerNamePrefix: "fhirFacade"
+      containerNamePrefix: "fhirFacade",
+      validatorLambdaName: validatorLambdaName,
+      validatorLambdaExecutePolicy: validatorLambdaExecutePolicy
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -198,7 +208,9 @@ export class PrescribeDispenseStack extends Stack {
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`,
       ApigeeEnvironment: ApigeeEnvironment,
-      containerNamePrefix: "claims"
+      containerNamePrefix: "claims",
+      validatorLambdaName: validatorLambdaName,
+      validatorLambdaExecutePolicy: validatorLambdaExecutePolicy
     })
 
     // log group for insights

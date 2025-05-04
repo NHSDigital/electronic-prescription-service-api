@@ -1,6 +1,11 @@
 import {Construct} from "constructs"
 
-import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
+import {
+  IManagedPolicy,
+  ManagedPolicy,
+  Role,
+  ServicePrincipal
+} from "aws-cdk-lib/aws-iam"
 import {ILogGroup} from "aws-cdk-lib/aws-logs"
 import {IRepository} from "aws-cdk-lib/aws-ecr"
 import {
@@ -45,6 +50,8 @@ export interface ECSTasksProps {
   readonly taskExecutionRoleName: string
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
+  readonly validatorLambdaName: string
+  readonly validatorLambdaExecutePolicy: IManagedPolicy
 }
 
 /**
@@ -86,7 +93,8 @@ export class ECSTasks extends Construct {
         ecsTaskExecutionRolePolicy,
         lambdaAccessSecretsPolicy,
         lambdaDecryptSecretsKMSPolicy,
-        epsSigningCertChainManagedPolicy
+        epsSigningCertChainManagedPolicy,
+        props.validatorLambdaExecutePolicy
       ],
       roleName: props.taskExecutionRoleName
     })
@@ -134,7 +142,8 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_ASID: props.defaultPTLAsid,
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
-        SANDBOX: props.sandboxModeEnabled
+        SANDBOX: props.sandboxModeEnabled,
+        VALIDATOR_LAMBDA_NAME: props.validatorLambdaName
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
