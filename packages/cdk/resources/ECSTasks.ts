@@ -93,7 +93,14 @@ export class ECSTasks extends Construct {
         ecsTaskExecutionRolePolicy,
         lambdaAccessSecretsPolicy,
         lambdaDecryptSecretsKMSPolicy,
-        epsSigningCertChainManagedPolicy,
+        epsSigningCertChainManagedPolicy
+      ],
+      roleName: props.taskExecutionRoleName
+    })
+
+    const ecsTaskRole = new Role(this, "EcsTaskExecutionRole", {
+      assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: [
         props.validatorLambdaExecutePolicy
       ],
       roleName: props.taskExecutionRoleName
@@ -103,6 +110,7 @@ export class ECSTasks extends Construct {
       cpu: props.cpu,
       memoryLimitMiB: props.memory,
       executionRole: ecsTaskExecutionRole,
+      taskRole: ecsTaskRole,
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.X86_64,
         operatingSystemFamily: OperatingSystemFamily.LINUX
