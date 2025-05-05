@@ -16,6 +16,7 @@ import {
 } from "../utils/type-guards"
 import axiosRetry from "axios-retry"
 import {InvokeCommand, LambdaClient, LogType} from "@aws-sdk/client-lambda"
+import {isEpsHostedContainer} from "../utils/feature-flags"
 
 type HapiPayload = string | object | Buffer | stream
 
@@ -85,17 +86,26 @@ export async function callFhirValidator(
     "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
     "nhsd-request-id": requestHeaders["nhsd-request-id"]
   }
-  const lambdaPayload = {
-    body: payload,
-    headers
+  let validatorResponseData
+  if (isEpsHostedContainer()) {
+    const lambdaPayload = {
+      body: payload,
+      headers
+    }
+    const command = new InvokeCommand({
+      FunctionName: process.env["VALIDATOR_LAMBDA_NAME"],
+      Payload: JSON.stringify(lambdaPayload),
+      LogType: LogType.None
+    })
+    const {Payload} = await client.send(command)
+    validatorResponseData = Buffer.from(Payload).toString()
+  } else {
+    const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
+      headers
+    })
+
+    validatorResponseData = validatorResponse.data
   }
-  const command = new InvokeCommand({
-    FunctionName: process.env["VALIDATOR_LAMBDA_NAME"],
-    Payload: JSON.stringify(lambdaPayload),
-    LogType: LogType.None
-  })
-  const {Payload} = await client.send(command)
-  const validatorResponseData = Buffer.from(Payload).toString()
 
   if (!validatorResponseData) {
     throw new TypeError("No response from validator")

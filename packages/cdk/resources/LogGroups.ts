@@ -25,9 +25,7 @@ export interface LogGroupProps {
 
 export class LogGroups extends Construct {
   public readonly coordinatorLogGroup: ILogGroup
-  public readonly validatorLogGroup: ILogGroup
   public readonly claimsCoordinatorLogGroup: ILogGroup
-  public readonly claimsValidatorLogGroup: ILogGroup
 
   public constructor(scope: Construct, id: string, props: LogGroupProps) {
     super(scope, id)
@@ -57,29 +55,6 @@ export class LogGroups extends Construct {
       roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
-    const validatorLogGroup = new LogGroup(this, "ValidatorLogGroup", {
-      encryptionKey: props.cloudWatchLogsKmsKey,
-      logGroupName: `/aws/ecs/${props.stackName}-validator`,
-      retention: props.logRetentionInDays,
-      removalPolicy: RemovalPolicy.DESTROY
-    })
-
-    const cfnValidatorLogGroup = validatorLogGroup.node.defaultChild as CfnLogGroup
-    cfnValidatorLogGroup.cfnOptions.metadata = {
-      guard: {
-        SuppressedRules: [
-          "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
-        ]
-      }
-    }
-
-    new CfnSubscriptionFilter(this, "ValidatorSplunkSubscriptionFilter", {
-      destinationArn: props.splunkDeliveryStream.streamArn,
-      filterPattern: "",
-      logGroupName: validatorLogGroup.logGroupName,
-      roleArn: props.splunkSubscriptionFilterRole.roleArn
-    })
-
     const claimsCoordinatorLogGroup = new LogGroup(this, "ClaimsCoordinatorLogGroup", {
       encryptionKey: props.cloudWatchLogsKmsKey,
       logGroupName: `/aws/ecs/${props.stackName}-claims-coordinator`,
@@ -103,33 +78,8 @@ export class LogGroups extends Construct {
       roleArn: props.splunkSubscriptionFilterRole.roleArn
     })
 
-    const claimsValidatorLogGroup = new LogGroup(this, "ClaimsValidatorLogGroup", {
-      encryptionKey: props.cloudWatchLogsKmsKey,
-      logGroupName: `/aws/ecs/${props.stackName}-claims-validator`,
-      retention: props.logRetentionInDays,
-      removalPolicy: RemovalPolicy.DESTROY
-    })
-
-    const cfnClaimsValidatorLogGroup = claimsValidatorLogGroup.node.defaultChild as CfnLogGroup
-    cfnClaimsValidatorLogGroup.cfnOptions.metadata = {
-      guard: {
-        SuppressedRules: [
-          "CW_LOGGROUP_RETENTION_PERIOD_CHECK"
-        ]
-      }
-    }
-
-    new CfnSubscriptionFilter(this, "ClaimsValidatorSplunkSubscriptionFilter", {
-      destinationArn: props.splunkDeliveryStream.streamArn,
-      filterPattern: "",
-      logGroupName: claimsValidatorLogGroup.logGroupName,
-      roleArn: props.splunkSubscriptionFilterRole.roleArn
-    })
-
     // Outputs
     this.coordinatorLogGroup = coordinatorLogGroup
-    this.validatorLogGroup = validatorLogGroup
     this.claimsCoordinatorLogGroup = claimsCoordinatorLogGroup
-    this.claimsValidatorLogGroup = claimsValidatorLogGroup
   }
 }
