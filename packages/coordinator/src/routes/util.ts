@@ -76,7 +76,8 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Utils.Dictionary<string>
+  requestHeaders: Hapi.Utils.Dictionary<string>,
+  logger: pino.Logger
 ): Promise<fhir.OperationOutcome> {
   const client = new LambdaClient({})
   const headers = {
@@ -92,6 +93,7 @@ export async function callFhirValidator(
       body: payload,
       headers
     }
+    logger.info(lambdaPayload, "making call to validator lambda")
     const command = new InvokeCommand({
       FunctionName: process.env["VALIDATOR_LAMBDA_NAME"],
       Payload: JSON.stringify(lambdaPayload),
@@ -99,6 +101,7 @@ export async function callFhirValidator(
     })
     const {Payload} = await client.send(command)
     validatorResponseData = Buffer.from(Payload).toString()
+    logger.info(validatorResponseData, "received response from validator lambda")
   } else {
     const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
       headers
@@ -123,12 +126,13 @@ export async function getFhirValidatorErrors(
   request: Hapi.Request,
   showWarnings: boolean
 ): Promise<fhir.OperationOutcome> {
+  const logger = request.logger
   if (request.headers[RequestHeaders.SKIP_VALIDATION]) {
-    request.logger.info("Skipping call to FHIR validator")
+    logger.info("Skipping call to FHIR validator")
   } else {
-    request.logger.info("Making call to FHIR validator")
-    const validatorResponseData = await callFhirValidator(request.payload, request.headers)
-    request.logger.info("Received response from FHIR validator")
+    logger.info("Making call to FHIR validator")
+    const validatorResponseData = await callFhirValidator(request.payload, request.headers, logger)
+    logger.info("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
     if (filteredResponse.issue.length) {
       return validatorResponseData
