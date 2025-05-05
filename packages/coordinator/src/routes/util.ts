@@ -90,7 +90,7 @@ export async function callFhirValidator(
   let validatorResponseData
   if (isEpsHostedContainer()) {
     const lambdaPayload = {
-      body: payload,
+      body: payload.toString(),
       headers
     }
     logger.info(lambdaPayload, "making call to validator lambda")
