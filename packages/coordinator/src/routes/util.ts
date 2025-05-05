@@ -89,8 +89,14 @@ export async function callFhirValidator(
   }
   let validatorResponseData
   if (isEpsHostedContainer()) {
+    let body = payload.toString()
+    try {
+      body = JSON.parse(body)
+    } catch (e) {
+      logger.error({error: e}, "Could not parse payload to json. Sending to validator anyway")
+    }
     const lambdaPayload = {
-      body: JSON.parse(payload.toString()),
+      body: body,
       headers
     }
     logger.info({lambdaPayload}, "making call to validator lambda")
@@ -101,6 +107,11 @@ export async function callFhirValidator(
     })
     const {Payload} = await client.send(command)
     validatorResponseData = Buffer.from(Payload).toString()
+    try {
+      validatorResponseData = JSON.parse(validatorResponseData)
+    } catch(e) {
+      logger.error({error: e}, "Could not parse validator response to json")
+    }
     logger.info({validatorResponseData}, "received response from validator lambda")
   } else {
     const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
