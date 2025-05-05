@@ -90,10 +90,10 @@ export async function callFhirValidator(
   let validatorResponseData
   if (isEpsHostedContainer()) {
     const lambdaPayload = {
-      body: payload.toString(),
+      body: JSON.parse(payload.toString()),
       headers
     }
-    logger.info(lambdaPayload, "making call to validator lambda")
+    logger.info({lambdaPayload}, "making call to validator lambda")
     const command = new InvokeCommand({
       FunctionName: `${process.env["VALIDATOR_LAMBDA_NAME"]}:snap`,
       Payload: JSON.stringify(lambdaPayload),
@@ -101,7 +101,7 @@ export async function callFhirValidator(
     })
     const {Payload} = await client.send(command)
     validatorResponseData = Buffer.from(Payload).toString()
-    logger.info(validatorResponseData, "received response from validator lambda")
+    logger.info({validatorResponseData}, "received response from validator lambda")
   } else {
     const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
       headers
