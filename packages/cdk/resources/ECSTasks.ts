@@ -42,6 +42,7 @@ export interface ECSTasksProps {
   readonly spineCAChain: ISecret
   readonly epsSigningCertChain: ISecret
   readonly coordinatorLogGroup: ILogGroup
+  readonly validatorLogGroup: ILogGroup
   readonly SHA1EnabledApplicationIds: string
   readonly sandboxModeEnabled: string
   readonly cpu: number
@@ -52,6 +53,7 @@ export interface ECSTasksProps {
   readonly containerNamePrefix: string
   readonly validatorLambdaName: string
   readonly validatorLambdaExecutePolicy: IManagedPolicy
+
 }
 
 /**
@@ -162,6 +164,27 @@ export class ECSTasks extends Construct {
       logging: LogDrivers.awsLogs({
         streamPrefix: "ecs",
         logGroup: props.coordinatorLogGroup
+      })
+    })
+
+    fhirFacadeTaskDefinition.addContainer("validator", {
+      image: ContainerImage.fromEcrRepository(
+        props.validatorRepo,
+        props.dockerImageTag),
+      containerName: `${props.containerNamePrefix}-validator`,
+      disableNetworking: false,
+      portMappings: [
+        {
+          containerPort: props.containerPortValidator,
+          protocol: Protocol.TCP
+        }
+      ],
+      environment: {
+        LOG_LEVEL: props.validatorLogLevel
+      },
+      logging: LogDrivers.awsLogs({
+        streamPrefix: "ecs",
+        logGroup: props.validatorLogGroup
       })
     })
 
