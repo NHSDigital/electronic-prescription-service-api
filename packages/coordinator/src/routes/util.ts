@@ -95,10 +95,9 @@ export async function callFhirValidator(
     }
     logger.info(lambdaPayload, "making call to validator lambda")
     const command = new InvokeCommand({
-      FunctionName: process.env["VALIDATOR_LAMBDA_NAME"],
+      FunctionName: `${process.env["VALIDATOR_LAMBDA_NAME"]}:snap`,
       Payload: JSON.stringify(lambdaPayload),
-      LogType: LogType.None,
-      Qualifier: "snap"
+      LogType: LogType.None
     })
     const {Payload} = await client.send(command)
     validatorResponseData = Buffer.from(Payload).toString()
