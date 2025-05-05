@@ -48,6 +48,7 @@ export interface ECSTasksProps {
   readonly cpu: number
   readonly memory: number
   readonly taskExecutionRoleName: string
+  readonly taskRoleName: string
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
   readonly validatorLambdaName: string
@@ -98,12 +99,12 @@ export class ECSTasks extends Construct {
       roleName: props.taskExecutionRoleName
     })
 
-    const ecsTaskRole = new Role(this, "foo", {
+    const ecsTaskRole = new Role(this, "EcsTaskRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
       managedPolicies: [
         props.validatorLambdaExecutePolicy
       ],
-      roleName: props.taskExecutionRoleName
+      roleName: props.taskRoleName
     })
 
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
