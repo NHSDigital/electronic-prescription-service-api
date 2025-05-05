@@ -98,7 +98,7 @@ export class ECSTasks extends Construct {
       roleName: props.taskExecutionRoleName
     })
 
-    const ecsTaskRole = new Role(this, "EcsTaskRole", {
+    const ecsTaskRole = new Role(this, "foo", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
       managedPolicies: [
         props.validatorLambdaExecutePolicy
