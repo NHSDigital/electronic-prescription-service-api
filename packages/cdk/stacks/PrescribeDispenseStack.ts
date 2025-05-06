@@ -177,7 +177,8 @@ export class PrescribeDispenseStack extends Stack {
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "fhirFacade",
       legacyValidatorLambdaArn: legacyValidatorLambdaArn,
-      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy
+      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy,
+      pollingDelay: 5000
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -212,7 +213,8 @@ export class PrescribeDispenseStack extends Stack {
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "claims",
       legacyValidatorLambdaArn: legacyValidatorLambdaArn,
-      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy
+      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy,
+      pollingDelay: 13000
     })
 
     // log group for insights

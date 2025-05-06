@@ -53,7 +53,7 @@ export interface ECSTasksProps {
   readonly containerNamePrefix: string
   readonly legacyValidatorLambdaArn: string
   readonly legacyValidatorLambdaExecutePolicy: IManagedPolicy
-
+  readonly pollingDelay: number
 }
 
 /**
@@ -153,7 +153,8 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
         SANDBOX: props.sandboxModeEnabled,
-        LEGACY_VALIDATOR_LAMBDA_ARN: props.legacyValidatorLambdaArn
+        LEGACY_VALIDATOR_LAMBDA_ARN: props.legacyValidatorLambdaArn,
+        POLLING_DELAY: props.pollingDelay.toString()
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
