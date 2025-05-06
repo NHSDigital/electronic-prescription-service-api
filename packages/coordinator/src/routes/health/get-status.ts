@@ -3,6 +3,7 @@ import axios from "axios"
 import {VALIDATOR_HOST} from "../util"
 import {spineClient} from "../../services/communication/spine-client"
 import {serviceHealthCheck, StatusCheckResponse} from "../../utils/status"
+import {isEpsHostedContainer} from "../../utils/feature-flags"
 
 function createStatusResponse(
   errorStatusCode: number,
@@ -34,10 +35,21 @@ export default [
     method: "GET" as RouteDefMethods,
     path: "/_status",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
-      return createStatusResponse(200, {
-        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger, undefined)],
-        "spine:status": [await spineClient.getStatus(request.logger)]
-      }, h)
+      const spineStatus = await spineClient.getStatus(request.logger)
+      let statusResponse
+      if (isEpsHostedContainer()) {
+        statusResponse = {
+          "spine:status": [spineStatus]
+        }
+      } else {
+        const validatorStatus = await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger, undefined)
+        statusResponse = {
+          "validator:status": [validatorStatus],
+          "spine:status": [spineStatus]
+        }
+
+      }
+      return createStatusResponse(200, statusResponse, h)
     }
   },
   {
