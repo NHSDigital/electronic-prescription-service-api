@@ -14,7 +14,11 @@ import axiosRetry from "axios-retry"
 // set polling timeout to be 25 seconds
 export const pollingTimeout = 25000
 // set delay between polling to be 5 seconds
-export const defaultPollingDelay = 5000
+const envDefaultPollingDelay = process.env.POLLING_DELAY
+export let defaultPollingDelay = Number(envDefaultPollingDelay)
+if (isNaN(defaultPollingDelay)) {
+  defaultPollingDelay = 5000
+}
 // set initial polling delay to be 0.5 seconds
 export const initialPollingDelay = 500
 
