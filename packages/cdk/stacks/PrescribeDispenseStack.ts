@@ -62,7 +62,6 @@ export class PrescribeDispenseStack extends Stack {
     const toPartyKey: string = this.node.tryGetContext("toPartyKey")
     const containerPort: number = 9000
     const containerPortValidator: number = 9001
-    const validatorLogLevel: string = this.node.tryGetContext("validatorLogLevel")
     const enableDefaultAsidPartyKey: string = this.node.tryGetContext("enableDefaultAsidPartyKey")
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
@@ -116,9 +115,6 @@ export class PrescribeDispenseStack extends Stack {
     const fhirFacadeRepo = Repository.fromRepositoryName(this, "fhirFacadeRepo",
       "fhir-facade-repo"
     )
-    const validatorRepo = Repository.fromRepositoryName(this, "validatorRepo",
-      "validator-repo"
-    )
 
     const spinePrivateKey = Secret.fromSecretCompleteArn(this, "spinePrivateKey", spinePrivateKeyImport)
     const spinePublicCertificate = Secret.fromSecretCompleteArn(
@@ -148,7 +144,6 @@ export class PrescribeDispenseStack extends Stack {
     const ecsTasks = new ECSTasks(this, "ecsTasks", {
       stackName: props.stackName,
       fhirFacadeRepo: fhirFacadeRepo,
-      validatorRepo: validatorRepo,
       dockerImageTag: dockerImageTag,
       containerPort: containerPort,
       containerPortValidator: containerPortValidator,
@@ -156,7 +151,6 @@ export class PrescribeDispenseStack extends Stack {
       commitId: commitId,
       version: props.version,
       logLevel: logLevel,
-      validatorLogLevel: validatorLogLevel,
       toAsid: toAsid,
       toPartyKey: toPartyKey,
       enableDefaultAsidPartyKey: enableDefaultAsidPartyKey,
@@ -167,7 +161,6 @@ export class PrescribeDispenseStack extends Stack {
       spineCAChain: spineCAChain,
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
-      validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
@@ -184,7 +177,6 @@ export class PrescribeDispenseStack extends Stack {
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
       stackName: props.stackName,
       fhirFacadeRepo: fhirFacadeRepo,
-      validatorRepo: validatorRepo,
       dockerImageTag: dockerImageTag,
       containerPort: containerPort,
       containerPortValidator: containerPortValidator,
@@ -192,7 +184,6 @@ export class PrescribeDispenseStack extends Stack {
       commitId: commitId,
       version: props.version,
       logLevel: logLevel,
-      validatorLogLevel: validatorLogLevel,
       toAsid: toAsid,
       toPartyKey: toPartyKey,
       enableDefaultAsidPartyKey: enableDefaultAsidPartyKey,
@@ -203,7 +194,6 @@ export class PrescribeDispenseStack extends Stack {
       spineCAChain: spineCAChain,
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.claimsCoordinatorLogGroup,
-      validatorLogGroup: logGroups.claimsValidatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
