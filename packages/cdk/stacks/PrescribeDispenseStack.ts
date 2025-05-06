@@ -89,9 +89,9 @@ export class PrescribeDispenseStack extends Stack {
     const spinePublicCertificateImport = Fn.importValue("account-resources:SpinePublicCertificate")
     const spineCAChainImport = Fn.importValue("account-resources:SpineCAChain")
     const epsSigningCertChainImport = Fn.importValue("secrets:epsSigningCertChain")
-    const validatorLambdaName = Fn.importValue("fhir-validator-pr-283:FHIRValidatorNHSDigitalLambdaName")
-    const validatorLambdaExecutePolicyImport = Fn.importValue(
-      "fhir-validator-pr-283:FHIRValidatorNHSDigitalExecuteLambdaPolicyArn")
+    const legacyValidatorLambdaArn = Fn.importValue("fhir-validator-pr-283:functions:FHIRValidatorNHSDigitalLegacy:Arn")
+    const legacyValidatorLambdaExecutePolicyImport = Fn.importValue(
+      "fhir-validator-pr-283:functions:fhir-validator-pr-283-FHIRValidatorNHSDigitalLegacy:ExecutePolicy:Arn")
 
     // cooerce context and imports to relevant types
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "hostedZone", {
@@ -130,10 +130,10 @@ export class PrescribeDispenseStack extends Stack {
     const epsSigningCertChain = Secret.fromSecretCompleteArn(this, "epsSigningCertChain", epsSigningCertChainImport)
 
     const fhirFacadeHostname = `${props.stackName}.${epsDomainNameImport}`
-    const validatorLambdaExecutePolicy = ManagedPolicy.fromManagedPolicyArn(
+    const legacyValidatorLambdaExecutePolicy = ManagedPolicy.fromManagedPolicyArn(
       this,
-      "AmazonECSTaskExecutionRolePolicy",
-      validatorLambdaExecutePolicyImport
+      "legacyValidatorLambdaExecutePolicy",
+      legacyValidatorLambdaExecutePolicyImport
     )
 
     // resources
@@ -176,8 +176,8 @@ export class PrescribeDispenseStack extends Stack {
       taskRoleName: `${props.stackName}-fhirFacadeTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "fhirFacade",
-      validatorLambdaName: validatorLambdaName,
-      validatorLambdaExecutePolicy: validatorLambdaExecutePolicy
+      legacyValidatorLambdaArn: legacyValidatorLambdaArn,
+      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -211,8 +211,8 @@ export class PrescribeDispenseStack extends Stack {
       taskRoleName: `${props.stackName}-claimsTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "claims",
-      validatorLambdaName: validatorLambdaName,
-      validatorLambdaExecutePolicy: validatorLambdaExecutePolicy
+      legacyValidatorLambdaArn: legacyValidatorLambdaArn,
+      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy
     })
 
     // log group for insights

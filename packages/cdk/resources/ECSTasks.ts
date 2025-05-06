@@ -51,8 +51,8 @@ export interface ECSTasksProps {
   readonly taskRoleName: string
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
-  readonly validatorLambdaName: string
-  readonly validatorLambdaExecutePolicy: IManagedPolicy
+  readonly legacyValidatorLambdaArn: string
+  readonly legacyValidatorLambdaExecutePolicy: IManagedPolicy
 
 }
 
@@ -103,7 +103,7 @@ export class ECSTasks extends Construct {
     const ecsTaskRole = new Role(this, "EcsTaskRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
       managedPolicies: [
-        props.validatorLambdaExecutePolicy
+        props.legacyValidatorLambdaExecutePolicy
       ],
       roleName: props.taskRoleName
     })
@@ -153,7 +153,7 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
         SANDBOX: props.sandboxModeEnabled,
-        VALIDATOR_LAMBDA_NAME: props.validatorLambdaName
+        LEGACY_VALIDATOR_LAMBDA_ARN: props.legacyValidatorLambdaArn
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
