@@ -56,8 +56,19 @@ export default [
     method: "GET" as RouteDefMethods,
     path: "/_healthcheck",
     handler: async (request: Hapi.Request, h: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
+      let response: StatusCheckResponse
+      if (isEpsHostedContainer()) {
+        response = {
+          status: "pass",
+          timeout: "false",
+          responseCode: 200,
+          outcome: "validator service not used"
+        }
+      } else {
+        response = await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger, undefined)
+      }
       return createStatusResponse(500, {
-        "validator:status": [await serviceHealthCheck(`${VALIDATOR_HOST}/_status`, request.logger, undefined)]
+        "validator:status": [response]
       }, h)
     }
   },
