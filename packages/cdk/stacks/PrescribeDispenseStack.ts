@@ -11,7 +11,7 @@ import {HostedZone} from "aws-cdk-lib/aws-route53"
 import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager"
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
-import {ManagedPolicy, Role} from "aws-cdk-lib/aws-iam"
+import {Role} from "aws-cdk-lib/aws-iam"
 import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
@@ -62,6 +62,7 @@ export class PrescribeDispenseStack extends Stack {
     const toPartyKey: string = this.node.tryGetContext("toPartyKey")
     const containerPort: number = 9000
     const containerPortValidator: number = 9001
+    const validatorLogLevel: string = this.node.tryGetContext("validatorLogLevel")
     const enableDefaultAsidPartyKey: string = this.node.tryGetContext("enableDefaultAsidPartyKey")
     const defaultPTLAsid: string = this.node.tryGetContext("defaultPTLAsid")
     const defaultPTLPartyKey: string = this.node.tryGetContext("defaultPTLPartyKey")
@@ -88,9 +89,6 @@ export class PrescribeDispenseStack extends Stack {
     const spinePublicCertificateImport = Fn.importValue("account-resources:SpinePublicCertificate")
     const spineCAChainImport = Fn.importValue("account-resources:SpineCAChain")
     const epsSigningCertChainImport = Fn.importValue("secrets:epsSigningCertChain")
-    const legacyValidatorLambdaArn = Fn.importValue("fhir-validator-pr-283:functions:FHIRValidatorNHSDigitalLegacy:Arn")
-    const legacyValidatorLambdaExecutePolicyImport = Fn.importValue(
-      "fhir-validator-pr-283:functions:fhir-validator-pr-283-FHIRValidatorNHSDigitalLegacy:ExecutePolicy:Arn")
 
     // cooerce context and imports to relevant types
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "hostedZone", {
@@ -115,6 +113,9 @@ export class PrescribeDispenseStack extends Stack {
     const fhirFacadeRepo = Repository.fromRepositoryName(this, "fhirFacadeRepo",
       "fhir-facade-repo"
     )
+    const validatorRepo = Repository.fromRepositoryName(this, "validatorRepo",
+      "validator-repo"
+    )
 
     const spinePrivateKey = Secret.fromSecretCompleteArn(this, "spinePrivateKey", spinePrivateKeyImport)
     const spinePublicCertificate = Secret.fromSecretCompleteArn(
@@ -126,11 +127,6 @@ export class PrescribeDispenseStack extends Stack {
     const epsSigningCertChain = Secret.fromSecretCompleteArn(this, "epsSigningCertChain", epsSigningCertChainImport)
 
     const fhirFacadeHostname = `${props.stackName}.${epsDomainNameImport}`
-    const legacyValidatorLambdaExecutePolicy = ManagedPolicy.fromManagedPolicyArn(
-      this,
-      "legacyValidatorLambdaExecutePolicy",
-      legacyValidatorLambdaExecutePolicyImport
-    )
 
     // resources
     const logGroups = new LogGroups(this, "logGroups", {
@@ -144,6 +140,7 @@ export class PrescribeDispenseStack extends Stack {
     const ecsTasks = new ECSTasks(this, "ecsTasks", {
       stackName: props.stackName,
       fhirFacadeRepo: fhirFacadeRepo,
+      validatorRepo: validatorRepo,
       dockerImageTag: dockerImageTag,
       containerPort: containerPort,
       containerPortValidator: containerPortValidator,
@@ -151,6 +148,7 @@ export class PrescribeDispenseStack extends Stack {
       commitId: commitId,
       version: props.version,
       logLevel: logLevel,
+      validatorLogLevel: validatorLogLevel,
       toAsid: toAsid,
       toPartyKey: toPartyKey,
       enableDefaultAsidPartyKey: enableDefaultAsidPartyKey,
@@ -161,22 +159,21 @@ export class PrescribeDispenseStack extends Stack {
       spineCAChain: spineCAChain,
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
+      validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`,
-      taskRoleName: `${props.stackName}-fhirFacadeTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "fhirFacade",
-      legacyValidatorLambdaArn: legacyValidatorLambdaArn,
-      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy,
       pollingDelay: 5000
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
       stackName: props.stackName,
       fhirFacadeRepo: fhirFacadeRepo,
+      validatorRepo: validatorRepo,
       dockerImageTag: dockerImageTag,
       containerPort: containerPort,
       containerPortValidator: containerPortValidator,
@@ -184,6 +181,7 @@ export class PrescribeDispenseStack extends Stack {
       commitId: commitId,
       version: props.version,
       logLevel: logLevel,
+      validatorLogLevel: validatorLogLevel,
       toAsid: toAsid,
       toPartyKey: toPartyKey,
       enableDefaultAsidPartyKey: enableDefaultAsidPartyKey,
@@ -194,16 +192,14 @@ export class PrescribeDispenseStack extends Stack {
       spineCAChain: spineCAChain,
       epsSigningCertChain: epsSigningCertChain,
       coordinatorLogGroup: logGroups.claimsCoordinatorLogGroup,
+      validatorLogGroup: logGroups.claimsValidatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`,
-      taskRoleName: `${props.stackName}-claimsTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "claims",
-      legacyValidatorLambdaArn: legacyValidatorLambdaArn,
-      legacyValidatorLambdaExecutePolicy: legacyValidatorLambdaExecutePolicy,
       pollingDelay: 13000
     })
 
