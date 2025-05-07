@@ -128,7 +128,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       # CREATE_INT_RELEASE_NOTES: true
@@ -176,7 +175,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
@@ -225,7 +223,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
@@ -270,7 +267,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
@@ -312,7 +308,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
@@ -360,7 +355,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
@@ -399,7 +393,6 @@ jobs:
       VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: info
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 731
       # MARK_JIRA_RELEASED: true
       # CREATE_PROD_RELEASE_NOTES: true
@@ -415,7 +408,7 @@ jobs:
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 2
       DESIRED_CLAIMS_COUNT: 2
-      DESIRED_PEAK_CLAIMS_COUNT: 2
+      DESIRED_PEAK_CLAIMS_COUNT: 6
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
