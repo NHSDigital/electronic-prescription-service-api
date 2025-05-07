@@ -1,4 +1,5 @@
 import {
+  callFhirValidator,
   ContentTypes,
   filterValidatorResponse,
   handleResponse,
@@ -13,6 +14,7 @@ import {fhir, spine} from "@models"
 import {identifyMessageType} from "../../src/services/translation/common"
 import * as Hapi from "@hapi/hapi"
 import * as HapiShot from "@hapi/shot"
+import pino from "pino"
 
 jest.mock("../../src/services/translation/response", () => ({
   translateToFhir: () => ({statusCode: 200, fhirResponse: {value: "some FHIR response"}})
@@ -20,24 +22,26 @@ jest.mock("../../src/services/translation/response", () => ({
 
 const mock = new MockAdapter(axios)
 
+const logger = pino()
+
 describe("forward header", ()=> {
   afterEach(() => {
     mock.reset()
   })
 
-  test.skip("API only forwards valid headers to validator", async () => {
+  test("API only forwards valid headers to validator", async () => {
     mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome"})
 
-    // const exampleHeaders = {
-    //   accept: "application/json+fhir",
-    //   "content-type": "application/my-content-type",
-    //   "x-request-id": "my_x_request_id",
-    //   "x-amzn-trace-id": "my_x_amzn_trace_id",
-    //   "nhsd-correlation-id": "my_nhsd_correlation_id",
-    //   "nhsd-request-id": "my_nhsd_request_id"
-    // }
+    const exampleHeaders = {
+      accept: "application/json+fhir",
+      "content-type": "application/my-content-type",
+      "x-request-id": "my_x_request_id",
+      "x-amzn-trace-id": "my_x_amzn_trace_id",
+      "nhsd-correlation-id": "my_nhsd_correlation_id",
+      "nhsd-request-id": "my_nhsd_request_id"
+    }
 
-    //await callFhirValidator("data", exampleHeaders)
+    await callFhirValidator("data", exampleHeaders, logger)
     const requestHeaders = mock.history.post[0].headers
     expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
     expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
@@ -47,15 +51,15 @@ describe("forward header", ()=> {
     expect(requestHeaders["nhsd-request-id"]).toBe("my_nhsd_request_id")
   })
 
-  test.skip("API forwards nhsd-request-id header as x-request-id to validator", async () => {
+  test("API forwards nhsd-request-id header as x-request-id to validator", async () => {
     mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome"})
 
-    // const exampleHeaders = {
-    //   accept: "application/json+fhir",
-    //   "nhsd-request-id": "my_nhsd_request_id"
-    // }
+    const exampleHeaders = {
+      accept: "application/json+fhir",
+      "nhsd-request-id": "my_nhsd_request_id"
+    }
 
-    //await callFhirValidator("data", exampleHeaders)
+    await callFhirValidator("data", exampleHeaders, logger)
     const requestHeaders = mock.history.post[0].headers
     expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
     expect(requestHeaders["x-request-id"]).toBe("my_nhsd_request_id")
