@@ -20,7 +20,7 @@
   "devDependencies": {
     "@babel/core": "^7.27.1",
     "@babel/plugin-transform-runtime": "^7.27.1",
-    "@babel/preset-env": "^7.27.1",
+    "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
     "@testing-library/dom": "^10.4.0",
@@ -50,7 +50,7 @@
     "style-loader": "^4.0.0",
     "styled-components": "^6.1.17",
     "uuid": "^11.1.0",
-    "webpack": "^5.99.7",
+    "webpack": "^5.99.8",
     "webpack-cli": "^6.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
