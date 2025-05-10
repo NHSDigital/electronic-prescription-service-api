@@ -6,7 +6,6 @@ required:
 - gender
 - birthDate
 - address
-- generalPractitioner
 description: The patient the prescription is for.
 additionalProperties: false
 properties:
