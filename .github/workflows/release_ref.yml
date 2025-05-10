@@ -57,7 +57,6 @@ jobs:
       VERSION_NUMBER: ${{ inputs.versionNumber }}
       COMMIT_ID: ${{ inputs.commitId}}
       LOG_LEVEL: debug
-      VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
