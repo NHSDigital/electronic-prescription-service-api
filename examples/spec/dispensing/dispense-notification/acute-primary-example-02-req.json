@@ -313,8 +313,6 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
-        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "20 tablets. One tablet to be taken two times a day",
@@ -595,8 +593,6 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
-        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "20 tablets. One tablet to be taken two times a day",
@@ -877,8 +873,6 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
-        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "15 tablets. One tablet to be taken three times a day",
@@ -1159,8 +1153,6 @@
           "system": "http://unitsofmeasure.org",
           "code": "d"
         },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
-        "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
             "text": "15 tablets. One tablet to be taken three times a day",
