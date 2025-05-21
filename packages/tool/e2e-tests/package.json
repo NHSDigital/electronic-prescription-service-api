@@ -17,7 +17,7 @@
     "license": "ISC",
     "devDependencies": {
         "@types/fhir": "^0.0.41",
-        "@types/lodash": "^4.17.16",
+        "@types/lodash": "^4.17.17",
         "@types/selenium-webdriver": "^4.1.28",
         "@types/uuid": "^10.0.0",
         "chromedriver": "^136.0.2",
