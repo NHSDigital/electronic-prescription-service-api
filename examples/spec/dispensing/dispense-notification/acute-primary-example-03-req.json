@@ -306,7 +306,8 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        "whenHandedOver": "2022-11-27T11:45:00+00:00",
+        }  
+        "whenHandedOver": "2022-11-27T11:45:00+00:00",  
         "dosageInstruction": [
           {
             "text": "20 tablets. One tablet to be taken two times a day",
