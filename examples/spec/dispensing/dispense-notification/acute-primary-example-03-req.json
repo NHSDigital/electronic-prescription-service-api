@@ -306,7 +306,7 @@
           "unit": "tablet",
           "system": "http://snomed.info/sct",
           "code": "732936001"
-        }  
+        },  
         "whenHandedOver": "2022-11-27T11:45:00+00:00",  
         "dosageInstruction": [
           {
