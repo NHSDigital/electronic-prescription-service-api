@@ -48,7 +48,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "style-loader": "^4.0.0",
-    "styled-components": "^6.1.17",
+    "styled-components": "^6.1.18",
     "uuid": "^11.1.0",
     "webpack": "^5.99.9",
     "webpack-cli": "^6.0.1",
