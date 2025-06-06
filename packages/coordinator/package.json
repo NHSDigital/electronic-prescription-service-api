@@ -22,6 +22,7 @@
     "npm": "10.2.x"
   },
   "dependencies": {
+    "@aws-sdk/client-lambda": "^3.799.0",
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.4.0",
     "@peculiar/x509": "^1.12.3",

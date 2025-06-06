@@ -1,6 +1,11 @@
 import {Construct} from "constructs"
 
-import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
+import {
+  IManagedPolicy,
+  ManagedPolicy,
+  Role,
+  ServicePrincipal
+} from "aws-cdk-lib/aws-iam"
 import {ILogGroup} from "aws-cdk-lib/aws-logs"
 import {IRepository} from "aws-cdk-lib/aws-ecr"
 import {
@@ -18,7 +23,6 @@ import {Fn} from "aws-cdk-lib"
 export interface ECSTasksProps {
   readonly stackName: string
   readonly fhirFacadeRepo: IRepository
-  readonly validatorRepo: IRepository
   readonly dockerImageTag: string
   readonly containerPort: number
   readonly containerPortValidator: number
@@ -26,7 +30,6 @@ export interface ECSTasksProps {
   readonly commitId: string
   readonly version: string
   readonly logLevel: string
-  readonly validatorLogLevel: string
   readonly toAsid: string
   readonly toPartyKey: string
   readonly enableDefaultAsidPartyKey: string
@@ -37,14 +40,16 @@ export interface ECSTasksProps {
   readonly spineCAChain: ISecret
   readonly epsSigningCertChain: ISecret
   readonly coordinatorLogGroup: ILogGroup
-  readonly validatorLogGroup: ILogGroup
   readonly SHA1EnabledApplicationIds: string
   readonly sandboxModeEnabled: string
   readonly cpu: number
   readonly memory: number
   readonly taskExecutionRoleName: string
+  readonly taskRoleName: string
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
+  readonly legacyValidatorLambdaArn: string
+  readonly legacyValidatorLambdaExecutePolicy: IManagedPolicy
   readonly pollingDelay: number
 }
 
@@ -92,10 +97,19 @@ export class ECSTasks extends Construct {
       roleName: props.taskExecutionRoleName
     })
 
+    const ecsTaskRole = new Role(this, "EcsTaskRole", {
+      assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: [
+        props.legacyValidatorLambdaExecutePolicy
+      ],
+      roleName: props.taskRoleName
+    })
+
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
       cpu: props.cpu,
       memoryLimitMiB: props.memory,
       executionRole: ecsTaskExecutionRole,
+      taskRole: ecsTaskRole,
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.X86_64,
         operatingSystemFamily: OperatingSystemFamily.LINUX
@@ -136,6 +150,7 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
         SANDBOX: props.sandboxModeEnabled,
+        LEGACY_VALIDATOR_LAMBDA_ARN: props.legacyValidatorLambdaArn,
         POLLING_DELAY: props.pollingDelay.toString()
       },
       secrets: {
@@ -147,27 +162,6 @@ export class ECSTasks extends Construct {
       logging: LogDrivers.awsLogs({
         streamPrefix: "ecs",
         logGroup: props.coordinatorLogGroup
-      })
-    })
-
-    fhirFacadeTaskDefinition.addContainer("validator", {
-      image: ContainerImage.fromEcrRepository(
-        props.validatorRepo,
-        props.dockerImageTag),
-      containerName: `${props.containerNamePrefix}-validator`,
-      disableNetworking: false,
-      portMappings: [
-        {
-          containerPort: props.containerPortValidator,
-          protocol: Protocol.TCP
-        }
-      ],
-      environment: {
-        LOG_LEVEL: props.validatorLogLevel
-      },
-      logging: LogDrivers.awsLogs({
-        streamPrefix: "ecs",
-        logGroup: props.validatorLogGroup
       })
     })
 
