@@ -67,7 +67,7 @@
                     },
                     "source": {
                       "name": "NHS Spine",
-                      "endpoint": "https://int.api.service.nhs.uk/electronic-prescriptions/$process-message"
+                      "endpoint": "https://int.api.service.nhs.uk/fhir-prescribing/$process-message"
                     },
                     "response": {
                       "identifier": "9a14ee11-9f58-4d67-8988-2220cd99bd29",
@@ -591,7 +591,7 @@
                   },
                   "destination": [
                     {
-                      "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+                      "endpoint": "https://sandbox.api.service.nhs.uk/fhir-prescribing/$post-message",
                       "receiver": {
                         "identifier": {
                           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
