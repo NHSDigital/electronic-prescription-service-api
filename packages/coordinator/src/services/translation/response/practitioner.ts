@@ -1,6 +1,6 @@
-import {convertName, generateResourceId} from "./common"
-import {fhir, hl7V3} from "@models"
-import {createPractitionerOrRoleIdentifier} from "./identifiers"
+import { convertName, generateResourceId } from "./common"
+import { fhir, hl7V3 } from "@models"
+import { createPractitionerOrRoleIdentifier } from "./identifiers"
 
 export function createPractitioner(agentPerson: hl7V3.AgentPerson): fhir.Practitioner {
   const identifier = createPractitionerIdentifier(agentPerson.agentPerson.id._attributes.extension);
