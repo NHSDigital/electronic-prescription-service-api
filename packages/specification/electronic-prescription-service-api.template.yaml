@@ -134,9 +134,9 @@ info:
     ## Environment and testing
     | Environment      | Base URL                                                            |
     |------------------|---------------------------------------------------------------------|
-    | Sandbox          | `https://sandbox.api.service.nhs.uk/fhir-prescribing`       |
-    | Integration test | `https://int.api.service.nhs.uk/fhir-prescribing`           |
-    | Production       | `https://api.service.nhs.uk/fhir-prescribing`               |
+    | Sandbox          | `https://sandbox.api.service.nhs.uk/electronic-prescriptions`       |
+    | Integration test | `https://int.api.service.nhs.uk/electronic-prescriptions`           |
+    | Production       | `https://api.service.nhs.uk/electronic-prescriptions`               |
 
     ### Sandbox testing
     Our [sandbox environment](https://digital.nhs.uk/developer/guides-and-documentation/testing#sandbox-testing):
@@ -273,9 +273,9 @@ x-spec-publication:
           path: /FHIR/R4/Task#withdraw
 
 servers:
-  - url: "https://sandbox.api.service.nhs.uk/fhir-prescribing"
+  - url: "https://sandbox.api.service.nhs.uk/electronic-prescriptions"
     description: "Sandbox"
-  - url: "https://int.api.service.nhs.uk/fhir-prescribing"
+  - url: "https://int.api.service.nhs.uk/electronic-prescriptions"
     description: "Integration test"
 tags:
   - name: prescribing
