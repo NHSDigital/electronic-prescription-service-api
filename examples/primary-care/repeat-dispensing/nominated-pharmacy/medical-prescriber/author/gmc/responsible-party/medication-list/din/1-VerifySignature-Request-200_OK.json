@@ -63,7 +63,7 @@
               },
               "source": {
                 "name": "NHS Spine",
-                "endpoint": "https://internal-dev.api.service.nhs.uk/electronic-prescriptions-pr-769/$process-message"
+                "endpoint": "https://internal-dev.api.service.nhs.uk/fhir-prescribing-pr-769/$process-message"
               },
               "response": {
                 "identifier": "4e8d0225-f7a7-4af6-8b5c-bbf3ccfc96a5",
