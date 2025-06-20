@@ -353,13 +353,6 @@
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-        "daysSupply": {
-          "value": 10,
-          "unit": "Day",
-          "system": "http://unitsofmeasure.org",
-          "code": "d"
-        },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
@@ -681,13 +674,6 @@
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-        "daysSupply": {
-          "value": 10,
-          "unit": "Day",
-          "system": "http://unitsofmeasure.org",
-          "code": "d"
-        },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
@@ -1018,7 +1004,6 @@
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
@@ -1375,7 +1360,6 @@
           "system": "http://snomed.info/sct",
           "code": "732936001"
         },
-        "whenPrepared": "2022-11-27T11:45:00+00:00",
         "whenHandedOver": "2022-11-27T11:45:00+00:00",
         "dosageInstruction": [
           {
