@@ -79,12 +79,7 @@ info:
 
     In a community pharmacy workflow, prescriptions can be released (downloaded) from EPS, updated, dispensed, and then claimed by the pharmacy. For this workflow, the API is [in production](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#statuses).
     - it is available in integration and production
-    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice
-
-    ### Roadmap
-    To see our roadmap, or to suggest, comment or vote on features for this API, see our [interactive product backlog](https://nhs-digital-api-management.featureupvote.com/?tag=eps-fhir-api).
-
-    If you have any other queries, please [contact us](https://digital.nhs.uk/developer/help-and-support).
+    - we might make breaking changes, but only if we cannot avoid it, and we will give advance notice    
 
     ## Service level
     This API is a platinum service, meaning it is operational and supported 24 hours a day, 365 days a year.
@@ -251,6 +246,9 @@ info:
     | 504           | GATEWAY_TIMEOUT       | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
 
     For further details on common error codes, see [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes)
+
+    ## Contact us
+    For help and support connecting to our APIs and to join our developer community, see [Help and support building healthcare software](https://digital.nhs.uk/developer/help-and-support).
 
 x-spec-publication:
   operation-order:
