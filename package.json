@@ -31,7 +31,7 @@
   "private": true,
   "devDependencies": {
     "@types/jest": "^29.5.14",
-    "@types/node": "^24.0.7",
+    "@types/node": "^24.0.10",
     "@typescript-eslint/eslint-plugin": "^8.35.1",
     "@typescript-eslint/parser": "^8.35.1",
     "eslint": "^9.30.0",
