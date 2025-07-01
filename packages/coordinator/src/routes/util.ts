@@ -99,7 +99,7 @@ export async function callFhirValidator(
       body: body,
       headers
     }
-    logger.debug({lambdaPayload}, "making call to validator lambda")
+    logger.info({lambdaPayload}, "making call to validator lambda")
     const command = new InvokeCommand({
       FunctionName: `${process.env["LEGACY_VALIDATOR_LAMBDA_ARN"]}:snap`,
       Payload: JSON.stringify(lambdaPayload),
@@ -112,13 +112,15 @@ export async function callFhirValidator(
     } catch(e) {
       logger.error({error: e}, "Could not parse validator response to json")
     }
-    logger.debug({validatorResponseData}, "received response from validator lambda")
+    logger.info({validatorResponseData}, "received response from validator lambda")
   } else {
+    logger.info({payload}, "making call to validator docker service")
     const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
       headers
     })
 
     validatorResponseData = validatorResponse.data
+    logger.info({validatorResponseData}, "received response from validator docker service")
   }
 
   if (!validatorResponseData) {
