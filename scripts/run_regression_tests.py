@@ -13,10 +13,18 @@ import time
 from requests.auth import HTTPBasicAuth
 
 # This should be set to a known good version of regression test repo
-REGRESSION_TESTS_REPO_TAG = "v2.34.1"
-
+# REGRESSION_TESTS_REPO_TAG = "v2.41.0"
+REGRESSION_TESTS_REPO_TAG = "parallel_test"
 GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
 GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs"
+
+ENVIRONMENT_NAMES = {
+    "dev": "INTERNAL-DEV",
+    "dev-pr": "INTERNAL-DEV",
+    "qa": "INTERNAL-QA",
+    "int": "INT",
+    "ref": "REF",
+}
 
 
 class BearerAuth(requests.auth.AuthBase):
@@ -48,11 +56,11 @@ def generate_timestamp():
 
 def trigger_test_run(env, pr_label, product, auth_header):
     body = {
-        "ref": "main",
+        "ref": "parallel_test",
         "inputs": {
             "id": run_id,
             "tags": "@regression",
-            "environment": env,
+            "environment": ENVIRONMENT_NAMES[arguments.env],
             "pull_request_id": pr_label,
             "product": product,
             "github_tag": REGRESSION_TESTS_REPO_TAG
@@ -112,7 +120,7 @@ def find_workflow(auth_header):
             list_of_jobs = get_jobs_for_workflow(jobs_url, auth_header)
 
             if list_of_jobs:
-                job = list_of_jobs[0]
+                job = list_of_jobs[0]  # this is fine to get the first job
                 steps = job["steps"]
 
                 if len(steps) >= 2:
@@ -137,30 +145,37 @@ def get_auth_header(is_called_from_github, token, user):
         return HTTPBasicAuth(user_credentials[0], user_credentials[1])
 
 
-def get_job(auth_header):
+def get_upload_result_job(auth_header):
     job_request_url = f"{GITHUB_API_URL}/runs/{workflow_id}/jobs"
     job_response = requests.get(
         job_request_url,
         headers=get_headers(),
         auth=auth_header,
     )
-
-    return job_response.json()["jobs"][0]
+    jobs = job_response.json()["jobs"]
+    upload_result_job = next((job for job in jobs if job["name"] == "upload_results"),
+                             {"status": "can not find upload results job - tests are likely still running"})
+    return upload_result_job
 
 
 def check_job(auth_header):
+    max_attempts = 360  # this is about an hour
+    current_attempt = 0
+
     print("Checking job status, please wait...")
-    print("Current status:", end=" ")
-    job = get_job(auth_header)
+    job = get_upload_result_job(auth_header)
     job_status = job["status"]
 
-    while job_status != "completed":
-        print(job_status)
-        time.sleep(10)
-        job = get_job(auth_header)
-        job_status = job["status"]
+    while current_attempt < max_attempts:
+        while job_status != "completed":
+            print(f"Current upload results job status : {job_status} after {current_attempt} attempts")
+            time.sleep(10)
+            current_attempt = current_attempt + 1
+            job = get_upload_result_job(auth_header)
+            job_status = job["status"]
 
-    return job["conclusion"]
+        return job["conclusion"]
+    raise Exception(f"Regression test job not completed after {current_attempt} attempts")
 
 
 if __name__ == "__main__":
@@ -213,6 +228,7 @@ if __name__ == "__main__":
     )
 
     workflow_id = find_workflow(auth_header)
+    print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details")
     job_status = check_job(auth_header)
     if job_status != "success":
         if arguments.pr_label:
@@ -221,7 +237,6 @@ if __name__ == "__main__":
         else:
             env = arguments.env.upper()
         print("The regressions test step failed! There are likely test failures.")
-        print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details)")
         print(f"See https://nhsdigital.github.io/eps-test-reports/{arguments.product}/{env}/ for allure report")
         raise Exception("Regression test failed")
 

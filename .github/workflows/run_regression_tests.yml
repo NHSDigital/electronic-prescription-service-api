@@ -71,11 +71,11 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           GITHUB-TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-              poetry install
-              echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
-              poetry run python run_regression_tests.py \
-                --env="$TARGET_ENVIRONMENT" \
-                --pr_label="$VERSION_NUMBER" \
-                --token=${{ steps.generate-token.outputs.token }} \
-                --is_called_from_github true \
-                --product=${{ inputs.PRODUCT }}
+          poetry install
+          echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
+          poetry run python -u run_regression_tests.py \
+            --env="$TARGET_ENVIRONMENT" \
+            --pr_label="$VERSION_NUMBER" \
+            --token=${{ steps.generate-token.outputs.token }} \
+            --is_called_from_github true \
+            --product=${{ inputs.PRODUCT }}
