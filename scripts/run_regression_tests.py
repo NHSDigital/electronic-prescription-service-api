@@ -21,7 +21,9 @@ GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-
 ENVIRONMENT_NAMES = {
     "dev": "INTERNAL-DEV",
     "dev-pr": "INTERNAL-DEV",
+    "internal-dev": "INTERNAL-DEV",
     "qa": "INTERNAL-QA",
+    "internal-qa": "INTERNAL-QA",
     "int": "INT",
     "ref": "REF",
 }
