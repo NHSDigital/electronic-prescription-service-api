@@ -71,11 +71,21 @@ jobs:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           GITHUB-TOKEN: ${{ steps.generate-token.outputs.token }}
         run: |
-          poetry install
-          echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
-          poetry run python -u run_regression_tests.py \
+          if [[ "$TARGET_ENVIRONMENT" != "prod" && "$TARGET_ENVIRONMENT" != "ref" ]]; then
+            # this should be the tag of the tests you want to run
+            REGRESSION_TEST_REPO_TAG=parallel_test
+            # this should be the tag of the regression test workflow you want to run
+            # unless you are changing run_regression_tests.py or the regression test workflow, this should be left as main
+            REGRESSION_TEST_WORKFLOW_TAG=parallel_test
+            curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/heads/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
+            poetry install
+            echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
+            poetry run python -u run_regression_tests.py \
             --env="$TARGET_ENVIRONMENT" \
             --pr_label="$VERSION_NUMBER" \
             --token=${{ steps.generate-token.outputs.token }} \
-            --is_called_from_github true \
-            --product=${{ inputs.PRODUCT }}
+            --is_called_from_github=true \
+            --product=${{ inputs.PRODUCT }} \
+            --regression_test_repo_tag "${REGRESSION_TEST_REPO_TAG}" \
+            --regression_test_workflow_tag "${REGRESSION_TEST_WORKFLOW_TAG}"
+          fi
