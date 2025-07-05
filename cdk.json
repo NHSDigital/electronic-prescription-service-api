@@ -85,7 +85,6 @@
     "logLevel": "foo",
     "toAsid": "foo",
     "toPartyKey": "foo",
-    "validatorLogLevel": "foo",
     "enableDefaultAsidPartyKey": "foo",
     "defaultPTLAsid": "foo",
     "defaultPTLPartyKey": "foo",

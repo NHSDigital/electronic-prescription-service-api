@@ -1,18 +1,18 @@
-import { convertName, generateResourceId } from "./common"
-import { fhir, hl7V3 } from "@models"
-import { createPractitionerOrRoleIdentifier } from "./identifiers"
+import {convertName, generateResourceId} from "./common"
+import {fhir, hl7V3} from "@models"
+import {createPractitionerOrRoleIdentifier} from "./identifiers"
 
 export function createPractitioner(agentPerson: hl7V3.AgentPerson): fhir.Practitioner {
-  const identifier = createPractitionerIdentifier(agentPerson.agentPerson.id._attributes.extension);
+  const identifier = createPractitionerIdentifier(agentPerson.agentPerson.id._attributes.extension)
   const practitioner: fhir.Practitioner = {
     resourceType: "Practitioner",
     id: generateResourceId(),
     name: convertName(agentPerson.agentPerson.name)
   }
   if (identifier) {
-    practitioner.identifier = identifier;
+    practitioner.identifier = identifier
   }
-  return practitioner;
+  return practitioner
 }
 
 export function createPractitionerIdentifier(userId: string): Array<fhir.Identifier> | undefined {
