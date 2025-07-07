@@ -20,7 +20,8 @@ import {
   CfnListener,
   IpAddressType,
   ListenerCondition,
-  TrustStore
+  TrustStore,
+  SslPolicy
 } from "aws-cdk-lib/aws-elasticloadbalancingv2"
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
@@ -241,6 +242,7 @@ export class PrescribeDispenseStack extends Stack {
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
       healthCheckGracePeriod: Duration.seconds(300),
+      sslPolicy: SslPolicy.TLS12_EXT,
       idleTimeout: Duration.seconds(61) // this is set to be higher than the default timeout from apigee
     })
 
@@ -307,7 +309,8 @@ export class PrescribeDispenseStack extends Stack {
       },
       taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
-      publicLoadBalancer: false
+      publicLoadBalancer: false,
+      sslPolicy: SslPolicy.TLS12_EXT
     })
 
     claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
