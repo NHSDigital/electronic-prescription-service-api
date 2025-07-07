@@ -73,10 +73,12 @@ jobs:
         run: |
           if [[ "$TARGET_ENVIRONMENT" != "prod" && "$TARGET_ENVIRONMENT" != "ref" ]]; then
             # this should be the tag of the tests you want to run
-            REGRESSION_TEST_REPO_TAG=parallel_test
+            REGRESSION_TEST_REPO_TAG=v3.0.0
+
             # this should be the tag of the regression test workflow you want to run
-            # unless you are changing run_regression_tests.py or the regression test workflow, this should be left as main
-            REGRESSION_TEST_WORKFLOW_TAG=parallel_test
+            # This will normally be the same as REGRESSION_TEST_REPO_TAG
+            REGRESSION_TEST_WORKFLOW_TAG=v3.0.0
+
             curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/heads/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
             poetry install
             echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
