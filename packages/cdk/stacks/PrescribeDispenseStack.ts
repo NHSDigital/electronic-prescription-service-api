@@ -309,8 +309,7 @@ export class PrescribeDispenseStack extends Stack {
       },
       taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
-      publicLoadBalancer: false,
-      sslPolicy: SslPolicy.TLS13_EXT1
+      publicLoadBalancer: false
     })
 
     claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
