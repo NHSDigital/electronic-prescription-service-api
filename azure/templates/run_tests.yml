@@ -269,7 +269,7 @@ steps:
         # This will normally be the same as REGRESSION_TEST_REPO_TAG
         REGRESSION_TEST_WORKFLOW_TAG=v3.0.0
 
-        curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/heads/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
+        curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/tags/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
         make install-python
         echo Running in the $(APIGEE_ENVIRONMENT) environment
         poetry run python -u run_regression_tests.py \
