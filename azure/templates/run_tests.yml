@@ -262,14 +262,24 @@ steps:
       # Run the regression tests
   - bash: |
       if [[ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" ]]; then
+        # this should be the tag of the tests you want to run
+        REGRESSION_TEST_REPO_TAG=v3.0.0
+
+        # this should be the tag of the regression test workflow you want to run
+        # This will normally be the same as REGRESSION_TEST_REPO_TAG
+        REGRESSION_TEST_WORKFLOW_TAG=v3.0.0
+
+        curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/tags/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
         make install-python
         echo Running in the $(APIGEE_ENVIRONMENT) environment
-        poetry run scripts/run_regression_tests.py \
+        poetry run python -u run_regression_tests.py \
           --env=$(APIGEE_ENVIRONMENT) \
           --pr_label=${PR_LABEL} \
           --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
           --is_called_from_github=false \
-          --product EPS-FHIR
+          --product EPS-FHIR \
+          --regression_test_repo_tag "${REGRESSION_TEST_REPO_TAG}" \
+          --regression_test_workflow_tag "${REGRESSION_TEST_WORKFLOW_TAG}"
       fi
     displayName: Regression Tests
     condition: succeeded()
