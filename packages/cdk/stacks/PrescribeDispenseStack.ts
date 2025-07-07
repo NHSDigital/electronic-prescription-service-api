@@ -242,7 +242,7 @@ export class PrescribeDispenseStack extends Stack {
       taskDefinition: ecsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
       healthCheckGracePeriod: Duration.seconds(300),
-      sslPolicy: SslPolicy.TLS12_EXT,
+      sslPolicy: SslPolicy.TLS13_EXT1,
       idleTimeout: Duration.seconds(61) // this is set to be higher than the default timeout from apigee
     })
 
@@ -310,7 +310,7 @@ export class PrescribeDispenseStack extends Stack {
       taskDefinition: claimsEcsTasks.fhirFacadeTaskDefinition,
       minHealthyPercent: 100,
       publicLoadBalancer: false,
-      sslPolicy: SslPolicy.TLS12_EXT
+      sslPolicy: SslPolicy.TLS13_EXT1
     })
 
     claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
