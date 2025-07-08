@@ -13,7 +13,7 @@ RUN apt-get update \
     openjdk-8-jdk jq apt-transport-https ca-certificates gnupg-agent \
     software-properties-common bash-completion python3-pip make libbz2-dev \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev liblzma-dev netcat awscli default-jre maven
+    xz-utils tk-dev liblzma-dev netcat-traditional awscli default-jre maven
 
 # install aws stuff
 RUN wget -O /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" && \
