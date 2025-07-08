@@ -228,8 +228,6 @@ x-spec-publication:
 servers:
   - url: "https://sandbox.api.service.nhs.uk/fhir-dispensing"
     description: "Sandbox"
-  - url: "https://int.api.service.nhs.uk/fhir-dispensing"
-    description: "Integration test"
 
 paths:
   /FHIR/R4/Task/$release:

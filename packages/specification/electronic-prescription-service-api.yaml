@@ -275,8 +275,7 @@ x-spec-publication:
 servers:
   - url: "https://sandbox.api.service.nhs.uk/electronic-prescriptions"
     description: "Sandbox"
-  - url: "https://int.api.service.nhs.uk/electronic-prescriptions"
-    description: "Integration test"
+
 tags:
   - name: prescribing
   - name: dispensing

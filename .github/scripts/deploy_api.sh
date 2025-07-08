@@ -179,7 +179,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
     fi
 fi
 
-if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${is_pull_request}" == "false" ]]; then
+if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${is_pull_request}" == "true" ]]; then
     echo
     echo "Deploy the API spec to uat catalogue as it is internal-dev environment"
     if [[ "${DRY_RUN}" == "false" ]]; then
