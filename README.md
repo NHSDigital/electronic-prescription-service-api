@@ -4,7 +4,7 @@
 
 ## Versions and deployments
 
-Deployment history can be found at https://nhsdigital.github.io/eps-prescription-status-update-api/
+Deployment history can be found at https://nhsdigital.github.io/electronic-prescription-service-api/
 
 This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
 
