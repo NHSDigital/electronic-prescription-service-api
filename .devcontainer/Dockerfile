@@ -13,7 +13,7 @@ RUN apt-get update \
     openjdk-8-jdk jq apt-transport-https ca-certificates gnupg-agent \
     software-properties-common bash-completion python3-pip make libbz2-dev \
     libreadline-dev libsqlite3-dev wget llvm libncurses5-dev libncursesw5-dev \
-    xz-utils tk-dev liblzma-dev netcat awscli default-jre maven
+    xz-utils tk-dev liblzma-dev netcat awscli default-jre maven libyaml-dev
 
 # install aws stuff
 RUN wget -O /tmp/awscliv2.zip "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" && \
@@ -52,7 +52,8 @@ RUN asdf plugin add python; \
     asdf plugin add shellcheck https://github.com/luizm/asdf-shellcheck.git; \
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git; \
     asdf plugin add java; \
-    asdf plugin add actionlint;
+    asdf plugin add actionlint; \
+    asdf plugin add ruby https://github.com/asdf-vm/asdf-ruby.git
 
 WORKDIR /workspaces/electronic-prescription-service-api
 ADD .tool-versions /workspaces/electronic-prescription-service-api/.tool-versions
