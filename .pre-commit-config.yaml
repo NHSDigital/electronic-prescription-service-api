@@ -1,0 +1,135 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: check-merge-conflict
+        name: Check for merge conflict strings
+
+      - id: end-of-file-fixer
+        name: Fix missing newline at the end of files
+
+      - id: check-shebang-scripts-are-executable
+        name: Check shell scripts are executable
+        types: [bash, shell]
+
+      - id: check-yaml
+        name: Check pipelines configuration
+        files: ^(azure|packages\/tool\/azure)
+
+  - repo: local
+    hooks:
+      - id: lint-models
+        name: Lint models
+        entry: npm
+        args: ["run", "--prefix=packages/models", "lint"]
+        language: system
+        files: ^packages\/models
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
+      - id: lint-coordinator
+        name: Lint coordinator
+        entry: npm
+        args: ["run", "--prefix=packages/coordinator", "lint"]
+        language: system
+        files: ^packages\/coordinator
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
+      - id: lint-cdk
+        name: Lint cdk
+        entry: npm
+        args: ["run", "--prefix=packages/cdk", "lint"]
+        language: system
+        files: ^packages\/cdk
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
+      - id: lint-epsat-client
+        name: Lint EPSAT client
+        entry: npm
+        args: ["run", "--prefix=packages/tool/site/client", "lint"]
+        language: system
+        files: ^packages\/tool\/site\/client
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
+      - id: lint-epsat-server
+        name: Lint EPSAT server
+        entry: npm
+        args: ["run", "--prefix=packages/tool/site/server", "lint"]
+        language: system
+        files: ^packages\/tool\/site\/server
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
+      - id: oas-build-checks
+        name: Build OAS
+        entry: make
+        args: ["build-specification"]
+        language: system
+        files: ^(examples|packages\/specification)
+        types_or: [json, yaml]
+
+      - id: lint-bdd-tests
+        name: Lint bdd tests
+        entry: npm
+        args: ["run", "--prefix=packages/bdd-tests", "lint"]
+        language: system
+        files: ^packages\/bdd-tests
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
+      - id: build-coordinator
+        name: Build coordinator
+        entry: make
+        args: ["build-coordinator"]
+        language: system
+        files: ^packages\/(models|coordinator)
+        types_or: [ts, tsx, javascript, jsx, json]
+
+      - id: build-proxies
+        name: Build Apigee proxies configuration
+        entry: make
+        args: ["build-proxies"]
+        language: system
+        files: ^proxies\/(live|sandbox)
+        types_or: [xml]
+
+      - id: check-language-version
+        name: check language versions are consistent
+        entry: ./scripts/check_language_versions.sh
+        language: system
+        files: |
+          (?x)^(
+              .tool-versions|
+              packages/coordinator/Dockerfile|
+              azure/azure-build-pipeline.yml|
+              azure/azure-release-template.yml|
+              packages/tool/site/Dockerfile|
+              packages/tool/azure/azure-build-pipeline.yml|
+              packages/tool/azure/azure-release-template.yml|
+              .devcontainer/Dockerfile
+          )$
+
+      - id: lint-githubactions
+        name: Lint github actions
+        entry: make
+        args: ["lint-githubactions"]
+        language: system
+        files: ^.github
+        types_or: [yaml]
+        pass_filenames: false
+
+  - repo: local
+    hooks:
+      - id: git-secrets
+        name: Git Secrets
+        description: git-secrets scans commits, commit messages, and --no-ff merges to prevent adding secrets into your git repositories.
+        entry: bash
+        args:
+          - -c
+          - 'docker run -v "$LOCAL_WORKSPACE_FOLDER:/src" git-secrets --pre_commit_hook'
+        language: system
+fail_fast: true
+default_stages: [commit]

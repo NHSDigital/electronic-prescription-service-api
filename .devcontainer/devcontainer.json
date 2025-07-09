@@ -1,0 +1,76 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+  "name": "Ubuntu",
+  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "..",
+    "args": {}
+  },
+  "mounts": [
+    "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
+    "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind",
+    "source=${env:HOME}${env:USERPROFILE}/.gnupg,target=/home/vscode/.gnupg,type=bind"
+  ],
+  "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+      "version": "latest",
+      "moby": "true",
+      "installDockerBuildx": "true"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "redhat.vscode-yaml",
+        "ms-python.python",
+        "github.vscode-pull-request-github",
+        "eamodio.gitlens",
+        "orta.vscode-jest",
+        "42crunch.vscode-openapi",
+        "mermade.openapi-lint",
+        "baeumer.vscode-eslint",
+        "redhat.vscode-yaml",
+        "christian-kohler.npm-intellisense",
+        "dbaeumer.vscode-eslint",
+        "lfm.vscode-makefile-term",
+        "ms-python.flake8",
+        "GrapeCity.gc-excelviewer",
+        "redhat.vscode-xml",
+        "streetsidesoftware.code-spell-checker",
+        "timonwong.shellcheck",
+        "CucumberOpen.cucumber-official"
+      ],
+      "settings": {
+        "python.defaultInterpreterPath": "/workspaces/electronic-prescription-service-api/.venv/bin/python",
+        "python.analysis.autoSearchPaths": true,
+        "python.analysis.extraPaths": [],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true,
+        "python.linting.pylintEnabled": false,
+        "python.linting.flake8Enabled": true,
+        "python.linting.enabled": true, // required to format on save
+        "editor.defaultFormatter": "baeumer.vscode-eslint",
+        "editor.formatOnPaste": false, // required
+        "editor.formatOnType": false, // required
+        "editor.formatOnSave": true, // optional
+        "editor.formatOnSaveMode": "file",
+        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
+      }
+    }
+  },
+  "postCreateCommand": "rm -f ~/.docker/config.json; git config --global --add safe.directory /workspaces/electronic-prescription-service-api; make install-all",
+  "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
+  // "features": {},
+  // Use 'forwardPorts' to make a list of ports inside the container available locally.
+  // "forwardPorts": [],
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": ""
+  // Configure tool-specific properties.
+  // "customizations": {},
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+}
