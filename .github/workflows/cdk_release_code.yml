@@ -385,14 +385,14 @@ jobs:
           DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
 
       - name: Checkout gh-pages
-        if: ${{ inputs.IS_PULL_REQUEST == false }}
+        # if: ${{ inputs.IS_PULL_REQUEST == false }}
         uses: actions/checkout@v4
         with:
           ref: gh-pages
           path: gh-pages
 
       - name: Update release tag in github pages
-        if: ${{ inputs.IS_PULL_REQUEST == false }}
+        # if: ${{ inputs.IS_PULL_REQUEST == false }}
         run: |
           cd gh-pages
           NOW=$(date +'%Y-%m-%dT%H:%M:%S')
