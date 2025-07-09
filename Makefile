@@ -376,34 +376,6 @@ npm-audit-fix:
 	npm audit fix --workspace packages/tool/site/server || true
 	npm audit fix --workspace packages/tool/e2e-tests || true
 
-publish-fhir-release-notes-int:
-	dev_tag=$$(curl -s "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	int_tag=$$(curl -s "https://int.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	echo { \"currentTag\": \"$$int_tag\", \"targetTag\": \"$$dev_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"INT\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587367089\", \"releaseNotesPageTitle\": \"Current FHIR API release notes - INT\" } > /tmp/payload.json
-	aws lambda invoke \
-		--function-name "release-notes-createReleaseNotes" \
-		--cli-binary-format raw-in-base64-out \
-		--payload file:///tmp/payload.json /tmp/out.txt
-	cat /tmp/out.txt
-
-publish-fhir-rc-release-notes-int: guard-release_tag guard-current_tag
-	echo { \"createReleaseCandidate\": \"true\", \"releasePrefix\": \"FHIR-\", \"currentTag\": \"$$current_tag\", \"targetTag\": \"$$release_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"INT\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587372008\", \"releaseNotesPageTitle\": \"FHIR-$$release_tag - Deployed to [INT] on $$(date +'%d-%m-%y')\" } > /tmp/payload.json
-	aws lambda invoke \
-		--function-name "release-notes-createReleaseNotes" \
-		--cli-binary-format raw-in-base64-out \
-		--payload file:///tmp/payload.json /tmp/out.txt
-	cat /tmp/out.txt
-
-publish-fhir-release-notes-prod:
-	dev_tag=$$(curl -s "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	prod_tag=$$(curl -s "https://api.service.nhs.uk/electronic-prescriptions/_ping" | jq --raw-output ".version"); \
-	echo { \"currentTag\": \"$$prod_tag\", \"targetTag\": \"$$dev_tag\", \"repoName\": \"electronic-prescription-service-api\", \"targetEnvironment\": \"PROD\", \"productName\": \"FHIR API\", \"releaseNotesPageId\": \"587367100\", \"releaseNotesPageTitle\": \"Current FHIR API release notes - PROD\" } > /tmp/payload.json
-	aws lambda invoke \
-		--function-name "release-notes-createReleaseNotes" \
-		--cli-binary-format raw-in-base64-out \
-		--payload file:///tmp/payload.json /tmp/out.txt
-	cat /tmp/out.txt
-
 mark-jira-released: guard-release_version
 	echo { \"releaseVersion\": \"$$release_version\" } > /tmp/payload.json
 	aws lambda invoke \

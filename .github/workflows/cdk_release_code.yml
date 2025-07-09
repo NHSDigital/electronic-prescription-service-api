@@ -34,18 +34,18 @@ on:
       LOG_RETENTION_DAYS:
         required: true
         type: string
-      # CREATE_INT_RELEASE_NOTES:
-      #   type: boolean
-      #   default: false
-      # CREATE_INT_RC_RELEASE_NOTES:
-      #   type: boolean
-      #   default: false
-      # CREATE_PROD_RELEASE_NOTES:
-      #   type: boolean
-      #   default: false
-      # MARK_JIRA_RELEASED:
-      #   type: boolean
-      #   default: false
+      CREATE_INT_RELEASE_NOTES:
+        type: boolean
+        default: false
+      CREATE_INT_RC_RELEASE_NOTES:
+        type: boolean
+        default: false
+      CREATE_PROD_RELEASE_NOTES:
+        type: boolean
+        default: false
+      MARK_JIRA_RELEASED:
+        type: boolean
+        default: false
       DEPLOY_APIGEE:
         type: boolean
         default: true
@@ -140,6 +140,18 @@ jobs:
           sparse-checkout: |
             .github
 
+      - name: create_int_rc_release_notes
+        uses: ./.github/actions/update_confluence_jira
+        if: ${{ inputs.CREATE_INT_RC_RELEASE_NOTES == true }}
+        with:
+          TARGET_ENVIRONMENT: int
+          RELEASE_TAG: ${{ inputs.VERSION_NUMBER }}
+          CONFLUENCE_PAGE_ID: "587367089"
+          CREATE_RC_RELEASE_NOTES: true
+          DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+          TARGET_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+          DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+
       - name: Configure AWS Credentials
         id: connect-aws-pull-image
         uses: aws-actions/configure-aws-credentials@v4
@@ -200,7 +212,7 @@ jobs:
       - name: Retrieve AWS Account ID
         id: retrieve-deploy-account-id
         run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
-       
+
       - name: Login to Amazon ECR
         id: login-ecr-push-image
         run: |
@@ -231,7 +243,7 @@ jobs:
         working-directory: .github/scripts
         run: |
           ./check_ecr_image_scan_results.sh
-  
+
       - name: fix cdk.json for deployment
         run: |
           ./.github/scripts/fix_cdk_json.sh
@@ -319,7 +331,7 @@ jobs:
           DRY_RUN: false
           ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
         run: ./.github/scripts/deploy_api.sh
-  
+
       - name: Deploy fhir-dispensing API
         shell: bash
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
@@ -342,7 +354,58 @@ jobs:
           path: |
             ./.build/packages/specification/dist/fhir-dispensing.resolved.json
             ./.build/packages/specification/dist/fhir-prescribing.resolved.json
-  
+
+      - name: create_int_release_notes
+        uses: ./.github/actions/update_confluence_jira
+        if: ${{ inputs.CREATE_INT_RELEASE_NOTES == true && always() && !failure() && !cancelled() }}
+        with:
+          TARGET_ENVIRONMENT: int
+          CONFLUENCE_PAGE_ID: "587372008"
+          CREATE_RC_RELEASE_NOTES: false
+          DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+          TARGET_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+          DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+
+      - name: create_prod_release_notes
+        uses: ./.github/actions/update_confluence_jira
+        if: ${{ inputs.CREATE_PROD_RELEASE_NOTES == true && always() && !failure() && !cancelled() }}
+        with:
+          TARGET_ENVIRONMENT: prod
+          CONFLUENCE_PAGE_ID: "587367100"
+          CREATE_RC_RELEASE_NOTES: false
+          DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+          TARGET_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+          DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+
+      - name: mark_released_in_jira
+        uses: ./.github/actions/mark_jira_released
+        if: ${{ inputs.MARK_JIRA_RELEASED == true && always() && !failure() && !cancelled() }}
+        with:
+          RELEASE_TAG: ${{ inputs.VERSION_NUMBER }}
+          DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+
+      - name: Checkout gh-pages
+        if: ${{ inputs.IS_PULL_REQUEST == false }}
+        uses: actions/checkout@v4
+        with:
+          ref: gh-pages
+          path: gh-pages
+
+      - name: Update release tag in github pages
+        if: ${{ inputs.IS_PULL_REQUEST == false }}
+        run: |
+          cd gh-pages
+          NOW=$(date +'%Y-%m-%dT%H:%M:%S')
+          echo "tag,release_datetime" > _data/${{ inputs.APIGEE_ENVIRONMENT }}_latest.csv
+          echo "${{ inputs.VERSION_NUMBER }},${NOW}" >> _data/${{ inputs.APIGEE_ENVIRONMENT }}_latest.csv
+          echo "${{ inputs.VERSION_NUMBER }},${NOW}" >> _data/${{ inputs.APIGEE_ENVIRONMENT }}_deployments.csv
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add _data/${{ inputs.APIGEE_ENVIRONMENT }}_latest.csv
+          git add _data/${{ inputs.APIGEE_ENVIRONMENT }}_deployments.csv
+          git commit -m 'update releases for ${{ inputs.APIGEE_ENVIRONMENT }}'
+          parallel --retries 10 --delay 3 ::: "git pull --rebase && git push"
+
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Prescribing Regression Tests

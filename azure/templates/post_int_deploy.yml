@@ -3,23 +3,3 @@ steps:
       echo "##[debug] Running post int deploy"
     displayName: run post int deploy
   - template: ./run_tests.yml
-  # call create release notes
-  - bash: |
-      export NOTIFY_GITHUB_REPOSITORY=$(NOTIFY_GITHUB_REPOSITORY)
-      export BRANCH_NAME=$(Build.SourceBranchName)
-      if [ "${BRANCH_NAME}" = "merge" ]; then
-        export BRANCH_NAME=$(echo "$(System.PullRequest.SourceBranch)" | awk -F/ '{print $NF}')
-      fi
-
-      if [[ -z ${NOTIFY_GITHUB_REPOSITORY} ]]; then
-         export NOTIFY_GITHUB_REPOSITORY=$(Build.Repository.Name)
-      fi
-      cat <<EOF > payload.json
-      {
-        "ref": "${BRANCH_NAME}"
-      }
-      EOF
-      echo "##[debug] Hitting https://api.github.com/repos/${NOTIFY_GITHUB_REPOSITORY}/actions/workflows/create_int_release_notes.yml/dispatches"
-      cat payload.json
-      curl --fail -q -X POST "https://api.github.com/repos/${NOTIFY_GITHUB_REPOSITORY}/actions/workflows/create_int_release_notes.yml/dispatches" -d "@./payload.json" --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN)
-    displayName: Create release notes post int
