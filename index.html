@@ -1,0 +1,54 @@
+---
+# Feel free to add content and custom Front Matter to this file.
+# To modify the layout, see https://jekyllrb.com/docs/themes/#overriding-theme-defaults
+
+layout: page
+---
+Latest deployments
+<table>
+    <tr>
+        <th>Environment</th>
+        <th>Tag</th>
+        <th>Date deployed</th>
+    </tr>
+    {% for environment in site.data.environments %}
+    <tr>
+        <td>{{ environment.name }}</td>
+        {% assign file_name = environment.name | append: "_latest" %}
+        {% assign tag = site.data[file_name][0].tag %}
+        {% if tag contains "." %}
+        {% assign link = site.github_url | append: "/releases/tag/" | append: tag %}
+        {% else %}
+        {% assign link = site.github_url | append: "/commit/" | append: tag %}
+        {% endif %}
+        <td><a href={{ link }} target="_blank">{{ tag }}</a></td>
+        <td>{{ site.data[file_name][0].release_datetime }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% for environment in site.data.environments %}
+<p>
+    Recent {{ environment.name }} deployment history. For full history see <a href="{{ environment.name}}.html">here</a>
+    {% assign file_name = environment.name | append: "_deployments" %}
+<table>
+    <tr>
+        <th>tag</th>
+        <th>date deployed</th>
+    </tr>
+    {% assign releases = site.data[file_name] | reverse %}
+    {% for release in releases limit:5 %}
+    <tr>
+        {% assign tag = release.tag %}
+        {% if tag contains "." %}
+        {% assign link = site.github_url | append: "/releases/tag/" | append: tag %}
+        {% else %}
+        {% assign link = site.github_url | append: "/commit/" | append: tag %}
+        {% endif %}
+        <td><a href={{ link }} target="_blank">{{ tag }}</a></td>
+        <td>{{ release.release_datetime }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</p>
+{% endfor %}
