@@ -2,6 +2,10 @@
 
 ![Build](https://github.com/NHSDigital/electronic-prescription-service-api/workflows/Build/badge.svg?branch=master)
 
+## Versions and deployments
+
+Deployment history can be found at https://nhsdigital.github.io/eps-prescription-status-update-api/
+
 This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
 
 - `azure/` Defines CI/CD pipeline for the API
@@ -254,7 +258,6 @@ This is not valid for -all target.
 - `prepare-for-api-release` Prepares for an API release
 - `prepare-for-epsat-release` Prepares for an epsat release
 - `publish` Placeholder target for publishing
-- `mark-jira-released` Marks Jira issues as released
 
 #### CDK targets
 These are mostly called from CI pipelines to build and deploy resources to our AWS accounts via CDK
@@ -287,13 +290,6 @@ These are mostly called from CI pipelines to build and deploy resources to our A
 
 - `generate-mock-certs` Creates some TLS certifacates that are used for local testing
 - `update-prescriptions` Updates examples with newly generated prescription ids/short prescription ids and updates authored on fields, use this in combination with tools for signing the examples to test dispensing in integration environments
-
-#### Release notes commands
-
-- `publish-fhir-release-notes-int` publishes int release notes to conflunce
-- `publish-fhir-release-notes-prod` publishes prod release notes to conflunce
-- `publish-fhir-rc-release-notes-int` publishes RC int release notes to conflunce
-- `mark-jira-released` marks a jira release as released
 
 #### Snapshot commands
 
@@ -367,11 +363,7 @@ Workflows are in the `/.github/workflows` folder
 
 - `codeql-analysis.yml` Workflow for automated security analysis and vulnerability detection
 - `combine-dependabot-prs.yml` Workflow for combining dependabot pull requests
-- `create_int_release_notes.yml` Workflow for creating int release notes. Called from azure pipeline
-- `create_prod_release_notes.yml` Workflow for creating prod release notes. Called from azure pipeline
-- `create_rc_int_release_notes.yml` Workflow for creating RC int release notes. Called from azure pipeline
 - `dependabot_auto_approve_and_merge.yml` Workflow for auto-approving and merging Dependabot pull requests
-- `mark_jira_released.yml` Workflow for marking jira release as released. Called from azure pipeline
 - `pull_request.yml` Workflow for building, testing and deploying resources to AWS from a pull request
 - `pr_title_check.yml` Checks that pull requests title matches the desired format
 - `pr-link.yml` Links the raised PR with the associated Jira ticket
