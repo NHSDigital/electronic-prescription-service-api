@@ -24,7 +24,7 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.4.0",
-    "@peculiar/x509": "^1.12.4",
+    "@peculiar/x509": "^1.13.0",
     "@xmldom/xmldom": "^0.9.8",
     "axios": "^1.10.0",
     "axios-retry": "^4.5.0",
