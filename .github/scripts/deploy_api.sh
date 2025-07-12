@@ -154,6 +154,9 @@ jq 'del(."paths"."/metadata")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_
 jq 'del(."paths"."/FHIR/R4/$validate")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
 jq 'del(."paths"."/FHIR/R4/$convert")' "$SPEC_PATH" > temp.json && mv temp.json "${SPEC_PATH}"
 
+echo "Setting the servers block to always use the sandbox environment"
+jq --arg inst "${instance}" '.servers = [ { "url": "https://sandbox.api.service.nhs.uk/\($inst)" } ]' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+
 if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
     echo
     echo "Deploy the API spec to prod catalogue as it is int environment"
@@ -179,7 +182,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
     fi
 fi
 
-if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${is_pull_request}" == "false" ]]; then
+if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${is_pull_request}" == "true" ]]; then
     echo
     echo "Deploy the API spec to uat catalogue as it is internal-dev environment"
     if [[ "${DRY_RUN}" == "false" ]]; then
