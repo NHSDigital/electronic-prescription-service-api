@@ -46,7 +46,7 @@ describe("release functions", () => {
       const translatedRelease = createNominatedReleaseRequest(practitionerRole, organization)
 
       expect(translatedRelease.NominatedPrescriptionReleaseRequest.author).toEqual(mockAuthorResponse)
-      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization)
+      expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRole, organization)
     })
   })
 
@@ -69,7 +69,7 @@ describe("release functions", () => {
           ._attributes
           .extension
       ).toEqual(prescriptionId)
-      expect(mockCreateAuthor).toBeCalledWith(practitionerRole, organization)
+      expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRole, organization)
     })
   })
 })
