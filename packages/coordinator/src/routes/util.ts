@@ -15,6 +15,8 @@ import {
   isTask
 } from "../utils/type-guards"
 import axiosRetry from "axios-retry"
+import {InvokeCommand, LambdaClient, LogType} from "@aws-sdk/client-lambda"
+import {isEpsHostedContainer} from "../utils/feature-flags"
 
 type HapiPayload = string | object | Buffer | stream
 
@@ -74,19 +76,53 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Utils.Dictionary<string>
+  requestHeaders: Hapi.Utils.Dictionary<string>,
+  logger: pino.Logger
 ): Promise<fhir.OperationOutcome> {
-  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
-    headers: {
-      "Content-Type": requestHeaders["content-type"],
-      "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
-      "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
-      "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
-      "nhsd-request-id": requestHeaders["nhsd-request-id"]
+  const client = new LambdaClient({})
+  const headers = {
+    "Content-Type": requestHeaders["content-type"],
+    "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
+    "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
+    "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
+    "nhsd-request-id": requestHeaders["nhsd-request-id"]
+  }
+  let validatorResponseData
+  if (isEpsHostedContainer()) {
+    let body = payload.toString()
+    try {
+      body = JSON.parse(body)
+    } catch (e) {
+      logger.error({error: e}, "Could not parse payload to json. Sending to validator anyway")
     }
-  })
+    const lambdaPayload = {
+      body: body,
+      headers
+    }
+    logger.info({lambdaPayload}, "making call to validator lambda")
+    const command = new InvokeCommand({
+      FunctionName: `${process.env["LEGACY_VALIDATOR_LAMBDA_ARN"]}:snap`,
+      Payload: JSON.stringify(lambdaPayload),
+      LogType: LogType.None
+    })
+    const {Payload} = await client.send(command)
+    validatorResponseData = Buffer.from(Payload).toString()
+    try {
+      validatorResponseData = JSON.parse(validatorResponseData)
+    } catch(e) {
+      logger.error({error: e}, "Could not parse validator response to json")
+    }
+    logger.info({validatorResponseData}, "received response from validator lambda")
+  } else {
+    logger.info({payload}, "making call to validator docker service")
+    const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
+      headers
+    })
 
-  const validatorResponseData = validatorResponse.data
+    validatorResponseData = validatorResponse.data
+    logger.info({validatorResponseData}, "received response from validator docker service")
+  }
+
   if (!validatorResponseData) {
     throw new TypeError("No response from validator")
   }
@@ -103,12 +139,13 @@ export async function getFhirValidatorErrors(
   request: Hapi.Request,
   showWarnings: boolean
 ): Promise<fhir.OperationOutcome> {
+  const logger = request.logger
   if (request.headers[RequestHeaders.SKIP_VALIDATION]) {
-    request.logger.info("Skipping call to FHIR validator")
+    logger.info("Skipping call to FHIR validator")
   } else {
-    request.logger.info("Making call to FHIR validator")
-    const validatorResponseData = await callFhirValidator(request.payload, request.headers)
-    request.logger.info("Received response from FHIR validator")
+    logger.info("Making call to FHIR validator")
+    const validatorResponseData = await callFhirValidator(request.payload, request.headers, logger)
+    logger.info("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
     if (filteredResponse.issue.length) {
       return validatorResponseData
