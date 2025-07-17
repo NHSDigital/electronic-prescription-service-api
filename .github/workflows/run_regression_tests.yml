@@ -20,7 +20,6 @@ on:
 jobs:
   run_regression_tests:
     runs-on: ubuntu-22.04
-    environment: ${{ inputs.ENVIRONMENT }}
     permissions:
       id-token: write
       contents: write
