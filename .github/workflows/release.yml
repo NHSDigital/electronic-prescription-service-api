@@ -106,7 +106,7 @@ jobs:
       - name: output SPEC_VERSION
         id: output_spec_version
         run: |
-          echo "## RELEASE TAG :** ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
+          echo "## RELEASE TAG : ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
           echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
 
   package_code:
