@@ -52,7 +52,7 @@ jobs:
 
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
-        uses: asdf-vm/actions/setup@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
         with:
           asdf_branch: v0.11.3
 
@@ -66,7 +66,7 @@ jobs:
             ${{ runner.os }}-asdf-
 
       - name: Install asdf dependencies in .tool-versions
-        uses: asdf-vm/actions/install@05e0d2ed97b598bfce82fd30daf324ae0c4570e6
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302
         with:
           asdf_branch: v0.11.3
         env:
@@ -87,7 +87,7 @@ jobs:
       - name: Create release (tags and master)
         id: create-release
         # using commit hash for version v1.13.0
-        uses: ncipollo/release-action@440c8c1cb0ed28b9f43e4d1d670870f059653174
+        uses: ncipollo/release-action@bcfe5470707e8832e12347755757cec0eb3c22af
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -415,7 +415,7 @@ jobs:
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 2
       DESIRED_CLAIMS_COUNT: 2
-      DESIRED_PEAK_CLAIMS_COUNT: 2
+      DESIRED_PEAK_CLAIMS_COUNT: 6
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192

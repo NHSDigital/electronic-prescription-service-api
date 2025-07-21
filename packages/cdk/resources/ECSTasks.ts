@@ -45,6 +45,7 @@ export interface ECSTasksProps {
   readonly taskExecutionRoleName: string
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
+  readonly pollingDelay: number
 }
 
 /**
@@ -134,7 +135,8 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_ASID: props.defaultPTLAsid,
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
-        SANDBOX: props.sandboxModeEnabled
+        SANDBOX: props.sandboxModeEnabled,
+        POLLING_DELAY: props.pollingDelay.toString()
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),

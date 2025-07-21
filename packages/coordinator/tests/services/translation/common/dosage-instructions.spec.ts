@@ -156,12 +156,12 @@ describe("dosage-instructions", () => {
 
       medicationDispense = {dosageInstruction: dosageInstruction}
 
-      expect(testFromDosageInstructionAndMedicationDispense).toThrowError(
+      expect(testFromDosageInstructionAndMedicationDispense).toThrow(
         new Error("Dosage instructions lacking complete sequencing")
       )
     })
     test("a null input", () => {
-      expect(testFromDosageInstructionAndMedicationDispense).toThrowError(new Error("Dosage instructions not provided"))
+      expect(testFromDosageInstructionAndMedicationDispense).toThrow(new Error("Dosage instructions not provided"))
     })
   })
 })

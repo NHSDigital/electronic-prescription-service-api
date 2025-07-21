@@ -32,7 +32,7 @@
         },
         "source": {
           "name": "NHS Spine",
-          "endpoint": "https://internal-qa.api.service.nhs.uk/electronic-prescriptions/$process-message"
+          "endpoint": "https://internal-qa.api.service.nhs.uk/fhir-prescribing/$process-message"
         },
         "response": {
           "code": "ok",

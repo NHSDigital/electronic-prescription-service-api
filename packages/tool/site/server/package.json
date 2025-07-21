@@ -17,7 +17,7 @@
     "@types/hapi__catbox-redis": "^5.0.10",
     "@types/hapi__cookie": "^12.0.5",
     "@types/hapi__inert": "^5.2.10",
-    "@types/jsonwebtoken": "^9.0.9",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/uuid": "^10.0.0"
   },
   "engines": {
@@ -31,13 +31,13 @@
     "@hapi/inert": "^7.0.0",
     "@hapi/vision": "^7.0.3",
     "@hapi/yar": "^11.0.3",
-    "axios": "^1.9.0",
+    "axios": "^1.10.0",
     "client-oauth2": "^4.3.3",
     "fhir": "^4.12.0",
     "handlebars": "^4.7.7",
     "hapi-pino": "^12.1.0",
     "jsonwebtoken": "^9.0.2",
-    "pino": "^9.6.0",
+    "pino": "^9.7.0",
     "pino-pretty": "^13.0.0",
     "uuid": "^11.1.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
