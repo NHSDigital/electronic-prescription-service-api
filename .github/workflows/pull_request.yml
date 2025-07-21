@@ -90,7 +90,7 @@ jobs:
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
-      IS_PULL_REQUEST: true
+      IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
       SANDBOX_MODE_ENABLED: 0
@@ -168,8 +168,8 @@ jobs:
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
-      DEPLOY_APIGEE: false
-      TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
+      DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       DOCKER_IMAGE_TAG: PR-${{ needs.get_issue_number.outputs.issue_number }}-${{ needs.get_commit_id.outputs.sha_short }}
       RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
