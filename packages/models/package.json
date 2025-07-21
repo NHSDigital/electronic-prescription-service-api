@@ -15,9 +15,9 @@
     "npm": "10.2.x"
   },
   "dependencies": {
-    "axios": "^1.8.4",
-    "fhirpath": "^3.18.0",
-    "lossless-json": "^4.0.2",
+    "axios": "^1.10.0",
+    "fhirpath": "^4.5.1",
+    "lossless-json": "^4.1.1",
     "xml-js": "^1.6.11"
   },
   "devDependencies": {

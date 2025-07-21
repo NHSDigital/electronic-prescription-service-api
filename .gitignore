@@ -34,3 +34,8 @@ packages/tool/site/client/static/examples
 cfn_guard_output/
 cdk.out
 nhsd-rules-deny.txt
+_site/
+.sass-cache
+.jekyll-cache
+.jekyll-metadata
+vendor
