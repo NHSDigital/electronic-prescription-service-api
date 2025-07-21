@@ -88,7 +88,7 @@ export class ECSTasks extends Construct {
     )
 
     const SHA1EnabledApplicationIds = new StringParameter(this, "SHA1EnabledApplicationIds", {
-      parameterName: `${props.stackName}_SHA1EnabledApplicationIds`,
+      parameterName: `${props.stackName}_${props.containerNamePrefix}_SHA1EnabledApplicationIds`,
       stringValue: props.SHA1EnabledApplicationIds
     })
 
