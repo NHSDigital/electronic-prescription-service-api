@@ -1,6 +1,11 @@
 import {Construct} from "constructs"
 
-import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
+import {
+  ManagedPolicy,
+  PolicyStatement,
+  Role,
+  ServicePrincipal
+} from "aws-cdk-lib/aws-iam"
 import {ILogGroup} from "aws-cdk-lib/aws-logs"
 import {IRepository} from "aws-cdk-lib/aws-ecr"
 import {
@@ -82,20 +87,34 @@ export class ECSTasks extends Construct {
       Fn.importValue("secrets:epsSigningCertChainManagedPolicy")
     )
 
+    const SHA1EnabledApplicationIds = new StringParameter(this, "SHA1EnabledApplicationIds", {
+      parameterName: `${props.stackName}_SHA1EnabledApplicationIds`,
+      stringValue: props.SHA1EnabledApplicationIds
+    })
+
+    const readSHA1EnabledApplicationIdsPolicy = new ManagedPolicy(this, "readSHA1EnabledApplicationIds", {
+      statements: [
+        new PolicyStatement({
+          actions: [
+            "ssm:GetParameter"
+          ],
+          resources: [
+            SHA1EnabledApplicationIds.parameterArn
+          ]
+        })
+      ]
+    })
+
     const ecsTaskExecutionRole = new Role(this, "EcsTaskExecutionRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
       managedPolicies: [
         ecsTaskExecutionRolePolicy,
         lambdaAccessSecretsPolicy,
         lambdaDecryptSecretsKMSPolicy,
-        epsSigningCertChainManagedPolicy
+        epsSigningCertChainManagedPolicy,
+        readSHA1EnabledApplicationIdsPolicy
       ],
       roleName: props.taskExecutionRoleName
-    })
-
-    const SHA1EnabledApplicationIds = new StringParameter(this, "SHA1EnabledApplicationIds", {
-      parameterName: `${props.stackName}_SHA1EnabledApplicationIds`,
-      stringValue: props.SHA1EnabledApplicationIds
     })
 
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
