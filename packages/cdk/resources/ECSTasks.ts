@@ -1,6 +1,11 @@
 import {Construct} from "constructs"
 
-import {ManagedPolicy, Role, ServicePrincipal} from "aws-cdk-lib/aws-iam"
+import {
+  ManagedPolicy,
+  PolicyStatement,
+  Role,
+  ServicePrincipal
+} from "aws-cdk-lib/aws-iam"
 import {ILogGroup} from "aws-cdk-lib/aws-logs"
 import {IRepository} from "aws-cdk-lib/aws-ecr"
 import {
@@ -14,6 +19,7 @@ import {
 } from "aws-cdk-lib/aws-ecs"
 import {ISecret} from "aws-cdk-lib/aws-secretsmanager"
 import {Fn} from "aws-cdk-lib"
+import {StringParameter} from "aws-cdk-lib/aws-ssm"
 
 export interface ECSTasksProps {
   readonly stackName: string
@@ -81,13 +87,32 @@ export class ECSTasks extends Construct {
       Fn.importValue("secrets:epsSigningCertChainManagedPolicy")
     )
 
+    const SHA1EnabledApplicationIds = new StringParameter(this, "SHA1EnabledApplicationIds", {
+      parameterName: `${props.stackName}_${props.containerNamePrefix}_SHA1EnabledApplicationIds`,
+      stringValue: props.SHA1EnabledApplicationIds
+    })
+
+    const readSHA1EnabledApplicationIdsPolicy = new ManagedPolicy(this, "readSHA1EnabledApplicationIds", {
+      statements: [
+        new PolicyStatement({
+          actions: [
+            "ssm:GetParameter"
+          ],
+          resources: [
+            SHA1EnabledApplicationIds.parameterArn
+          ]
+        })
+      ]
+    })
+
     const ecsTaskExecutionRole = new Role(this, "EcsTaskExecutionRole", {
       assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
       managedPolicies: [
         ecsTaskExecutionRolePolicy,
         lambdaAccessSecretsPolicy,
         lambdaDecryptSecretsKMSPolicy,
-        epsSigningCertChainManagedPolicy
+        epsSigningCertChainManagedPolicy,
+        readSHA1EnabledApplicationIdsPolicy
       ],
       roleName: props.taskExecutionRoleName
     })
@@ -134,7 +159,6 @@ export class ECSTasks extends Construct {
         ENABLE_DEFAULT_ASID_PARTY_KEY: props.enableDefaultAsidPartyKey,
         DEFAULT_PTL_ASID: props.defaultPTLAsid,
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
-        SHA1_ENABLED_APPLICATION_IDS: props.SHA1EnabledApplicationIds,
         SANDBOX: props.sandboxModeEnabled,
         POLLING_DELAY: props.pollingDelay.toString()
       },
@@ -142,7 +166,8 @@ export class ECSTasks extends Construct {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
         SpinePublicCertificate: ecsSecret.fromSecretsManager(props.spinePublicCertificate),
         SpineCAChain: ecsSecret.fromSecretsManager(props.spineCAChain),
-        SUBCACC_CERT: ecsSecret.fromSecretsManager(props.epsSigningCertChain)
+        SUBCACC_CERT: ecsSecret.fromSecretsManager(props.epsSigningCertChain),
+        SHA1_ENABLED_APPLICATION_IDS: ecsSecret.fromSsmParameter(SHA1EnabledApplicationIds)
       },
       logging: LogDrivers.awsLogs({
         streamPrefix: "ecs",
