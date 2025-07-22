@@ -160,7 +160,7 @@ jobs:
     with:
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: recovery
-      APIGEE_ENVIRONMENT: ref
+      APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
