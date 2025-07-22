@@ -1,0 +1,6 @@
+[
+    {
+        "vulnerability_id": "GHSA-fjxv-7rqg-78g4",
+        "reason": "Waiting on axios fix - this change wont be merged"
+    }
+]
