@@ -263,16 +263,13 @@ steps:
   - bash: |
       if [[ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" && "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         # this should be the tag of the tests you want to run
-        # REGRESSION_TEST_REPO_TAG=v3.0.0
-        REGRESSION_TEST_REPO_TAG=increase_run_timeout
+        REGRESSION_TEST_REPO_TAG=v3.1.9
 
         # this should be the tag of the regression test workflow you want to run
         # This will normally be the same as REGRESSION_TEST_REPO_TAG
-        # REGRESSION_TEST_WORKFLOW_TAG=v3.0.0
-        REGRESSION_TEST_WORKFLOW_TAG=increase_run_timeout
+        REGRESSION_TEST_WORKFLOW_TAG=v3.1.9
 
-        # curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/tags/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
-        curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/heads/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
+        curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/tags/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
         make install-python
         echo Running in the $(APIGEE_ENVIRONMENT) environment
         poetry run python -u run_regression_tests.py \
