@@ -14,7 +14,13 @@ const OLD_SPEC='./electronic-prescription-service-api.yaml'
 
 // list of paths that will not be added to the combined spec
 // these are in the source specs to allow correct paths to be corrected in Apigee
-const exclusionList = ['/FHIR/R4/$process-message', '/FHIR/R4/Task', '/FHIR/R4/$validate', 'metadata']
+const exclusionList = [
+    '/FHIR/R4/$process-message', 
+    '/FHIR/R4/Task', 
+    '/FHIR/R4/$validate', 
+    '/metadata',
+    '/FHIR/R4/$convert'
+]
 
 const rawPrescribing = readFileSync(PRESCRIBING_SPEC, 'utf8')
 const rawDispensing = readFileSync(DISPENSING_SPEC, 'utf8')
@@ -120,8 +126,8 @@ const oldNewDifferences = getObjectDiff(
 console.log(`These keys are different between old and new spec: ${oldNewDifferences}`)
 
 
-const differenceDetails = getObjectDiff(
-    oldSpec.paths["/FHIR/R4/Task#withdraw"]["post"], 
-    template.paths["/FHIR/R4/Task#withdraw"]["post"]
-)
-console.log(`difference details: ${differenceDetails}`)
+//const differenceDetails = getObjectDiff(
+//    oldSpec.paths["/FHIR/R4/$convert"], 
+//    template.paths["/FHIR/R4/$convert"]
+//)
+//console.log(`difference details: ${differenceDetails}`)
