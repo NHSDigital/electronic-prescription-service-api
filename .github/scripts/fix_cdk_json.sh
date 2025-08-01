@@ -42,7 +42,7 @@ TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKE
 VPC_ID=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "vpc-resources:VpcId") | .Value')
 
 CFN_DRIFT_DETECTION_GROUP="prescribe-dispense"
-if [[ "$STACK_NAME" =~ -pr-[0-9]+$ ]]; then
+if [[ "$SERVICE_NAME" =~ -pr-[0-9]+$ ]]; then
   CFN_DRIFT_DETECTION_GROUP="prescribe-dispense-pull-request"
 fi
 
