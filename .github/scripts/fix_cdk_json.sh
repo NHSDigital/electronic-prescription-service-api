@@ -41,6 +41,11 @@ TRUSTSTORE_BUCKET_NAME=$(echo "${TRUSTSTORE_BUCKET_ARN}" | cut -d ":" -f 6)
 TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKET_NAME}" --prefix "${TRUSTSTORE_FILE}" --query 'Versions[?IsLatest].[VersionId]' --output text)
 VPC_ID=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "vpc-resources:VpcId") | .Value')
 
+CFN_DRIFT_DETECTION_GROUP="prescribe-dispense"
+if [[ "$IS_PULL_REQUEST" = "true" ]]; then
+  CFN_DRIFT_DETECTION_GROUP="prescribe-dispense-pull-request"
+fi
+
 # go through all the key values we need to set
 fix_string_key serviceName "${SERVICE_NAME}"
 fix_string_key VERSION_NUMBER "${VERSION_NUMBER}"
@@ -79,3 +84,4 @@ fix_boolean_number_key serviceMemory "${SERVICE_MEMORY}"
 fix_boolean_number_key serviceCpu "${SERVICE_CPU}"
 fix_boolean_number_key serviceMemory "${SERVICE_MEMORY}"
 fix_string_key ApigeeEnvironment "${APIGEE_ENVIRONMENT}"
+fix_string_key cfnDriftDetectionGroup "${CFN_DRIFT_DETECTION_GROUP}"
