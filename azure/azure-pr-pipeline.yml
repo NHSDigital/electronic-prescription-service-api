@@ -37,7 +37,6 @@ extends:
     enable_monitoring: false
     enable_status_monitoring: false
     manual_approval_env: manual-approval-ptl
-    job_timeout_in_minutes: 180
     jinja_templates:
       REQUIRE_ASID: false
     apigee_deployments:

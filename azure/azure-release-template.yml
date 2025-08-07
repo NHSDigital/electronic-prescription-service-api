@@ -29,4 +29,3 @@ extends:
     jinja_templates: ${{ parameters.jinja_templates }}
     prod_requires_approval: true
     prod_producer_approval: true
-    job_timeout_in_minutes: ${{ parameters.job_timeout_in_minutes }}
