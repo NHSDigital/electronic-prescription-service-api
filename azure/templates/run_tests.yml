@@ -284,7 +284,6 @@ steps:
       fi
     displayName: Regression Tests
     condition: succeeded()
-    timeoutInMinutes: 180
   - bash: |
       mkdir -p packages/bdd-tests/resources/
       if [[ "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
@@ -292,7 +291,6 @@ steps:
       fi
     displayName: Run BDD Tests
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
-    timeoutInMinutes: 180
   - task: PublishBuildArtifacts@1
     displayName: "Publish bdd results"
     inputs:
