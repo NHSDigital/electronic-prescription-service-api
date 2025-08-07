@@ -15,9 +15,6 @@ parameters:
     type: string
   - name: jinja_templates
     type: object
-  - name: job_timeout_in_minutes
-    type: number
-    default: 60
 
 extends:
   template: azure/common/apigee-deployment.yml@common
