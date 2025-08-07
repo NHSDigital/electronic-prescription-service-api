@@ -263,7 +263,8 @@ steps:
   - bash: |
       if [[ "$(APIGEE_ENVIRONMENT)" != "prod" && "$(APIGEE_ENVIRONMENT)" != "ref" && "$APIGEE_ENVIRONMENT" != *"sandbox"* ]]; then
         # this should be the tag of the tests you want to run
-        REGRESSION_TEST_REPO_TAG=v3.1.9
+        # REGRESSION_TEST_REPO_TAG=v3.1.9
+        REGRESSION_TEST_REPO_TAG=use_custom_pytest_library
 
         # this should be the tag of the regression test workflow you want to run
         # This will normally be the same as REGRESSION_TEST_REPO_TAG
