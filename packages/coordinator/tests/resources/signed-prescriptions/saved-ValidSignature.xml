@@ -1,0 +1,256 @@
+<ParentPrescription classCode="INFO" moodCode="EVN">
+  <id root="FBB647D6-5FE7-4D53-96CF-9D05DC5597FF"/>
+  <code code="163501000000109" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Prescription - FocusActOrEvent (record artifact)"/>
+  <effectiveTime value="20210507000000"/>
+  <typeId extension="PORX_MT132004UK31" root="2.16.840.1.113883.2.1.3.2.4.18.7"/>
+  <recordTarget typeCode="RCT">
+    <Patient classCode="PAT">
+      <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>
+      <addr use="H">
+        <streetAddressLine>1 Trevelyan Square</streetAddressLine>
+        <streetAddressLine>Boar Lane</streetAddressLine>
+        <streetAddressLine>Leeds</streetAddressLine>
+        <streetAddressLine>West Yorkshire</streetAddressLine>
+        <postalCode>LS1 6AE</postalCode>
+      </addr>
+      <patientPerson classCode="PSN" determinerCode="INSTANCE">
+        <name use="L">
+          <prefix>MR</prefix>
+          <given>DONOTUSE</given>
+          <family>XXTESTPATIENT-TGNP</family>
+        </name>
+        <administrativeGenderCode code="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.25"/>
+        <birthTime value="19320106"/>
+        <playedProviderPatient classCode="PAT">
+          <subjectOf typeCode="SBJ">
+            <patientCareProvision classCode="PCPR" moodCode="EVN">
+              <code code="1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.37"/>
+              <responsibleParty typeCode="RESP">
+                <healthCareProvider classCode="PROV">
+                  <id extension="A83008" root="1.2.826.0.1285.0.1.10"/>
+                </healthCareProvider>
+              </responsibleParty>
+            </patientCareProvision>
+          </subjectOf>
+        </playedProviderPatient>
+      </patientPerson>
+    </Patient>
+  </recordTarget>
+  <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+    <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+    <pertinentPrescription classCode="SBADM" moodCode="RQO">
+      <id root="4A3D73FE-6013-4446-ADD3-909167DCFAC7"/>
+      <id extension="92DC91-A83008-4DCD88" root="2.16.840.1.113883.2.1.3.2.4.18.8"/>
+      <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+      <effectiveTime nullFlavor="NA"/>
+      <performer contextControlCode="OP" typeCode="PRF">
+        <AgentOrgSDS classCode="AGNT">
+          <agentOrganizationSDS classCode="ORG" determinerCode="INSTANCE">
+            <id extension="FCG71" root="1.2.826.0.1285.0.1.10"/>
+          </agentOrganizationSDS>
+        </AgentOrgSDS>
+      </performer>
+      <author contextControlCode="OP" typeCode="AUT">
+        <time value="20210726120522"/>
+        <signatureText>
+          <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
+            <SignedInfo>
+              <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+              <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+              <Reference>
+                <Transforms>
+                  <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                </Transforms>
+                <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                <DigestValue>m/VBo4VL+8VkPnjOeOEnfbJIvdM=</DigestValue>
+              </Reference>
+            </SignedInfo>
+            <SignatureValue>Uomrxs49SrdugSRAkaWJe57Hm9cksx9qdv82F1KChxHDIuQ4bcNFgDf3GLS9uPlQF6AE3OWuynEttXZhzYpf45L3/C0IdlyW3vrTE0Qg/T5nDiuPm6OaieD8wSlTVsfpsyM31QcsOVxZqPnFpQdwB4GC2Vzggq6Xo+zFtUdV9T6kW2WfmY6Iyel8yLq5tFxdgarkRXNciN71Ox4wnQ3TdLk/uZVe3kBAKHC+3yT+om1JbcmmSDtw80QensIEnBi7LyWxCIRl7Hqo/sfQYB9QhAOEgxl6fSLXhrDya/aOeVbAC26xQ2+wmwl6znmEnBQBuCj6TbSj8/HVIZ1inI3YkQ==</SignatureValue>
+            <KeyInfo>
+              <X509Data>
+                <X509Certificate>MIIEGTCCAwGgAwIBAgIEYBrwzDANBgkqhkiG9w0BAQsFADA2MQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDJEMB4XDTIxMDcwODE0NTI0N1oXDTIyMDcwODE1MjI0N1owSzEMMAoGA1UEChMDbmhzMQswCQYDVQQLEwJDQTEZMBcGA1UEAxMQTkhTIElOVCBMZXZlbCAyRDETMBEGA1UEAxMKSm9obiBTbWl0aDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAIqtQanL2LWl3FB+jFK+O4RQxQ40sdAIKCXOnqgFkYJviDfW9XHx7XUKdk/xBCeyA3e+x8eF9iK8EeytfkD0KRLWfTGZ0GIwFP/SZ/lwpN/QGP9oSte6mtpP/AZbr7+VsWpsctmAmEDvu68LY1PUtQcmqg+4EllVbSjfnRr6zJ2lxndCp9Qa27xKRsPRjgs+SsFLsTdAGeYDcswdz1GOiUiU4PIHHyHMKaEyWiqEfcdfdo5dtjuK6lEHWkose++qv8iBaoGuYNRzRGoGsW3Dp6eyN3jLb8KUz0O7geNwS/HO1QxKARIz1W4G56LT33yzioC/40x2ihZxL5i64vBiIH0CAwEAAaOCARgwggEUMAsGA1UdDwQEAwIGQDAYBggrBgEFBQcBAwQMMAowCAYGBACORgEBMFgGA1UdHwRRME8wTaBLoEmkRzBFMQwwCgYDVQQKEwNuaHMxCzAJBgNVBAsTAkNBMRkwFwYDVQQDExBOSFMgSU5UIExldmVsIDJEMQ0wCwYDVQQDEwRDUkwxMCsGA1UdEAQkMCKADzIwMjEwNzA4MTQ1MjQ3WoEPMjAyMjAzMjEwMzIyNDdaMB8GA1UdIwQYMBaAFHbQEwruMwOC9dY/FlUs5CGsLqvOMB0GA1UdDgQWBBQuJRL2xWnsf5qpDw5phRSy+T0MvTAJBgNVHRMEAjAAMBkGCSqGSIb2fQdBAAQMMAobBFY4LjMDAgSwMA0GCSqGSIb3DQEBCwUAA4IBAQAUPRQtGdO1T9/VnczQ7OC5dwE5fLBNxl+MaH/dLa5WWGK0kcLYZEcCGWH24vNsqS+C8YX0p5OPSD66hak4fHimfDOmVD9YYJMKVOkjdYZsJG0rgdbX7ozOcXYj6+f01pXzW2PMPQLV8oowBOVTGDo9npDOYU+qBsfMu1QYyxcNmKstcracKPoLT3wvICpSeuHEDq3zrKCcgPlXVNie3GBLKQQD/diq+5hGXbxHN7Ge/VcJ7RyIpQ2lrzUnCAzDhacHqEbfNIEjEIkgdizivHyi+pSZvv49+gJBGoYVHZpD+Q+NYffWgB6TSsYSQ9/0kBDX7W0mOSq/3/EU70tiMEYh
+</X509Certificate>
+              </X509Data>
+            </KeyInfo>
+          </Signature>
+        </signatureText>
+        <AgentPerson classCode="AGNT">
+          <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
+          <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+          <telecom use="WP" value="tel:01234567890"/>
+          <agentPerson classCode="PSN" determinerCode="INSTANCE">
+            <id extension="6095103" root="1.2.826.0.1285.0.2.1.54"/>
+            <name>
+              <prefix>DR</prefix>
+              <given>C</given>
+              <family>BOIN</family>
+            </name>
+          </agentPerson>
+          <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+            <id extension="A83008" root="1.2.826.0.1285.0.1.10"/>
+            <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+            <name>HALLGARTH SURGERY</name>
+            <telecom use="WP" value="tel:01159737320"/>
+            <addr use="WP">
+              <streetAddressLine>HALLGARTH SURGERY</streetAddressLine>
+              <streetAddressLine>CHEAPSIDE</streetAddressLine>
+              <streetAddressLine>SHILDON</streetAddressLine>
+              <streetAddressLine>COUNTY DURHAM</streetAddressLine>
+              <postalCode>DL4 2HP</postalCode>
+            </addr>
+            <healthCareProviderLicense classCode="PROV">
+              <Organization classCode="ORG" determinerCode="INSTANCE">
+                <id extension="84H" root="1.2.826.0.1285.0.1.10"/>
+                <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                <name>NHS COUNTY DURHAM CCG</name>
+              </Organization>
+            </healthCareProviderLicense>
+          </representedOrganization>
+        </AgentPerson>
+      </author>
+      <responsibleParty contextControlCode="OP" typeCode="RESP">
+        <AgentPerson classCode="AGNT">
+          <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
+          <code code="R8000" codeSystem="1.2.826.0.1285.0.2.1.104"/>
+          <telecom use="WP" value="tel:01234567890"/>
+          <agentPerson classCode="PSN" determinerCode="INSTANCE">
+            <id extension="977677" root="1.2.826.0.1285.0.2.1.54"/>
+            <name>
+              <prefix>DR</prefix>
+              <given>C</given>
+              <family>BOIN</family>
+            </name>
+          </agentPerson>
+          <representedOrganization classCode="ORG" determinerCode="INSTANCE">
+            <id extension="A83008" root="1.2.826.0.1285.0.1.10"/>
+            <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+            <name>HALLGARTH SURGERY</name>
+            <telecom use="WP" value="tel:01159737320"/>
+            <addr use="WP">
+              <streetAddressLine>HALLGARTH SURGERY</streetAddressLine>
+              <streetAddressLine>CHEAPSIDE</streetAddressLine>
+              <streetAddressLine>SHILDON</streetAddressLine>
+              <streetAddressLine>COUNTY DURHAM</streetAddressLine>
+              <postalCode>DL4 2HP</postalCode>
+            </addr>
+            <healthCareProviderLicense classCode="PROV">
+              <Organization classCode="ORG" determinerCode="INSTANCE">
+                <id extension="84H" root="1.2.826.0.1285.0.1.10"/>
+                <code code="999" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.94"/>
+                <name>NHS COUNTY DURHAM CCG</name>
+              </Organization>
+            </healthCareProviderLicense>
+          </representedOrganization>
+        </AgentPerson>
+      </responsibleParty>
+      <pertinentInformation5 contextConductionInd="true" typeCode="PERT">
+        <seperatableInd value="false"/>
+        <pertinentPrescriptionTreatmentType classCode="OBS" moodCode="EVN">
+          <code code="PTT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+          <value code="0001" codeSystem="2.16.840.1.113883.2.1.3.2.4.16.36"/>
+        </pertinentPrescriptionTreatmentType>
+      </pertinentInformation5>
+      <pertinentInformation1 contextConductionInd="true" typeCode="PERT">
+        <seperatableInd value="true"/>
+        <pertinentDispensingSitePreference classCode="OBS" moodCode="EVN">
+          <code code="DSP" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+          <value code="P1" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.21"/>
+        </pertinentDispensingSitePreference>
+      </pertinentInformation1>
+      <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+        <seperatableInd value="true"/>
+        <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+        <pertinentLineItem classCode="SBADM" moodCode="RQO">
+          <id root="299C610B-F4F1-4EAC-A7D7-4FB6B0556E11"/>
+          <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+          <effectiveTime nullFlavor="NA"/>
+          <product contextControlCode="OP" typeCode="PRD">
+            <manufacturedProduct classCode="MANU">
+              <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                <code code="322237000" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Paracetamol 500mg soluble tablets"/>
+              </manufacturedRequestedMaterial>
+            </manufacturedProduct>
+          </product>
+          <component typeCode="COMP">
+            <seperatableInd value="false"/>
+            <lineItemQuantity classCode="SPLY" moodCode="RQO">
+              <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+              <quantity unit="1" value="100">
+                <translation code="428673006" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="tablet" value="100"/>
+              </quantity>
+            </lineItemQuantity>
+          </component>
+          <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+            <seperatableInd value="false"/>
+            <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+              <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+              <value>One tablet to be taken four times a day</value>
+            </pertinentDosageInstructions>
+          </pertinentInformation2>
+        </pertinentLineItem>
+      </pertinentInformation2>
+      <pertinentInformation2 contextConductionInd="true" inversionInd="false" negationInd="false" typeCode="PERT">
+        <seperatableInd value="true"/>
+        <templateId extension="CSAB_RM-NPfITUK10.sourceOf2" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+        <pertinentLineItem classCode="SBADM" moodCode="RQO">
+          <id root="5CB17F5A-11AC-4E18-825F-6470467238B3"/>
+          <code code="225426007" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Administration of therapeutic substance (procedure)"/>
+          <effectiveTime nullFlavor="NA"/>
+          <product contextControlCode="OP" typeCode="PRD">
+            <manufacturedProduct classCode="MANU">
+              <manufacturedRequestedMaterial classCode="MMAT" determinerCode="KIND">
+                <code code="39113611000001102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Salbutamol 100micrograms/dose inhaler CFC free"/>
+              </manufacturedRequestedMaterial>
+            </manufacturedProduct>
+          </product>
+          <component typeCode="COMP">
+            <seperatableInd value="false"/>
+            <lineItemQuantity classCode="SPLY" moodCode="RQO">
+              <code code="373784005" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Dispensing medication (procedure)"/>
+              <quantity unit="1" value="200">
+                <translation code="3317411000001100" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="dose" value="200"/>
+              </quantity>
+            </lineItemQuantity>
+          </component>
+          <pertinentInformation2 contextConductionInd="true" typeCode="PERT">
+            <seperatableInd value="false"/>
+            <pertinentDosageInstructions classCode="OBS" moodCode="EVN">
+              <code code="DI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+              <value>One dose to be taken five times a day</value>
+            </pertinentDosageInstructions>
+          </pertinentInformation2>
+        </pertinentLineItem>
+      </pertinentInformation2>
+      <pertinentInformation8 contextConductionInd="true" typeCode="PERT">
+        <seperatableInd value="false"/>
+        <pertinentTokenIssued classCode="OBS" moodCode="EVN">
+          <code code="TI" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+          <value value="false"/>
+        </pertinentTokenIssued>
+      </pertinentInformation8>
+      <pertinentInformation4 contextConductionInd="true" typeCode="PERT">
+        <seperatableInd value="false"/>
+        <pertinentPrescriptionType classCode="OBS" moodCode="EVN">
+          <code code="PT" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.30"/>
+          <value code="0101" codeSystem="2.16.840.1.113883.2.1.3.2.4.17.25"/>
+        </pertinentPrescriptionType>
+      </pertinentInformation4>
+    </pertinentPrescription>
+  </pertinentInformation1>
+  <pertinentInformation2 typeCode="PERT">
+    <templateId extension="CSAB_RM-NPfITUK10.pertinentInformation1" root="2.16.840.1.113883.2.1.3.2.4.18.2"/>
+    <pertinentCareRecordElementCategory classCode="CATEGORY" moodCode="EVN">
+      <code code="185361000000102" codeSystem="2.16.840.1.113883.2.1.3.2.4.15" displayName="Medication - care record element (record artifact)"/>
+      <component typeCode="COMP">
+        <actRef classCode="SBADM" moodCode="RQO">
+          <id root="299C610B-F4F1-4EAC-A7D7-4FB6B0556E11"/>
+        </actRef>
+      </component>
+      <component typeCode="COMP">
+        <actRef classCode="SBADM" moodCode="RQO">
+          <id root="5CB17F5A-11AC-4E18-825F-6470467238B3"/>
+        </actRef>
+      </component>
+    </pertinentCareRecordElementCategory>
+  </pertinentInformation2>
+</ParentPrescription>
