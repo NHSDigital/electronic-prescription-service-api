@@ -28,7 +28,7 @@
     "@types/jsdom": "^21.1.7",
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.11.0",
-    "axios-cookiejar-support": "^6.0.3",
+    "axios-cookiejar-support": "^6.0.4",
     "jsdom": "^26.1.0",
     "jsonwebtoken": "^9.0.2",
     "license-checker": "^25.0.1",
