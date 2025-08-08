@@ -200,7 +200,7 @@ jobs:
       - name: Retrieve AWS Account ID
         id: retrieve-deploy-account-id
         run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
-       
+
       - name: Login to Amazon ECR
         id: login-ecr-push-image
         run: |
@@ -231,7 +231,7 @@ jobs:
         working-directory: .github/scripts
         run: |
           ./check_ecr_image_scan_results.sh
-  
+
       - name: fix cdk.json for deployment
         run: |
           ./.github/scripts/fix_cdk_json.sh
@@ -260,6 +260,7 @@ jobs:
           SERVICE_CPU: "${{ inputs.SERVICE_CPU }}"
           SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+          IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
 
       - name: Show diff
         run: |
@@ -319,7 +320,7 @@ jobs:
           DRY_RUN: false
           ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
         run: ./.github/scripts/deploy_api.sh
-  
+
       - name: Deploy fhir-dispensing API
         shell: bash
         if: ${{ inputs.DEPLOY_APIGEE == true && always() && !failure() && !cancelled() }}
@@ -342,7 +343,7 @@ jobs:
           path: |
             ./.build/packages/specification/dist/fhir-dispensing.resolved.json
             ./.build/packages/specification/dist/fhir-prescribing.resolved.json
-  
+
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Prescribing Regression Tests
