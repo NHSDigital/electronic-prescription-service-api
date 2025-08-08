@@ -54,7 +54,7 @@ export class AuthClient {
     this.clientSecret = clientSecret
 
     this.environment = this.getEnvironment()
-    this.callbackUrl = "https://example.org/" // using /callback causes the website to return a 404, which upsets axios
+    this.callbackUrl = "https://google.com/" // using /callback causes the website to return a 404, which upsets axios
     this.state = this.getState()
   }
 

@@ -28,7 +28,7 @@ describe("getJobRoleCodeOrName", () => {
     const practitionerRole = new fhir.PractitionerRole()
     practitionerRole.code = [{coding: []}]
     const jobRoleCode = () => jrc.getJobRoleCodeOrName(practitionerRole)
-    expect(jobRoleCode).toThrowError(
+    expect(jobRoleCode).toThrow(
       new errors.TooFewValuesError(
         // eslint-disable-next-line max-len
         "Too few values submitted. Expected at least 1 element where system in [https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode, https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName]."
