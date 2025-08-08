@@ -353,6 +353,9 @@ export const parentPrescriptions = {
   validSignature: readXml(
     fs.readFileSync(path.join(__dirname, "./signed-prescriptions/ValidSignature.xml"), "utf-8")
   ) as hl7V3.ParentPrescriptionRoot,
+  jceSignature: readXml(
+    fs.readFileSync(path.join(__dirname, "./signed-prescriptions/jceValidSignature.xml"), "utf-8")
+  ) as hl7V3.ParentPrescriptionRoot,
   invalidSignature: readXml(
     fs.readFileSync(path.join(__dirname, "./signed-prescriptions/SignatureIsInvalid.xml"), "utf-8")
   ) as hl7V3.ParentPrescriptionRoot,

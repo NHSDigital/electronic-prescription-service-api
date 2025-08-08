@@ -24,6 +24,7 @@ describe("verifyPrescriptionSignature", () => {
     const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
     test("passes if prescriptions signature has valid fields", async () => {
       const result = await verifyPrescriptionSignature(validSignature, logger)
+      console.log("result =", result )
 
       expect(result).not.toContain("Invalid signature format")
     })
