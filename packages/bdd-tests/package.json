@@ -23,7 +23,7 @@
     "@types/fhir": "^0.0.41",
     "axios": "^1.11.0",
     "axios-cookiejar-support": "^6.0.3",
-    "babel-jest": "^30.0.4",
+    "babel-jest": "^30.0.5",
     "dom-parser": "^1.1.5",
     "dotenv": "^17.2.0",
     "expect": "^30.0.4",
