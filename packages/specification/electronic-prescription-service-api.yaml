@@ -160,7 +160,7 @@ info:
     ## Onboarding
     Your software must be approved by us before you can begin the EPS onboarding process and go live with this FHIR API. EPS 'onboarding' is the term used for the development and assurance required before IT suppliers can offer EPS to NHS organisations.
 
-    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/onboarding-and-assurance) page.
+    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir/onboarding-support-information) page.
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
