@@ -10,6 +10,7 @@ echo "Proxygen private key name: ${PROXYGEN_PRIVATE_KEY_NAME}"
 echo "Proxygen KID: ${PROXYGEN_KID}"
 echo "Dry run: ${DRY_RUN}"
 echo "ENABLE_MUTUAL_TLS: ${ENABLE_MUTUAL_TLS}"
+echo "is_pull_request: ${IS_PULL_REQUEST}"
 
 
 client_private_key=$(cat ~/.proxygen/tmp/client_private_key)
@@ -34,12 +35,11 @@ if [[ "$APIGEE_ENVIRONMENT" =~ ^(int|sandbox|prod)$ ]]; then
     spec_publish_lambda=lambda-resources-ProxygenProdSpecPublish
 fi
 
-is_pull_request=false
 instance_suffix=""
-if [[ ${STACK_NAME} =~ ^prescribe-dispense-(sandbox-)?pr-.* ]]; then
-    is_pull_request=true
+if [[ "${IS_PULL_REQUEST}" == "true" ]]; then
     # Extracting the PR ID from $STACK_NAME
     pr_id=$(echo "$STACK_NAME" | awk -F'-' '{print $NF}')
+    pr_id=3693
     instance_suffix=-"pr-${pr_id}"
 fi
 
@@ -47,7 +47,6 @@ fi
 apigee_api="${PROXYGEN_KID}"
 instance="${PROXYGEN_KID}${instance_suffix}"
 
-echo "Is pull request: ${is_pull_request}"
 echo "Proxy instance: ${instance}"
 echo "Apigee api: ${apigee_api}"
 
@@ -56,7 +55,7 @@ echo
 echo "Fixing the spec"
 # Find and replace the title
 title=$(jq -r '.info.title' "${SPEC_PATH}")
-if [[ "${is_pull_request}" == "true" ]]; then
+if [[ "${IS_PULL_REQUEST}" == "true" ]]; then
     jq --arg title "[PR-${pr_id}] $title" '.info.title = $title' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     echo "disabling monitoring for pull request deployment"
     jq '."x-nhsd-apim".monitoring = false' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
@@ -179,7 +178,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
     fi
 fi
 
-if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${is_pull_request}" == "false" ]]; then
+if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${IS_PULL_REQUEST}" == "false" ]]; then
     echo
     echo "Deploy the API spec to uat catalogue as it is internal-dev environment"
     if [[ "${DRY_RUN}" == "false" ]]; then

@@ -319,6 +319,7 @@ jobs:
           PROXYGEN_KID: fhir-prescribing
           DRY_RUN: false
           ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
         run: ./.github/scripts/deploy_api.sh
 
       - name: Deploy fhir-dispensing API
@@ -334,6 +335,7 @@ jobs:
           PROXYGEN_KID: fhir-dispensing
           DRY_RUN: false
           ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
         run: ./.github/scripts/deploy_api.sh
 
       - uses: actions/upload-artifact@v4
