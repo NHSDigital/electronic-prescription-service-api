@@ -98,6 +98,7 @@
     "desiredPeakClaimsCount": 1,
     "desiredOffPeakClaimsCount": 1,
     "serviceCpu": 2048,
-    "serviceMemory": 4096
+    "serviceMemory": 4096,
+    "cfnDriftDetectionGroup": "dummy_group"
   }
 }
