@@ -103,7 +103,7 @@ if [[ "${ENABLE_MUTUAL_TLS}" == "true" ]]; then
     if [[ "${DRY_RUN}" == "false" ]]; then
         jq -n --arg apiName "${apigee_api}" \
             --arg environment "${APIGEE_ENVIRONMENT}" \
-            --arg secretName "fhir-facade-mtls-1" \
+            --arg secretName "fhir-facade-mtls-recovery" \
             --arg secretKey "${client_private_key}" \
             --arg secretCert "${client_cert}" \
             --arg kid "${PROXYGEN_KID}" \
