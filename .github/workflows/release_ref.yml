@@ -75,6 +75,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}

@@ -67,6 +67,9 @@ jq --arg version "${VERSION_NUMBER}" '.info.version = $version' "${SPEC_PATH}" >
 # Find and replace the x-nhsd-apim.target.url value
 jq --arg stack_name "${STACK_NAME}" --arg aws_env "${AWS_ENVIRONMENT}" '.["x-nhsd-apim"].target.url = "https://\($stack_name).\($aws_env).eps.national.nhs.uk"' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 
+# Find and replace the x-nhsd-apim.target.secret value
+jq --arg mtls_key "${MTLS_KEY}"  '.["x-nhsd-apim"].target.security.secret = "\($mtls_key)"' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+
 # Find and replace the servers object
 # Find and replace securitySchemes
 # set asid and party key as required in prod
@@ -103,7 +106,7 @@ if [[ "${ENABLE_MUTUAL_TLS}" == "true" ]]; then
     if [[ "${DRY_RUN}" == "false" ]]; then
         jq -n --arg apiName "${apigee_api}" \
             --arg environment "${APIGEE_ENVIRONMENT}" \
-            --arg secretName "fhir-facade-mtls-recovery" \
+            --arg secretName "${MTLS_KEY}" \
             --arg secretKey "${client_private_key}" \
             --arg secretCert "${client_cert}" \
             --arg kid "${PROXYGEN_KID}" \
