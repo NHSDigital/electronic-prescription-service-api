@@ -180,17 +180,11 @@ async function verifySignatureValid(signatureRoot: ElementCompact, certificate: 
   //console.log( "verifySignatureValid - baddigest", baddigest)
   // eslint-disable-next-line max-len
   //const digest= "<SignedInfo><CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/><SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/><Reference><Transforms><Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/></Transforms><DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/><DigestValue>C0ljh8shA++0KSPIVPQfHfK8NBY=</DigestValue></Reference></SignedInfo>"
-  console.log( "verifySignatureValid - digest", digest)
 
   signatureVerifier.update(digest)
   const signature = signatureRoot.Signature
   const signatureValue = signature.SignatureValue._text
 
-  console.log(" verifySignatureValid - signature ", signature)
-  console.log(" verifySignatureValid - signature value", signatureValue)
-  console.log( "certificate.publicKey", certificate.publicKey)
-
   const res = signatureVerifier.verify(certificate.publicKey, signatureValue, "base64")
-  console.log("verifySignatureValid , result ", res )
   return res
 }

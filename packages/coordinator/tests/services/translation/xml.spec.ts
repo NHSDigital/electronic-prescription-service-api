@@ -16,8 +16,6 @@ const defaultCanonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
 describe("writeXmlStringCanonicalized canonicalizes signed info XML correctly", () => {
   test("writeXmlStringCanonicalized for signed info returns correct value", async () => {
 
-    console.log( "path :", path.join(__dirname, "../../resources/signature-fragments/signedinfo.xml"))
-
     const digestStr = fs.readFileSync(
       path.join(__dirname, "../../resources/signature-fragments/signedinfo.xml"),
       "utf8"
@@ -28,7 +26,9 @@ describe("writeXmlStringCanonicalized canonicalizes signed info XML correctly", 
     const fragments = digest
     const actualOutput = await writeXmlStringCanonicalized(fragments, defaultCanonicalizationMethod)
 
+    console.log("after canonicalization ", digest)
     console.log("after canonicalization ", actualOutput)
+
     expect(actualOutput).toEqual("this will fail")
   })
 
@@ -41,6 +41,10 @@ describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
     const fragments = TestResources.specification[0].hl7V3SignatureFragments
     const actualOutput = await writeXmlStringCanonicalized(fragments, defaultCanonicalizationMethod)
     const expectedOutput = TestResources.specification[0].hl7V3FragmentsCanonicalized
+
+    console.log("actual", actualOutput )
+    console.log("expected", expectedOutput)
+
     expect(actualOutput).toEqual(expectedOutput)
   })
 

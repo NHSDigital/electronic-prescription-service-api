@@ -96,6 +96,7 @@ describe("verifyPrescriptionSignature", () => {
 
     test("passes if prescription has digest that matches prescription", async () => {
       const result = await verifyPrescriptionSignature(validSignature, logger)
+      console.log( "RESULT", result)
       expect(result).not.toContain("Signature doesn't match prescription")
     })
 
