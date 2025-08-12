@@ -1348,7 +1348,7 @@ x-nhsd-apim:
     url: https://prescribe-dispense.dev.eps.national.nhs.uk
     security:
       type: mtls
-      secret: fhir-facade-mtls-recovery
+      secret: fhir-facade-mtls-1
   target-identity:
     - name: cis2-uuid
       header: "nhsd-identity-uuid"
