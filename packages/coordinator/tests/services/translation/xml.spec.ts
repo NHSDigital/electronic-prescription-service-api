@@ -5,14 +5,46 @@ import {
   writeXmlStringPretty
 } from "../../../src/services/serialisation/xml"
 import * as TestResources from "../../resources/test-resources"
+import path from "path";
+import fs from "fs";
+import * as XmlJs from "xml-js";
+import {ElementCompact} from "xml-js";
 
 const defaultCanonicalizationMethod = "http://www.w3.org/2001/10/xml-exc-c14n#"
+
+
+describe("writeXmlStringCanonicalized canonicalizes signed info XML correctly", () => {
+  test("writeXmlStringCanonicalized for signed info returns correct value", async () => {
+
+    const digestStr = fs.readFileSync(
+      path.join(__dirname, "../../resources/signature-fragments/signedinfo.xml"),
+      "utf8"
+    )
+
+    const digest = XmlJs.xml2js(digestStr, {compact: true}) as ElementCompact
+
+    const fragments = digest
+    const actualOutput = await writeXmlStringCanonicalized(fragments, defaultCanonicalizationMethod)
+
+    console.log("after canonicalization ", digest)
+    console.log("after canonicalization ", actualOutput)
+
+    expect(actualOutput).toEqual("this will fail")
+  })
+
+  //TODO - add more tests to prove that XML is correctly canonicalized
+})
+
 
 describe("writeXmlStringCanonicalized canonicalizes XML correctly", () => {
   test("writeXmlStringCanonicalized returns correct value", async () => {
     const fragments = TestResources.specification[0].hl7V3SignatureFragments
     const actualOutput = await writeXmlStringCanonicalized(fragments, defaultCanonicalizationMethod)
     const expectedOutput = TestResources.specification[0].hl7V3FragmentsCanonicalized
+
+    console.log("actual", actualOutput )
+    console.log("expected", expectedOutput)
+
     expect(actualOutput).toEqual(expectedOutput)
   })
 

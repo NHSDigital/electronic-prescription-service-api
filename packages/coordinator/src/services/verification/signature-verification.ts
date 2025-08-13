@@ -99,11 +99,18 @@ async function verifySignatureDigestMatchesPrescription(
   signatureRoot: ElementCompact
 ): Promise<boolean> {
   const digestOnSignature = await extractDigestFromSignatureRoot(signatureRoot)
+
+  console.log( "digestOnSignature ", digestOnSignature)
+
   const calculatedDigest = await calculateDigestFromParentPrescription(
     parentPrescription,
     signatureRoot,
     getHashingAlgorithmFromSignatureRoot(signatureRoot)
   )
+
+  console.log( "calculatedDigest ", calculatedDigest)
+  console.log( "digestOnSignature === calculatedDigest ", digestOnSignature === calculatedDigest)
+
   return digestOnSignature === calculatedDigest
 }
 
@@ -169,8 +176,15 @@ async function verifySignatureValid(signatureRoot: ElementCompact, certificate: 
   const signatureMethodSha256OrSha1 = extractSignatureMethodFromSignatureRoot(signatureRoot)
   const signatureVerifier = crypto.createVerify(signatureMethodSha256OrSha1)
   const digest = await extractDigestFromSignatureRoot(signatureRoot)
+
+  //console.log( "verifySignatureValid - baddigest", baddigest)
+  // eslint-disable-next-line max-len
+  //const digest= "<SignedInfo><CanonicalizationMethod Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/><SignatureMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#rsa-sha1\"/><Reference><Transforms><Transform Algorithm=\"http://www.w3.org/2001/10/xml-exc-c14n#\"/></Transforms><DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\"/><DigestValue>C0ljh8shA++0KSPIVPQfHfK8NBY=</DigestValue></Reference></SignedInfo>"
+
   signatureVerifier.update(digest)
   const signature = signatureRoot.Signature
   const signatureValue = signature.SignatureValue._text
-  return signatureVerifier.verify(certificate.publicKey, signatureValue, "base64")
+
+  const res = signatureVerifier.verify(certificate.publicKey, signatureValue, "base64")
+  return res
 }
