@@ -20,7 +20,7 @@ jobs:
       version: ${{ steps.set_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Set version
         id: set_version
         run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
@@ -45,7 +45,7 @@ jobs:
       spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
