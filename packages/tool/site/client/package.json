@@ -50,7 +50,7 @@
     "style-loader": "^4.0.0",
     "styled-components": "^6.1.19",
     "uuid": "^11.1.0",
-    "webpack": "^5.101.1",
+    "webpack": "^5.101.2",
     "webpack-cli": "^6.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
