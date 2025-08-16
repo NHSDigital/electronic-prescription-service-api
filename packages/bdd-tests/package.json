@@ -18,7 +18,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/preset-env": "^7.28.0",
+    "@babel/preset-env": "^7.28.3",
     "@cucumber/cucumber": "^11.3.0",
     "@types/fhir": "^0.0.41",
     "axios": "^1.11.0",
