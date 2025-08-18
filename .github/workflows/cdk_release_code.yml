@@ -93,6 +93,9 @@ on:
       SERVICE_MEMORY:
         type: number
         required: true
+      MTLS_KEY:
+        type: string
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -133,7 +136,7 @@ jobs:
 
     steps:
       - name: Checkout local github actions
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
@@ -319,6 +322,8 @@ jobs:
           PROXYGEN_KID: fhir-prescribing
           DRY_RUN: false
           ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+          MTLS_KEY: ${{ inputs.MTLS_KEY }}
         run: ./.github/scripts/deploy_api.sh
 
       - name: Deploy fhir-dispensing API
@@ -334,6 +339,8 @@ jobs:
           PROXYGEN_KID: fhir-dispensing
           DRY_RUN: false
           ENABLE_MUTUAL_TLS: ${{ inputs.ENABLE_MUTUAL_TLS }}
+          IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+          MTLS_KEY: ${{ inputs.MTLS_KEY }}
         run: ./.github/scripts/deploy_api.sh
 
       - uses: actions/upload-artifact@v4

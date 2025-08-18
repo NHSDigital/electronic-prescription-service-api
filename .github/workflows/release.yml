@@ -20,7 +20,7 @@ jobs:
       version: ${{ steps.set_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
       - name: Set version
         id: set_version
         run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
@@ -45,7 +45,7 @@ jobs:
       spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
@@ -148,6 +148,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -194,6 +195,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -243,6 +245,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -288,6 +291,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -332,6 +336,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -378,6 +383,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -419,6 +425,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}

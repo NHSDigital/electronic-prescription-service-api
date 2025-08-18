@@ -10,6 +10,8 @@ echo "Proxygen private key name: ${PROXYGEN_PRIVATE_KEY_NAME}"
 echo "Proxygen KID: ${PROXYGEN_KID}"
 echo "Dry run: ${DRY_RUN}"
 echo "ENABLE_MUTUAL_TLS: ${ENABLE_MUTUAL_TLS}"
+echo "IS_PULL_REQUEST: ${IS_PULL_REQUEST}"
+echo "MTLS_KEY: ${MTLS_KEY}"
 
 
 client_private_key=$(cat ~/.proxygen/tmp/client_private_key)
@@ -34,10 +36,8 @@ if [[ "$APIGEE_ENVIRONMENT" =~ ^(int|sandbox|prod)$ ]]; then
     spec_publish_lambda=lambda-resources-ProxygenProdSpecPublish
 fi
 
-is_pull_request=false
 instance_suffix=""
-if [[ ${STACK_NAME} =~ ^prescribe-dispense-(sandbox-)?pr-.* ]]; then
-    is_pull_request=true
+if [[ "${IS_PULL_REQUEST}" == "true" ]]; then
     # Extracting the PR ID from $STACK_NAME
     pr_id=$(echo "$STACK_NAME" | awk -F'-' '{print $NF}')
     instance_suffix=-"pr-${pr_id}"
@@ -47,7 +47,6 @@ fi
 apigee_api="${PROXYGEN_KID}"
 instance="${PROXYGEN_KID}${instance_suffix}"
 
-echo "Is pull request: ${is_pull_request}"
 echo "Proxy instance: ${instance}"
 echo "Apigee api: ${apigee_api}"
 
@@ -56,7 +55,7 @@ echo
 echo "Fixing the spec"
 # Find and replace the title
 title=$(jq -r '.info.title' "${SPEC_PATH}")
-if [[ "${is_pull_request}" == "true" ]]; then
+if [[ "${IS_PULL_REQUEST}" == "true" ]]; then
     jq --arg title "[PR-${pr_id}] $title" '.info.title = $title' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
     echo "disabling monitoring for pull request deployment"
     jq '."x-nhsd-apim".monitoring = false' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
@@ -67,6 +66,9 @@ jq --arg version "${VERSION_NUMBER}" '.info.version = $version' "${SPEC_PATH}" >
 
 # Find and replace the x-nhsd-apim.target.url value
 jq --arg stack_name "${STACK_NAME}" --arg aws_env "${AWS_ENVIRONMENT}" '.["x-nhsd-apim"].target.url = "https://\($stack_name).\($aws_env).eps.national.nhs.uk"' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
+
+# Find and replace the x-nhsd-apim.target.secret value
+jq --arg mtls_key "${MTLS_KEY}"  '.["x-nhsd-apim"].target.security.secret = "\($mtls_key)"' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 
 # Find and replace the servers object
 # Find and replace securitySchemes
@@ -104,7 +106,7 @@ if [[ "${ENABLE_MUTUAL_TLS}" == "true" ]]; then
     if [[ "${DRY_RUN}" == "false" ]]; then
         jq -n --arg apiName "${apigee_api}" \
             --arg environment "${APIGEE_ENVIRONMENT}" \
-            --arg secretName "fhir-facade-mtls-1" \
+            --arg secretName "${MTLS_KEY}" \
             --arg secretKey "${client_private_key}" \
             --arg secretCert "${client_cert}" \
             --arg kid "${PROXYGEN_KID}" \
@@ -182,7 +184,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
     fi
 fi
 
-if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${is_pull_request}" == "false" ]]; then
+if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${IS_PULL_REQUEST}" == "false" ]]; then
     echo
     echo "Deploy the API spec to uat catalogue as it is internal-dev environment"
     if [[ "${DRY_RUN}" == "false" ]]; then
