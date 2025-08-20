@@ -145,7 +145,7 @@ jobs:
 
       - name: Configure AWS Credentials
         id: connect-aws-pull-image
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.CDK_PULL_IMAGE_ROLE }}
