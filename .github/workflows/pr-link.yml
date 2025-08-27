@@ -1,5 +1,5 @@
 name: PR Link ticket
-on: 
+on:
   pull_request:
     types: [opened]
 jobs:
@@ -37,7 +37,7 @@ jobs:
       - name: Comment on PR with link to JIRA ticket
         if: contains(github.event.pull_request.head.ref, 'aea-') || contains(github.event.pull_request.head.ref, 'AEA-') || contains(github.event.pull_request.head.ref, 'apm-') || contains(github.event.pull_request.head.ref, 'APM-') || contains(github.event.pull_request.head.ref, 'apmspii-') || contains(github.event.pull_request.head.ref, 'APMSPII-') || contains(github.event.pull_request.head.ref, 'adz-') || contains(github.event.pull_request.head.ref, 'ADZ-') || contains(github.event.pull_request.head.ref, 'amb-') || contains(github.event.pull_request.head.ref, 'AMB-')
         continue-on-error: true
-        uses: unsplash/comment-on-pr@master
+        uses: unsplash/comment-on-pr@b5610c6125a7197eaec80072ea35ef53e1fc6035
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
