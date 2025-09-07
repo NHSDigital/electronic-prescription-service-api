@@ -87,7 +87,7 @@ jobs:
       - name: Create release (tags and master)
         id: create-release
         # using commit hash for version v1.13.0
-        uses: ncipollo/release-action@bcfe5470707e8832e12347755757cec0eb3c22af
+        uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
