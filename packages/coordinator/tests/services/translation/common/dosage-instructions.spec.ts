@@ -1,5 +1,5 @@
 import {fhir} from "@models"
-import {pino} from "pino"
+import {Logger} from "pino"
 import {
   getDosageInstruction,
   getDosageInstructionFromMedicationDispense
@@ -8,7 +8,7 @@ import {MedicationDispense} from "../../../../../models/fhir"
 import {LosslessNumber} from "lossless-json"
 
 describe("dosage-instructions", () => {
-  const logger: pino.Logger = jest.createMockFromModule("pino")
+  const logger: Logger = jest.createMockFromModule("pino")
   let medicationDispense: Partial<fhir.MedicationDispense>
   let dosageInstruction: Array<Partial<fhir.Dosage>>
   let expectedDosageInstruction: string
