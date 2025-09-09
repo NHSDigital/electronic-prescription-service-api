@@ -1,11 +1,11 @@
 import {fhir} from "@models"
-import {pino} from "pino"
+import {Logger} from "pino"
 import {auditDoseToTextIfEnabled} from "../request/dosage"
 import {toMap} from "../../../../src/utils/collections"
 
 export function getDosageInstructionFromMedicationDispense(
   fhirMedicationDispense: fhir.MedicationDispense,
-  logger: pino.Logger
+  logger: Logger
 ): string {
   auditDoseToTextIfEnabled(fhirMedicationDispense.dosageInstruction, logger)
 

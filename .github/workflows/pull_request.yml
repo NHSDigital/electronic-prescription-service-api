@@ -24,7 +24,7 @@ jobs:
       version: ${{ steps.get_issue_number.outputs.version_number }}
 
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         name: get issue number
         id: get_issue_number
         with:
