@@ -54,7 +54,9 @@ export default [
       request.logger.info(`Request built, sending to Spine: ${JSON.stringify(spineRequest)}`)
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
       request.logger.info(`Received Spine response: ${JSON.stringify(spineResponse)}`)
-      return await handleResponse(request, spineResponse, responseToolkit)
+      const resp = await handleResponse(request, spineResponse, responseToolkit)
+      request.logger.info(`Returning response to consumer: redacted `)
+      return resp
     })
   }
 ]
