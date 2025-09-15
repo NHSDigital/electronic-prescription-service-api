@@ -28,6 +28,7 @@ export default [
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$process-message`,
     handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+      request.log("info", "TS Processing $process-message request")
       const bundle = await getPayload(request) as fhir.Bundle
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle), HashingAlgorithm.SHA256)})
 
@@ -50,7 +51,9 @@ export default [
 
       request.logger.info("Building Spine request")
       const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
+      request.logger.info(`Request built, sending to Spine: ${JSON.stringify(spineRequest)}`)
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
+      request.logger.info(`Received Spine response: ${JSON.stringify(spineResponse)}`)
       return await handleResponse(request, spineResponse, responseToolkit)
     })
   }
