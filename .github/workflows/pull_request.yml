@@ -9,7 +9,7 @@ env:
 
 jobs:
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.1.0
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.1.1
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -24,7 +24,7 @@ jobs:
       version: ${{ steps.get_issue_number.outputs.version_number }}
 
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         name: get issue number
         id: get_issue_number
         with:
