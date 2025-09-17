@@ -29,7 +29,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.12.2",
     "axios-cookiejar-support": "^6.0.4",
-    "jsdom": "^26.1.0",
+    "jsdom": "^27.0.0",
     "jsonwebtoken": "^9.0.2",
     "license-checker": "^25.0.1",
     "lossless-json": "^4.2.0",
