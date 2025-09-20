@@ -19,9 +19,13 @@ updates:
     # default location of `.github/workflows`
     directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
+      time: "18:00" # UTC
+    open-pull-requests-limit: 20
     commit-message:
       prefix: "Upgrade: [dependabot] - "
+
 
   ###################################
   # NPM workspace  ##################
@@ -29,29 +33,40 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "daily"
-    versioning-strategy: increase
+      interval: "weekly"
+      day: "friday"
+      time: "18:00" # UTC
     open-pull-requests-limit: 20
     commit-message:
       prefix: "Upgrade: [dependabot] - "
+    versioning-strategy: increase
+
 
   # Coordinator Container
   - package-ecosystem: "docker"
     directory: "/packages/coordinator"
     rebase-strategy: "disabled"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
+      time: "18:00" # UTC
+    open-pull-requests-limit: 20
     commit-message:
       prefix: "Upgrade: [dependabot] - "
+
 
   # EPSAT Container
   - package-ecosystem: "docker"
     directory: "/packages/tool/site"
     rebase-strategy: "disabled"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "friday"
+      time: "18:00" # UTC
+    open-pull-requests-limit: 20
     commit-message:
       prefix: "Upgrade: [dependabot] - "
+
 
   ###################################
   # Poetry  #########################
@@ -59,7 +74,10 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
-    versioning-strategy: increase
+      interval: "weekly"
+      day: "friday"
+      time: "18:00" # UTC
+    open-pull-requests-limit: 20
     commit-message:
       prefix: "Upgrade: [dependabot] - "
+    versioning-strategy: increase
