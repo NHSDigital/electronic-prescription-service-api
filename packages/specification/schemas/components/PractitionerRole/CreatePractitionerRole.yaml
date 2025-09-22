@@ -41,7 +41,6 @@ properties:
               - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NmcNumber
               - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/GphcNumber
               - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/HcpcNumber
-              - $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
   organization:
     type: object
     description: | 

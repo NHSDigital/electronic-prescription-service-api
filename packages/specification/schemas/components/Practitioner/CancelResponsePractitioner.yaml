@@ -14,11 +14,9 @@ properties:
     default: "Practitioner"
   identifier:
     type: array
-    description: An array containing the prescriber's professional codes and identifiers.
+    description: An array containing the prescriber's identifier.
     items:
-      oneOf:
-      - $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
-      - $ref: ../_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
+      $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
   name:
     type: array
     required:

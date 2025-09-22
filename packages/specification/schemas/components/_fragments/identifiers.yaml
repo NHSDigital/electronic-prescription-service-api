@@ -92,18 +92,6 @@ components:
           type: string
           description: SDS User Identifier.
           example: "555086689107"
-    ProfessionalCode:
-      type: object
-      required: [system, value]
-      properties:
-        system:
-          type: string
-          description: Codesystem URL for the Professional Code.
-          enum: [https://fhir.hl7.org.uk/Id/professional-code]
-        value:
-          type: string
-          description: The Professional Code.
-          example: "6095103"
     DinNumber:
       type: object
       required: [system, value]
