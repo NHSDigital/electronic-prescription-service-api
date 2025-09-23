@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import axios from "axios"
 import jwt from "jsonwebtoken"
 import {
@@ -13,6 +12,7 @@ import {getSessionValue} from "../session"
 import {isDev} from "../environment"
 import {getPrNumber} from "../../routes/helpers"
 import {Ping} from "../../routes/health/get-status"
+// add an extra line to keep gitsecrets happy
 
 export class LiveSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -34,8 +34,8 @@ export class LiveSigningClient implements SigningClient {
       "nhsd-identity-authentication-method": `[${signingOptions}]`,
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
-      "x-request-id": uuid.v4(),
-      "x-correlation-id": uuid.v4()
+      "x-request-id": crypto.randomUUID(),
+      "x-correlation-id": crypto.randomUUID()
     }
 
     const payload = {
@@ -65,8 +65,8 @@ export class LiveSigningClient implements SigningClient {
     const url = `${baseUrl}/signatureresponse/${token}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
-      "x-request-id": uuid.v4(),
-      "x-correlation-id": uuid.v4()
+      "x-request-id": crypto.randomUUID(),
+      "x-correlation-id": crypto.randomUUID()
     }
     return (await axios.get<SignatureDownloadResponse>(url, {
       headers: headers

@@ -1,7 +1,6 @@
 import {fhir} from "@models"
 import {InteractionObject, PactOptions} from "@pact-foundation/pact"
 import path from "path"
-import * as uuid from "uuid"
 import * as LosslessJson from "lossless-json"
 import {HTTPMethod} from "@pact-foundation/pact/src/common/request"
 import {AnyTemplate} from "@pact-foundation/pact/src/dsl/matchers"
@@ -174,8 +173,8 @@ export const successfulOperationOutcome = {
 }
 
 export function getHeaders(): {[header: string]: string} {
-  const requestId = uuid.v4()
-  const correlationId = uuid.v4()
+  const requestId = crypto.randomUUID()
+  const correlationId = crypto.randomUUID()
   return {
     "Content-Type": "application/fhir+json; fhirVersion=4.0",
     "X-Request-ID": requestId,

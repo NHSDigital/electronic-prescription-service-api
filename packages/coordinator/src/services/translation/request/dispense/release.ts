@@ -1,5 +1,4 @@
 import {fhir, hl7V3} from "@models"
-import * as uuid from "uuid"
 import {getAgentParameter, getIdentifierParameterOrNullByName, getOwnerParameter} from "../../common"
 import {convertMomentToHl7V3DateTime} from "../../common/dateTime"
 import moment from "moment"
@@ -26,7 +25,7 @@ export function createPatientReleaseRequest(
   organization: fhir.Organization,
   prescriptionIdValue: string
 ): hl7V3.PatientPrescriptionReleaseRequestWrapper {
-  const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
+  const hl7Id = new hl7V3.GlobalIdentifier(crypto.randomUUID())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.PatientPrescriptionReleaseRequest(hl7Id, timestamp)
   hl7Release.author = createAuthor(practitionerRole, organization)
@@ -39,7 +38,7 @@ export function createNominatedReleaseRequest(
   practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization
 ): hl7V3.NominatedPrescriptionReleaseRequestWrapper {
-  const hl7Id = new hl7V3.GlobalIdentifier(uuid.v4())
+  const hl7Id = new hl7V3.GlobalIdentifier(crypto.randomUUID())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
   hl7Release.author = createAuthor(practitionerRole, organization)
