@@ -46,7 +46,7 @@ info:
 
     ### Documentation
     This documentation provides important context
-    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
+    * [Dictionary of Medicines and Devices (dm+d)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
     * [Requirements and Guidance for Endorsement in the Electronic Prescription Service (EPS)](https://www.nhsbsa.nhs.uk/sites/default/files/2023-03/NHSBSAGuidanceforEndorsement_v8.0.pdf) - guidance on handling prescription types, prescription endorsements, and patient charge exemptions within EPS.
 
     ### Guidance for developers and product owners
