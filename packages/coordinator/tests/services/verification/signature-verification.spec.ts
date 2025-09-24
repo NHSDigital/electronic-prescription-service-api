@@ -24,6 +24,8 @@ describe("verifyPrescriptionSignature", () => {
     const validSignature = TestResources.parentPrescriptions.validSignature.ParentPrescription
     test("passes if prescriptions signature has valid fields", async () => {
       const result = await verifyPrescriptionSignature(validSignature, logger)
+      console.log("result =", result )
+
       expect(result).not.toContain("Invalid signature format")
     })
 
@@ -94,6 +96,7 @@ describe("verifyPrescriptionSignature", () => {
 
     test("passes if prescription has digest that matches prescription", async () => {
       const result = await verifyPrescriptionSignature(validSignature, logger)
+      console.log( "RESULT", result)
       expect(result).not.toContain("Signature doesn't match prescription")
     })
 
