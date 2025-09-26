@@ -196,7 +196,7 @@ test("Medication is not replaced when form value is true and medication is not r
 
   expect(() => {
     createDispenseNotification(messageHeader, patient, medicationRequests, dispenseFormValues, null)
-  }).toThrowError("There is no alternative medication available for this request.")
+  }).toThrow("There is no alternative medication available for this request.")
 })
 
 test("MessageHeader contains the replaced dispense notification when creating an amend dispense notification", () => {

@@ -136,7 +136,7 @@ describe("convertOrganizationAndProviderLicense", () => {
         expect(() => {
           bundle = bundleOf([messageHeader, organization1, organization2, healthcareService])
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if Location is ambiguous", () => {
@@ -145,7 +145,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             reference: `urn:uuid:${uuid.v4()}`
           })
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test.each([
@@ -157,7 +157,7 @@ describe("convertOrganizationAndProviderLicense", () => {
         expect(() => {
           delete (healthcareService as unknown as Record<string, unknown>)[field]
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if telecom is ambiguous", () => {
@@ -167,14 +167,14 @@ describe("convertOrganizationAndProviderLicense", () => {
             value: "44444444444"
           })
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if address not present in Location", () => {
         expect(() => {
           delete location.address
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test.each([
@@ -225,7 +225,7 @@ describe("convertOrganizationAndProviderLicense", () => {
         expect(() => {
           delete (organization1 as unknown as Record<string, unknown>)[field]
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if address is ambiguous", () => {
@@ -235,7 +235,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             line: ["Organization 1 Mystery Alternative Address"]
           })
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if telecom is ambiguous", () => {
@@ -245,7 +245,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             value: "55555555555"
           })
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("uses Organization for organization details if Healthcare Service not present", () => {
@@ -304,7 +304,7 @@ describe("convertOrganizationAndProviderLicense", () => {
           expect(() => {
             delete (organization2 as unknown as Record<string, unknown>)[field]
             convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-          }).toThrowError(errors.FhirMessageProcessingError)
+          }).toThrow(errors.FhirMessageProcessingError)
         })
 
         test.each([
@@ -340,7 +340,7 @@ describe("convertOrganizationAndProviderLicense", () => {
           expect(() => {
             delete (organization1 as unknown as Record<string, unknown>)[field]
             convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-          }).toThrowError(errors.FhirMessageProcessingError)
+          }).toThrow(errors.FhirMessageProcessingError)
         })
 
         test("uses Organization for organization details", () => {

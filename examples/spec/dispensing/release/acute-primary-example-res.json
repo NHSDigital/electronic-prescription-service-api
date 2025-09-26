@@ -18,7 +18,7 @@
         "link": [
           {
             "relation": "self",
-            "url": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/Task/$release"
+            "url": "https://sandbox.api.service.nhs.uk/fhir-dispensing/Task/$release"
           }
         ],
         "total": 1,
@@ -50,7 +50,7 @@
                     },
                     "destination": [
                       {
-                        "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/$post-message",
+                        "endpoint": "https://sandbox.api.service.nhs.uk/fhir-dispensing/$post-message",
                         "receiver": {
                           "identifier": {
                             "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -895,7 +895,7 @@
                     },
                     "source": {
                       "name": "NHS Spine",
-                      "endpoint": "https://internal-dev.api.service.nhs.uk/electronic-prescriptions/$process-message"
+                      "endpoint": "https://internal-dev.api.service.nhs.uk/fhir-dispensing/$process-message"
                     },
                     "response": {
                       "identifier": "264fe32e-7217-43d2-8954-a87f9da514b8",

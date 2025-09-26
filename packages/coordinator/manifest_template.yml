@@ -2,12 +2,16 @@ APIGEE_ENVIRONMENTS:
 - display_name: Internal Development
   make_spec_visible: true
   name: internal-dev
+  ratelimit: 9600pm
+  quota: 9600
 - display_name: Internal Development Sandbox
   make_spec_visible: true
   name: internal-dev-sandbox
 - display_name: Internal QA
   make_spec_visible: true
   name: internal-qa
+  ratelimit: 9600pm
+  quota: 9600
 - display_name: Internal QA Sandbox
   make_spec_visible: true
   name: internal-qa-sandbox

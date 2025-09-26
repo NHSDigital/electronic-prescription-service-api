@@ -30,7 +30,7 @@
         },
         "destination": [
           {
-            "endpoint": "https://int.api.service.nhs.uk/electronic-prescriptions/$process-message",
+            "endpoint": "https://int.api.service.nhs.uk/fhir-prescribing/$process-message",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",

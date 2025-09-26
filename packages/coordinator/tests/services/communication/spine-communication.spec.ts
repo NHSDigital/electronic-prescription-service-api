@@ -5,6 +5,7 @@ import fs from "fs"
 import {spine} from "@models"
 import {MtlsSpineClient} from "../../../src/services/communication/mtls-spine-client"
 import {LiveSpineClient} from "../../../src/services/communication/live-spine-client"
+import {pollingTimeout, defaultPollingDelay, initialPollingDelay} from "../../../src/services/communication/common"
 import path from "path"
 import pino from "pino"
 
@@ -43,8 +44,7 @@ describe.each([
 
   test("Successful send response returns non pollable result when spine returns pollable", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location",
-      "retry-after": 100
+      "content-location": "/_poll/test-content-location"
     })
     mock.onGet().reply(200, "foo")
 
@@ -56,14 +56,11 @@ describe.each([
 
   test("Successful send response calls polling twice when poll result returned first", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location",
-      "retry-after": 100
+      "content-location": "/_poll/test-content-location"
     })
     mock
       .onGet()
-      .replyOnce(202, "foo", {
-        "retry-after": 100
-      })
+      .replyOnce(202, "foo")
       .onGet()
       .replyOnce(200, "foo")
 
@@ -74,17 +71,17 @@ describe.each([
     expect(spineResponse.statusCode).toBe(200)
     expect(spine.isPollable(spineResponse)).toBe(false)
 
-    const firstMessage = "First call, delay 100 milliseconds before checking result"
-    const secondMessage = "Waiting 100 milliseconds before polling again. Attempt 1"
+    const firstMessage = `First call, delay ${initialPollingDelay} milliseconds before checking result`
+    const secondMessage = `Waiting ${defaultPollingDelay} milliseconds before polling again. Attempt 1`
     expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 100,
+      initialPollingDelay: initialPollingDelay,
       attempt: 0,
-      totalPollingTime: 100
+      totalPollingTime: initialPollingDelay
     }, firstMessage)
     expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 100,
+      defaultPollingDelay: defaultPollingDelay,
       attempt: 1,
-      totalPollingTime: 200
+      totalPollingTime: defaultPollingDelay+initialPollingDelay
     },
     secondMessage)
 
@@ -94,14 +91,11 @@ describe.each([
 
   test("Successful send response calls polling twice when poll returns empty 200 response", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location",
-      "retry-after": 100
+      "content-location": "/_poll/test-content-location"
     })
     mock
       .onGet()
-      .replyOnce(200, "", {
-        "retry-after": 100
-      })
+      .replyOnce(200, "")
       .onGet()
       .replyOnce(200, "foo")
 
@@ -113,67 +107,24 @@ describe.each([
     expect((spineResponse as spine.SpineDirectResponse<string>).body).toEqual("foo")
     expect(spine.isPollable(spineResponse)).toBe(false)
 
-    const firstMessage = "First call, delay 100 milliseconds before checking result"
-    const secondMessage = "Waiting 100 milliseconds before polling again. Attempt 1"
+    const firstMessage = `First call, delay ${initialPollingDelay} milliseconds before checking result`
+    const secondMessage = `Waiting ${defaultPollingDelay} milliseconds before polling again. Attempt 1`
     expect(loggerSpy).toHaveBeenCalledWith("Empty body returned from spine - treating as 202 response")
     expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 100,
+      initialPollingDelay: initialPollingDelay,
       attempt: 0,
-      totalPollingTime: 100
+      totalPollingTime: initialPollingDelay
     }, firstMessage)
     expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 100,
+      defaultPollingDelay: defaultPollingDelay,
       attempt: 1,
-      totalPollingTime: 200
+      totalPollingTime: defaultPollingDelay+initialPollingDelay
     },
     secondMessage)
 
     loggerSpy.mockRestore()
 
   }, 10000)
-
-  test.each([
-    {description: "Successful send response uses default polling when no retry-after",
-      headers: {}},
-    {description: "Successful send response uses default polling when retry-after is not a number",
-      headers: {
-        "retry-after": "bar"
-      }}
-  ])("$description", async (testCase) => {
-    mock.onPost().reply(202, 'statusText: "OK"', {
-      ...testCase.headers,
-      "content-location": "/_poll/test-content-location"
-    })
-    mock
-      .onGet()
-      .replyOnce(202, "foo", testCase.headers)
-      .onGet()
-      .replyOnce(200, "foo")
-
-    const loggerSpy = jest.spyOn(logger, "info")
-
-    const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
-
-    expect(spineResponse.statusCode).toBe(200)
-    expect(spine.isPollable(spineResponse)).toBe(false)
-
-    const firstMessage = "First call, delay 5000 milliseconds before checking result"
-    const secondMessage = "Waiting 5000 milliseconds before polling again. Attempt 1"
-    expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 5000,
-      attempt: 0,
-      totalPollingTime: 5000
-    }, firstMessage)
-    expect(loggerSpy).toHaveBeenCalledWith({
-      retryDelay: 5000,
-      attempt: 1,
-      totalPollingTime: 10000
-    },
-    secondMessage)
-
-    loggerSpy.mockRestore()
-
-  }, 15000)
 
   test("Failure response when no response after 25 seconds", async () => {
     mock.onPost().reply(202, 'statusText: "OK"', {
@@ -206,11 +157,14 @@ describe.each([
           }
         }]}
     )
-    const expectedError = "No response to poll after 6 attempts in 30000 milliseconds"
+
+    const duration = pollingTimeout+initialPollingDelay
+    const attempts = Math.ceil(duration/defaultPollingDelay)
+    const expectedError =`No response to poll after ${attempts} attempts in ${duration} milliseconds`
 
     expect(loggerSpy).toHaveBeenCalledWith({
-      attempt: 6,
-      totalPollingTime: 30000
+      attempt: attempts,
+      totalPollingTime: duration
     }, expectedError)
   }, 60000)
 
@@ -324,8 +278,7 @@ describe.each([
     mock.onPost()
       .networkErrorOnce()
     mock.onPost().reply(202, 'statusText: "OK"', {
-      "content-location": "/_poll/test-content-location",
-      "retry-after": 100
+      "content-location": "/_poll/test-content-location"
     })
     mock.onGet().reply(200, "foo")
     const loggerWarnSpy = jest.spyOn(logger, "warn")

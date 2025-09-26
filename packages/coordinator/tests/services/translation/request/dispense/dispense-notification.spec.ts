@@ -430,7 +430,7 @@ describe("fhir MedicationDispense maps correct values in DispenseNotification", 
       const fhirOrganisationRef = fhirPractitionerRole.organization as fhir.Reference<fhir.Organization>
       const fhirOrganisation = resolveReference(dispenseNotification, fhirOrganisationRef)
 
-      expect(mockCreateAuthorForDispenseNotification).toBeCalledWith(
+      expect(mockCreateAuthorForDispenseNotification).toHaveBeenCalledWith(
         fhirPractitionerRole,
         fhirOrganisation,
         "2020-12-18T12:34:34+00:00" // mocked moment.utc value
