@@ -14,7 +14,7 @@ exports[`Fhir Field is required when releasing a custom fhir release message 1`]
       <div class="nhsuk-form-group"><label class="nhsuk-label" id="customReleaseFhir--label" for="customReleaseFhir">Paste a FHIR release message</label><textarea class="nhsuk-textarea" name="customReleaseFhir" id="customReleaseFhir" rows="20"></textarea></div>
     </fieldset>
   </div>
-  <div class="sc-bXdtCk fhMUre"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-bRKDuR RtViZ"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -38,7 +38,7 @@ exports[`Fields default to current values for nominated release 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-bXdtCk fhMUre"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-bRKDuR RtViZ"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -63,7 +63,7 @@ exports[`Fields default to current values for patient release 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-bXdtCk fhMUre"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-bRKDuR RtViZ"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -87,7 +87,7 @@ exports[`Pharmacy to release to is always required 1`] = `
       </div>
     </fieldset>
   </div>
-  <div class="sc-bXdtCk fhMUre"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-bRKDuR RtViZ"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
 
@@ -112,6 +112,6 @@ exports[`Prescription Id Field is required when releasing by prescription Id 1`]
       </div>
     </fieldset>
   </div>
-  <div class="sc-bXdtCk fhMUre"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
+  <div class="sc-bRKDuR RtViZ"><button class="nhsuk-button" aria-disabled="false" type="submit">Release</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;

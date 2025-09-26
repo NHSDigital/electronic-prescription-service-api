@@ -9,7 +9,7 @@ env:
 
 jobs:
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.0.5
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.1.3
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -24,7 +24,7 @@ jobs:
       version: ${{ steps.get_issue_number.outputs.version_number }}
 
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@v8
         name: get issue number
         id: get_issue_number
         with:
@@ -52,7 +52,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           ref: ${{ env.BRANCH_NAME }}
 
@@ -100,6 +100,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -142,6 +143,7 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
