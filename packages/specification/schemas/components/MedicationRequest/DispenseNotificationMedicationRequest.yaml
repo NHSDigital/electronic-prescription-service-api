@@ -143,9 +143,8 @@ properties:
       numberOfRepeatsAllowed:
         type: integer
         description: |
-          For eRD and repeat prescriptions only.
-          The number of repeats a line item is issued for, in addition to the existing issue. E.g. if a prescription is valid for 6 issues in total, the value entered must be 5. 
-          For repeat prescriptions, this value must always default to 0.
+          For eRD prescriptions only.
+          The number of repeats a line item is issued for, in addition to the existing issue. E.g. if a prescription is valid for 6 issues in total, the value entered must be 5.
         example: 5
       validityPeriod:
         type: object
