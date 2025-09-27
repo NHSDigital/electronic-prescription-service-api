@@ -13,7 +13,6 @@ import {
   ReturnReason,
   ReturnReasonCode
 } from "../../../../../../models/hl7-v3"
-import * as uuid from "uuid"
 import pino from "pino"
 
 type ReturnProposal = DispenseProposalReturnRoot
@@ -38,7 +37,7 @@ export class DispenseProposalReturnFactory implements ReturnFactory {
     const prescriptionIdString = pertinentPrescription.id[1]._attributes.extension
     const reversalOf = this.getReversalOf(releaseResponse.id._attributes.root)
     const prescriptionId = this.convertPrescriptionId(prescriptionIdString)
-    const returnMessageId = uuid.v4()
+    const returnMessageId = crypto.randomUUID()
     logger.info(`Generating auto return message: ${returnMessageId} for prescription: ${prescriptionIdString}`)
     const dispenseProposalReturn = new DispenseProposalReturn(
       new GlobalIdentifier(returnMessageId),

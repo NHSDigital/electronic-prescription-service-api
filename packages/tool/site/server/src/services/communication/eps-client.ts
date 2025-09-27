@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import {
   Bundle,
   Claim,
@@ -228,7 +227,7 @@ class EpsClient {
   }
 
   async makeDoseToTextRequest(body: FhirResource, correlationId: string): Promise<EpsResponse<DosageTranslationArray>> {
-    const requestId = uuid.v4()
+    const requestId = crypto.randomUUID()
     const response = await this.makeApiCall<DosageTranslationArray>({
       path: "$dose-to-text",
       apiType: ApiType.Prescribing,
@@ -244,7 +243,7 @@ class EpsClient {
   private async getEpsResponse<T>(
     requestParameters: GetEpsResponseParameters
   ) {
-    const requestId = uuid.v4()
+    const requestId = crypto.randomUUID()
     const response = await this.makeApiCall<T>({
       path: requestParameters.endpoint,
       apiType: requestParameters.apiType,
@@ -300,8 +299,8 @@ class EpsClient {
 
   protected getHeaders(requestId: string | undefined, correlationId: string | undefined): RawAxiosRequestHeaders {
     return {
-      "x-request-id": requestId ?? uuid.v4(),
-      "x-correlation-id": correlationId ?? uuid.v4()
+      "x-request-id": requestId ?? crypto.randomUUID(),
+      "x-correlation-id": correlationId ?? crypto.randomUUID()
     }
   }
 
@@ -341,8 +340,8 @@ class LiveEpsClient extends EpsClient {
   ): RawAxiosRequestHeaders {
     return {
       "Authorization": `Bearer ${this.accessToken}`,
-      "x-request-id": requestId ?? uuid.v4(),
-      "x-correlation-id": correlationId ?? uuid.v4()
+      "x-request-id": requestId ?? crypto.randomUUID(),
+      "x-correlation-id": correlationId ?? crypto.randomUUID()
     }
   }
 }

@@ -10,7 +10,6 @@ import ReloadButton from "../components/common/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import {VALUE_SET_WITHDRAW_STATUS_REASON} from "../fhir/reference-data/valueSets"
 import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawForm"
@@ -115,7 +114,7 @@ async function sendWithdraw(
 function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotification: fhir.Bundle, medicationDispense: fhir.MedicationDispense): fhir.Task {
   const {id, identifier} = dispenseNotification
   const {system, value} = medicationDispense.subject.identifier
-  const bundleIdentifier = uuid.v4()
+  const bundleIdentifier = crypto.randomUUID()
 
   return {
     resourceType: "Task",

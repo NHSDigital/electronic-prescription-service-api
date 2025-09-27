@@ -1,5 +1,4 @@
 import * as fhir from "fhir/r4"
-import * as uuid from "uuid"
 import {
   ClaimMedicationRequestReferenceExtension,
   ClaimSequenceIdentifierExtension,
@@ -260,7 +259,7 @@ function createClaimSequenceIdentifierExtension(): ClaimSequenceIdentifierExtens
     url: URL_CLAIM_SEQUENCE_IDENTIFIER,
     valueIdentifier: {
       system: "https://fhir.nhs.uk/Id/claim-sequence-identifier",
-      value: uuid.v4()
+      value: crypto.randomUUID()
     }
   }
 }

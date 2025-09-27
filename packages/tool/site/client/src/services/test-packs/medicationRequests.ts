@@ -1,6 +1,5 @@
 import {PrescriptionRow} from "./xls"
 import * as fhir from "fhir/r4"
-import * as uuid from "uuid"
 import {URL_UK_CORE_NUMBER_OF_PRESCRIPTIONS_ISSUED, URL_UK_CORE_REPEAT_INFORMATION} from "../../fhir/customExtensions"
 import {getPrescriptionTreatmentType, TreatmentType} from "."
 
@@ -11,7 +10,7 @@ export function createMedicationRequests(
   maxRepeatsAllowed: number
 ): Array<fhir.BundleEntry> {
   return medicationRows.map((row: PrescriptionRow) => {
-    const id = uuid.v4()
+    const id = crypto.randomUUID()
     const prescriptionTreatmentType = createPrescriptionType(row) as {code: TreatmentType}
 
     const medicationRequest: fhir.MedicationRequest = {

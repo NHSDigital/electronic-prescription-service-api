@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import {v4} from "uuid"
 import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
@@ -14,8 +13,9 @@ import {internalDev} from "../../src/services/environment"
 import {StaticProductInfo} from "../../src/components/claim/claimForm"
 import {MemoryRouter} from "react-router-dom"
 
-jest.mock("uuid")
-;(v4 as jest.Mock).mockImplementation(() => "test-uuid")
+
+jest.spyOn(global.crypto, "randomUUID")
+  .mockReturnValue("test-uuid-in-uuid-format")
 
 const baseUrl = "baseUrl/"
 const prescriptionId = "7A9089-A83008-56A03J"

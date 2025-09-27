@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import {fhir} from "@models"
 import {readXmlStripNamespace} from "../../../serialisation/xml"
 import pino from "pino"
@@ -111,7 +110,7 @@ export function createCommunicationRequest(
 ): fhir.CommunicationRequest {
   return {
     resourceType: "CommunicationRequest",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     status: "unknown",
     subject: fhir.createReference(patientId),
     payload: payload,
@@ -123,7 +122,7 @@ export function createCommunicationRequest(
 export function createList(listItems: Array<string>): fhir.List {
   return {
     resourceType: "List",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     status: "current",
     mode: "snapshot",
     entry: listItems.map((listItem) => ({item: {display: listItem}}))

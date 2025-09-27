@@ -2,7 +2,6 @@ import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {clearSession, setSessionValue} from "../../services/session"
 import {createOAuthState, getRegisteredCallbackUrl} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
-import * as uuid from "uuid"
 import {URLSearchParams} from "url"
 import axios from "axios"
 import {CONFIG} from "../../config"
@@ -63,7 +62,7 @@ export default {
         audience: audience,
         keyid: keyId,
         expiresIn: 300,
-        jwtid: uuid.v4()
+        jwtid: crypto.randomUUID()
       })
       const url = `${CONFIG.apigeeEgressHost}/oauth2/token`
       const urlParams = new URLSearchParams([

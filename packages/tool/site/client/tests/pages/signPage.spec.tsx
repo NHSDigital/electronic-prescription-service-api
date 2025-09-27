@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import {v4} from "uuid"
 import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
@@ -16,8 +15,8 @@ import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
 import {MemoryRouter} from "react-router-dom"
 
-jest.mock("uuid")
-;(v4 as jest.Mock).mockImplementation(() => "test-uuid")
+jest.spyOn(global.crypto, "randomUUID")
+  .mockReturnValue("test-uuid-in-uuid-format")
 
 const baseUrl = "baseUrl/"
 const context: AppContextValue = {baseUrl, environment: internalDev}

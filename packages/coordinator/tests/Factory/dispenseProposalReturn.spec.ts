@@ -1,5 +1,4 @@
 import pino from "pino"
-import {v4} from "uuid"
 import {DispenseProposalReturnFactory} from "../../src/services/translation/request/return/return-factory"
 import {
   DispenseProposalReturnPertinentInformation1,
@@ -21,9 +20,6 @@ import {ReleaseResponseHandler} from "../../src/services/translation/response/sp
 import {DispensePropsalReturnHandler} from "../../src/services/translation/response/spine-return-handler"
 import {spineClient} from "../../src/services/communication/spine-client"
 
-jest.mock("uuid")
-;(v4 as jest.Mock).mockImplementation(() => "test-uuid")
-
 describe("create", () => {
   const returnPayloadFactory = new DispenseProposalReturnFactory()
   const releaseResponse = getExamplePrescriptionReleaseResponse("release_success.xml")
@@ -31,21 +27,24 @@ describe("create", () => {
   const returnReasonCode = new ReturnReasonCode("0005", "Invalid digital signature")
   const logger = pino()
   const loggerSpy = jest.spyOn(logger, "info")
+  jest.spyOn(crypto, "randomUUID")
+    .mockReturnValue("test-uuid-in-uuid-format")
   const result = returnPayloadFactory.create(prescription, releaseResponse, returnReasonCode, logger)
   const dispenseProposalReturnResult = result.DispenseProposalReturn
   const author = prescription.pertinentInformation1.pertinentPrescription.author
+
   test("should return instance of DispenseProposalReturnRoot", () => {
     expect(result).toBeInstanceOf(DispenseProposalReturnRoot)
   })
 
   test("should return DispenseProposalReturnRoot with newly generated ID", () => {
-    expect(dispenseProposalReturnResult.id._attributes.root).toEqual("test-uuid")
+    expect(dispenseProposalReturnResult.id._attributes.root).toEqual("test-uuid-in-uuid-format")
   })
 
   test("should log newly generated ID", () => {
     const prescriptionId = prescription.pertinentInformation1.pertinentPrescription.id[1]._attributes.extension
     expect(loggerSpy).toHaveBeenCalledWith(
-      "Generating auto return message: test-uuid for prescription: " + prescriptionId
+      "Generating auto return message: test-uuid-in-uuid-format for prescription: " + prescriptionId
     )
   })
 

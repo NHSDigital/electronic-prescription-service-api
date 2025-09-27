@@ -1,6 +1,5 @@
 import Hapi from "@hapi/hapi"
 import {getSessionValue} from "../services/session"
-import * as uuid from "uuid"
 
 export type PrescriptionId = {
   bundleId: string | undefined
@@ -17,5 +16,5 @@ export function getSessionPrescriptionIdsArray(request: Hapi.Request): Array<str
 
 export function getCorrelationId(request: Hapi.Request): string {
   const correlationId = request.headers["x-correlation-id"]
-  return correlationId || uuid.v4()
+  return correlationId || crypto.randomUUID()
 }

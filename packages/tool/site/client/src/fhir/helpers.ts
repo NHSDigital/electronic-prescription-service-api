@@ -7,7 +7,6 @@ import {
   URL_EPS_NUMBER_OF_REPEATS_ALLOWED,
   URL_NUMBER_OF_REPEATS_ISSUED
 } from "./customExtensions"
-import * as uuid from "uuid"
 import {COURSE_OF_THERAPY_TYPE_CODES} from "./reference-data/valueSets"
 import {getMedicationRequestResources} from "./bundleResourceFinder"
 import {generateShortFormIdFromExisting} from "./generatePrescriptionIds"
@@ -52,7 +51,7 @@ export function getTotalQuantity(quantities: Array<fhir.Quantity>): fhir.Quantit
 export function createIdentifier(): fhir.Identifier {
   return {
     system: "https://tools.ietf.org/html/rfc4122",
-    value: uuid.v4()
+    value: crypto.randomUUID()
   }
 }
 
@@ -102,11 +101,11 @@ export function updateBundleIds(bundle: fhir.Bundle): void {
   const originalShortFormId = firstGroupIdentifier.value
 
   const newShortFormId = generateShortFormIdFromExisting(originalShortFormId)
-  const newLongFormId = uuid.v4()
+  const newLongFormId = crypto.randomUUID()
 
-  bundle.identifier.value = uuid.v4()
+  bundle.identifier.value = crypto.randomUUID()
   getMedicationRequestResources(bundle).forEach(medicationRequest => {
-    medicationRequest.identifier[0].value = uuid.v4()
+    medicationRequest.identifier[0].value = crypto.randomUUID()
     const groupIdentifier = medicationRequest.groupIdentifier
     groupIdentifier.value = newShortFormId
     getLongFormIdExtension(groupIdentifier.extension).valueIdentifier.value = newLongFormId
