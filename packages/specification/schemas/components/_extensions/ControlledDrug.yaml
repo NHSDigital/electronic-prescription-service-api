@@ -10,7 +10,7 @@ properties:
     type: array
     description: FHIR extension array.
     items:
-      oneOf:
+      anyOf:
         - type: object
           description: object containing the quantity in words
           properties:
