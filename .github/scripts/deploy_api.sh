@@ -113,7 +113,7 @@ if [[ "${ENABLE_MUTUAL_TLS}" == "true" ]]; then
             --arg proxygenSecretName "${proxygen_private_key_arn}" \
             '{apiName: $apiName, environment: $environment, secretName: $secretName, secretKey: $secretKey, secretCert: $secretCert, kid, $kid, proxygenSecretName: $proxygenSecretName}' > payload.json
 
-        aws lambda invoke --cli-read-timeout 120 --cli-connect-timeout 120 --function-name "${put_secret_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
+        aws lambda invoke --function-name "${put_secret_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
             echo 'Error calling lambda'
             cat out.txt
@@ -137,7 +137,7 @@ if [[ "${DRY_RUN}" == "false" ]]; then
         --arg proxygenSecretName "${proxygen_private_key_arn}" \
         '{apiName: $apiName, environment: $environment, specDefinition: $spec, instance: $instance, kid: $kid, proxygenSecretName: $proxygenSecretName}' > payload.json
 
-    aws lambda invoke --cli-read-timeout 120 --cli-connect-timeout 120 --function-name "${instance_put_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
+    aws lambda invoke --function-name "${instance_put_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
 
     if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
         echo 'Error calling lambda'
@@ -171,7 +171,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
             --arg proxygenSecretName "${proxygen_private_key_arn}" \
             '{apiName: $apiName, environment: $environment, specDefinition: $spec, instance: $instance, kid: $kid, proxygenSecretName: $proxygenSecretName}' > payload.json
 
-        aws lambda invoke --cli-read-timeout 120 --cli-connect-timeout 120 --function-name "${spec_publish_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
+        aws lambda invoke --function-name "${spec_publish_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
 
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
             echo 'Error calling lambda'
@@ -196,7 +196,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${IS_PULL_REQUEST}" == "fals
             --arg proxygenSecretName "${proxygen_private_key_arn}" \
             '{apiName: $apiName, environment: $environment, specDefinition: $spec, instance: $instance, kid: $kid, proxygenSecretName: $proxygenSecretName}' > payload.json
 
-        aws lambda invoke --cli-read-timeout 120 --cli-connect-timeout 120 --function-name "${spec_publish_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
+        aws lambda invoke --function-name "${spec_publish_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
 
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
             echo 'Error calling lambda'
