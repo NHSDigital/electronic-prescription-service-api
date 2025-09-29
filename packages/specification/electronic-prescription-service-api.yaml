@@ -567,17 +567,22 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description                                                                              |
-            |-------------|-------------|------------------------------------------------------------------------------------------|
-            | 400         | R-0002      | Prescription or item was not cancelled. With dispenser. Marked for cancellation.         |
-            | 400         | R-0003      | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.  |
-            | 400         | R-0004      | Prescription or item was not cancelled. Prescription has been dispensed.                 |
-            | 400         | R-0005      | Prescription or item had expired.                                                        |
-            | 400         | R-0006      | Prescription or item had already been cancelled.                                         |
-            | 400         | R-0007      | Prescription or item cancellation requested by another prescriber.                       |
-            | 400         | R-0010      | Prescription or item was not cancelled. Prescription has been not dispensed.             |
-            | 400         | R-0008      | Prescription or item not found.                                                          |
-            | 400         | R-5000      | Unable to process message due to invalid information within the cancel request.          |
+            | HTTP status | Error code  | Description                                                                                                                                                                                                      |
+            |-------------|-------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+            | 400         | R-0001      | Prescription/item was cancelled successfully                                                                                                                                                                     |
+            | 400         | R-0002      | This prescription item(s) cannot be cancelled as it is currently with a dispenser, please contact them directly to complete the cancellation.                                                                    |
+            | 400         | R-0003      | This prescription item(s) cannot be cancelled as it is currently with a dispenser, please contact them directly to complete the cancellation.                                                                    |
+            | 400         | R-0004      | This prescription cannot be cancelled as it is has been dispensed to the patient, please contact the patient or the dispenser to take appropriate action.                                                        |
+            | 400         | R-0005      | The cancellation was unsuccessful as this prescription/item has expired and cannot be dispensed.                                                                                                                 |
+            | 400         | R-0006      | Prescription/item had already been cancelled.                                                                                                                                                                    |
+            | 400         | R-0007      | There has previously been an unsuccessful attempt to cancel this prescription which failed because it is already with a dispenser/patient. Please contact the dispenser or patient to take appropriate action.   |
+            | 400         | R-0008      | This prescription cannot be located and therefore cannot be cancelled. Please retry and if this error persists contact your system supplier. Try checking the prescription tracker to locate this prescription.  |
+            | 400         | R-0009      | Cancellation is currently unavailable, please contact the dispenser/patient directly to complete the cancellation and make your system supplier aware of this error.                                             |
+            | 400         | R-0010      | This prescription cannot be cancelled as it has already been marked 'not dispensed' by the dispenser.                                                                                                            |
+            | 400         | R-0099      | EPS cancellation request cannot be processed, please contact the dispenser/patient directly to take appropriate action and make your system supplier aware of this error. [Additional Information (if any)]      |
+            | 400         | R-5000      | EPS cancellation request cannot be processed, please contact the dispenser/patient directly to take appropriate action and make your system supplier aware of this error. [Additional Information (if any)]      |
+            | 400         | R-5006      | EPS cancellation request cannot be processed, please contact the dispenser/patient directly to take appropriate action and make your system supplier aware of this error. [Additional Information (if any)]      |
+            | 400         | R-5888      | Invalid message.                                                                                                                                                                                                 |
           content:
             application/fhir+json:
               schema:
