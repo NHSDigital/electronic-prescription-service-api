@@ -37,9 +37,8 @@ properties:
     type: string
     description: |
       The status of the individual medication item.
-      This field is hardcoded to 'in-progress' as other statuses are not used by the EPS FHIR API or Spine.
+      We do not use this field but it is required by the FHIR standard and so should be hard coded to 'in-progress'.
     enum: [in-progress]
-    default: in-progress
   statusReasonCodeableConcept:
     type: object
     description: Where a medication item is not dispensed, the reason it was not dispensed.
