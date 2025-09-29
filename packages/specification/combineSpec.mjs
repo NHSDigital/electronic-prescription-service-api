@@ -33,7 +33,9 @@ for (const [key, value] of Object.entries(prescribing.paths)) {
     if (exclusionList.indexOf(key) >= 0) {
         console.log(`not adding ${key} as it is in exclusion list`)
     } else {
-        delete value["post"]["security"]
+        if (value["post"] && value["post"]["security"]) {
+            delete value["post"]["security"]
+        }
         template.paths[key] = value
     }
 }
@@ -47,7 +49,9 @@ for (const [key, value] of Object.entries(dispensing.paths)) {
     if (exclusionList.indexOf(key) >= 0) {
         console.log(`not adding ${key} as it is in exclusion list`)
     } else {
-        delete value["post"]["security"]
+        if (value["post"] && value["post"]["security"]) {
+            delete value["post"]["security"]
+        }
         template.paths[key] = value
     }
 }
