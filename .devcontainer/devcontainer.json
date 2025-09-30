@@ -13,15 +13,6 @@
     "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.gnupg,target=/home/vscode/.gnupg,type=bind"
   ],
-  "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
-  // Features to add to the dev container. More info: https://containers.dev/features.
-  "features": {
-    "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-      "version": "latest",
-      "moby": "true",
-      "installDockerBuildx": "true"
-    }
-  },
   "customizations": {
     "vscode": {
       "extensions": [
@@ -62,15 +53,14 @@
       }
     }
   },
-  "postCreateCommand": "rm -f ~/.docker/config.json; git config --global --add safe.directory /workspaces/electronic-prescription-service-api; make install-all",
-  "runArgs": ["--env-file", ".devcontainer/devcontainer.env"]
-  // "features": {},
-  // Use 'forwardPorts' to make a list of ports inside the container available locally.
-  // "forwardPorts": [],
-  // Use 'postCreateCommand' to run commands after the container is created.
-  // "postCreateCommand": ""
-  // Configure tool-specific properties.
-  // "customizations": {},
-  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-  // "remoteUser": "root"
+   "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
+   "postAttachCommand": "docker build -f https://raw.githubusercontent.com/NHSDigital/eps-workflow-quality-checks/refs/tags/v4.0.4/dockerfiles/nhsd-git-secrets.dockerfile -t git-secrets . && poetry run pre-commit install --install-hooks -f",
+   "features": {
+     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+       "version": "latest",
+       "moby": "true",
+       "installDockerBuildx": "true"
+     },
+     "ghcr.io/devcontainers/features/github-cli:1": {}
+   }
 }
