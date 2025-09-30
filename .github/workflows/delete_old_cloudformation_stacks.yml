@@ -60,3 +60,5 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         run: ./delete_proxygen_deployments.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
