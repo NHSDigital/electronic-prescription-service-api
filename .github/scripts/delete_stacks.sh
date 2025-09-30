@@ -34,7 +34,7 @@ delete_cloudformation_stacks() {
     PULL_REQUEST=${PULL_REQUEST//-sandbox/}
     echo "Checking pull request id ${PULL_REQUEST}"
     URL="https://api.github.com/repos/NHSDigital/${REPO_NAME}/pulls/${PULL_REQUEST}"
-    RESPONSE=$(curl "${URL}" 2>/dev/null)
+    RESPONSE=$(curl --header "authorization: Bearer ${GITHUB_TOKEN}" "${URL}" 2>/dev/null)
     STATE=$(echo "${RESPONSE}" | jq -r .state)
     if [ "$STATE" == "closed" ]; then
       echo "** going to delete stack $i as state is ${STATE} **"
