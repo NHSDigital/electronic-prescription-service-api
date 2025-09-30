@@ -82,7 +82,7 @@ properties:
     type: object
     required: 
       - display
-    description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of.
+    description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of. The Managing Organisation is the Integrated Care Board (ICB).
     properties:
       identifier:
         $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
