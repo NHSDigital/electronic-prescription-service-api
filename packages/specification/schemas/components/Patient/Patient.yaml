@@ -59,7 +59,7 @@ properties:
             example: Mrs
         suffix:
           type: array
-          description: Name suffices and postnominals.
+          description: Name suffixes and postnominals.
           example: [PhD]
           items:
             type: string
