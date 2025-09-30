@@ -57,6 +57,13 @@ properties:
           items:
             type: string
             example: Mrs
+        suffix:
+          type: array
+          description: Name suffices and postnominals.
+          example: [PhD]
+          items:
+            type: string
+            example: PhD
   gender:
     type: string
     description: |
