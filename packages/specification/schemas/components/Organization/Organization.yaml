@@ -5,7 +5,7 @@ required:
   - telecom
   - partOf
 description: |
-  Details of prescribing organisation (primary care) or the managing organisation (secondary care) for a prescription. Details of the prescribing organisation are planned to be deprecated within cancel responses.
+  Details of prescribing organisation or the managing organisation for a prescription. Details of the prescribing organisation are planned to be deprecated within cancel responses.
 
   Where a cancel response contains details of the dispenser, the details of the dispensing organisation will also be contained within an Organisation resource.
 properties:
@@ -82,7 +82,7 @@ properties:
     type: object
     required: 
       - display
-    description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of.
+    description: For a primary care prescription, the managing organisation that the prescribing organisation is a part of. The Managing Organisation is the Integrated Care Board (ICB).
     properties:
       identifier:
         $ref: ../_fragments/identifiers.yaml#/components/schemas/OdsOrganizationCode
