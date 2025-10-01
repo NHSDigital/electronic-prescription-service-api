@@ -1064,7 +1064,7 @@ components:
 
         Mirrored back in a response header.
 
-        If you re-send a failed request, use the same value in this header.
+        Generate a new GUID for each new request. If you re-send a failed request, reuse the same value in this header for that retry only.
 
         Required in all environments except sandbox.
       schema:
