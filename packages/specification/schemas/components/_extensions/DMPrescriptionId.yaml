@@ -9,7 +9,7 @@ properties:
   valueIdentifier:
     type: object
     description: |
-                The long form prescription id is a standard HL7 UUID, they must be represented in an upper case human-readable hexadecimal format where hyphen separators are used as per the example below and as defined by the 'datatype' schema within the message specification. UUID example: "C6ACA227-398E-47BC-8881-9A8BC763FC1C".
+                The long form prescription id is a standard HL7 UUID, they must be represented in an lower case human-readable hexadecimal format where hyphen separators are used as per the example below and as defined by the 'datatype' schema within the message specification.
                 Both the long-form id and the short form id are unique to the prescription. The short form ID unique during the lifecycle of the prescription. The UUID for eternity (in theory). They are not related by maths or syntax but both are associated with the same prescription.
     required: [value, system]
     properties:
