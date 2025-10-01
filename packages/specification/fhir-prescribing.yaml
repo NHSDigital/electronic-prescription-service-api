@@ -630,7 +630,7 @@ components:
       description: |
         A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
-        Must be a universally unique identifier (UUID) (ideally version 4) formatted using number s and lower case alphabetic characters.
+        Must be a universally unique identifier (UUID) (ideally version 4) formatted using numbers and lower case alphabetic characters.
 
         Mirrored back in a response header.
 
