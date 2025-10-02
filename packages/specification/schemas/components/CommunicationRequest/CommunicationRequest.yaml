@@ -1,7 +1,7 @@
 type: object
 description: |
   Additional instructions intended for the patient.
-  CommunicationRequests should be prefixed with the medication line item the instructions are for.
+  CommunicationRequests should be prefixed with the medication line item ID that the instructions are for.
   For repeat prescriptions, a reference must also be provided to the list of repeat medications that the patient is on.
 required: [payload]
 properties:
