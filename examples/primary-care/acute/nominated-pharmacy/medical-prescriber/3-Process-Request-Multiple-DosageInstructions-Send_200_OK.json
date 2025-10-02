@@ -18,7 +18,7 @@
                 },
                 "destination": [
                     {
-                        "endpoint": "https://sandbox.api.service.nhs.uk/fhir-prescribing/FHIR/R4/$prepare",
+                        "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/FHIR/R4/$process-message#prescription-order",
                         "receiver": {
                             "identifier": {
                                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
