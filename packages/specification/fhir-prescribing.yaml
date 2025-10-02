@@ -628,13 +628,13 @@ components:
       name: X-Request-ID
       required: true
       description: |
-        A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+        A globally unique identifier (GUID) for each new request. This is used to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
         Must be a universally unique identifier (UUID) (ideally version 4) formatted using numbers and lower case alphabetic characters.
 
         Mirrored back in a response header.
 
-        Generate a new GUID for each new request. If you re-send a failed request, reuse the same value in this header for that retry only.
+        If you re-send a failed request, use the same value in this header.
 
         Required in all environments except sandbox.
       schema:
