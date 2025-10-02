@@ -1060,7 +1060,7 @@ components:
       description: |
         A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
-        Must be a universally unique identifier (UUID) (ideally version 4).
+        Must be a universally unique identifier (UUID) (ideally version 4) formatted using numbers and lower case alphabetic characters.
 
         Mirrored back in a response header.
 
@@ -1070,7 +1070,7 @@ components:
       schema:
         type: string
         pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-        example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
+        example: 60e0b220-8136-4ca5-ae46-1d97ef59d068
     CorrelationID:
       in: header
       name: X-Correlation-ID
