@@ -1,5 +1,12 @@
 type: object
-description: The quantity of a controlled drug, expressed in words
+description: |
+  The quantity of a controlled drug, expressed in words.
+
+  The dispensing system must display dosage instructions expressed as a structured dose and text.
+
+  If structured dosage isn't available on the medication item then dosage instructions should be represented as text.
+
+  For information on what is required, select the link in helpful documentation, select 'Schema' and search 'structured dose' by using CTRL+F.
 properties:
   url:
     type: string
