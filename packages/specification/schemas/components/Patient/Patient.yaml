@@ -131,7 +131,7 @@ properties:
           example: LS1 6AE
   telecom:
     type: array
-    description: The patient's telephone number.
+    description: The patient's telephone number. Populated with the most appropriate contact information for the patient (either from PDS or stored locally).
     items:
       type: object
       properties:
@@ -150,7 +150,7 @@ properties:
           example: '01632960587'
   generalPractitioner:
     type: array
-    description: General practice (not practitioner) with which the patient is or was registered. 
+    description: General practice (not practitioner) with which the patient is or was registered. If this is submitted as blank, an ODS code for 'No GP Practice' will be added by the FHIR API to the prescription as a last resort if this detail isn't available to the prescriber. 
     items:
       type: object
       properties:
