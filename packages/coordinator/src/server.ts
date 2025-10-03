@@ -74,6 +74,8 @@ export const init = async (): Promise<void> => {
   // need to set the keep alive timeout higher than the ALB idle timeout to avoid 502 errors
   server.listener.keepAliveTimeout = 65000
   await configureLogging(server)
+  const envVars = Object.keys(process.env).sort().map(key => `${key}=${process.env[key]}`)
+  server.log("info", `Environment variables:\n${envVars.join("\n")}`)
   await server.start()
   server.log("info", `Server running on ${server.info.uri}`)
 
