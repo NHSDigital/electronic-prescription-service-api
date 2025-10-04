@@ -1,7 +1,6 @@
 import Hapi from "@hapi/hapi"
 import {fhir, hl7V3} from "@models"
 import pino from "pino"
-import * as uuid from "uuid"
 import {
   getBundleIdentifierValue,
   getClaimIdentifierValue,
@@ -170,7 +169,7 @@ class ParametersTranslationResultFactory extends SendMessagePayloadFactory {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getPayloadId(parameters: fhir.Parameters): string {
     // Parameters don't have a mandatory identifier field
-    return uuid.v4()
+    return crypto.randomUUID()
   }
 
   createPayload(parameters: fhir.Parameters): Payload<ParametersTranslationResult> {

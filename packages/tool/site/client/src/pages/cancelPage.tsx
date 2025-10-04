@@ -12,7 +12,6 @@ import axios from "axios"
 import CancelForm, {CancelFormValues, cancellationReasons, MedicationRadio} from "../components/cancel/cancelForm"
 import {getMedicationRequestResources, getMessageHeaderResources, getPractitionerResources, getPractitionerRoleResources} from "../fhir/bundleResourceFinder"
 import {createIdentifier, orderBundleResources} from "../fhir/helpers"
-import * as uuid from "uuid"
 import SuccessOrFail from "../components/common/successOrFail"
 import {makePrescriptionTrackerRequest} from "../common/prescription-search"
 
@@ -174,8 +173,8 @@ function createCancel(prescriptionDetails: PrescriptionDetails, cancelFormValues
   }
 
   if (cancellingWithAdminUser(cancelFormValues)) {
-    const cancelPractitionerRoleIdentifier = uuid.v4()
-    const cancelPractitionerIdentifier = uuid.v4()
+    const cancelPractitionerRoleIdentifier = crypto.randomUUID()
+    const cancelPractitionerIdentifier = crypto.randomUUID()
 
     addReferenceToCancellerInMedicationRequest(medicationToCancel, cancelPractitionerRoleIdentifier)
 

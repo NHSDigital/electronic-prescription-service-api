@@ -1,5 +1,4 @@
 import axios, {InternalAxiosRequestConfig} from "axios"
-import {v4 as uuidv4} from "uuid"
 
 const axiosInstance = axios.create({
   validateStatus: () => true
@@ -7,7 +6,7 @@ const axiosInstance = axios.create({
 
 axiosInstance.interceptors.request.use(
   (config: InternalAxiosRequestConfig) => {
-    config.headers["x-correlation-id"] = uuidv4()
+    config.headers["x-correlation-id"] = crypto.randomUUID()
     return config
   },
   (error) => {

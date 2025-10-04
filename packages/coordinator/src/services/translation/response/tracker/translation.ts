@@ -1,5 +1,4 @@
 import {fhir, spine} from "@models"
-import * as uuid from "uuid"
 import {convertResourceToBundleEntry} from "../common"
 import {convertHL7V3DateTimeStringToFhirDate, convertHL7V3DateTimeStringToFhirDateTime} from "../../common/dateTime"
 import {LosslessNumber} from "lossless-json"
@@ -46,7 +45,7 @@ function convertPrescriptionToTask(
   prescription: spine.DetailPrescription | spine.SummaryPrescription
 ): fhir.Task {
   const {status, businessStatus} = getPrescriptionStatusCodesFromDisplay(prescription.prescriptionStatus)
-  const id = uuid.v4()
+  const id = crypto.randomUUID()
 
   const task: fhir.Task = {
     resourceType: "Task",

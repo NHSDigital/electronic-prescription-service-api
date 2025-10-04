@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Table Clicking a column header which is not the current sort key changes the sort key 1`] = `
 "<table class="nhsuk-table">

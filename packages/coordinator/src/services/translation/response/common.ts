@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import {toArray} from "../common"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {CareSetting, getCareSetting} from "../common/organizationTypeCode"
@@ -143,7 +142,7 @@ function convertTelecomUse(telecomUse: string): string {
 }
 
 export function generateResourceId(): string {
-  return uuid.v4()
+  return crypto.randomUUID()
 }
 
 export function getFullUrl(uuid: string): string {

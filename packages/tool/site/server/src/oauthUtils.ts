@@ -5,7 +5,6 @@ import Hapi from "@hapi/hapi"
 import {URLSearchParams} from "url"
 import axios from "axios"
 import * as jsonwebtoken from "jsonwebtoken"
-import * as uuid from "uuid"
 
 //TODO: handle system oauth
 
@@ -73,7 +72,7 @@ export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): 
     audience: audience,
     keyid: keyId,
     expiresIn: 300,
-    jwtid: uuid.v4()
+    jwtid: crypto.randomUUID()
   })
 
   //Token Exchange for OAuth2 Access Token

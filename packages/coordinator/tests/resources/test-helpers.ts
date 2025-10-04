@@ -1,7 +1,6 @@
 import * as XmlJs from "xml-js"
 import {writeXmlStringPretty} from "../../src/services/serialisation/xml"
 import * as LosslessJson from "lossless-json"
-import * as uuid from "uuid"
 import {fhir} from "@models"
 import path from "path"
 import fs from "fs"
@@ -38,7 +37,7 @@ export function addEmptyCommunicationRequestToBundle(bundle: fhir.Bundle): void 
 export function addEmptyListToBundle(bundle: fhir.Bundle): void {
   const list: fhir.List = {
     resourceType: "List",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     status: "current",
     mode: "snapshot",
     entry: []

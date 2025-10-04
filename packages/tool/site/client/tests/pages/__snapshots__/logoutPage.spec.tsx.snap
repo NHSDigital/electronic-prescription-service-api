@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Displays logout page 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">You have been logged out</label></h1><label class="nhsuk-label">Use the link below if you want to login again.</label>

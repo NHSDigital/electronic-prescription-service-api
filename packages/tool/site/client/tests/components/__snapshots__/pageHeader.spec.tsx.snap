@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Header renders when logged in 1`] = `
 "<header class="nhsuk-header nhsuk-header__transactional" role="banner">

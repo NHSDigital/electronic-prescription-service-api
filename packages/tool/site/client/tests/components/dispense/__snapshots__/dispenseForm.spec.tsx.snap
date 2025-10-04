@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Dispense Different Medication checkbox is present for paracetamol 500 (60) 1`] = `
 "<form>

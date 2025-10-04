@@ -1,5 +1,4 @@
 import {fhir, hl7V3} from "@models"
-import * as uuid from "uuid"
 import {toArray} from "."
 import {convertResourceToBundleEntry, orderBundleResources, roleProfileIdIdentical} from "../response/common"
 import {
@@ -26,7 +25,7 @@ export async function createBundle(
 ): Promise<fhir.Bundle> {
   return {
     resourceType: "Bundle",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     meta: {
       lastUpdated: convertHL7V3DateTimeToIsoDateTimeString(parentPrescription.effectiveTime)
     },

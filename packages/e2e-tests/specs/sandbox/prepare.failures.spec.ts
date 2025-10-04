@@ -1,7 +1,6 @@
 import {InteractionObject, Pact} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
-import * as uuid from "uuid"
 import {basePath, CreatePactOptions, pactOptions} from "../../resources/common"
 import {fhir} from "@models"
 
@@ -16,8 +15,8 @@ describe("prepare sandbox e2e tests", () => {
       const apiPath = `${basePath}/$prepare`
       const requestStr = LosslessJson.stringify(request)
       const responseStr = LosslessJson.stringify(response)
-      const requestId = uuid.v4()
-      const correlationId = uuid.v4()
+      const requestId = crypto.randomUUID()
+      const correlationId = crypto.randomUUID()
 
       const interaction: InteractionObject = {
         state: "is not authenticated",

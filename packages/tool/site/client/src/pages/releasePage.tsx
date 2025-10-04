@@ -10,7 +10,6 @@ import * as fhir from "fhir/r4"
 import PrescriptionActions from "../components/common/prescriptionActions"
 import MessageExpanders from "../components/messageExpanders"
 import ReloadButton from "../components/common/reloadButton"
-import * as uuid from "uuid"
 import ReleaseForm, {ReleaseFormValues} from "../components/release/releaseForm"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
@@ -207,7 +206,7 @@ export function createRelease(releaseFormValues: ReleaseFormValues, authLevel: "
 
   const nominatedPharmacyRelease: fhir.Parameters = {
     resourceType: "Parameters",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     parameter: [
       {
         name: "owner",

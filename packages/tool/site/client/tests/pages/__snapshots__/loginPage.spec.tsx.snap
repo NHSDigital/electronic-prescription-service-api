@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Displays user/system options in internal-dev 1`] = `
 "<h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Login</label></h1><label class="nhsuk-label">When prompted enter the following User Id: 555086689106</label><label class="nhsuk-label">Select access level:</label>
