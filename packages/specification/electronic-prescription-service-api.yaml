@@ -62,7 +62,7 @@ info:
 
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
-    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
+    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/nhsdigital-medicines/home/introduction/directory) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
     * [Building healthcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with prescriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
@@ -1049,7 +1049,9 @@ components:
       name: X-Request-ID
       required: true
       description: |
-        A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+        A globally unique identifier (GUID) for the request. This is used to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+
+        Each new HTTP request must use a different X-Request-ID even if they are related to the same prescription.
 
         Must be a universally unique identifier (UUID) (ideally version 4) formatted using numbers and lower case alphabetic characters.
 
