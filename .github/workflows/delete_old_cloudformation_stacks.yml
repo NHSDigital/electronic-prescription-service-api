@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 3,15 * * *"
+  push:
+    branches: [master]
 
 jobs:
   delete-old-cloudformation-stacks:
@@ -46,7 +48,7 @@ jobs:
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
-  
+
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v5
         with:
@@ -58,3 +60,5 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         run: ./delete_proxygen_deployments.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
