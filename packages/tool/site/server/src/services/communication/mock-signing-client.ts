@@ -1,9 +1,9 @@
 import Hapi from "@hapi/hapi"
 import {SignatureDownloadResponse, SignatureUploadResponse, SigningClient} from "./signing-client"
-import * as uuid from "uuid"
 import {CONFIG} from "../../config"
 import {Ping} from "../../routes/health/get-status"
 import {getSessionPrescriptionIdsArray} from "../../routes/util"
+// add an extra line to keep gitsecrets happy
 
 export class MockSigningClient implements SigningClient {
   private request: Hapi.Request
@@ -13,7 +13,7 @@ export class MockSigningClient implements SigningClient {
   }
 
   async uploadSignatureRequest(): Promise<SignatureUploadResponse> {
-    const token = uuid.v4()
+    const token = crypto.randomUUID()
     const response = {
       token,
       redirectUri: `${CONFIG.baseUrl}prescribe/send?token=${token}`
