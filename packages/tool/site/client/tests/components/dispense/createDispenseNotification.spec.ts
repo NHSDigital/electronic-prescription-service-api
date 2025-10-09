@@ -13,7 +13,6 @@ import {
   PrescriptionStatus
 } from "../../../src/fhir/reference-data/valueSets"
 import {createStaticLineItemInfoArray} from "../../../src/pages/dispensePage"
-import {v4} from "uuid"
 
 const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
 const dispenseNotification = readBundleFromFile("dispenseNotification.json")
@@ -23,9 +22,7 @@ const medicationRequests = getMedicationRequestResources(prescriptionOrder)
 const medicationDispenses = getMedicationDispenseResources(dispenseNotification)
 
 jest.mock("uuid")
-beforeEach(() => {
-  (v4 as jest.Mock).mockImplementation(() => "test-uuid")
-})
+jest.spyOn(global.crypto, "randomUUID").mockReturnValue("test-uuid-in-uuid-format")
 
 const staticLineItemsArray =
   createStaticLineItemInfoArray(medicationRequests, medicationDispenses) as Array<LineItemFormValues>

@@ -1,8 +1,6 @@
-import * as uuid from "uuid"
-
 export function shortPrescId() {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
-  const hexString = uuid.v4().replace(/-/g, "").toUpperCase()
+  const hexString = crypto.randomUUID().replace(/-/g, "").toUpperCase()
   const first = hexString.substring(0, 6)
   const middle ="A12345"
   const last = hexString.substring(12, 17)
