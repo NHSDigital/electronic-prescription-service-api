@@ -7,7 +7,6 @@ import {
 } from "../../../../src/services/translation/response/spine-response-handler"
 import pino from "pino"
 import {fhir, hl7V3} from "@models"
-import * as uuid from "uuid"
 import * as moment from "moment"
 import {convertMomentToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
 import {writeXmlStringPretty} from "../../../../src/services/serialisation/xml"
@@ -449,7 +448,7 @@ describe("release rejection handler", () => {
 })
 
 function createSendMessagePayload<T>(interactionId: string) {
-  const id = new hl7V3.GlobalIdentifier(uuid.v4().toUpperCase())
+  const id = new hl7V3.GlobalIdentifier(crypto.randomUUID().toUpperCase())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const interactionIdentifier = new hl7V3.Hl7InteractionIdentifier(interactionId)
   return new hl7V3.SendMessagePayload<T>(id, timestamp, interactionIdentifier)

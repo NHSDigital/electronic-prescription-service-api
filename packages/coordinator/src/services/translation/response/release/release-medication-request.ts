@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import {
   createGroupIdentifier,
   createItemNumberIdentifier,
@@ -33,7 +32,7 @@ export function createMedicationRequest(
 
   const medicationRequest: fhir.MedicationRequest = {
     resourceType: "MedicationRequest",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     extension: createMedicationRequestExtensions(
       responsiblePartyId,
       prescription.pertinentInformation4.pertinentPrescriptionType,
