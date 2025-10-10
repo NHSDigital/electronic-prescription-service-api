@@ -1,10 +1,9 @@
-import * as uuid from "uuid"
 import * as templateBody from "./templateBodies/templateDispenseBody.json"
 
 export function createDispenseBody(prescriptionId: string, lineItemIds: Array<string>): string {
   const body = {...templateBody.templateBody}
 
-  body.identifier.value = uuid.v4()
+  body.identifier.value = crypto.randomUUID()
 
   if (
     !body.entry[1].resource.contained ||

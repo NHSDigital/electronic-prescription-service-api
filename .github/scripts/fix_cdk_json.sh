@@ -3,6 +3,10 @@ set -e
 
 # script used to set context key values in cdk.json pre deployment from environment variables
 
+# set retry on aws commands
+AWS_MAX_ATTEMPTS=20
+export AWS_MAX_ATTEMPTS
+
 # helper function to set string values
 fix_string_key() {
     KEY_NAME=$1
@@ -36,10 +40,14 @@ fix_boolean_number_key() {
 }
 
 # get some values from AWS
+CF_LONDON_EXPORTS=$(aws cloudformation list-exports --region eu-west-2 --output json)
 TRUSTSTORE_BUCKET_ARN=$(aws cloudformation describe-stacks --stack-name account-resources --query "Stacks[0].Outputs[?OutputKey=='TrustStoreBucket'].OutputValue" --output text)
 TRUSTSTORE_BUCKET_NAME=$(echo "${TRUSTSTORE_BUCKET_ARN}" | cut -d ":" -f 6)
 TRUSTSTORE_VERSION=$(aws s3api list-object-versions --bucket "${TRUSTSTORE_BUCKET_NAME}" --prefix "${TRUSTSTORE_FILE}" --query 'Versions[?IsLatest].[VersionId]' --output text)
-VPC_ID=$(aws cloudformation list-exports --output json | jq -r '.Exports[] | select(.Name == "vpc-resources:VpcId") | .Value')
+VPC_ID=$(echo "$CF_LONDON_EXPORTS" | \
+    jq \
+    --arg EXPORT_NAME "vpc-resources:VpcId" \
+    -r '.Exports[] | select(.Name == $EXPORT_NAME) | .Value')
 
 CFN_DRIFT_DETECTION_GROUP="prescribe-dispense"
 if [[ "$IS_PULL_REQUEST" = "true" ]]; then
