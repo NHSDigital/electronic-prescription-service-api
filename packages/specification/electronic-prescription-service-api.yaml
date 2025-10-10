@@ -575,10 +575,16 @@ paths:
                 $ref: "#/components/schemas/operation-outcome"
               examples:
                 OperationOutcome:
+                  summary: Missing Field
                   description: |
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
+                R-0003:
+                  summary: R-0003
+                  description: Prescription or item was not cancelled. With dispenser active. Marked for cancellation.
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0003-Cancellation.json
 
   /FHIR/R4/Task/$release:
     post:
