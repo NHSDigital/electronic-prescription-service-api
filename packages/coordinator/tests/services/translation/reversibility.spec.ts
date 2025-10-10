@@ -3,7 +3,6 @@ import {createBundle} from "../../../src/services/translation/common/response-bu
 import * as TestResources from "../../resources/test-resources"
 import {getResourcesOfType} from "../../../src/services/translation/common/getResourcesOfType"
 import {hl7V3, fhir} from "@models"
-import * as uuid from "uuid"
 import {toArray} from "../../../src/services/translation/common"
 import pino from "pino"
 
@@ -27,7 +26,7 @@ describe("translations are reversible", () => {
     "Organization",
     "Provenance"
   ])("%s", async (resourceType: string) => {
-    const translatedBundle = await createBundle(parentPrescription, uuid.v4(), logger)
+    const translatedBundle = await createBundle(parentPrescription, crypto.randomUUID(), logger)
     const original = getResourcesOfType(originalBundle, resourceType)
     removeIds(...original)
     const translated = getResourcesOfType(translatedBundle, resourceType)

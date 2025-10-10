@@ -1,4 +1,3 @@
-import * as uuid from "uuid"
 import {
   ClaimCase,
   fhir,
@@ -87,7 +86,7 @@ async function updateOrderCases(
   const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(processBundle)[0].groupIdentifier
 
   const originalBundleIdentifier = processBundle.identifier.value
-  const newBundleIdentifier = uuid.v4()
+  const newBundleIdentifier = crypto.randomUUID()
   replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
   const originalShortFormId = firstGroupIdentifier.value
@@ -99,7 +98,7 @@ async function updateOrderCases(
   replacements.set(originalShortFormId, newShortFormId)
 
   const originalLongFormId = getLongFormIdExtension(firstGroupIdentifier.extension).valueIdentifier.value
-  const newLongFormId = uuid.v4()
+  const newLongFormId = crypto.randomUUID()
   replacements.set(originalLongFormId, newLongFormId)
 
   setPrescriptionIds(prepareBundle, newBundleIdentifier, newShortFormId, newLongFormId)
@@ -126,7 +125,7 @@ function updateOrderUpdateCases(processCase: ProcessCase, replacements: Map<stri
   const firstGroupIdentifier = getResourcesOfType.getMedicationRequests(bundle)[0].groupIdentifier
 
   const originalBundleIdentifier = bundle.identifier.value
-  const newBundleIdentifier = uuid.v4()
+  const newBundleIdentifier = crypto.randomUUID()
   replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
   const originalShortFormId = firstGroupIdentifier.value
@@ -153,7 +152,7 @@ function updateDispenseCases(dispenseCase: ProcessCase, replacements: Map<string
   )
 
   const originalBundleIdentifier = bundle.identifier.value
-  const newBundleIdentifier = uuid.v4()
+  const newBundleIdentifier = crypto.randomUUID()
   replacements.set(originalBundleIdentifier, newBundleIdentifier)
 
   const originalShortFormId = firstAuthorizingPrescription.groupIdentifier.value
@@ -174,7 +173,7 @@ function updateDispenseCases(dispenseCase: ProcessCase, replacements: Map<string
 
 function updateTaskCases(returnCase: TaskCase, replacements: Map<string, string>): void {
   const task = returnCase.request
-  const newTaskIdentifier = uuid.v4()
+  const newTaskIdentifier = crypto.randomUUID()
 
   const originalShortFormId = task.groupIdentifier.value
   const newShortFormId = replacements.get(originalShortFormId)
@@ -190,7 +189,7 @@ function updateClaimCases(claimCase: ClaimCase, replacements: Map<string, string
   const groupIdentifierExtension = getMedicationDispenseGroupIdentifierExtension(claim.prescription.extension)
 
   const originalClaimIdentifier = claim.identifier[0].value
-  const newClaimIdentifier = uuid.v4()
+  const newClaimIdentifier = crypto.randomUUID()
   replacements.set(originalClaimIdentifier, newClaimIdentifier)
 
   const shortFormIdExtension = getMedicationDispenseShortFormIdExtension(groupIdentifierExtension.extension)
@@ -300,7 +299,7 @@ function setClaimIds(claim: fhir.Claim, newClaimIdentifier: string, newShortForm
 
 export function generateShortFormId(originalShortFormId?: string): string {
   const _PRESC_CHECKDIGIT_VALUES = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ+"
-  const hexString = uuid.v4().replace(/-/g, "").toUpperCase()
+  const hexString = crypto.randomUUID().replace(/-/g, "").toUpperCase()
   const first = hexString.substring(0, 6)
   const middle = originalShortFormId?.substring(7, 13) ?? "A12345"
   const last = hexString.substring(12, 17)

@@ -10,7 +10,6 @@ import ReloadButton from "../components/common/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import * as uuid from "uuid"
 import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import {VALUE_SET_RETURN_STATUS_REASON} from "../fhir/reference-data/valueSets"
 import ReturnForm, {ReturnFormValues} from "../components/return/returnForm"
@@ -64,7 +63,7 @@ async function sendReturn(
 }
 
 function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
-  const identifier = uuid.v4()
+  const identifier = crypto.randomUUID()
   const bundleIdentifier = identifier
 
   return {
