@@ -570,7 +570,7 @@ paths:
             | 400         | R-0008      | Prescription/item not found                                                                                                                                                |
             | 400         | R-0009      | Cancellation functionality disabled in SPINE                                                                                                                               |
             | 400         | R-0010      | Prescription/item was not cancelled. Prescription has been not dispensed.                                                                                                  |
-            | 400         | R-5000      | Processing error - see response for details                                                                                                                                |
+            | 400         | R-5000      | Unable to process message. Information missing or invalid - ...                                                                                                            |
             | 400         | R-5888      | Invalid Message.                                                                                                                                                           |
           content:
             application/fhir+json:
