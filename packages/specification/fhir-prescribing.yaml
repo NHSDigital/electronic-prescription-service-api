@@ -30,7 +30,7 @@ info:
       
     ### Services
     These services must be used alongside EPS to create a functioning prescribing or dispensing system.
-    * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
+    * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard or a modern alternative.
     * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
     * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
     * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address.
@@ -47,7 +47,7 @@ info:
 
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
-    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
+    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/nhsdigital-medicines/home/introduction/directory) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
     * [Building healthcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with prescriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
@@ -89,9 +89,8 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
-    This API has 2 access modes:
+    This API has 1 access mode:
     * user-restricted access
-    * application-restricted access
 
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -99,11 +98,6 @@ info:
 
     EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
     do not use combined authentication and authorisation.
-
-    ### Application-restricted access
-
-    To use this access mode, use the following security pattern:
-    * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
     | Environment      | Base URL                                                    |
@@ -618,7 +612,7 @@ components:
         If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
 
         This field is optional.
-      required: false
+      required: true
       schema:
         type: string
         pattern: "^[0-9]+$"
@@ -628,9 +622,11 @@ components:
       name: X-Request-ID
       required: true
       description: |
-        A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+        A globally unique identifier (GUID) for the request. This is used to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
-        Must be a universally unique identifier (UUID) (ideally version 4).
+        Each new HTTP request must use a different X-Request-ID even if they are related to the same prescription.
+
+        Must be a universally unique identifier (UUID) (ideally version 4) formatted using numbers and lower case alphabetic characters.
 
         Mirrored back in a response header.
 
@@ -640,7 +636,7 @@ components:
       schema:
         type: string
         pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-        example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
+        example: 60e0b220-8136-4ca5-ae46-1d97ef59d068
     CorrelationID:
       in: header
       name: X-Correlation-ID
