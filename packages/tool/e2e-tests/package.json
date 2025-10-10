@@ -18,12 +18,10 @@
     "devDependencies": {
         "@types/fhir": "^0.0.41",
         "@types/lodash": "^4.17.20",
-        "@types/selenium-webdriver": "^4.35.0",
-        "@types/uuid": "^10.0.0",
-        "chromedriver": "^140.0.4",
+        "@types/selenium-webdriver": "^4.35.1",
+        "chromedriver": "^141.0.0",
         "geckodriver": "^6.0.2",
         "lodash": "^4.17.21",
-        "selenium-webdriver": "^4.35.0",
-        "uuid": "^11.1.0"
+        "selenium-webdriver": "^4.36.0"
     }
 }
