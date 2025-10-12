@@ -4,7 +4,7 @@ import {
   pactOptions,
   successfulOperationOutcome
 } from "../../resources/common"
-import {Pact} from "@pact-foundation/pact"
+import {PactV2} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 
@@ -13,7 +13,7 @@ describe("claim e2e tests", () => {
     "should be able to claim for %s",
     async (desc: string, message: fhir.Claim) => {
       const options = new CreatePactOptions("live", "claim")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
@@ -33,7 +33,7 @@ describe("claim amend e2e tests", () => {
     "should be able to claim amend for %s",
     async (desc: string, message: fhir.Claim) => {
       const options = new CreatePactOptions("live", "claim", "amend")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,

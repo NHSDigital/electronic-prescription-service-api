@@ -1,4 +1,4 @@
-import {InteractionObject, Pact} from "@pact-foundation/pact"
+import {InteractionObject, PactV2} from "@pact-foundation/pact"
 import {
   basePath,
   CreatePactOptions,
@@ -39,7 +39,7 @@ beforeAll(async () => {
 describe("endpoint authentication e2e tests", () => {
   test(authenticationTestDescription, async () => {
     const options = new CreatePactOptions("live", "process", "send")
-    const provider = new Pact(pactOptions(options))
+    const provider = new PactV2(pactOptions(options))
     await provider.setup()
     const apiPath = `${basePath}/$process-message`
     const interaction: InteractionObject = createUnauthorisedInteraction(authenticationTestDescription, apiPath)
@@ -66,7 +66,7 @@ describe("ensure errors are translated", () => {
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
     const options = new CreatePactOptions("live", "process", "send")
-    const provider = new Pact(pactOptions(options))
+    const provider = new PactV2(pactOptions(options))
     await provider.setup()
 
     const interaction: InteractionObject = {
@@ -154,7 +154,7 @@ describe("ensure errors are translated", () => {
       }
 
       const options = new CreatePactOptions("live", "process", "send")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const interaction: InteractionObject = {
@@ -196,7 +196,7 @@ test.skip("should reject a message with an invalid SDS Role Profile ID", async (
   const requestId = crypto.randomUUID()
   const correlationId = crypto.randomUUID()
   const options = new CreatePactOptions("live", "process", "send")
-  const provider = new Pact(pactOptions(options))
+  const provider = new PactV2(pactOptions(options))
   await provider.setup()
   const interaction: InteractionObject = {
     state: "is authenticated",
