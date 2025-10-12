@@ -1,4 +1,4 @@
-import {Matchers, Pact} from "@pact-foundation/pact"
+import {MatchersV2, PactV2} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {
   createInteraction,
@@ -13,7 +13,7 @@ describe("prepare sandbox e2e tests", () => {
     desc: string, request: fhir.Bundle, response: fhir.Parameters
   ) => {
     const options = new CreatePactOptions("sandbox", "prepare")
-    const provider = new Pact(pactOptions(options))
+    const provider = new PactV2(pactOptions(options))
     await provider.setup()
 
     const interaction = createInteraction(
@@ -35,15 +35,15 @@ function getResponseExpectation(response: fhir.Parameters) {
     parameter: [
       {
         name: "digest",
-        valueString: Matchers.like(getStringParameterByName(response, "digest").valueString)
+        valueString: MatchersV2.like(getStringParameterByName(response, "digest").valueString)
       },
       {
         name: "timestamp",
-        valueString: Matchers.like(getStringParameterByName(response, "timestamp").valueString)
+        valueString: MatchersV2.like(getStringParameterByName(response, "timestamp").valueString)
       },
       {
         name: "algorithm",
-        valueString: Matchers.like(getStringParameterByName(response, "algorithm").valueString)
+        valueString: MatchersV2.like(getStringParameterByName(response, "algorithm").valueString)
       }
     ]
   }

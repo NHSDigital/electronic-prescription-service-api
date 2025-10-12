@@ -1,4 +1,4 @@
-import {InteractionObject, Pact} from "@pact-foundation/pact"
+import {InteractionObject, PactV2} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {basePath, CreatePactOptions, pactOptions} from "../../resources/common"
@@ -9,7 +9,7 @@ describe("prepare sandbox e2e tests", () => {
     "should fail to prepare a %s message",
     async (desc: string, request: fhir.Bundle, response: fhir.Parameters, statusCode: number) => {
       const options = new CreatePactOptions("sandbox", "prepare")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const apiPath = `${basePath}/$prepare`
