@@ -633,6 +633,16 @@ paths:
                   description: Prescription/item was not cancelled. Prescription has been not dispensed.
                   value:
                     $ref: examples/spec/errors/prescription-order-update/R-0010-Cancellation.json
+                R-5000:
+                  summary: R-5000
+                  description: Mismatch between prescription and cancellation NHSNumber
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-5000-Cancellation.json
+                R-5888:
+                  summary: R-5888
+                  description: Invalid Message.
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-5888-Cancellation.json
   /FHIR/R4/Task/$release:
     post:
       operationId: release

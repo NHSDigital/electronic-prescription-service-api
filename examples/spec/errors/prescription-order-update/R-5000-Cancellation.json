@@ -1,0 +1,18 @@
+{
+    "resourceType": "OperationOutcome",
+    "issue": [
+        {
+            "severity": "error",
+            "code": "processing",
+            "details": {
+                "coding": [
+                    {
+                        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+                        "code": "R-5000",
+                        "display": "Unable to process message. Information missing or invalid - Mismatch between prescription and cancellation NHSNumber"
+                    }
+                ]
+            }
+        }
+    ]
+}
