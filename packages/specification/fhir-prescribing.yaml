@@ -535,7 +535,6 @@ paths:
 
             | HTTP status | Error code  | Description                                                                            | Response format    |
             |-------------|-------------|----------------------------------------------------------------------------------------|--------------------|
-            | 400         | R-0001      | Prescription/item was cancelled                                                        | Bundle             |
             | 400         | R-0002      | Prescription/item was not cancelled. With dispenser. Marked for cancellation           | Bundle             |
             | 400         | R-0003      | Prescription/item was not cancelled. With dispenser active. Marked for cancellation    | Bundle             |
             | 400         | R-0004      | Prescription/item was not cancelled. Prescription has been dispensed.                  | Bundle             |
@@ -558,11 +557,6 @@ paths:
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
-                R-0001:
-                  summary: R-0001
-                  description: Prescription/item was cancelled
-                  value:
-                    $ref: examples/spec/errors/prescription-order-update/R-0001-Cancellation.json
                 R-0002:
                   summary: R-0002
                   description: Prescription/item was not cancelled. With dispenser. Marked for cancellation
