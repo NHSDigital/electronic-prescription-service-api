@@ -574,7 +574,9 @@ paths:
           content:
             application/fhir+json:
               schema:
-                $ref: "#/components/schemas/operation-outcome"
+                oneOf:
+                  - $ref: "#/components/schemas/operation-outcome"
+                  - $ref: "#/components/schemas/Cancel-Response-Bundle"
               examples:
                 OperationOutcome:
                   summary: Missing Field
