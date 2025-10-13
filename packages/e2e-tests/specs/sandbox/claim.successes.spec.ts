@@ -6,14 +6,14 @@ import {
 } from "../../resources/common"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
-import {Pact} from "@pact-foundation/pact"
+import {PactV2} from "@pact-foundation/pact"
 
 describe("process-message claim sandbox e2e tests", () => {
   test.each(TestResources.claimCases)(
     "should be able to claim %s",
     async (desc: string, message: fhir.Claim) => {
       const options = new CreatePactOptions("sandbox", "claim")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const interaction = createInteraction(
@@ -35,7 +35,7 @@ describe("process-message claim amend sandbox e2e tests", () => {
     "should be able to claim amend %s",
     async (desc: string, message: fhir.Claim) => {
       const options = new CreatePactOptions("sandbox", "claim", "amend")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
