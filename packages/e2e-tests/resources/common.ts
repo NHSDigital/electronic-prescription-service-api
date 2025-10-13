@@ -1,5 +1,5 @@
 import {fhir} from "@models"
-import {InteractionObject, PactOptions} from "@pact-foundation/pact"
+import {InteractionObject, PactV2Options} from "@pact-foundation/pact"
 import path from "path"
 import * as LosslessJson from "lossless-json"
 import {HTTPMethod} from "@pact-foundation/pact/src/common/request"
@@ -25,7 +25,7 @@ export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend" | "tracker"
 
 // used to add type-safety for adding a new pact
-export function pactOptions(options: CreatePactOptions): PactOptions {
+export function pactOptions(options: CreatePactOptions): PactV2Options {
   const pacticipantSuffix = getPacticipantSuffix(options.apiMode)
   const providerName = createProviderName(
     pacticipantSuffix,
