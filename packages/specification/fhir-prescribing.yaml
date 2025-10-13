@@ -533,20 +533,20 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description                                                                                                                                                                |
-            |-------------|-------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-            | 400         | R-0001      | Prescription/item was cancelled                                                                                                                                            |
-            | 400         | R-0002      | Prescription/item was not cancelled. With dispenser. Marked for cancellation                                                                                               |
-            | 400         | R-0003      | Prescription/item was not cancelled. With dispenser active. Marked for cancellation                                                                                        |
-            | 400         | R-0004      | Prescription/item was not cancelled. Prescription has been dispensed.                                                                                                      |
-            | 400         | R-0005      | Prescription/item has expired                                                                                                                                              |
-            | 400         | R-0006      | Prescription/item had already been cancelled                                                                                                                               |
-            | 400         | R-0007      | Prescription/item cancellation requested by another prescriber                                                                                                             |
-            | 400         | R-0008      | Prescription/item not found                                                                                                                                                |
-            | 400         | R-0009      | Cancellation functionality disabled in SPINE                                                                                                                               |
-            | 400         | R-0010      | Prescription/item was not cancelled. Prescription has been not dispensed.                                                                                                  |
-            | 400         | R-5000      | Unable to process message. Information missing or invalid - ...                                                                                                            |
-            | 400         | R-5888      | Invalid Message.                                                                                                                                                           |
+            | HTTP status | Error code  | Description                                                                            | Response format    |
+            |-------------|-------------|----------------------------------------------------------------------------------------|--------------------|
+            | 400         | R-0001      | Prescription/item was cancelled                                                        | Bundle             |
+            | 400         | R-0002      | Prescription/item was not cancelled. With dispenser. Marked for cancellation           | Bundle             |
+            | 400         | R-0003      | Prescription/item was not cancelled. With dispenser active. Marked for cancellation    | Bundle             |
+            | 400         | R-0004      | Prescription/item was not cancelled. Prescription has been dispensed.                  | Bundle             |
+            | 400         | R-0005      | Prescription/item has expired                                                          | Bundle             |
+            | 400         | R-0006      | Prescription/item had already been cancelled                                           | Bundle             |
+            | 400         | R-0007      | Prescription/item cancellation requested by another prescriber                         | Bundle             |
+            | 400         | R-0008      | Prescription/item not found                                                            | OperationOutcome   |
+            | 400         | R-0009      | Cancellation functionality disabled in SPINE                                           | OperationOutcome   |
+            | 400         | R-0010      | Prescription/item was not cancelled. Prescription has been not dispensed.              | Bundle             |
+            | 400         | R-5000      | Unable to process message. Information missing or invalid - ...                        | OperationOutcome   |
+            | 400         | R-5888      | Invalid Message.                                                                       | OperationOutcome   |
           content:
             application/fhir+json:
               schema:
