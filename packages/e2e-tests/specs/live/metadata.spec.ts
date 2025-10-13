@@ -1,10 +1,10 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
-import {InteractionObject, Matchers} from "@pact-foundation/pact"
-import {Pact} from "@pact-foundation/pact"
+import {InteractionObject, MatchersV2} from "@pact-foundation/pact"
+import {PactV2} from "@pact-foundation/pact"
 
 test("metadata e2e tests", async () => {
   const options = new CreatePactOptions("live", "metadata")
-  const provider = new Pact(pactOptions(options))
+  const provider = new PactV2(pactOptions(options))
   await provider.setup()
 
   const interaction = getInteraction(process.env["API_DEPLOYMENT_METHOD"], options)
@@ -56,16 +56,16 @@ function getResponseExpectation() {
       "extension": [
         {
           "url": "https://fhir.nhs.uk/StructureDefinition/Extension-NHSDigital-APIDefinition",
-          "extension": Matchers.eachLike(
+          "extension": MatchersV2.eachLike(
             {
               "url": "implementationGuide",
               "extension": [
                 {
                   "url": "name",
-                  "valueString": Matchers.like("uk.nhsdigital.medicines.r4")
+                  "valueString": MatchersV2.like("uk.nhsdigital.medicines.r4")
                 }, {
                   "url": "version",
-                  "valueString": Matchers.like("2.1.14-alpha")
+                  "valueString": MatchersV2.like("2.1.14-alpha")
                 }
               ]
             }, {min: 1}

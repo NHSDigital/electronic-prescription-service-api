@@ -1,4 +1,4 @@
-import {Pact} from "@pact-foundation/pact"
+import {PactV2} from "@pact-foundation/pact"
 import * as LosslessJson from "lossless-json"
 import * as TestResources from "../../resources/test-resources"
 import {
@@ -14,7 +14,7 @@ describe("sandbox release interactions", () => {
     "should be able to acquire prescription info on a prescription release",
     async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
       const options = new CreatePactOptions("sandbox", "task", "release")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const interaction = createInteraction(
@@ -37,7 +37,7 @@ describe("Task return sandbox e2e tests", () => {
     "should be able to process %s",
     async (desc: string, message: fhir.Task) => {
       const options = new CreatePactOptions("sandbox", "task", "return")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const interaction = createInteraction(
@@ -59,7 +59,7 @@ describe("Task withdraw sandbox e2e tests", () => {
     "should be able to withdraw %s",
     async (desc: string, message: fhir.Task) => {
       const options = new CreatePactOptions("sandbox", "task", "withdraw")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const interaction = createInteraction(
