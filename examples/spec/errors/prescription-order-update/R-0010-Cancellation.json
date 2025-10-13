@@ -75,8 +75,8 @@
                               "url": "status",
                               "valueCoding": {
                                   "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-                                  "code": "R-0003",
-                                  "display": "Prescription/item was not cancelled. With dispenser active. Marked for cancellation"
+                                  "code": "R-0010",
+                                  "display": "Prescription/item was not cancelled. Prescription has been not dispensed."
                               }
                           },
                           {
