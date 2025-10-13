@@ -4,7 +4,7 @@ import {
   pactOptions,
   successfulOperationOutcome
 } from "../../resources/common"
-import {Pact} from "@pact-foundation/pact"
+import {PactV2} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 
@@ -13,7 +13,7 @@ describe("dispense interactions", () => {
     "should be able to acquire prescription info on a prescription release",
     async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
       const options = new CreatePactOptions("live", "task", "release")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
@@ -34,7 +34,7 @@ describe("Task return e2e tests", () => {
     "should be able to process %s",
     async (desc: string, message: fhir.Task) => {
       const options = new CreatePactOptions("live", "task", "return")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
@@ -54,7 +54,7 @@ describe("Task withdraw e2e tests", () => {
     "should be able to withdraw %s",
     async (desc: string, message: fhir.Task) => {
       const options = new CreatePactOptions("live", "task", "withdraw")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
