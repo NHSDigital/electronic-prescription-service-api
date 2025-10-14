@@ -1,0 +1,33 @@
+type: object
+description: The reason why a prescription has not been dispensed at the prescription level. This extension is used when the EPS-TaskBusinessStatus is "0007 - Not Dispensed".
+properties:
+  url:
+    type: string
+    description: Codesystem URL for the prescription-level non-dispensing reason extension definition.
+    enum: [https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionNonDispensingReason]
+  valueCoding:
+    type: object
+    properties:
+      system:
+        type: string
+        description: Codesystem URL for the non-dispensing reason.
+        enum: [https://fhir.nhs.uk/CodeSystem/medicationdispense-status-reason]
+      code:
+        type: string
+        description: The prescription-level non-dispensing reason code.
+        enum: ["0001", "0002", "0003", "0004", "0005", "0006", "0007", "0008", "0009", "0010", "0011"]
+      display:
+        type: string
+        description: A human readable representation of the prescription-level non-dispensing reason code.
+        enum:
+          - Not required as instructed by the patient
+          - Clinically unsuitable
+          - Owings note issued to patient
+          - Prescription cancellation
+          - Prescription cancellation due to death
+          - Illegal NHS prescription
+          - Prescribed out of scope item
+          - Item or prescription expired
+          - Not allowed on FP10
+          - Patient did not collect medication
+          - Patient purchased medication over the counter
