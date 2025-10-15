@@ -817,6 +817,11 @@ paths:
                 description: A valid acute, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-04-req.json
+              acute-primary-05:
+                summary: Acute 05
+                description: A valid acute, primary care dispense notification request not dispensed.
+                value:
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-05-req.json
               repeat-primary:
                 summary: Repeat
                 description: A valid repeat, primary care dispense notification request.
