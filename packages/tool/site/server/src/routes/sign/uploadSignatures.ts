@@ -4,6 +4,7 @@ import {getEpsClient} from "../../services/communication/eps-client"
 import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from "../../services/session"
 import * as fhir from "fhir/r4"
 import {getCorrelationId, getSessionPrescriptionIdsArray} from "../util"
+import {AxiosResponse} from "axios"
 
 export default [
   {
@@ -24,10 +25,13 @@ export default [
         if (!prepareResponseIsError(prepareResponse)) {
           successfulPreparePrescriptionIds.push(id)
         } else {
+          const error = prepareResponse as unknown as AxiosResponse
+
           request.logger.error({
             message: `Prepare request failed for prescription id`,
             prescriptionId: id,
-            prepareResponse,
+            response_status: error.status,
+            response_data: error.data,
             correlationId
           })
         }
