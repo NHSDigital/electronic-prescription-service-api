@@ -24,7 +24,7 @@ export class LiveSigningClient implements SigningClient {
   }
 
   // eslint-disable-next-line max-len
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, signingOptions: string): Promise<SignatureUploadResponse> {
+  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, signingOptions: string, correlationId: string): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
@@ -35,7 +35,7 @@ export class LiveSigningClient implements SigningClient {
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
       "x-request-id": crypto.randomUUID(),
-      "x-correlation-id": crypto.randomUUID()
+      "x-correlation-id": correlationId
     }
 
     const payload = {

@@ -31,7 +31,7 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
-      const response = await signingClient.uploadSignatureRequest(prepareResponses, signInHeaders)
+      const response = await signingClient.uploadSignatureRequest(prepareResponses, signInHeaders, correlationId)
       return responseToolkit.response(response).code(200)
 
     }
