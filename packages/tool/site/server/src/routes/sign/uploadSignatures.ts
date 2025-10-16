@@ -23,8 +23,24 @@ export default [
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
         if (!prepareResponseIsError(prepareResponse)) {
           successfulPreparePrescriptionIds.push(id)
+        } else {
+          request.logger.error({
+            message: `Prepare request failed for prescription id`,
+            prescriptionId: id,
+            prepareResponse,
+            correlationId
+          })
         }
       }
+
+      if (successfulPreparePrescriptionIds.length === 0) {
+        request.logger.error({
+          message: "No successful prepare responses, cannot proceed to upload signatures",
+          correlationId
+        })
+        return responseToolkit.response().code(400)
+      }
+
       const prepareResponses = successfulPreparePrescriptionIds.map((id: string) => {
         return {
           id: id,
