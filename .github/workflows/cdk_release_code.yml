@@ -96,6 +96,9 @@ on:
       MTLS_KEY:
         type: string
         required: true
+      FORWARD_CSOC_LOGS:
+        type: boolean
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
