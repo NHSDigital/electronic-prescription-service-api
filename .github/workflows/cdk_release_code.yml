@@ -267,6 +267,7 @@ jobs:
           SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+          FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
 
       - name: Show diff
         run: |
