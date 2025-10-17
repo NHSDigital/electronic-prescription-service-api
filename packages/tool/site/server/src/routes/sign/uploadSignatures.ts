@@ -16,7 +16,6 @@ export default [
       const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
-      const signInHeaders = request.headers["nhsd-identity-authentication-method"]
       const correlationId = getCorrelationId(request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
@@ -52,7 +51,7 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
-      const response = await signingClient.uploadSignatureRequest(prepareResponses, signInHeaders, correlationId)
+      const response = await signingClient.uploadSignatureRequest(prepareResponses, correlationId)
       return responseToolkit.response(response).code(200)
 
     }
