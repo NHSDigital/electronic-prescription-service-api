@@ -22,9 +22,7 @@ export default [
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
         const prepareResponse = await epsClient.makePrepareRequest(prepareRequest, correlationId)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
-        if (!prepareResponseIsError(prepareResponse)) {
-          successfulPreparePrescriptionIds.push(id)
-        } else {
+        if (prepareResponseIsError(prepareResponse)) {
           const error = prepareResponse as unknown as AxiosResponse
 
           request.logger.error({
@@ -34,7 +32,10 @@ export default [
             response_data: error.data,
             correlationId
           })
+          continue
         }
+
+        successfulPreparePrescriptionIds.push(id)
       }
 
       if (successfulPreparePrescriptionIds.length === 0) {
