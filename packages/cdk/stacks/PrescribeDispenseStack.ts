@@ -319,7 +319,7 @@ export class PrescribeDispenseStack extends Stack {
     })
 
     if (forwardCsocLogs) {
-      fhirFacadeService.loadBalancer.logAccessLogs(csocLoggingBucket)
+      claimsService.loadBalancer.logAccessLogs(csocLoggingBucket)
     } else {
       claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
     }
