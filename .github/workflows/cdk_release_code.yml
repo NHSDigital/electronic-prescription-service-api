@@ -96,6 +96,9 @@ on:
       MTLS_KEY:
         type: string
         required: true
+      FORWARD_CSOC_LOGS:
+        type: boolean
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -264,6 +267,7 @@ jobs:
           SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+          FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
 
       - name: Show diff
         run: |

@@ -76,6 +76,7 @@ jobs:
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
