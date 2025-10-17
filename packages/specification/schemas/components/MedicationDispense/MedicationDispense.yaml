@@ -18,7 +18,9 @@ properties:
     type: array
     description: FHIR extension array.
     items:
-      $ref: "../_extensions/EPSTaskBusinessStatus.yaml"
+      anyOf:
+        - $ref: "../_extensions/EPSTaskBusinessStatus.yaml"
+        - $ref: "../_extensions/DMPrescriptionNonDispensingReason.yaml"
   identifier:
     type: array
     description: Unique identifier for this record of dispensing against the line item.
