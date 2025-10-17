@@ -46,7 +46,7 @@ info:
     ### Services
     These services must be used alongside EPS to create a functioning prescribing or dispensing system.
     * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard or a modern alternative.
-    * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
+    * [Directory of Services (DOS)](https://digital.nhs.uk/developer/api-catalogue/directory-of-healthcare-services/version-3) - prescribers must use the DOS to find dispensing sites for patients.
     * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
     * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address.
     * [Digital Signature Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use the signing service API to create signatures for prescriptions. The signing service is only used for EPS.
@@ -150,7 +150,7 @@ info:
     ## Onboarding
     Your software must be approved by us before you can begin the EPS onboarding process and go live with this FHIR API. EPS 'onboarding' is the term used for the development and assurance required before IT suppliers can offer EPS to NHS organisations.
 
-    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/onboarding-and-assurance) page.
+    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-suppliers) page.
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
