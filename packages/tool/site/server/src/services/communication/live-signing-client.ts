@@ -24,14 +24,13 @@ export class LiveSigningClient implements SigningClient {
   }
 
   // eslint-disable-next-line max-len
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, signingOptions: string, correlationId: string): Promise<SignatureUploadResponse> {
+  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, correlationId: string): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
     const state = Buffer.from(stateString, "utf-8").toString("base64")
     const url = `${baseUrl}/signaturerequest?state=${state}`
     const headers = {
-      "nhsd-identity-authentication-method": `[${signingOptions}]`,
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
       "x-request-id": crypto.randomUUID(),
