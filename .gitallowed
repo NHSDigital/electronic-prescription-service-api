@@ -19,7 +19,6 @@ host: "0\.0\.0\.0"
 const token = await getAuthToken()
 throw new Error\(`Cannot retrieve auth token: \${requestUrl} returned \${response.data}`\)
 throw `Could not retrieve token: \${result.data}
-token: string
 
 # ignore adding begin and end certificate in verification code
 ^([a-f0-9]{40}:)?packages\/coordinator\/src\/services\/verification\/common\.ts:.*BEGIN CERTIFICATE.*
