@@ -11,7 +11,8 @@ import {
 import {
   exchangeCIS2IdTokenForApigeeAccessToken,
   getApigeeAccessTokenFromAuthCode,
-  getCIS2IdTokenFromAuthCode
+  getCIS2IdTokenFromAuthCode,
+  getSelectedRoleFromTokenResponse
 } from "../../oauthUtils"
 
 export default {
@@ -45,7 +46,13 @@ export default {
 
         const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2IdToken)
 
-        createSeparateAuthSession(apigeeAccessToken, request, h)
+        let selectedRole = getSelectedRoleFromTokenResponse(apigeeAccessToken)
+
+        if (!selectedRole) {
+          selectedRole = getSelectedRoleFromTokenResponse(apigeeAccessToken)
+        }
+
+        createSeparateAuthSession(apigeeAccessToken, request, h, selectedRole as string)
 
         return h.redirect(CONFIG.baseUrl)
       } catch (e) {

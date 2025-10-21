@@ -37,6 +37,14 @@ export interface OAuthTokenResponse {
   expires_in: number
 }
 
+export interface UserInfoResponse {
+  nationalrbacaccess: {
+    nhsid_nrbac_roles: Array<{
+      person_roleid: string
+    }>
+  }
+}
+
 interface CIS2TokenResponse extends OAuthTokenResponse {
   id_token: string
 }
@@ -108,4 +116,28 @@ export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request, mo
   // TODO: /token failure
   const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/${path}`, bodyParams)
   return axiosOAuthTokenResponse.data
+}
+
+export function getSelectedRoleFromTokenResponse(tokenResponse: OAuthTokenResponse): string | undefined {
+  const decodedToken = jsonwebtoken.decode(tokenResponse.access_token) as jsonwebtoken.JwtPayload
+
+  return decodedToken?.["selected_roleid"] as string | undefined
+}
+
+export async function getUserInfoFromAuthCode(authToken: OAuthTokenResponse): Promise<string> {
+  const access_token = authToken.access_token
+
+  const axiosUserInfoResponse = await axios.get<UserInfoResponse>(`${CONFIG.apigeeEgressHost}/oauth2/userinfo`, {
+    headers: {
+      Authorization: `Bearer ${access_token}`
+    }
+  })
+
+  const roles = axiosUserInfoResponse.data.nationalrbacaccess.nhsid_nrbac_roles
+
+  if (roles.length === 0) {
+    throw new Error("No roles found for user")
+  }
+
+  return roles[0].person_roleid
 }

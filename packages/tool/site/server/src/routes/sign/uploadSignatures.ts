@@ -12,6 +12,7 @@ export default [
     path: "/sign/upload-signatures",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
+      const selectedRole = getSessionValue("Selected-Role", request) as string | undefined
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
@@ -19,7 +20,7 @@ export default [
       const correlationId = getCorrelationId(request)
       for (const id of prescriptionIds) {
         const prepareRequest = getSessionValue(`prepare_request_${id}`, request)
-        const prepareResponse = await epsClient.makePrepareRequest(prepareRequest, correlationId)
+        const prepareResponse = await epsClient.makePrepareRequest(prepareRequest, correlationId, selectedRole)
         setSessionValue(`prepare_response_${id}`, prepareResponse, request)
         if (prepareResponseIsError(prepareResponse)) {
           const error = prepareResponse as unknown as AxiosResponse
