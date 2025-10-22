@@ -123,12 +123,17 @@ class EpsClient {
     })).data
   }
 
-  async makePrepareRequest(body: Bundle, correlationId: string): Promise<Parameters | OperationOutcome> {
+  async makePrepareRequest(
+    body: Bundle,
+    correlationId: string,
+    selectedRole: string | undefined
+  ): Promise<Parameters | OperationOutcome> {
     return (await this.makeApiCall<Parameters | OperationOutcome>({
       path: "$prepare",
       apiType: ApiType.Prescribing,
       body,
-      correlationId
+      correlationId,
+      additionalHeaders: selectedRole ? {"NHSD-Session-URID": selectedRole} : undefined
     })).data
   }
 
