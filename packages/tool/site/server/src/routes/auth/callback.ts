@@ -47,6 +47,8 @@ export default {
 
         const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2Token.id_token)
 
+        // Smartcard authentication will have a selected role,
+        //  for non-smartcard authentication get a role from CIS2 userinfo endpoint
         let selectedRole =
           getSelectedRoleFromTokenResponse(apigeeAccessToken)
             ?? await getUserInfoRbacRoleFromCIS2Token(cis2Token)
