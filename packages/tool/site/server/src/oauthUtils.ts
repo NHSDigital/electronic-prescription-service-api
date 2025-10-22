@@ -141,7 +141,10 @@ export async function getUserInfoRbacRoleFromCIS2Token(cis2Token: CIS2TokenRespo
   // Verify sub claim
   const decodedIdToken = jsonwebtoken.decode(id_token) as jsonwebtoken.JwtPayload
   if (decodedIdToken.sub !== axiosUserInfoResponse.data.sub) {
-    throw new Error("sub claim in id_token does not match sub in userinfo response")
+    throw new Error(
+      `sub claim in id_token does not match sub in userinfo response:`
+        +`${decodedIdToken.sub} !== ${axiosUserInfoResponse.data.sub}`
+    )
   }
 
   const roles = axiosUserInfoResponse.data.nationalrbacaccess.nhsid_nrbac_roles
