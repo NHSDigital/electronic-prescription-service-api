@@ -38,6 +38,7 @@ export interface OAuthTokenResponse {
 }
 
 export interface UserInfoResponse {
+  sub: string,
   nationalrbacaccess: {
     nhsid_nrbac_roles: Array<{
       person_roleid: string
@@ -49,7 +50,7 @@ interface CIS2TokenResponse extends OAuthTokenResponse {
   id_token: string
 }
 
-export async function getCIS2IdTokenFromAuthCode(request: Hapi.Request): Promise<string> {
+export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<CIS2TokenResponse> {
   const authorisationCode = request.query.code
 
   const bodyParams = new URLSearchParams({
@@ -64,7 +65,7 @@ export async function getCIS2IdTokenFromAuthCode(request: Hapi.Request): Promise
     bodyParams
   )
 
-  return axiosCIS2TokenResponse.data.id_token
+  return axiosCIS2TokenResponse.data
 }
 
 export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): Promise<OAuthTokenResponse> {
@@ -124,14 +125,24 @@ export function getSelectedRoleFromTokenResponse(tokenResponse: OAuthTokenRespon
   return decodedToken?.["selected_roleid"] as string | undefined
 }
 
-export async function getUserInfoFromAuthCode(authToken: OAuthTokenResponse): Promise<string> {
-  const access_token = authToken.access_token
+export async function getUserInfoRbacRoleFromCIS2Token(cis2Token: CIS2TokenResponse): Promise<string> {
+  const access_token = cis2Token.access_token
+  const id_token = cis2Token.id_token
 
-  const axiosUserInfoResponse = await axios.get<UserInfoResponse>(`${CONFIG.apigeeEgressHost}/oauth2/userinfo`, {
-    headers: {
-      Authorization: `Bearer ${access_token}`
+  const axiosUserInfoResponse = await axios.get<UserInfoResponse>(
+    `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/userinfo`,
+    {
+      headers: {
+        Authorization: `Bearer ${access_token}`
+      }
     }
-  })
+  )
+
+  // Verify sub claim
+  const decodedIdToken = jsonwebtoken.decode(id_token) as jsonwebtoken.JwtPayload
+  if (decodedIdToken.sub !== axiosUserInfoResponse.data.sub) {
+    throw new Error("sub claim in id_token does not match sub in userinfo response")
+  }
 
   const roles = axiosUserInfoResponse.data.nationalrbacaccess.nhsid_nrbac_roles
 
