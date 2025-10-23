@@ -55,7 +55,7 @@ export default {
 
         const getUserInfoRole = async () => {
           request.logger.info("Fetching userinfo to get RBAC role")
-          const role = await getUserInfoRbacRoleFromCIS2Token(cis2Token)
+          const role = await getUserInfoRbacRoleFromCIS2Token(request, cis2Token)
           request.logger.info(`CIS2 userinfo role: ${role ?? "undefined"}`)
           return role
         }
