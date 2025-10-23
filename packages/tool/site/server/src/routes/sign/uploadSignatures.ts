@@ -28,8 +28,7 @@ export default [
           request.logger.error({
             message: `Prepare request failed for prescription id`,
             prescriptionId: id,
-            response_status: error.status,
-            response_data: error.data,
+            error: error,
             correlationId
           })
           continue
