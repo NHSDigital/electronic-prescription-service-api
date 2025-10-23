@@ -11,7 +11,9 @@ import {
 import {
   exchangeCIS2IdTokenForApigeeAccessToken,
   getApigeeAccessTokenFromAuthCode,
-  getCIS2IdTokenFromAuthCode
+  getCIS2TokenFromAuthCode,
+  getSelectedRoleFromTokenResponse,
+  getUserInfoRbacRoleFromCIS2Token
 } from "../../oauthUtils"
 
 export default {
@@ -41,11 +43,17 @@ export default {
 
     if (isSeparateAuthLogin(request)) {
       try {
-        const cis2IdToken = await getCIS2IdTokenFromAuthCode(request)
+        const cis2Token = await getCIS2TokenFromAuthCode(request)
 
-        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2IdToken)
+        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2Token.id_token)
 
-        createSeparateAuthSession(apigeeAccessToken, request, h)
+        // Smartcard authentication will have a selected role,
+        //  for non-smartcard authentication get a role from CIS2 userinfo endpoint
+        let selectedRole =
+          getSelectedRoleFromTokenResponse(apigeeAccessToken)
+            ?? await getUserInfoRbacRoleFromCIS2Token(cis2Token)
+
+        createSeparateAuthSession(apigeeAccessToken, request, h, selectedRole)
 
         return h.redirect(CONFIG.baseUrl)
       } catch (e) {
