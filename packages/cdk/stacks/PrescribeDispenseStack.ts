@@ -78,6 +78,7 @@ export class PrescribeDispenseStack extends Stack {
     const serviceCpu: number = this.node.tryGetContext("serviceCpu")
     const serviceMemory: number = this.node.tryGetContext("serviceMemory")
     const ApigeeEnvironment: string = this.node.tryGetContext("ApigeeEnvironment")
+    const forwardCsocLogs: boolean = this.node.tryGetContext("forwardCsocLogs")
 
     // imports
     const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
@@ -110,6 +111,7 @@ export class PrescribeDispenseStack extends Stack {
       this, "SplunkSubscriptionFilterRole", splunkSubscriptionFilterRoleImport)
     const trustStoreBucket = Bucket.fromBucketArn(this, "trustStoreBucket", trustStoreBucketArn)
     const albLoggingBucket = Bucket.fromBucketName(this, "albLoggingBucket", albLoggingBucketNameImport)
+    const csocLoggingBucket = Bucket.fromBucketName(this, "csocLoggingBucket", "nhsd-audit-lbaccesslogs")
 
     const fhirFacadeRepo = Repository.fromRepositoryName(this, "fhirFacadeRepo",
       "fhir-facade-repo"
@@ -246,7 +248,11 @@ export class PrescribeDispenseStack extends Stack {
       idleTimeout: Duration.seconds(61) // this is set to be higher than the default timeout from apigee
     })
 
-    fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
+    if (forwardCsocLogs) {
+      fhirFacadeService.loadBalancer.logAccessLogs(csocLoggingBucket)
+    } else {
+      fhirFacadeService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}/access`)
+    }
     fhirFacadeService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}/connection`)
     fhirFacadeService.loadBalancer.setAttribute("routing.http.drop_invalid_header_fields.enabled", "true")
 
@@ -312,7 +318,11 @@ export class PrescribeDispenseStack extends Stack {
       publicLoadBalancer: false
     })
 
-    claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
+    if (forwardCsocLogs) {
+      claimsService.loadBalancer.logAccessLogs(csocLoggingBucket)
+    } else {
+      claimsService.loadBalancer.logAccessLogs(albLoggingBucket, `${props.stackName}_claims/access`)
+    }
     claimsService.loadBalancer.logConnectionLogs(albLoggingBucket, `${props.stackName}_claims/connection`)
 
     claimsService.targetGroup.configureHealthCheck({
