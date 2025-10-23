@@ -161,6 +161,6 @@ export async function getUserInfoRbacRoleFromCIS2Token(
     throw new Error("No roles found for user")
   }
 
-  logger.info(`Selecting first role from userinfo roles: ${roles[0]}`)
+  logger.info(`Selecting first role from userinfo roles: ${JSON.stringify(roles[0])}`)
   return roles[0].person_roleid
 }
