@@ -125,10 +125,16 @@ export function getSelectedRoleFromTokenResponse(tokenResponse: OAuthTokenRespon
   return decodedToken?.["selected_roleid"] as string | undefined
 }
 
-export async function getUserInfoRbacRoleFromCIS2Token(cis2Token: CIS2TokenResponse): Promise<string> {
+export async function getUserInfoRbacRoleFromCIS2Token(
+  request: Hapi.Request,
+  cis2Token: CIS2TokenResponse
+): Promise<string> {
+  const logger = request.logger
+
   const access_token = cis2Token.access_token
   const id_token = cis2Token.id_token
 
+  logger.info("Fetching userinfo to verify sub claim and get RBAC role")
   const axiosUserInfoResponse = await axios.get<UserInfoResponse>(
     `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/userinfo`,
     {
@@ -137,6 +143,7 @@ export async function getUserInfoRbacRoleFromCIS2Token(cis2Token: CIS2TokenRespo
       }
     }
   )
+  logger.info(`Userinfo response: ${JSON.stringify(axiosUserInfoResponse.data)}`)
 
   // Verify sub claim
   const decodedIdToken = jsonwebtoken.decode(id_token) as jsonwebtoken.JwtPayload
@@ -148,10 +155,12 @@ export async function getUserInfoRbacRoleFromCIS2Token(cis2Token: CIS2TokenRespo
   }
 
   const roles = axiosUserInfoResponse.data.nationalrbacaccess.nhsid_nrbac_roles
+  logger.info(`Userinfo roles: ${JSON.stringify(roles)}`)
 
   if (roles.length === 0) {
     throw new Error("No roles found for user")
   }
 
+  logger.info(`Selecting first role from userinfo roles: ${JSON.stringify(roles[0])}`)
   return roles[0].person_roleid
 }
