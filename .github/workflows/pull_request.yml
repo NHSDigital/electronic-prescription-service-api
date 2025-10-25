@@ -8,8 +8,29 @@ env:
   BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
+  get_asdf_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.1.3
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@4a6d03ad51516eddc448daf454805f85fe2025b9
+    needs: [get_asdf_version]
+    with:
+      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
