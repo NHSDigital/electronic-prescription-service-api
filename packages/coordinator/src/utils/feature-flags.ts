@@ -31,8 +31,15 @@ export function isEpsHostedContainer(): boolean {
 export function enableDefaultAsidPartyKey(): boolean {
   return process.env.ENABLE_DEFAULT_ASID_PARTY_KEY === "true"
 }
-export function isSandbox(): boolean {
-  return process.env.SANDBOX === "1"
+export function isSandbox(logger?: pino.Logger): boolean {
+  const isEnabled = process.env.SANDBOX === "1"
+  if (logger) {
+    logger.info(`Sandbox mode is ${isEnabled ? "enabled" : "disabled"}`)
+  } else {
+    const logger = pino() // Create a logger instance
+    logger.info(`Sandbox mode is ${isEnabled ? "enabled" : "disabled"}`)
+  }
+  return isEnabled
 }
 
 export enum DoseToTextMode {
