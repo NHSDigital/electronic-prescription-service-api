@@ -7,13 +7,10 @@ properties:
     enum: [Practitioner]
   identifier:
     type: array
-    description: |
-      An array containing the prescriber's professional codes and identifiers.
-      The professional code identifier can be used for the GMC or GPhC number.
+    description: An array containing the prescriber's professional codes and identifiers.
     items:
       anyOf:
         - $ref: ../_fragments/identifiers.yaml#/components/schemas/SdsUserId
-        - $ref: ../_fragments/identifiers.yaml#/components/schemas/ProfessionalCode
         - $ref: ../_fragments/identifiers.yaml#/components/schemas/DinNumber
         - $ref: ../_fragments/identifiers.yaml#/components/schemas/HcpcNumber
         - $ref: ../_fragments/identifiers.yaml#/components/schemas/NmcNumber
