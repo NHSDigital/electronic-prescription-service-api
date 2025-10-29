@@ -60,13 +60,14 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_asdf_version]
-    uses: NHSDigital/eps-workflow-semantic-release/.github/workflows/tag-release.yml@f80157cecce288dd175e61b477a1d2dbe9c88b99
+    uses: NHSDigital/eps-workflow-semantic-release/.github/workflows/tag-release.yml@361957c147279f5f0f68b64fde9927833363d5f7
     with:
       dry_run: false
       asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
       branch_name: main
       publish_package: false
       tag_format: ${{ needs.get_asdf_version.outputs.tag_format }}
+      main_branch: master
     secrets: inherit
 
   package_code:
