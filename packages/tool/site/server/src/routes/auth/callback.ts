@@ -64,6 +64,19 @@ export default {
           return role
         }
 
+        const getTokenRole = () => {
+          const role = getSelectedRoleFromTokenResponse(apigeeAccessToken)
+          request.logger.info(`Apigee token role: ${role ?? "undefined"}`)
+          return role
+        }
+
+        const getUserInfoRole = async () => {
+          request.logger.info("Fetching userinfo to get RBAC role")
+          const role = await getUserInfoRbacRoleFromCIS2Token(request, cis2Token)
+          request.logger.info(`CIS2 userinfo role: ${role ?? "undefined"}`)
+          return role
+        }
+
         // Smartcard authentication will have a selected role,
         //  for non-smartcard authentication get a role from CIS2 userinfo endpoint
         let selectedRole = getTokenRole() ?? await getUserInfoRole()
