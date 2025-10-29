@@ -35,8 +35,12 @@ export default {
     if (prRedirectRequired(state.prNumber)) {
       if (prRedirectEnabled()) {
         const queryString = new URLSearchParams(request.query).toString()
-        return h.redirect(getPrBranchUrl(state.prNumber, "callback", queryString))
+        const redirectUrl = getPrBranchUrl(state.prNumber, "callback", queryString)
+
+        request.logger.info(`Redirecting to PR branch URL: ${redirectUrl}`)
+        return h.redirect(redirectUrl)
       } else {
+        request.logger.info("PR redirect disabled, but PR redirect required")
         return h.response({}).code(400)
       }
     }
@@ -45,7 +49,7 @@ export default {
       try {
         const cis2Token = await getCIS2TokenFromAuthCode(request)
 
-        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2Token.id_token)
+        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(request, cis2Token.id_token)
 
         const getTokenRole = () => {
           const role = getSelectedRoleFromTokenResponse(apigeeAccessToken)
@@ -64,8 +68,10 @@ export default {
         //  for non-smartcard authentication get a role from CIS2 userinfo endpoint
         let selectedRole = getTokenRole() ?? await getUserInfoRole()
 
+        request.logger.info(`Using selected role: ${selectedRole} for separate auth session`)
         createSeparateAuthSession(apigeeAccessToken, request, h, selectedRole)
 
+        request.logger.info(`Redirecting to base URL: ${CONFIG.baseUrl}`)
         return h.redirect(CONFIG.baseUrl)
       } catch (e) {
         request.logger.error(`Callback failed: ${e}`)

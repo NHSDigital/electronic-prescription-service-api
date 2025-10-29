@@ -26,7 +26,7 @@ function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: str
     state: createOAuthState()
   }
   if (scopes) {
-    queryParams.scope = scopes.join("%20")
+    queryParams.scope = scopes.join(" ")
   }
 
   return `${authorizeUrl}?${new URLSearchParams(queryParams)}`

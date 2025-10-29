@@ -60,15 +60,21 @@ export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<C
     redirect_uri: "https://int.api.service.nhs.uk/eps-api-tool/callback",
     code: authorisationCode
   })
+
+  request.logger.info("Exchanging auth code for CIS2 token")
   const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
     `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
     bodyParams
   )
 
+  request.logger.info("CIS2 token response: " + JSON.stringify(axiosCIS2TokenResponse))
   return axiosCIS2TokenResponse.data
 }
 
-export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): Promise<OAuthTokenResponse> {
+export async function exchangeCIS2IdTokenForApigeeAccessToken(
+  request: Hapi.Request,
+  idToken: string
+): Promise<OAuthTokenResponse> {
   const apiKey = CONFIG.apigeeAppClientId
   const privateKey = CONFIG.apigeeAppJWTPrivateKey
   const audience = `${CONFIG.publicApigeeHost}/oauth2/token`
@@ -93,9 +99,12 @@ export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): 
     grant_type: "urn:ietf:params:oauth:grant-type:token-exchange"
   })
 
+  request.logger.info("Exchanging CIS2 ID token for Apigee access token")
   // TODO: /token failure
   // eslint-disable-next-line max-len
   const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/oauth2/token`, bodyParams)
+
+  request.logger.info("Apigee OAuth token response: " + JSON.stringify(axiosOAuthTokenResponse))
   return axiosOAuthTokenResponse.data
 }
 
