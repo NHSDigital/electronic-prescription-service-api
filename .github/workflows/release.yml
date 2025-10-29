@@ -64,7 +64,7 @@ jobs:
     with:
       dry_run: false
       asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
-      branch_name: main
+      branch_name: master
       publish_package: false
       tag_format: ${{ needs.get_asdf_version.outputs.tag_format }}
       main_branch: master
