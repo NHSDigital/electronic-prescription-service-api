@@ -74,7 +74,7 @@ jobs:
     needs: [get_version, get_commit_id, tag_release]
     uses: ./.github/workflows/cdk_package_code.yml
     with:
-      VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
+      VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
 
   release_dev:
@@ -86,7 +86,7 @@ jobs:
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
@@ -95,7 +95,7 @@ jobs:
       # CREATE_INT_RELEASE_NOTES: true
       # CREATE_PROD_RELEASE_NOTES: true
       TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -136,14 +136,14 @@ jobs:
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: unused
       TO_PARTY_KEY: unused
@@ -187,14 +187,14 @@ jobs:
       APIGEE_ENVIRONMENT: ref
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -234,14 +234,14 @@ jobs:
       APIGEE_ENVIRONMENT: internal-qa
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -278,7 +278,7 @@ jobs:
       APIGEE_ENVIRONMENT: int
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
@@ -287,7 +287,7 @@ jobs:
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       # CREATE_INT_RELEASE_NOTES: true
       # CREATE_INT_RC_RELEASE_NOTES: false
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -328,14 +328,14 @@ jobs:
       APIGEE_ENVIRONMENT: sandbox
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: unused
       TO_PARTY_KEY: unused
@@ -369,7 +369,7 @@ jobs:
       APIGEE_ENVIRONMENT: prod
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: info
       VALIDATOR_LOG_LEVEL: INFO
@@ -378,7 +378,7 @@ jobs:
       # CREATE_PROD_RELEASE_NOTES: true
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.spineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: 338068513039
       TO_PARTY_KEY: YEA-0000806
