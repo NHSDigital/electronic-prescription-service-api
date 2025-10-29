@@ -145,7 +145,7 @@ jobs:
           API_DEPLOYMENT_METHOD: proxygen
           API_MODE: live
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: Upload pact_tests
         if: success() || failure()
         with:
