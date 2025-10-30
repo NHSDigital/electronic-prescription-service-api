@@ -69,7 +69,6 @@ export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<C
     bodyParams
   )
 
-  request.logger.info("CIS2 token response: " + JSON.stringify(axiosCIS2TokenResponse))
   return axiosCIS2TokenResponse.data
 }
 
