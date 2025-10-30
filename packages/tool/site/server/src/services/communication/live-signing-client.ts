@@ -1,4 +1,4 @@
-import axios from "axios"
+import {AxiosInstance} from "axios"
 import jwt from "jsonwebtoken"
 import {
   PrepareResponse,
@@ -12,15 +12,18 @@ import {getSessionValue} from "../session"
 import {isDev} from "../environment"
 import {getPrNumber} from "../../routes/helpers"
 import {Ping} from "../../routes/health/get-status"
+import LoggingAxios from "./logging-axios"
 // add an extra line to keep gitsecrets happy
 
 export class LiveSigningClient implements SigningClient {
   private request: Hapi.Request
   private accessToken: string
+  private axiosInstance: AxiosInstance
 
   constructor(request: Hapi.Request, accessToken: string) {
     this.request = request
     this.accessToken = accessToken
+    this.axiosInstance = new LoggingAxios(request.logger).getInstance()
   }
 
   // eslint-disable-next-line max-len
@@ -56,7 +59,7 @@ export class LiveSigningClient implements SigningClient {
       expiresIn: 600
     })
 
-    return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
+    return (await this.axiosInstance.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
 
   async makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse> {
@@ -67,7 +70,7 @@ export class LiveSigningClient implements SigningClient {
       "x-request-id": crypto.randomUUID(),
       "x-correlation-id": crypto.randomUUID()
     }
-    return (await axios.get<SignatureDownloadResponse>(url, {
+    return (await this.axiosInstance.get<SignatureDownloadResponse>(url, {
       headers: headers
     })).data
   }
@@ -75,7 +78,7 @@ export class LiveSigningClient implements SigningClient {
   async makePingRequest(): Promise<Ping> {
     const baseUrl = this.getBaseUrl()
     const url = `${baseUrl}/_ping`
-    return (await axios.get<Ping>(url)).data
+    return (await this.axiosInstance.get<Ping>(url)).data
   }
 
   private static getPrivateKey(private_key_secret: string) {
