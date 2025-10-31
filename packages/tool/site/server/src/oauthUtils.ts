@@ -39,11 +39,9 @@ export interface OAuthTokenResponse {
 
 export interface UserInfoResponse {
   sub: string,
-  nationalrbacaccess: {
-    nhsid_nrbac_roles: Array<{
-      person_roleid: string
-    }>
-  }
+  nhsid_nrbac_roles: Array<{
+    person_roleid: string
+  }>
 }
 
 interface CIS2TokenResponse extends OAuthTokenResponse {
@@ -168,7 +166,7 @@ export async function getUserInfoRbacRoleFromCIS2Token(
     )
   }
 
-  const roles = axiosUserInfoResponse.data.nationalrbacaccess.nhsid_nrbac_roles
+  const roles = axiosUserInfoResponse.data.nhsid_nrbac_roles
   logger.info(`Userinfo roles: ${JSON.stringify(roles)}`)
 
   if (roles.length === 0) {
