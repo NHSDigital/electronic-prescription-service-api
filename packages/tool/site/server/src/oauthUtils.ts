@@ -130,8 +130,8 @@ export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request, mo
   return axiosOAuthTokenResponse.data
 }
 
-export function getSelectedRoleFromTokenResponse(tokenResponse: OAuthTokenResponse): string | undefined {
-  const decodedToken = jsonwebtoken.decode(tokenResponse.access_token) as jsonwebtoken.JwtPayload
+export function getSelectedRoleFromCis2IdToken(tokenResponse: CIS2TokenResponse): string | undefined {
+  const decodedToken = jsonwebtoken.decode(tokenResponse.id_token) as jsonwebtoken.JwtPayload
 
   return decodedToken?.["selected_roleid"] as string | undefined
 }

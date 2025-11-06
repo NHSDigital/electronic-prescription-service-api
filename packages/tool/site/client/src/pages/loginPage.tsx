@@ -6,7 +6,7 @@ import ButtonList from "../components/common/buttonList"
 import {redirect} from "../browser/navigation"
 import {isInternalDev, isInternalDevSandbox, isInt, isQa} from "../services/environment"
 
-const LoginPage: React.FC<{separateAuth?: string}> = ({separateAuth}) => {
+const LoginPage: React.FC<{combinedAuth?: string}> = ({combinedAuth}) => {
   const {baseUrl, environment} = useContext(AppContext)
 
   const [mockAuthSelected, setMockAuthSelected] = useState(false)
@@ -18,7 +18,7 @@ const LoginPage: React.FC<{separateAuth?: string}> = ({separateAuth}) => {
   }, [])
 
   if (isInt(environment)) {
-    makeLoginRequest(baseUrl, separateAuth ? "user-separate" : "user-combined")
+    makeLoginRequest(baseUrl, combinedAuth ? "user-combined" : "user-separate")
     return (
       <>
         <Label isPageHeading>Login</Label>
