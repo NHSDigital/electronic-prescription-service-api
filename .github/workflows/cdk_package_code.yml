@@ -11,8 +11,27 @@ on:
         type: string
 
 jobs:
+  get_asdf_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+
   package_code:
     runs-on: ubuntu-22.04
+    needs: [get_asdf_version]
     permissions:
       id-token: write
       contents: read
@@ -27,7 +46,7 @@ jobs:
       - name: Install asdf
         uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
         with:
-          asdf_branch: v0.14.1
+          asdf_version: ${{ needs.get_asdf_version.outputs.asdf_version }}
 
       - name: Cache asdf
         uses: actions/cache@v4
@@ -41,7 +60,7 @@ jobs:
       - name: Install asdf dependencies in .tool-versions
         uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302
         with:
-          asdf_branch: v0.14.1
+          asdf_version: ${{ needs.get_asdf_version.outputs.asdf_version }}
         env:
           PYTHON_CONFIGURE_OPTS: --enable-shared
 
@@ -86,13 +105,13 @@ jobs:
             Makefile \
             cdk.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: Upload docker images
         with:
           name: docker_artifact

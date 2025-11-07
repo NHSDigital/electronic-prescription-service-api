@@ -96,6 +96,9 @@ on:
       MTLS_KEY:
         type: string
         required: true
+      FORWARD_CSOC_LOGS:
+        type: boolean
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -166,12 +169,12 @@ jobs:
           docker tag "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest" cdk-utils-build-repo:latest
 
       - name: build_artifact download
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: cdk_artifact
 
       - name: docker_artifact download
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: docker_artifact
           path: .
@@ -264,6 +267,7 @@ jobs:
           SERVICE_MEMORY: ${{ inputs.SERVICE_MEMORY }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+          FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
 
       - name: Show diff
         run: |
@@ -343,7 +347,7 @@ jobs:
           MTLS_KEY: ${{ inputs.MTLS_KEY }}
         run: ./.github/scripts/deploy_api.sh
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: Upload specs
         with:
           name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs

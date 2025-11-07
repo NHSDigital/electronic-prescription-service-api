@@ -26,7 +26,7 @@ function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: str
     state: createOAuthState()
   }
   if (scopes) {
-    queryParams.scope = scopes.join("%20")
+    queryParams.scope = scopes.join(" ")
   }
 
   return `${authorizeUrl}?${new URLSearchParams(queryParams)}`
@@ -97,7 +97,7 @@ export default {
     if (loginInfo.authLevel === "user-separate") {
       // eslint-disable-next-line max-len
       const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
-      const scopes = ["openid", "profile"]
+      const scopes = ["openid", "profile", "nationalrbacaccess"]
       const redirectUri = getRedirectUri(authorizationUri, CONFIG.cis2AppClientId, callbackUri, scopes)
 
       request.logger.info(`Redirecting browser to: ${redirectUri}`)

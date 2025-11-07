@@ -9,8 +9,28 @@ env:
   BRANCH_NAME: ${{ github.event.ref.BRANCH_NAME }}
 
 jobs:
+  get_asdf_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.1.3
+    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@2eb8f078b68454b53e83a62b4a6422c0f7aae6b3
+    needs: [get_asdf_version]
+    with:
+      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
@@ -39,81 +59,22 @@ jobs:
         run: echo "short_commit_id=$(echo ${{ github.sha }} | cut -c1-7)" >>   "$GITHUB_OUTPUT"
 
   tag_release:
-    needs: quality_checks
-    runs-on: ubuntu-22.04
-    outputs:
-      spec_version: ${{steps.output_spec_version.outputs.SPEC_VERSION}}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-        with:
-          ref: ${{ env.BRANCH_NAME }}
-          fetch-depth: 0
-
-      # using git commit sha for version of action to ensure we have stable version
-      - name: Install asdf
-        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
-        with:
-          asdf_branch: v0.11.3
-
-      - name: Cache asdf
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-
-
-      - name: Install asdf dependencies in .tool-versions
-        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302
-        with:
-          asdf_branch: v0.11.3
-        env:
-          PYTHON_CONFIGURE_OPTS: --enable-shared
-
-      - name: Install python packages
-        run: |
-          make install-python
-
-      - name: Set SPEC_VERSION env var for merges to master
-        run: echo "SPEC_VERSION=$(poetry run python scripts/calculate_version.py)" >> "$GITHUB_ENV"
-        if: github.ref == 'refs/heads/master'
-
-      - name: Set SPEC_VERSION env var for tags
-        run: echo "SPEC_VERSION=${{ github.ref_name }}" >> "$GITHUB_ENV"
-        if: github.ref != 'refs/heads/master'
-
-      - name: Create release (tags and master)
-        id: create-release
-        # using commit hash for version v1.13.0
-        uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag: ${{ env.SPEC_VERSION }}
-          commit: ${{  github.sha }}
-          body: |
-            ## Commit message
-            ${{ github.event.head_commit.message }}
-            ## Info
-            [See code diff](${{ github.event.compare }})
-            [Release workflow run](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-
-            It was initialized by [${{ github.event.sender.login }}](${{ github.event.sender.html_url }})
-
-      - name: output SPEC_VERSION
-        id: output_spec_version
-        run: |
-          echo "## RELEASE TAG :** ${{ env.SPEC_VERSION  }}" >> "$GITHUB_STEP_SUMMARY"
-          echo "SPEC_VERSION=${{ env.SPEC_VERSION }}" >> "$GITHUB_OUTPUT"
+    needs: [quality_checks, get_commit_id, get_asdf_version]
+    uses: NHSDigital/eps-workflow-semantic-release/.github/workflows/tag-release.yml@361957c147279f5f0f68b64fde9927833363d5f7
+    with:
+      dry_run: false
+      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      branch_name: master
+      publish_package: false
+      tag_format: ${{ needs.get_asdf_version.outputs.tag_format }}
+      main_branch: master
+    secrets: inherit
 
   package_code:
     needs: [get_version, get_commit_id, tag_release]
     uses: ./.github/workflows/cdk_package_code.yml
     with:
-      VERSION_NUMBER: ${{ needs.tag_release.outputs.spec_version }}
+      VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
 
   release_dev:
@@ -125,7 +86,7 @@ jobs:
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
@@ -134,7 +95,7 @@ jobs:
       # CREATE_INT_RELEASE_NOTES: true
       # CREATE_PROD_RELEASE_NOTES: true
       TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -149,6 +110,7 @@ jobs:
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -174,14 +136,14 @@ jobs:
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: unused
       TO_PARTY_KEY: unused
@@ -196,6 +158,7 @@ jobs:
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -224,14 +187,14 @@ jobs:
       APIGEE_ENVIRONMENT: ref
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -246,6 +209,7 @@ jobs:
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -270,14 +234,14 @@ jobs:
       APIGEE_ENVIRONMENT: internal-qa
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -292,6 +256,7 @@ jobs:
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -313,7 +278,7 @@ jobs:
       APIGEE_ENVIRONMENT: int
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
@@ -322,7 +287,7 @@ jobs:
       TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
       # CREATE_INT_RELEASE_NOTES: true
       # CREATE_INT_RC_RELEASE_NOTES: false
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: true
       TO_ASID: 567456789789
       TO_PARTY_KEY: YES-0000806
@@ -337,6 +302,7 @@ jobs:
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -362,14 +328,14 @@ jobs:
       APIGEE_ENVIRONMENT: sandbox
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: debug
       VALIDATOR_LOG_LEVEL: INFO
       LOG_RETENTION_DAYS: 30
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: unused
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: unused
       TO_PARTY_KEY: unused
@@ -384,6 +350,7 @@ jobs:
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -402,7 +369,7 @@ jobs:
       APIGEE_ENVIRONMENT: prod
       ENABLE_MUTUAL_TLS: true
       TRUSTSTORE_FILE: fhirfacade-truststore.pem
-      VERSION_NUMBER: ${{needs.tag_release.outputs.spec_version}}
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
       COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
       LOG_LEVEL: info
       VALIDATOR_LOG_LEVEL: INFO
@@ -411,7 +378,7 @@ jobs:
       # CREATE_PROD_RELEASE_NOTES: true
       DEPLOY_APIGEE: true
       TARGET_SPINE_SERVER: prescriptions.spineservices.nhs.uk
-      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.spec_version}}
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
       RUN_REGRESSION_TEST: false
       TO_ASID: 338068513039
       TO_PARTY_KEY: YEA-0000806
@@ -426,6 +393,7 @@ jobs:
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}

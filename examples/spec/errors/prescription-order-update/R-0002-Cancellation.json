@@ -343,6 +343,17 @@
                       "value": "VNFKT"
                   }
               ],
+              "type": [
+                  {
+                      "coding": [
+                          {
+                              "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                              "code": "182",
+                              "display": "PHARMACY"
+                          }
+                      ]
+                  }
+              ],
               "name": "The Simple Pharmacy",
               "telecom": [
                   {

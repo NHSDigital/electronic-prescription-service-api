@@ -18,26 +18,26 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: build_artifact download
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: cdk_artifact
           path: .
           run-id: ${{ inputs.workflowRunID }}
 
       - name: docker_artifact download
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: docker_artifact
           path: .
           run-id: ${{ inputs.workflowRunID }}
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: Upload docker images
         with:
           name: docker_artifact
@@ -76,6 +76,7 @@ jobs:
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
       MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}

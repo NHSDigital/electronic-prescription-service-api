@@ -8,18 +8,13 @@ import {
 } from "fhir/r4"
 import {isLocal} from "../environment"
 import {URLSearchParams} from "url"
-import axios, {
-  AxiosError,
-  AxiosInstance,
-  AxiosResponse,
-  InternalAxiosRequestConfig,
-  RawAxiosRequestHeaders
-} from "axios"
+import {AxiosInstance, AxiosResponse, RawAxiosRequestHeaders} from "axios"
 import {CONFIG} from "../../config"
 import * as Hapi from "@hapi/hapi"
 import {getSessionValue} from "../session"
 import {Ping} from "../../routes/health/get-status"
 import {DosageTranslationArray} from "../../routes/dose-to-text"
+import LoggingAxios from "./logging-axios"
 
 type QueryParams = Record<string, string | Array<string>>
 
@@ -72,45 +67,7 @@ class EpsClient {
 
   constructor(request: Hapi.Request) {
     this.request = request
-    this.axiosInstance = axios.create()
-    const logger = request.logger
-
-    this.axiosInstance.interceptors.request.use((request: InternalAxiosRequestConfig) => {
-      logger.info({
-        apiCall: {
-          request: {
-            headers: request.headers,
-            url: request.url,
-            baseURL: request.baseURL,
-            method: request.method
-          }}
-      }, "making api call")
-
-      return request
-    })
-
-    this.axiosInstance.interceptors.response.use((response: AxiosResponse) => {
-      logger.info({
-        apiCall: {
-          response: {
-            headers: response.headers,
-            status: response.status
-          }
-        }
-      }, "successful api call")
-
-      return response
-    }, (error: AxiosError) => {
-      logger.error({
-        response: {
-          headers: error.response?.headers,
-          status: error.response?.status
-        }}, "unsuccessful api call")
-
-      // let epsat figure out how to deal with errors so just return response
-      return error.response
-    })
-
+    this.axiosInstance = new LoggingAxios(request.logger).getInstance()
   }
 
   async makeGetTaskTrackerRequest(query: QueryParams, correlationId: string): Promise<Bundle | OperationOutcome> {
@@ -123,12 +80,17 @@ class EpsClient {
     })).data
   }
 
-  async makePrepareRequest(body: Bundle, correlationId: string): Promise<Parameters | OperationOutcome> {
+  async makePrepareRequest(
+    body: Bundle,
+    correlationId: string,
+    selectedRole: string | undefined
+  ): Promise<Parameters | OperationOutcome> {
     return (await this.makeApiCall<Parameters | OperationOutcome>({
       path: "$prepare",
       apiType: ApiType.Prescribing,
       body,
-      correlationId
+      correlationId,
+      additionalHeaders: selectedRole ? {"NHSD-Session-URID": selectedRole} : undefined
     })).data
   }
 

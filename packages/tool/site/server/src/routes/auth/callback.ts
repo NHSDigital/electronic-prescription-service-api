@@ -11,7 +11,9 @@ import {
 import {
   exchangeCIS2IdTokenForApigeeAccessToken,
   getApigeeAccessTokenFromAuthCode,
-  getCIS2IdTokenFromAuthCode
+  getCIS2TokenFromAuthCode,
+  getSelectedRoleFromCis2IdToken,
+  getUserInfoRbacRoleFromCIS2Token
 } from "../../oauthUtils"
 
 export default {
@@ -33,20 +35,43 @@ export default {
     if (prRedirectRequired(state.prNumber)) {
       if (prRedirectEnabled()) {
         const queryString = new URLSearchParams(request.query).toString()
-        return h.redirect(getPrBranchUrl(state.prNumber, "callback", queryString))
+        const redirectUrl = getPrBranchUrl(state.prNumber, "callback", queryString)
+
+        request.logger.info(`Redirecting to PR branch URL: ${redirectUrl}`)
+        return h.redirect(redirectUrl)
       } else {
+        request.logger.info("PR redirect disabled, but PR redirect required")
         return h.response({}).code(400)
       }
     }
 
     if (isSeparateAuthLogin(request)) {
       try {
-        const cis2IdToken = await getCIS2IdTokenFromAuthCode(request)
+        const cis2Token = await getCIS2TokenFromAuthCode(request)
 
-        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(cis2IdToken)
+        const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(request, cis2Token.id_token)
 
-        createSeparateAuthSession(apigeeAccessToken, request, h)
+        const getTokenRole = () => {
+          const role = getSelectedRoleFromCis2IdToken(cis2Token)
+          request.logger.info(`Apigee token role: ${role ?? "undefined"}`)
+          return role
+        }
 
+        const getUserInfoRole = async () => {
+          request.logger.info("Fetching userinfo to get RBAC role")
+          const role = await getUserInfoRbacRoleFromCIS2Token(request, cis2Token)
+          request.logger.info(`CIS2 userinfo role: ${role ?? "undefined"}`)
+          return role
+        }
+
+        // Smartcard authentication will have a selected role,
+        //  for non-smartcard authentication get a role from CIS2 userinfo endpoint
+        let selectedRole = getTokenRole() ?? await getUserInfoRole()
+
+        request.logger.info(`Using selected role: ${selectedRole} for separate auth session`)
+        createSeparateAuthSession(apigeeAccessToken, request, h, selectedRole)
+
+        request.logger.info(`Redirecting to base URL: ${CONFIG.baseUrl}`)
         return h.redirect(CONFIG.baseUrl)
       } catch (e) {
         request.logger.error(`Callback failed: ${e}`)
