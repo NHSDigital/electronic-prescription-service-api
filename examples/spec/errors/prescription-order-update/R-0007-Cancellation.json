@@ -75,8 +75,8 @@
                               "url": "status",
                               "valueCoding": {
                                   "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
-                                  "code": "R-0006",
-                                  "display": "Prescription/item had already been cancelled"
+                                  "code": "R-0007",
+                                  "display": "Prescription/item cancellation requested by another prescriber"
                               }
                           },
                           {
