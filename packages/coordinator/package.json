@@ -10,8 +10,8 @@
     "start": "node --enable-source-maps dist/coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "test": "jest --reporters=default --reporters=jest-junit --coverage",
-    "test:debug": "jest -i --reporters=default --reporters=jest-junit",
+    "test": "NODE_OPTIONS='--experimental-vm-modules' jest --reporters=default --reporters=jest-junit --coverage",
+    "test:debug": "NODE_OPTIONS='--experimental-vm-modules' jest -i --reporters=default --reporters=jest-junit",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "create-examples": "ts-node tests/generate-spine-examples.ts"
   },
@@ -44,6 +44,7 @@
     "xsd-schema-validator": "^0.11.0"
   },
   "devDependencies": {
+    "@aws-sdk/client-dynamodb": "^3.925.0",
     "@hapi/shot": "^6.0.2",
     "@types/crypto-js": "^4.2.2",
     "@types/hapi-pino": "^9.1.3",
