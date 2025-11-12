@@ -7,7 +7,7 @@ import {verifyPrescriptionSignature} from "../../src/services/verification"
 import pino from "pino"
 import axios from "axios"
 
-test("verify prescription signature", async () => {
+test.skip("verify prescription signature", async () => {
   // Set prescription id below and run the test to verify a prescription signature
 
   // 1. Prescription record is pulled from dynamodb
