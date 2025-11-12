@@ -1,5 +1,6 @@
 [project]
 python = "^3.8"
+name = "electronic-prescription-service-api"
 
 [tool.poetry]
 name = "electronic-prescription-service-api"
@@ -7,17 +8,7 @@ version = "0.0.1-alpha"
 description = "Electronic Prescription Service API Definitions"
 license = "MIT"
 authors = [
-    "Alex McCormick <alex.mccormick1@nhs.net>",
-    "Callum Tipper <callum.tipper1@nhs.net>",
-    "Conner Jowitt <conner.jowitt1@nhs.net>",
-    "Dan Jones <dan.jones13@nhs.net>",
-    "Harry Coulter <harry.coulter1@nhs.net>",
-    "Matt Jarvis <matt.jarvis1@nhs.net>",
-    "Richard Crawley <richard.crawley1@nhs.net>",
-    "Mukhtar Abdul Ghani <mukhtar.abdulghani1@nhs.net>",
-    "Chris Lopez <>",
-    "Tom Smith <>",
-    "Jack Robinson <jack.robinson4@nhs.net>"
+    "EPS Team <eps@team.team>"
 ]
 readme = "README.md"
 repository = "https://github.com/NHSDigital/electronic-prescription-service-api"
