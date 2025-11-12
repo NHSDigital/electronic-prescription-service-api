@@ -8,18 +8,19 @@ import pino from "pino"
 import axios from "axios"
 
 test.skip("verify prescription signature", async () => {
-  // Set prescription id below and run the test to verify a prescription signature
-
   // 1. Prescription record is pulled from dynamodb
   // 2. Prescription creation document id is extracted
   // 3. Document is pulled from dynamodb and zlib decompressed
   // 4. x509 certificate is extracted from the document
-  // 5. crl and crt are fetched and checked against certificate
+  // 5. CA Issuer certificate is fetched and used by signature verification
   // 6. verifyPrescriptionSignature is called to verify the signature
+
+  // Set prescription id below and run the test to verify a prescription signature
   const prescriptionId = "SET_PRESCRIPTION_ID_HERE"
 
   const ddbClient = new DynamoDBClient({region: "eu-west-2"})
 
+  console.log("Fetching prescription record from DynamoDB...")
   const getRecordCommand = new GetItemCommand({
     TableName: "spine-eps-datastore",
     Key: {
@@ -27,8 +28,6 @@ test.skip("verify prescription signature", async () => {
       "sk": {S: "REC"}
     }
   })
-
-  console.log("Fetching prescription record from DynamoDB...")
   const response = await ddbClient.send(getRecordCommand)
   if (!response.Item) {
     throw new Error(`Prescription record not found`)
@@ -38,12 +37,12 @@ test.skip("verify prescription signature", async () => {
 
   console.log("Decompressing prescription record...")
   const decompressedRecord = zlib.unzipSync(recordBinary).toString("utf-8")
-
   const prescriptionRecord = JSON.parse(decompressedRecord)
 
   const parentPrescriptionDocumentId: string = prescriptionRecord["prescription"]["prescriptionMsgRef"]
   console.log(`Parent prescription document id: ${parentPrescriptionDocumentId}`)
 
+  console.log("Fetching prescription document from DynamoDB...")
   const getDocumentCommand = new GetItemCommand({
     TableName: "spine-eps-datastore",
     Key: {
@@ -51,8 +50,6 @@ test.skip("verify prescription signature", async () => {
       "sk": {S: "DOC"}
     }
   })
-
-  console.log("Fetching prescription document from DynamoDB...")
   const documentResponse = await ddbClient.send(getDocumentCommand)
   if (!documentResponse.Item) {
     throw new Error(`Prescription document not found`)
@@ -62,7 +59,6 @@ test.skip("verify prescription signature", async () => {
 
   console.log("Decompressing prescription document...")
   const decompressedDocument = zlib.unzipSync(documentBinary).toString("utf-8")
-
   const prescriptionDocument = xml2js(decompressedDocument, {compact: true}) as ParentPrescriptionRoot
 
   const signature = prescriptionDocument
@@ -71,20 +67,17 @@ test.skip("verify prescription signature", async () => {
     .pertinentPrescription
     .author
     .signatureText
-
   if (!signature) {
     throw new Error("No signature found on parent prescription")
   }
 
   console.log("Extracting x509 certificate...")
   const x509Certificate = getCertificateFromPrescriptionCrypto(signature)
-
   const caIssuerURI = x509Certificate.toLegacyObject()["infoAccess"]["CA Issuers - URI"][0]
   console.log(`CA Issuer URI: ${caIssuerURI}`)
 
   console.log("Fetching CA Issuer certificate...")
   const caIssuerResponse = await axios.get(caIssuerURI)
-
   if (caIssuerResponse.status !== 200) {
     throw new Error(`Failed to fetch CA Issuer certificate from ${caIssuerURI}`)
   }
@@ -96,5 +89,9 @@ test.skip("verify prescription signature", async () => {
     console as unknown as pino.Logger
   )
 
-  console.info(verificationResponse)
+  if(verificationResponse.length === 0) {
+    console.log("Signature verification successful")
+  }else {
+    throw new Error(`Signature verification failed: ${JSON.stringify(verificationResponse)}`)
+  }
 })
