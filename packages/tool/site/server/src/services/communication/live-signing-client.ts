@@ -16,10 +16,10 @@ import LoggingAxios from "./logging-axios"
 // add an extra line to keep gitsecrets happy
 
 export class LiveSigningClient implements SigningClient {
-  private request: Hapi.Request
-  private accessToken: string
-  private axiosInstance: AxiosInstance
-  private userId: string
+  private readonly request: Hapi.Request
+  private readonly accessToken: string
+  private readonly axiosInstance: AxiosInstance
+  private readonly userId: string
 
   constructor(request: Hapi.Request, accessToken: string, userId: string) {
     this.request = request

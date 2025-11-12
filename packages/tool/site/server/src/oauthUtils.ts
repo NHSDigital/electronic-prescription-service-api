@@ -139,7 +139,7 @@ export function getSelectedRoleFromCis2IdToken(tokenResponse: CIS2TokenResponse)
 export function getUserIDFromCis2IdToken(tokenResponse: CIS2TokenResponse): string | undefined {
   const decodedToken = jsonwebtoken.decode(tokenResponse.id_token) as jsonwebtoken.JwtPayload
 
-  return decodedToken?.sub as string | undefined
+  return decodedToken?.sub
 }
 
 export async function getUserInfoRbacRoleFromCIS2Token(
