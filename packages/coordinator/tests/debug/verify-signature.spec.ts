@@ -1,6 +1,6 @@
 import {DynamoDBClient, GetItemCommand} from "@aws-sdk/client-dynamodb"
 import {xml2js} from "xml-js"
-import * as zlib from "zlib"
+import * as zlib from "node:zlib"
 import {ParentPrescriptionRoot} from "../../../models/hl7-v3"
 import {getCertificateFromPrescriptionCrypto} from "../../src/services/verification/common"
 import {verifyPrescriptionSignature} from "../../src/services/verification"
