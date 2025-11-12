@@ -8,7 +8,7 @@ version = "0.0.1-alpha"
 description = "Electronic Prescription Service API Definitions"
 license = "MIT"
 authors = [
-    "EPS Team <>"
+    "EPS Team <eps@team.team>"
 ]
 readme = "README.md"
 repository = "https://github.com/NHSDigital/electronic-prescription-service-api"
