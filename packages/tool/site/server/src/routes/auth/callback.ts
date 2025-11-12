@@ -12,7 +12,7 @@ import {
   exchangeCIS2IdTokenForApigeeAccessToken,
   getApigeeAccessTokenFromAuthCode,
   getCIS2TokenFromAuthCode,
-  getSelectedRoleFromTokenResponse,
+  getSelectedRoleFromCis2IdToken,
   getUserInfoRbacRoleFromCIS2Token
 } from "../../oauthUtils"
 
@@ -52,7 +52,7 @@ export default {
         const apigeeAccessToken = await exchangeCIS2IdTokenForApigeeAccessToken(request, cis2Token.id_token)
 
         const getTokenRole = () => {
-          const role = getSelectedRoleFromTokenResponse(apigeeAccessToken)
+          const role = getSelectedRoleFromCis2IdToken(cis2Token)
           request.logger.info(`Apigee token role: ${role ?? "undefined"}`)
           return role
         }
