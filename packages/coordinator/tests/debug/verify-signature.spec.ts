@@ -3,8 +3,11 @@ import {xml2js} from "xml-js"
 import * as zlib from "zlib"
 import {ParentPrescriptionRoot} from "../../../models/hl7-v3"
 import {getCertificateFromPrescriptionCrypto} from "../../src/services/verification/common"
+import {verifyPrescriptionSignature} from "../../src/services/verification"
+import pino from "pino"
+import axios from "axios"
 
-test.skip("verify prescription signature", async () => {
+test("verify prescription signature", async () => {
   // Set prescription id below and run the test to verify a prescription signature
 
   // 1. Prescription record is pulled from dynamodb
@@ -13,7 +16,7 @@ test.skip("verify prescription signature", async () => {
   // 4. x509 certificate is extracted from the document
   // 5. crl and crt are fetched and checked against certificate
   // 6. verifyPrescriptionSignature is called to verify the signature
-  const prescriptionId = "PUT_PRESCRIPTION_ID_HERE"
+  const prescriptionId = "SET_PRESCRIPTION_ID_HERE"
 
   const ddbClient = new DynamoDBClient({region: "eu-west-2"})
 
@@ -73,7 +76,23 @@ test.skip("verify prescription signature", async () => {
     throw new Error("No signature found on parent prescription")
   }
 
+  console.log("Extracting x509 certificate...")
   const x509Certificate = getCertificateFromPrescriptionCrypto(signature)
 
-  
+  const caIssuerURI = x509Certificate.toLegacyObject()["infoAccess"]["CA Issuers - URI"][0]
+  console.log(`CA Issuer URI: ${caIssuerURI}`)
+
+  console.log("Fetching CA Issuer certificate...")
+  const caIssuerResponse = await axios.get(caIssuerURI)
+
+  if (caIssuerResponse.status !== 200) {
+    throw new Error(`Failed to fetch CA Issuer certificate from ${caIssuerURI}`)
+  }
+
+  process.env.SUBCACC_CERT = caIssuerResponse.data
+
+  await verifyPrescriptionSignature(
+    prescriptionDocument.ParentPrescription,
+    console as unknown as pino.Logger
+  )
 })
