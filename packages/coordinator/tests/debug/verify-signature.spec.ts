@@ -91,8 +91,10 @@ test.skip("verify prescription signature", async () => {
 
   process.env.SUBCACC_CERT = caIssuerResponse.data
 
-  await verifyPrescriptionSignature(
+  const verificationResponse = await verifyPrescriptionSignature(
     prescriptionDocument.ParentPrescription,
     console as unknown as pino.Logger
   )
+
+  console.info(verificationResponse)
 })
