@@ -19,10 +19,12 @@ export class LiveSigningClient implements SigningClient {
   private request: Hapi.Request
   private accessToken: string
   private axiosInstance: AxiosInstance
+  private userId: string
 
-  constructor(request: Hapi.Request, accessToken: string) {
+  constructor(request: Hapi.Request, accessToken: string, userId: string) {
     this.request = request
     this.accessToken = accessToken
+    this.userId = userId
     this.axiosInstance = new LoggingAxios(request.logger).getInstance()
   }
 
@@ -54,7 +56,7 @@ export class LiveSigningClient implements SigningClient {
       algorithm: "RS512",
       keyid: CONFIG.apigeeAppJWTKeyId,
       issuer: CONFIG.apigeeAppClientId,
-      subject: CONFIG.subject,
+      subject: this.userId,
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })

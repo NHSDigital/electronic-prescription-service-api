@@ -30,10 +30,10 @@ export interface PrepareResponse {
   response: fhir.Parameters
 }
 
-export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
+export function getSigningClient(request: Hapi.Request, accessToken: string, userId: string): SigningClient {
   return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || (isQa(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || isLocal(CONFIG.environment)
     ? new MockSigningClient(request)
-    : new LiveSigningClient(request, accessToken)
+    : new LiveSigningClient(request, accessToken, userId)
 }

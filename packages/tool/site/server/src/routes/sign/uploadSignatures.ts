@@ -13,8 +13,9 @@ export default [
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
       const selectedRole = getSessionValue("Selected-Role", request) as string | undefined
+      const userId = getSessionValue("User-ID", request) as string | undefined || ""
       const epsClient = getEpsClient(accessToken, request)
-      const signingClient = getSigningClient(request, accessToken)
+      const signingClient = getSigningClient(request, accessToken, userId)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
       const correlationId = getCorrelationId(request)
