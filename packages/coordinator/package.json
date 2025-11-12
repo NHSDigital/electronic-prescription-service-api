@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
-    "@hapi/hapi": "^21.4.3",
+    "@hapi/hapi": "^21.4.4",
     "@peculiar/x509": "^1.14.0",
     "@xmldom/xmldom": "^0.9.8",
     "axios": "^1.12.2",
