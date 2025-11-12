@@ -15,7 +15,7 @@ export default [
       const selectedRole = getSessionValue("Selected-Role", request) as string | undefined
       const userId = getSessionValue("User-ID", request) as string | undefined || ""
       const epsClient = getEpsClient(accessToken, request)
-      const signingClient = getSigningClient(request, accessToken, userId)
+      const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
       const successfulPreparePrescriptionIds = []
       const correlationId = getCorrelationId(request)
@@ -52,7 +52,7 @@ export default [
           response: getSessionValue(`prepare_response_${id}`, request)
         }
       })
-      const response = await signingClient.uploadSignatureRequest(prepareResponses, correlationId)
+      const response = await signingClient.uploadSignatureRequest(prepareResponses, correlationId, userId)
       return responseToolkit.response(response).code(200)
 
     }

@@ -20,7 +20,7 @@ export interface SignatureDownloadResponse {
 
 export interface SigningClient {
   // eslint-disable-next-line max-len
-  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, correlationId: string): Promise<SignatureUploadResponse>
+  uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, correlationId: string, userId: string): Promise<SignatureUploadResponse>
   makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse>
   makePingRequest(): Promise<Ping>
 }
@@ -30,10 +30,10 @@ export interface PrepareResponse {
   response: fhir.Parameters
 }
 
-export function getSigningClient(request: Hapi.Request, accessToken: string, userId: string): SigningClient {
+export function getSigningClient(request: Hapi.Request, accessToken: string): SigningClient {
   return (isDev(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || (isQa(CONFIG.environment) && getSessionValue("use_signing_mock", request))
     || isLocal(CONFIG.environment)
     ? new MockSigningClient(request)
-    : new LiveSigningClient(request, accessToken, userId)
+    : new LiveSigningClient(request, accessToken)
 }

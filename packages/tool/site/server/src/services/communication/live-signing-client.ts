@@ -19,17 +19,18 @@ export class LiveSigningClient implements SigningClient {
   private readonly request: Hapi.Request
   private readonly accessToken: string
   private readonly axiosInstance: AxiosInstance
-  private readonly userId: string
 
-  constructor(request: Hapi.Request, accessToken: string, userId: string) {
+  constructor(request: Hapi.Request, accessToken: string) {
     this.request = request
     this.accessToken = accessToken
-    this.userId = userId
     this.axiosInstance = new LoggingAxios(request.logger).getInstance()
   }
 
-  // eslint-disable-next-line max-len
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, correlationId: string): Promise<SignatureUploadResponse> {
+  async uploadSignatureRequest(
+    prepareResponses: Array<PrepareResponse>,
+    correlationId: string,
+    userId: string
+  ): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
@@ -56,7 +57,7 @@ export class LiveSigningClient implements SigningClient {
       algorithm: "RS512",
       keyid: CONFIG.apigeeAppJWTKeyId,
       issuer: CONFIG.apigeeAppClientId,
-      subject: this.userId,
+      subject: userId,
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })
