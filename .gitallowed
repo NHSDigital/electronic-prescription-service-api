@@ -164,7 +164,7 @@ CONFIG.sessionKey
 ^[a-f0-9]{40}:tests\/e2e\/pact\/auth\/src\/oauth\.ts
 ^[a-f0-9]{40}:tool\/e2e-tests\/README\.md
 ^[a-f0-9]{40}:tool\/site\/client\/src\/index\.tsx
-^[a-f0-9]{40}:tool\/site\/client\/src\/pages\/sendPage\.tsx
+^([a-f0-9]{40}:)?tool\/site\/client\/src\/pages\/sendPage\.tsx
 ^[a-f0-9]{40}:tool\/site\/client\/tests\/pages\/sendPage\.spec\.tsx
 ^[a-f0-9]{40}:tool\/site\/server\/src\/app\.ts
 ^[a-f0-9]{40}:tool\/site\/server\/src\/routes\/auth\/refresh\.ts
