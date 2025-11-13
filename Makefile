@@ -206,6 +206,9 @@ release-epsat:
 	cp package-lock.json dist/
 	cp package.json dist/
 	cp Makefile dist/
+	cp poetry.lock dist/
+	cp pyproject.toml dist/
+	cp poetry.toml dist/
 
 release-all:
 	echo "Can not release all"
