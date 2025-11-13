@@ -135,7 +135,7 @@ extends:
 
           set -euo pipefail
           cd "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
-          make install
+          make install-python
           poetry run python -u scripts/run_epsat_e2e_tests.py \
             --service-base-path "$(SERVICE_BASE_PATH)" \
             --apigee-environment "$(APIGEE_ENVIRONMENT)" \
