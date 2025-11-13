@@ -136,6 +136,12 @@ export function getSelectedRoleFromCis2IdToken(tokenResponse: CIS2TokenResponse)
   return decodedToken?.["selected_roleid"] as string | undefined
 }
 
+export function getUserIDFromCis2IdToken(tokenResponse: CIS2TokenResponse): string | undefined {
+  const decodedToken = jsonwebtoken.decode(tokenResponse.id_token) as jsonwebtoken.JwtPayload
+
+  return decodedToken?.sub
+}
+
 export async function getUserInfoRbacRoleFromCIS2Token(
   request: Hapi.Request,
   cis2Token: CIS2TokenResponse

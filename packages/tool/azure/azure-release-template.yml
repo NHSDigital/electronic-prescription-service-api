@@ -120,17 +120,29 @@ extends:
         displayName: Wait for EPS API deploy
       - bash: |
           #!/bin/bash
+          echo "SERVICE_NAME=$(SERVICE_NAME)"
+          echo "SERVICE_ARTIFACT_NAME=$(SERVICE_ARTIFACT_NAME)"
+          echo "APIGEE_ENVIRONMENT=$(APIGEE_ENVIRONMENT)"
+          echo "LOCAL_MODE=$(LOCAL_MODE)"
+          echo "FIREFOX_BINARY_PATH=$(FIREFOX_BINARY_PATH)"
+          echo "SERVICE_BASE_PATH=$(SERVICE_BASE_PATH)"
+          echo "PR_LABEL=$(PR_LABEL)"
+
+        condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
+        displayName: show variables
+      - bash: |
+          #!/bin/bash
 
           set -euo pipefail
-
           cd "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
-          npm ci --workspaces --if-present --include-workspace-root
-          if [ "$(APIGEE_ENVIRONMENT)" == "internal-dev-sandbox" ] || [ "$(APIGEE_ENVIRONMENT)" == "sandbox" ]
-          then
-              npm run test-sandbox --workspace packages/tool/e2e-tests
-          else
-              npm run test-live --workspace packages/tool/e2e-tests
-          fi
+          make install
+          poetry run python -u scripts/run_epsat_e2e_tests.py \
+            --service-base-path "$(SERVICE_BASE_PATH)" \
+            --apigee-environment "$(APIGEE_ENVIRONMENT)" \
+            --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
+            --is_called_from_github=false \
+            --branch=${PR_LABEL}
+
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
       - task: PublishBuildArtifacts@1

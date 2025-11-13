@@ -1,0 +1,111 @@
+name: run EPSAT E2E tests
+
+on:
+  workflow_dispatch:
+    inputs:
+      SERVICE_BASE_PATH:
+        description: "The service base path to test against"
+        required: true
+        type: string
+      APIGEE_ENVIRONMENT:
+        description: "The Apigee environment to test against"
+        required: true
+        type: string
+      id:
+        description: "Unique run identifier (Do not change this)"
+        required: false
+        default: "Manually Triggered Run"
+jobs:
+  get_asdf_version_and_show_details:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+      - name: show_input_parameters
+        env:
+          SERVICE_BASE_PATH: ${{ inputs.SERVICE_BASE_PATH }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+          id: ${{ inputs.id }}
+          BRANCH_NAME: ${{ env.BRANCH_NAME }}
+        run: |
+          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
+          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"
+          echo "BRANCH_NAME: ${BRANCH_NAME}"
+          echo "id: ${id}"
+          # output to summary
+          # shellcheck disable=SC2129
+          echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"  >> "$GITHUB_STEP_SUMMARY"
+          echo "APIGEE_ENVIRONMENT: ${APIGEE_ENVIRONMENT}"  >> "$GITHUB_STEP_SUMMARY"
+          echo "id: ${id}"  >> "$GITHUB_STEP_SUMMARY"
+          echo "BRANCH_NAME: ${BRANCH_NAME}"  >> "$GITHUB_STEP_SUMMARY"
+
+      - name: ${{github.event.inputs.id}}
+        env:
+          ID: ${{github.event.inputs.id}}
+          ENV: ${{ inputs.APIGEE_ENVIRONMENT }}
+        run: |
+          echo run identifier "$ID"-"$ENV"
+          echo run identifier "$ID"-"$ENV"  >> "$GITHUB_STEP_SUMMARY"
+
+  run_epsat_tests:
+    runs-on: ubuntu-22.04
+    needs: [get_asdf_version_and_show_details]
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          ref: ${{ env.BRANCH_NAME }}
+
+      # using git commit sha for version of action to ensure we have stable version
+      - name: Install asdf
+        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
+        with:
+          asdf_version: ${{ needs.get_asdf_version_and_show_details.outputs.asdf_version }}
+
+      - name: Cache asdf
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.asdf
+          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+          restore-keys: |
+            ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
+
+      - name: Install asdf dependencies in .tool-versions
+        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302
+        with:
+          asdf_version: ${{ needs.get_asdf_version_and_show_details.outputs.asdf_version }}
+        env:
+          PYTHON_CONFIGURE_OPTS: --enable-shared
+
+      - name: make install
+        run: |
+          make install
+
+      - name: run epsat tests
+        run: |
+          if [ "${APIGEE_ENVIRONMENT}" == "internal-dev-sandbox" ] || [ "${APIGEE_ENVIRONMENT}" == "sandbox" ]
+          then
+              npm run test-sandbox --workspace packages/tool/e2e-tests
+          else
+              npm run test-live --workspace packages/tool/e2e-tests
+          fi
+        env:
+          SERVICE_BASE_PATH: ${{ inputs.SERVICE_BASE_PATH }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
