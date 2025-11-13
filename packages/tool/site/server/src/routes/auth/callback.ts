@@ -13,6 +13,7 @@ import {
   getApigeeAccessTokenFromAuthCode,
   getCIS2TokenFromAuthCode,
   getSelectedRoleFromCis2IdToken,
+  getUserIDFromCis2IdToken,
   getUserInfoRbacRoleFromCIS2Token
 } from "../../oauthUtils"
 
@@ -66,10 +67,25 @@ export default {
 
         // Smartcard authentication will have a selected role,
         //  for non-smartcard authentication get a role from CIS2 userinfo endpoint
-        let selectedRole = getTokenRole() ?? await getUserInfoRole()
+        const selectedRole = getTokenRole() ?? await getUserInfoRole()
+
+        const getCis2Uid = () => {
+          const uid = getUserIDFromCis2IdToken(cis2Token)
+          request.logger.info(`CIS2 id_token uid: ${uid ?? "undefined"}`)
+          return uid
+        }
+
+        const getFallbackUid = () => {
+          const uid = process.env.APP_JWT_SUBJECT ?? ""
+          request.logger.info(`Using fallback UID from environment variable: ${uid ?? "undefined"}`)
+          return uid
+        }
+
+        // Extract UID from CIS2 id_token or use fallback UID from environment variable
+        const uid = getCis2Uid() ?? getFallbackUid()
 
         request.logger.info(`Using selected role: ${selectedRole} for separate auth session`)
-        createSeparateAuthSession(apigeeAccessToken, request, h, selectedRole)
+        createSeparateAuthSession(apigeeAccessToken, request, h, selectedRole, uid)
 
         request.logger.info(`Redirecting to base URL: ${CONFIG.baseUrl}`)
         return h.redirect(CONFIG.baseUrl)
