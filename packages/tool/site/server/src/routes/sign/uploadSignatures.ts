@@ -5,6 +5,7 @@ import {getApigeeAccessTokenFromSession, getSessionValue, setSessionValue} from 
 import * as fhir from "fhir/r4"
 import {getCorrelationId, getSessionPrescriptionIdsArray} from "../util"
 import {AxiosResponse} from "axios"
+import {CONFIG} from "../../config"
 
 export default [
   {
@@ -12,8 +13,8 @@ export default [
     path: "/sign/upload-signatures",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
-      const selectedRole = getSessionValue("Selected-Role", request) as string | undefined
-      const userId = getSessionValue("User-ID", request) as string | undefined || ""
+      const selectedRole = getSessionValue("Selected-Role", request)
+      const userId = getSessionValue("User-ID", request) || CONFIG.subject
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
       const prescriptionIds = getSessionPrescriptionIdsArray(request)
