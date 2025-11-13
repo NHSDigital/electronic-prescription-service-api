@@ -205,6 +205,7 @@ release-epsat:
 	rsync -av --progress packages/tool/e2e-tests/ dist/packages/tool/e2e-tests --exclude node_modules
 	cp package-lock.json dist/
 	cp package.json dist/
+	cp Makefile dist/
 
 release-all:
 	echo "Can not release all"
