@@ -12,7 +12,7 @@ export default [
     path: "/sign/upload-signatures",
     handler: async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.ResponseObject> => {
       const accessToken = getApigeeAccessTokenFromSession(request)
-      const selectedRole = getSessionValue("Selected-Role", request) as string | undefined
+      const selectedRole = getSessionValue("Selected-Role", request)
       const userId = getSessionValue("User-ID", request)
       const epsClient = getEpsClient(accessToken, request)
       const signingClient = getSigningClient(request, accessToken)
