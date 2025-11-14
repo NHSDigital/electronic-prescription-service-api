@@ -164,7 +164,7 @@ CONFIG.sessionKey
 ^[a-f0-9]{40}:tests\/e2e\/pact\/auth\/src\/oauth\.ts
 ^[a-f0-9]{40}:tool\/e2e-tests\/README\.md
 ^[a-f0-9]{40}:tool\/site\/client\/src\/index\.tsx
-^[a-f0-9]{40}:tool\/site\/client\/src\/pages\/sendPage\.tsx
+^([a-f0-9]{40}:)?tool\/site\/client\/src\/pages\/sendPage\.tsx
 ^[a-f0-9]{40}:tool\/site\/client\/tests\/pages\/sendPage\.spec\.tsx
 ^[a-f0-9]{40}:tool\/site\/server\/src\/app\.ts
 ^[a-f0-9]{40}:tool\/site\/server\/src\/routes\/auth\/refresh\.ts
@@ -371,6 +371,7 @@ CONFIG.sessionKey
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/services\/communication\/live-signing-client\.ts:44
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/services\/communication\/live-signing-client\.ts:55
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/services\/communication\/live-signing-client\.ts:43
+^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/services\/communication\/live-signing-client\.ts:68
 ^([a-f0-9]{40}:)?packages\/tool\/site\/server\/src\/services\/communication\/mock-signing-client\.ts:16
 ^([a-f0-9]{40}:)?packages\/tool\/site\/server\/src\/services\/communication\/mock-signing-client\.ts:19
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/services\/communication\/signing-client\.ts:12
