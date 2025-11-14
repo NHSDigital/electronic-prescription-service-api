@@ -197,7 +197,10 @@ def main():
         "--user", required=False, help="Please provide the user credentials."
     )
     parser.add_argument(
-        "--branch", required=False, help="Please provide the branch to trigger job on."
+        "--branch",
+        required=False,
+        help="Please provide the branch to trigger job on.",
+        default="master"
     )
     parser.add_argument(
         "--is_called_from_github",

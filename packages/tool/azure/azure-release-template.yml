@@ -138,7 +138,7 @@ extends:
           make install-python
           poetry run python -u scripts/run_epsat_e2e_tests.py \
             --service-base-path "$(SERVICE_BASE_PATH)" \
-            --apigee-environment "$(APIGEE_ENVIRONMENT)" \
+            --apigee_environment "$(APIGEE_ENVIRONMENT)" \
             --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
             --is_called_from_github=false \
             --branch=${PR_LABEL}
