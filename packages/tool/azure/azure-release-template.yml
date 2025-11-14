@@ -97,7 +97,6 @@ extends:
           printf "\nPolling %s every %s seconds, until commit is: %s\n" "$url" "$interval_in_seconds" "$releaseCommit"
           attempts=0
           success=0
-          exit
           until [ $attempts -eq 30 ]
           do
           echo "attempt: ${attempts}"
@@ -142,7 +141,7 @@ extends:
             --apigee_environment "$(APIGEE_ENVIRONMENT)" \
             --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
             --is_called_from_github=false \
-            --branch="$(SourceBranchName)"
+            --branch="$(Build.SourceBranchName)"
 
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
