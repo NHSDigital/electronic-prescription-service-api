@@ -13,7 +13,8 @@
     "test": "NODE_OPTIONS='--experimental-vm-modules' jest --reporters=default --reporters=jest-junit --coverage",
     "test:debug": "NODE_OPTIONS='--experimental-vm-modules' jest -i --reporters=default --reporters=jest-junit",
     "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
-    "create-examples": "ts-node tests/generate-spine-examples.ts"
+    "create-examples": "ts-node tests/generate-spine-examples.ts",
+    "verify-signature": "NODE_OPTIONS='--experimental-vm-modules' jest tests/debug/verify-signature.spec.ts"
   },
   "author": "NHS Digital",
   "license": "MIT",
