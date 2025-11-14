@@ -197,6 +197,9 @@ def main():
         "--user", required=False, help="Please provide the user credentials."
     )
     parser.add_argument(
+        "--token", required=False, help="Please provide the authentication token."
+    )
+    parser.add_argument(
         "--branch",
         required=False,
         help="Please provide the branch to trigger job on.",
