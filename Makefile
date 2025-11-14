@@ -210,7 +210,7 @@ release-epsat:
 	cp poetry.lock dist/
 	cp pyproject.toml dist/
 	cp poetry.toml dist/
-	cp -r scripts dist/scripts
+	cp -r scripts/* dist/scripts/
 
 release-all:
 	echo "Can not release all"
