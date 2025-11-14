@@ -109,3 +109,9 @@ jobs:
         env:
           SERVICE_BASE_PATH: ${{ inputs.SERVICE_BASE_PATH }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        name: upload test_results
+        with:
+          name: test_results
+          path: |
+            packages/tool/e2e-tests/test_results
