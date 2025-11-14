@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout local github scripts
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           ref: ${{ env.BRANCH_NAME }}
           sparse-checkout: |
@@ -44,7 +44,7 @@ jobs:
 
     steps:
       - name: Checkout local code
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
