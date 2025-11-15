@@ -134,6 +134,11 @@ extends:
           #!/bin/bash
 
           set -euo pipefail
+          if [ -n "$(System.PullRequest.SourceBranch)" ]; then
+            export SOURCE_BRANCH="$(System.PullRequest.SourceBranch)"
+          else
+            export SOURCE_BRANCH="$(Build.SourceBranchName)"
+          fi
           cd "$(Pipeline.Workspace)/s/$(SERVICE_NAME)/$(SERVICE_ARTIFACT_NAME)/"
           make install-python
           poetry run python -u scripts/run_epsat_e2e_tests.py \
@@ -141,7 +146,7 @@ extends:
             --apigee_environment "$(APIGEE_ENVIRONMENT)" \
             --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
             --is_called_from_github=false \
-            --branch="$(BRANCH_NAME)"
+            --branch="${SOURCE_BRANCH}"
 
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
