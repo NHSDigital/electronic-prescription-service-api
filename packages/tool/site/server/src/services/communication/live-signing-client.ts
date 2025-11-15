@@ -16,9 +16,9 @@ import LoggingAxios from "./logging-axios"
 // add an extra line to keep gitsecrets happy
 
 export class LiveSigningClient implements SigningClient {
-  private request: Hapi.Request
-  private accessToken: string
-  private axiosInstance: AxiosInstance
+  private readonly request: Hapi.Request
+  private readonly accessToken: string
+  private readonly axiosInstance: AxiosInstance
 
   constructor(request: Hapi.Request, accessToken: string) {
     this.request = request
@@ -26,8 +26,11 @@ export class LiveSigningClient implements SigningClient {
     this.axiosInstance = new LoggingAxios(request.logger).getInstance()
   }
 
-  // eslint-disable-next-line max-len
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, correlationId: string): Promise<SignatureUploadResponse> {
+  async uploadSignatureRequest(
+    prepareResponses: Array<PrepareResponse>,
+    correlationId: string,
+    userId: string
+  ): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
@@ -54,7 +57,7 @@ export class LiveSigningClient implements SigningClient {
       algorithm: "RS512",
       keyid: CONFIG.apigeeAppJWTKeyId,
       issuer: CONFIG.apigeeAppClientId,
-      subject: CONFIG.subject,
+      subject: userId,
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })
