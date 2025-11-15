@@ -146,7 +146,7 @@ extends:
             --apigee_environment "$(APIGEE_ENVIRONMENT)" \
             --user $(GITHUB_USER):$(GITHUB_ACCESS_TOKEN) \
             --is_called_from_github=false \
-            --branch="$(SOURCE_BRANCH)"
+            --branch="${SOURCE_BRANCH}"
 
         condition: and(succeeded(), eq(variables['run_selenium_tests'], 'true'))
         displayName: Run smoke tests
