@@ -106,12 +106,17 @@ export function createCombinedAuthSession(
 }
 
 export function createSeparateAuthSession(
-  tokenResponse: OAuthTokenResponse, request: Hapi.Request, h: Hapi.ResponseToolkit, selectedRole: string
+  tokenResponse: OAuthTokenResponse,
+  request: Hapi.Request,
+  h: Hapi.ResponseToolkit,
+  selectedRole: string,
+  uid: string
 ): void {
   createAuthSession(tokenResponse, request, h)
   h.state("Auth-Method", "Separate")
   h.state("Auth-Level", "User")
   h.state("Selected-Role", selectedRole)
+  h.state("User-ID", uid)
 }
 
 export function getApigeeAccessTokenFromSession(request: Hapi.Request): string {
