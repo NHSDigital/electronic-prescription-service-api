@@ -3,8 +3,8 @@ import {CONFIG} from "./config"
 import {getRegisteredCallbackUrl} from "./routes/helpers"
 import Hapi from "@hapi/hapi"
 import {URLSearchParams} from "url"
-import axios from "axios"
 import * as jsonwebtoken from "jsonwebtoken"
+import LoggingAxios from "./services/communication/logging-axios"
 
 //TODO: handle system oauth
 
@@ -39,11 +39,9 @@ export interface OAuthTokenResponse {
 
 export interface UserInfoResponse {
   sub: string,
-  nationalrbacaccess: {
-    nhsid_nrbac_roles: Array<{
-      person_roleid: string
-    }>
-  }
+  nhsid_nrbac_roles: Array<{
+    person_roleid: string
+  }>
 }
 
 interface CIS2TokenResponse extends OAuthTokenResponse {
@@ -51,6 +49,8 @@ interface CIS2TokenResponse extends OAuthTokenResponse {
 }
 
 export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<CIS2TokenResponse> {
+  const axiosInstance = new LoggingAxios(request.logger).getInstance()
+
   const authorisationCode = request.query.code
 
   const bodyParams = new URLSearchParams({
@@ -60,7 +60,9 @@ export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<C
     redirect_uri: "https://int.api.service.nhs.uk/eps-api-tool/callback",
     code: authorisationCode
   })
-  const axiosCIS2TokenResponse = await axios.post<CIS2TokenResponse>(
+
+  request.logger.info("Exchanging auth code for CIS2 token")
+  const axiosCIS2TokenResponse = await axiosInstance.post<CIS2TokenResponse>(
     `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/access_token`,
     bodyParams
   )
@@ -68,7 +70,12 @@ export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<C
   return axiosCIS2TokenResponse.data
 }
 
-export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): Promise<OAuthTokenResponse> {
+export async function exchangeCIS2IdTokenForApigeeAccessToken(
+  request: Hapi.Request,
+  idToken: string
+): Promise<OAuthTokenResponse> {
+  const axiosInstance = new LoggingAxios(request.logger).getInstance()
+
   const apiKey = CONFIG.apigeeAppClientId
   const privateKey = CONFIG.apigeeAppJWTPrivateKey
   const audience = `${CONFIG.publicApigeeHost}/oauth2/token`
@@ -93,14 +100,17 @@ export async function exchangeCIS2IdTokenForApigeeAccessToken(idToken: string): 
     grant_type: "urn:ietf:params:oauth:grant-type:token-exchange"
   })
 
+  request.logger.info("Exchanging CIS2 ID token for Apigee access token")
   // TODO: /token failure
   // eslint-disable-next-line max-len
-  const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/oauth2/token`, bodyParams)
+  const axiosOAuthTokenResponse = await axiosInstance.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/oauth2/token`, bodyParams)
   return axiosOAuthTokenResponse.data
 }
 
 // eslint-disable-next-line max-len
 export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request, mock: boolean): Promise<OAuthTokenResponse> {
+  const axiosInstance = new LoggingAxios(request.logger).getInstance()
+
   // TODO: handle code not present
   const authorisationCode = request.query.code
 
@@ -115,27 +125,36 @@ export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request, mo
   })
   const path = mock ? "oauth2-mock/token" : "oauth2/token"
   // TODO: /token failure
-  const axiosOAuthTokenResponse = await axios.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/${path}`, bodyParams)
+  const axiosOAuthTokenResponse =
+    await axiosInstance.post<OAuthTokenResponse>(`${CONFIG.apigeeEgressHost}/${path}`, bodyParams)
   return axiosOAuthTokenResponse.data
 }
 
-export function getSelectedRoleFromTokenResponse(tokenResponse: OAuthTokenResponse): string | undefined {
-  const decodedToken = jsonwebtoken.decode(tokenResponse.access_token) as jsonwebtoken.JwtPayload
+export function getSelectedRoleFromCis2IdToken(tokenResponse: CIS2TokenResponse): string | undefined {
+  const decodedToken = jsonwebtoken.decode(tokenResponse.id_token) as jsonwebtoken.JwtPayload
 
   return decodedToken?.["selected_roleid"] as string | undefined
+}
+
+export function getUserIDFromCis2IdToken(tokenResponse: CIS2TokenResponse): string | undefined {
+  const decodedToken = jsonwebtoken.decode(tokenResponse.id_token) as jsonwebtoken.JwtPayload
+
+  return decodedToken?.sub
 }
 
 export async function getUserInfoRbacRoleFromCIS2Token(
   request: Hapi.Request,
   cis2Token: CIS2TokenResponse
 ): Promise<string> {
+  const axiosInstance = new LoggingAxios(request.logger).getInstance()
+
   const logger = request.logger
 
   const access_token = cis2Token.access_token
   const id_token = cis2Token.id_token
 
   logger.info("Fetching userinfo to verify sub claim and get RBAC role")
-  const axiosUserInfoResponse = await axios.get<UserInfoResponse>(
+  const axiosUserInfoResponse = await axiosInstance.get<UserInfoResponse>(
     `https://${CONFIG.cis2EgressHost}/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/userinfo`,
     {
       headers: {
@@ -143,7 +162,6 @@ export async function getUserInfoRbacRoleFromCIS2Token(
       }
     }
   )
-  logger.info(`Userinfo response: ${JSON.stringify(axiosUserInfoResponse.data)}`)
 
   // Verify sub claim
   const decodedIdToken = jsonwebtoken.decode(id_token) as jsonwebtoken.JwtPayload
@@ -154,7 +172,7 @@ export async function getUserInfoRbacRoleFromCIS2Token(
     )
   }
 
-  const roles = axiosUserInfoResponse.data.nationalrbacaccess.nhsid_nrbac_roles
+  const roles = axiosUserInfoResponse.data.nhsid_nrbac_roles
   logger.info(`Userinfo roles: ${JSON.stringify(roles)}`)
 
   if (roles.length === 0) {

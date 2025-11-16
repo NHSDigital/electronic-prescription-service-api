@@ -192,6 +192,7 @@ release-api:
 
 release-epsat:
 	mkdir -p dist/packages/tool/e2e-tests
+	mkdir -p dist/scripts
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
 	for env in internal-dev prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
@@ -205,6 +206,11 @@ release-epsat:
 	rsync -av --progress packages/tool/e2e-tests/ dist/packages/tool/e2e-tests --exclude node_modules
 	cp package-lock.json dist/
 	cp package.json dist/
+	cp Makefile dist/
+	cp poetry.lock dist/
+	cp pyproject.toml dist/
+	cp poetry.toml dist/
+	cp -r scripts/* dist/scripts/
 
 release-all:
 	echo "Can not release all"

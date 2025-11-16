@@ -105,13 +105,13 @@ jobs:
             Makefile \
             cdk.json
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v5
         name: Upload docker images
         with:
           name: docker_artifact
