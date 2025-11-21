@@ -431,3 +431,6 @@ cdk-synth:
 	npx cdk synth \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
+
+verify-signature:
+	cd packages/coordinator && npm run verify-signature
