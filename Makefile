@@ -86,6 +86,7 @@ install-node:
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
 		--workspace packages/bdd-tests \
+		--workspace packages/cdk \
 		--include-workspace-root
 
 install-python:
