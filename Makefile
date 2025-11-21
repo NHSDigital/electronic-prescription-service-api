@@ -434,3 +434,6 @@ cdk-synth:
 
 verify-signature:
 	cd packages/coordinator && npm run verify-signature
+
+compile:
+	echo "Does nothing"
