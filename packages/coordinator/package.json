@@ -27,12 +27,12 @@
     "@hapi/hapi": "^21.4.4",
     "@peculiar/x509": "^1.14.2",
     "@xmldom/xmldom": "^0.9.8",
-    "axios": "^1.12.2",
+    "axios": "^1.13.2",
     "axios-retry": "^4.5.0",
     "crypto-js": "^4.2.0",
     "fhirpath": "^4.8.0",
     "hapi-pino": "^13.0.0",
-    "joi": "^18.0.1",
+    "joi": "^18.0.2",
     "jsrsasign": "^11.1.0",
     "lossless-json": "^4.3.0",
     "module-alias": "^2.2.3",
@@ -45,7 +45,7 @@
     "xsd-schema-validator": "^0.11.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.925.0",
+    "@aws-sdk/client-dynamodb": "^3.936.0",
     "@hapi/shot": "^6.0.2",
     "@types/crypto-js": "^4.2.2",
     "@types/hapi-pino": "^9.1.3",
