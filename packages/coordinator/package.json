@@ -32,7 +32,7 @@
     "crypto-js": "^4.2.0",
     "fhirpath": "^4.8.0",
     "hapi-pino": "^13.0.0",
-    "joi": "^18.0.1",
+    "joi": "^18.0.2",
     "jsrsasign": "^11.1.0",
     "lossless-json": "^4.3.0",
     "module-alias": "^2.2.3",
