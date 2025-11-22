@@ -18,7 +18,7 @@ jobs:
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
 
       - name: Get asdf version
         id: asdf-version
@@ -38,7 +38,7 @@ jobs:
       packages: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v5
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8
         with:
           ref: ${{ env.BRANCH_NAME }}
 
@@ -49,7 +49,7 @@ jobs:
           asdf_version: ${{ needs.get_asdf_version.outputs.asdf_version }}
 
       - name: Cache asdf
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
         with:
           path: |
             ~/.asdf
@@ -105,13 +105,13 @@ jobs:
             Makefile \
             cdk.json
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
         name: Upload docker images
         with:
           name: docker_artifact
