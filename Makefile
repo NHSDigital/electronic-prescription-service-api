@@ -86,6 +86,7 @@ install-node:
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
 		--workspace packages/bdd-tests \
+		--workspace packages/cdk \
 		--include-workspace-root
 
 install-python:
@@ -431,3 +432,9 @@ cdk-synth:
 	npx cdk synth \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
+
+verify-signature:
+	cd packages/coordinator && npm run verify-signature
+
+compile:
+	echo "Does nothing"
