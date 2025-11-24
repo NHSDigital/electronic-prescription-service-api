@@ -57,7 +57,7 @@ components:
       properties:
         name: 
           type: string
-          enum: [organization]
+          enum: [owner]
         resource:
           $ref: '../../components/Organization/ReleaseOrganization.yaml'
 
