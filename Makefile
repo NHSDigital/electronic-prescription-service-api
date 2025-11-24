@@ -86,6 +86,7 @@ install-node:
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
 		--workspace packages/bdd-tests \
+		--workspace packages/cdk \
 		--include-workspace-root
 
 install-python:
@@ -434,3 +435,6 @@ cdk-synth:
 
 verify-signature:
 	cd packages/coordinator && npm run verify-signature
+
+compile:
+	echo "Does nothing"
