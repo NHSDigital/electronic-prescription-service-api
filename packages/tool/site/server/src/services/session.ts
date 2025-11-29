@@ -110,13 +110,13 @@ export function createSeparateAuthSession(
   request: Hapi.Request,
   h: Hapi.ResponseToolkit,
   selectedRole: string,
-  uid: string
+  userId: string
 ): void {
   createAuthSession(tokenResponse, request, h)
   h.state("Auth-Method", "Separate")
   h.state("Auth-Level", "User")
-  h.state("Selected-Role", selectedRole)
-  h.state("User-ID", uid)
+  setSessionValue("Selected-Role", selectedRole, request)
+  setSessionValue("User-ID", userId, request)
 }
 
 export function getApigeeAccessTokenFromSession(request: Hapi.Request): string {
@@ -136,5 +136,4 @@ export function clearSession(request: Hapi.Request, h: Hapi.ResponseToolkit): vo
   h.unstate("Token-Expires-In")
   h.unstate("Auth-Method")
   h.unstate("Auth-Level")
-  h.unstate("Selected-Role")
 }

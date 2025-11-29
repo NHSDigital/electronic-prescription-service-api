@@ -369,7 +369,7 @@ export function getBundleParameter(parameters: fhir.Parameters, name: string): f
 export function getOwnerParameterOrNull(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.Organization> {
   const resourceParameters = parameters.parameter.filter(isResourceParameter)
   const ownerParameter = resourceParameters.find(parameter => parameter.name === "owner")
-  if (isOrganizationParameter(ownerParameter)) {
+  if (ownerParameter && isOrganizationParameter(ownerParameter)) {
     return ownerParameter
   }
 

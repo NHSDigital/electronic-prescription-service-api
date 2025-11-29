@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout local github scripts
-        uses: actions/checkout@v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
         with:
           ref: ${{ env.BRANCH_NAME }}
           sparse-checkout: |
@@ -44,13 +44,13 @@ jobs:
 
     steps:
       - name: Checkout local code
-        uses: actions/checkout@v5
+        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
+        uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.PROXYGEN_PTL_ROLE }}
