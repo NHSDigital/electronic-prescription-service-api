@@ -16,7 +16,7 @@ jobs:
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
 
       - name: Get asdf version
         id: asdf-version
@@ -40,7 +40,7 @@ jobs:
       version: ${{ steps.set_version.outputs.version }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
       - name: Set version
         id: set_version
         run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
@@ -60,7 +60,7 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_asdf_version]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release.yml@3cba6a3733673bafc95526503478674332c26007
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release.yml@41e3450a9869f278be0e431a4b47b5c77bd55559
     with:
       dry_run: false
       asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
