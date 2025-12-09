@@ -170,7 +170,7 @@ def check_job(auth_header, workflow_id):
                 f"Regression test job not completed after {current_attempt} attempts"
             )
         print(
-            f"Current upload results job status : {job_status} after {current_attempt} attempts"
+            f"Current upload results job status: {job_status} after {current_attempt} attempts"
         )
         time.sleep(10)
         current_attempt = current_attempt + 1
