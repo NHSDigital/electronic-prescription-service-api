@@ -30,7 +30,7 @@
     "axios": "^1.13.2",
     "axios-cookiejar-support": "^6.0.5",
     "jsdom": "^27.2.0",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "license-checker": "^25.0.1",
     "lossless-json": "^4.3.0",
     "moment": "^2.30.1",
