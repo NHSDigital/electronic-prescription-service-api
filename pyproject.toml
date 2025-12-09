@@ -16,14 +16,9 @@ package-mode = false
 
 [tool.poetry.dependencies]
 python = "^3.8"
-pyyaml = "^6.0"
-docopt = "^0.6.2"
-jsonpath-rw = "^1.4.0"
 semver = "^3.0.4"
 gitpython = "^3.1.45"
-pytest = "^8.3.5"
 requests = "^2.32.4"
-boto3 = "^1.37.38"
 argparse = "^1.4.0"
 pre-commit = "^3.5.0"
 
@@ -31,7 +26,6 @@ pre-commit = "^3.5.0"
 flake8 = "^5.0.4"
 black = "^24.8"
 pip-licenses = "^4.5.1"
-jinja2 = "^3.1.6"
 
 [tool.poetry.scripts]
 
