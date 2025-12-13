@@ -30,7 +30,7 @@
     "axios": "^1.13.2",
     "axios-retry": "^4.5.0",
     "crypto-js": "^4.2.0",
-    "fhirpath": "^4.8.0",
+    "fhirpath": "^4.8.2",
     "hapi-pino": "^13.0.0",
     "joi": "^18.0.2",
     "jsrsasign": "^11.1.0",
