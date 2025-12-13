@@ -19,7 +19,7 @@
         "@types/fhir": "^0.0.41",
         "@types/lodash": "^4.17.21",
         "@types/selenium-webdriver": "^4.35.4",
-        "chromedriver": "^143.0.0",
+        "chromedriver": "^143.0.1",
         "geckodriver": "^6.1.0",
         "lodash": "^4.17.21",
         "selenium-webdriver": "^4.39.0"
