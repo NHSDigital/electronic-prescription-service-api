@@ -22,6 +22,6 @@
         "chromedriver": "^143.0.0",
         "geckodriver": "^6.1.0",
         "lodash": "^4.17.21",
-        "selenium-webdriver": "^4.38.0"
+        "selenium-webdriver": "^4.39.0"
     }
 }
