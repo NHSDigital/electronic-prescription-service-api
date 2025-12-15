@@ -16,6 +16,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "AmazonWebServices.aws-toolkit-vscode",
         "redhat.vscode-yaml",
         "ms-python.python",
         "github.vscode-pull-request-github",
