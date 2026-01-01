@@ -23,6 +23,6 @@
     "@apidevtools/swagger-cli": "^4.0.4"
   },
   "devDependencies": {
-    "lodash-es": "^4.17.21"
+    "lodash-es": "^4.17.22"
   }
 }
