@@ -20,6 +20,11 @@ steps:
     inputs:
       versionSpec: "23.9.0"
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
+  - task: UsePythonVersion@0
+    displayName: Use Python 3.14
+    inputs:
+      versionSpec: "3.14"
+    condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
   - bash: |
       #!/bin/bash
 

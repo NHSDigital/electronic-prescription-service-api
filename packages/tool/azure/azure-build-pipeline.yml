@@ -53,6 +53,10 @@ extends:
       - task: UseDotNet@2
         inputs:
           version: "3.1.x"
+      - task: UsePythonVersion@0
+        displayName: Use Python 3.14
+        inputs:
+          versionSpec: "3.14"
     test_steps:
       - bash: "make check-language-versions"
         displayName: Check consistent language version

@@ -39,6 +39,10 @@ extends:
         displayName: Use Node v20.10.0
         inputs:
           versionSpec: "23.9.0"
+      - task: UsePythonVersion@0
+        displayName: Use Python 3.14
+        inputs:
+          versionSpec: "3.14"
       - bash: |
           #!/bin/bash
 
