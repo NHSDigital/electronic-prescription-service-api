@@ -11,7 +11,7 @@ COPY .tool-versions.asdf /tmp/.tool-versions.asdf
 RUN if [ "$TARGETARCH" == "arm64" ] || [ "$TARGETARCH" == "aarch64" ]; then dpkg --add-architecture amd64; fi
 
 # this should be regularly updated to the latest version from https://github.com/NHSDigital/validation-service-fhir-r4/releases
-ARG VALIDATOR_VERSION_TAG=v1.0.311-alpha
+ARG VALIDATOR_VERSION_TAG=v1.0.322-alpha
 
 RUN apt-get update \
     && export DEBIAN_FRONTEND=noninteractive \
