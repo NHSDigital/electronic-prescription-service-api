@@ -10,8 +10,8 @@
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs ."
   },
   "engines": {
-    "node": "20.10.x",
-    "npm": "10.2.x"
+    "node": "24.12.x",
+    "npm": "11.6.x"
   },
   "keywords": [],
   "author": "",
