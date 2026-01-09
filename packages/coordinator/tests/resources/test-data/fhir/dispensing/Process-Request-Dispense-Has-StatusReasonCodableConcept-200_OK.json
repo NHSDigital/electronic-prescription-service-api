@@ -160,7 +160,6 @@
             "subject": {
               "reference": "urn:uuid:0d6077a5-ff37-44a2-8b04-6bc14d6c2bcc"
             },
-            "authoredOn": "2013-11-21T12:11:00+00:00",
             "category": [
               {
                 "coding": [
@@ -402,7 +401,6 @@
             "subject": {
               "reference": "urn:uuid:0d6077a5-ff37-44a2-8b04-6bc14d6c2bcc"
             },
-            "authoredOn": "2013-11-21T12:11:00+00:00",
             "category": [
               {
                 "coding": [
@@ -644,7 +642,6 @@
             "subject": {
               "reference": "urn:uuid:0d6077a5-ff37-44a2-8b04-6bc14d6c2bcc"
             },
-            "authoredOn": "2013-11-21T12:11:00+00:00",
             "category": [
               {
                 "coding": [
@@ -886,7 +883,6 @@
             "subject": {
               "reference": "urn:uuid:0d6077a5-ff37-44a2-8b04-6bc14d6c2bcc"
             },
-            "authoredOn": "2013-11-21T12:11:00+00:00",
             "category": [
               {
                 "coding": [

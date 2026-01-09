@@ -107,7 +107,6 @@
         "subject": {
           "reference": "urn:uuid:48ef4dc3-29ab-40d9-a903-91f59accf627"
         },
-        "authoredOn": "2021-02-11T15:29:02+00:00",
         "requester": {
           "reference": "urn:uuid:2bfb310b-70d8-46c9-be3a-a11c6d877951"
         },
