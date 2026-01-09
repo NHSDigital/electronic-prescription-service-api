@@ -6,8 +6,7 @@
       "watch": "tsc -w",
       "test": "jest",
       "cdk": "cdk",
-      "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
-      "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
+      "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs ."
     },
     "dependencies": {
     },

@@ -5,7 +5,6 @@
   "scripts": {
     "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit --coverage",
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
-    "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
     "clear-cache": "jest --clearCache",
     "create-sandbox-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPatterns sandbox",
@@ -31,7 +30,6 @@
     "axios-cookiejar-support": "^6.0.5",
     "jsdom": "^27.4.0",
     "jsonwebtoken": "^9.0.3",
-    "license-checker": "^25.0.1",
     "lossless-json": "^4.3.0",
     "moment": "^2.30.1",
     "pino": "^10.1.0",

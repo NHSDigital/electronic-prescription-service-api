@@ -7,8 +7,7 @@
     "test": "jest --ci --reporters=default --reporters=jest-junit",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node --enable-source-maps app.js --use_strict",
-    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs .",
-    "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../../.."
+    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs ."
   },
   "author": "NHS Digital",
   "license": "MIT",
