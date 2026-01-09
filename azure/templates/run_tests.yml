@@ -16,9 +16,9 @@ steps:
       fi
     displayName: Check for smoke tests
   - task: NodeTool@0
-    displayName: Use Node v20.10.x
+    displayName: Use Node v24.12.x
     inputs:
-      versionSpec: "23.9.0"
+      versionSpec: "24.12.0"
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
   - bash: |
       #!/bin/bash
