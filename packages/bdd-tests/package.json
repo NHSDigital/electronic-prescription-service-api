@@ -11,8 +11,8 @@
     "check-licenses": "license-checker --failOn GPL --failOn LGPL"
   },
   "engines": {
-    "node": "20.10.x",
-    "npm": "10.2.x"
+    "node": "24.12.x",
+    "npm": "11.6.x"
   },
   "keywords": [],
   "author": "",
