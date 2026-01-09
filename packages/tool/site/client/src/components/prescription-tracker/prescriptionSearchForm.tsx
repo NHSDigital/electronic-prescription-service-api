@@ -19,7 +19,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
   const initialValues: PrescriptionSearchCriteria = {
     prescriptionId: prescriptionId ?? "",
     patientId: "",
-    businessStatus: ""
+    businessStatus: "",
   }
 
   const validate = (values: PrescriptionSearchCriteria) => {
@@ -71,7 +71,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
           />
           <ButtonList>
             <Button type="submit">Search</Button>
-            <BackButton/>
+            <BackButton />
           </ButtonList>
         </Form>
       )}
