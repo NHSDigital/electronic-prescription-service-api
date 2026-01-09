@@ -71,8 +71,7 @@ function convertPrescriptionToTask(
     for: fhir.createIdentifierReference(fhir.createIdentifier(
       "https://fhir.nhs.uk/Id/nhs-number",
       prescription.patientNhsNumber
-    )),
-    authoredOn: convertHL7V3DateTimeStringToFhirDate(prescription.prescriptionIssueDate)
+    ))
   }
 
   //TODO - owner is mandatory in the profile but we don't get it back in the summary response

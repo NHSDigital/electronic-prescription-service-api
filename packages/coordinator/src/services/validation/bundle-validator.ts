@@ -271,7 +271,6 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
   const fhirPaths = [
     "groupIdentifier",
     "category",
-    "authoredOn",
     "subject",
     "requester",
     "dispenseRequest.performer",

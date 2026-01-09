@@ -6,7 +6,6 @@ import {PrescriptionSearchCriteria} from "../../common/prescription-search"
 import {BackButton} from "../common/backButton"
 import SelectField, {convertCodingsToOptions} from "../common/selectField"
 import {VALUE_SET_PRESCRIPTION_STATUS} from "../../fhir/reference-data/valueSets"
-import DateRangeField, {DATE_RANGE_INITIAL_VALUES, validateDateRangeField} from "./dateRangeField"
 
 interface PrescriptionSearchFormProps {
   prescriptionId: string,
@@ -20,8 +19,7 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
   const initialValues: PrescriptionSearchCriteria = {
     prescriptionId: prescriptionId ?? "",
     patientId: "",
-    businessStatus: "",
-    authoredOn: DATE_RANGE_INITIAL_VALUES
+    businessStatus: ""
   }
 
   const validate = (values: PrescriptionSearchCriteria) => {
@@ -30,13 +28,6 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
     if (!values.prescriptionId && !values.patientId) {
       errors.prescriptionId = "One of Prescription ID or NHS Number is required"
       errors.patientId = "One of Prescription ID or NHS Number is required"
-    }
-
-    if (values.authoredOn) {
-      const authoredOnErrors = validateDateRangeField(values.authoredOn)
-      if (authoredOnErrors) {
-        errors.authoredOn = authoredOnErrors
-      }
     }
 
     return errors
@@ -78,7 +69,6 @@ const PrescriptionSearchForm: React.FC<PrescriptionSearchFormProps> = ({
             label="Status"
             fieldOptions={convertCodingsToOptions(VALUE_SET_PRESCRIPTION_STATUS, true)}
           />
-          <DateRangeField id="authoredOn" name="authoredOn" label="Creation Date"/>
           <ButtonList>
             <Button type="submit">Search</Button>
             <BackButton/>

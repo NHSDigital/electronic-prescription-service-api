@@ -24,7 +24,9 @@ export function convertTaskToDispenseProposalReturn(
 ): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
-  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
+  // Since AEA-3650 removes the authoredOn requirement, we default to current time.
+  // Still use the Task.authoredOn fhir field tag, though
+  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(new Date().toISOString(), "Task.authoredOn")
   let taskPractitionerRole: fhir.PractitionerRole
   let taskOrganization: fhir.Organization
 

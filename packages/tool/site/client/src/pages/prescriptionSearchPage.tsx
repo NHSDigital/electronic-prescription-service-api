@@ -8,7 +8,6 @@ import PrescriptionSearchForm from "../components/prescription-tracker/prescript
 import PrescriptionSearchResults from "../components/prescription-tracker/prescriptionSearchResults"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {axiosInstance} from "../requests/axiosInstance"
-import {createDateRangeQueryParameters} from "../components/prescription-tracker/dateRangeField"
 import {getDispenseNotificationMessages} from "../requests/retrievePrescriptionDetails"
 import {PrescriptionSearchCriteria} from "../common/prescription-search"
 
@@ -38,7 +37,7 @@ const PrescriptionSearchPage: React.FC<PrescriptionSearchPageProps> = ({
   const prescriptionSearchTask = () => makeTaskTrackerRequest(baseUrl, searchCriteria)
   return (
     <LongRunningTask<Bundle> task={prescriptionSearchTask} loadingMessage="Searching for prescriptions." back={handleReset}>
-      {bundle => <PrescriptionSearchResults bundle={bundle} back={handleReset}/>}
+      {bundle => <PrescriptionSearchResults bundle={bundle} back={handleReset} />}
     </LongRunningTask>
   )
 }
@@ -82,10 +81,6 @@ function toTrackerQueryParams(searchCriteria: PrescriptionSearchCriteria) {
   }
   if (searchCriteria.businessStatus) {
     searchParams.set("business-status", searchCriteria.businessStatus)
-  }
-  if (searchCriteria.authoredOn?.type) {
-    createDateRangeQueryParameters(searchCriteria.authoredOn)
-      .forEach(value => searchParams.append("authored-on", value))
   }
   return searchParams
 }

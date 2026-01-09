@@ -5,7 +5,7 @@ import React from "react"
 import {getPerformerSiteTypeExtension} from "../../../fhir/customExtensions"
 import {getCurrentIssueNumberAndEndIssueNumber} from "../../../fhir/helpers"
 import {COURSE_OF_THERAPY_TYPE_CODES, VALUE_SET_COURSE_OF_THERAPY_TYPE} from "../../../fhir/reference-data/valueSets"
-import {formatCurrentDate, formatDate} from "../../../formatters/dates"
+import {formatDate} from "../../../formatters/dates"
 import {newLineFormatter} from "../../common/newLineFormatter"
 
 function createPrescriptionLevelDetails(
@@ -19,8 +19,7 @@ function createPrescriptionLevelDetails(
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
 
-  const authoredOn = formatCurrentDate()
-  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? authoredOn
+  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start)
   const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || "None"
 
   const nominatedTypeExtension = getPerformerSiteTypeExtension(medicationRequest.dispenseRequest.extension)
@@ -40,7 +39,6 @@ function createPrescriptionLevelDetails(
       medicationRequest.extension?.find(
         e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType"
       )?.valueCoding.code,
-    authoredOn,
     startDate,
     nominatedOds,
     nominatedType,
@@ -62,7 +60,6 @@ interface PrescriptionLevelDetailsProps {
   prescriptionTypeCode: string
   currentIssueNumber?: number
   endIssueNumber?: number
-  authoredOn: string
   startDate: string
   nominatedOds?: string
   nominatedType?: string
@@ -70,7 +67,7 @@ interface PrescriptionLevelDetailsProps {
   editMode?: boolean
 }
 
-const SummaryListRow = ({label, value}: { label: string, value: string | JSX.Element | JSX.Element[] }) => {
+const SummaryListRow = ({label, value}: {label: string, value: string | JSX.Element | JSX.Element[]}) => {
   return (
     <SummaryList.Row>
       <SummaryList.Key>{label}</SummaryList.Key>
@@ -85,7 +82,6 @@ const PrescriptionLevelDetails = ({
   prescriptionTypeCode,
   currentIssueNumber,
   endIssueNumber,
-  authoredOn,
   startDate,
   nominatedOds,
   nominatedType,
@@ -105,7 +101,6 @@ const PrescriptionLevelDetails = ({
         : null
       }
 
-      <SummaryListRow label="Authored On" value={authoredOn} />
       <SummaryListRow label="Effective Date" value={startDate} />
 
       {nominatedOds &&

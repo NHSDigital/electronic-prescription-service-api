@@ -15,7 +15,7 @@ export class Task extends common.Resource {
   intent: TaskIntent
   focus: common.IdentifierReference<bundle.Bundle>
   for: common.IdentifierReference<patient.Patient>
-  authoredOn: string
+  authoredOn?: string // TODO: Should we delete this entirely? Or is optional okay?
   requester?: common.Reference<practitionerRole.PractitionerRole> |
     common.IdentifierReference<practitionerRole.Organization>
   owner?: common.IdentifierReference<practitionerRole.PersonOrOrganization>
