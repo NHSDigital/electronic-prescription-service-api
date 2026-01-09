@@ -9,7 +9,7 @@ export const VALUE_SET_PRESCRIBER_ENDORSEMENT: Array<Coding> = [
   {
     code: "FS",
     system: "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
-    display: "Sexual Health"
+    display: "Free Supply for Specified Use"
   },
   {
     code: "ACBS",
