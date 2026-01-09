@@ -41,7 +41,7 @@
     <subject>
       <ETPWithdraw classCode="ALRT" moodCode="EVN">
         <id root="5AC84C11-DB8B-44DA-8FCF-8980B3D13596"/>
-        <effectiveTime value="20201221170320"/>
+        <effectiveTime value="20220201000000"/>
         <recordTarget typeCode="RCT">
           <patient classCode="PAT">
             <id extension="9990548609" root="2.16.840.1.113883.2.1.4.1"/>

@@ -119,7 +119,7 @@
       ]
     }
   ],
-   "focus": {
+  "focus": {
     "type": "Bundle",
     "identifier": {
       "system": "https://tools.ietf.org/html/rfc4122",
@@ -132,7 +132,6 @@
       "value": "9999999999"
     }
   },
-  "authoredOn": "2022-11-26T16:15:00+00:00",
   "owner": {
     "identifier": {
       "system": "https://fhir.nhs.uk/Id/ods-organization-code",
