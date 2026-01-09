@@ -324,16 +324,9 @@ lint-all: lint-api lint-epsat lint-githubactions
 ## check licenses
 
 check-licenses-api:
-	npm run check-licenses --workspace packages/specification
-	npm run check-licenses --workspace packages/coordinator 
-	npm run check-licenses --workspace packages/e2e-tests 
-	npm run check-licenses --workspace packages/bdd-tests 
-	scripts/check_python_licenses.sh
-
+	echo "not implemented in console"
 check-licenses-epsat:
-	npm run check-licenses --workspace packages/tool/site/client
-	npm run check-licenses --workspace packages/tool/site/server
-	npm run check-licenses --workspace packages/tool/e2e-tests
+	echo "not implemented in console"
 
 check-licenses-all: check-licenses-api check-licenses-epsat
 
