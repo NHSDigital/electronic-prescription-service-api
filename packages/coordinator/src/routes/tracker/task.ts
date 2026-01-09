@@ -17,7 +17,6 @@ export interface ValidQuery {
   "focus:identifier"?: string
   "patient:identifier"?: string
   "business-status"?: string
-  "authored-on"?: string | Array<string>
 }
 
 export interface QueryParamDefinition {
@@ -60,13 +59,6 @@ export const queryParamDefinitions: Array<QueryParamDefinition> = [
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
       "Task.businessStatus"
     ).code === value
-  },
-  {
-    name: "authored-on",
-    validInIsolation: false,
-    system: undefined,
-    dateParameter: true,
-    test: (task: fhir.Task, value: string): boolean => testDate(task.authoredOn, value)
   }
 ]
 
@@ -117,14 +109,11 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
   const patientIdentifier = getValue(validQuery["patient:identifier"])
   if (patientIdentifier) {
     const businessStatus = getValue(validQuery["business-status"])
-    const authoredOn = toArray(validQuery["authored-on"] || []).map(getValue)
-    const earliestDate = toSpineDateFormat(getEarliestDate(authoredOn))
-    const latestDate = toSpineDateFormat(getLatestDate(authoredOn))
     return await trackerClient.getPrescriptionsByPatientId(
       patientIdentifier,
       businessStatus,
-      earliestDate,
-      latestDate,
+      undefined,
+      undefined,
       request.headers,
       request.logger
     )

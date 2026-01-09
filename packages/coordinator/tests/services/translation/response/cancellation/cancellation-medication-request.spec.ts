@@ -91,10 +91,6 @@ describe("createMedicationRequest", () => {
     expect(subject.reference).toBe(`urn:uuid:${patientId}`)
   })
 
-  test("authoredOn", () => {
-    expect(medicationRequest.authoredOn).toBeUndefined()
-  })
-
   test("requester", () => {
     const requester = medicationRequest.requester
     expect(requester.reference).toBe(`urn:uuid:${authorPrescriptionRoleId}`)

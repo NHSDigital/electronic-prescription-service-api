@@ -25,7 +25,6 @@ import {DataTable, setDefaultTimeout} from "@cucumber/cucumber"
 
 import * as genid from "./genId"
 
-const authoredOn = new Date().toISOString()
 setDefaultTimeout(60 * 1000)
 
 /*
@@ -226,7 +225,6 @@ export async function returnPrescription(site, identifierValue, table: DataTable
   data.groupIdentifier.value = ctx.shortPrescId
   data.identifier[0].value = crypto.randomUUID()
   data.focus.identifier.value = identifierValue
-  data.authoredOn = new Date().toISOString()
   data.statusReason.coding[0].code = table.hashes()[0].statusReasonCode
   data.statusReason.coding[0].display = table.hashes()[0].statusReasonDisplay
   await Req()
@@ -262,7 +260,6 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
         if (contained.resourceType === "MedicationRequest") {
           contained.groupIdentifier.extension[0].valueIdentifier.value = ctx.longPrescId
           contained.groupIdentifier.value = ctx.shortPrescId
-          contained.authoredOn = new Date().toISOString()
           contained.dispenseRequest.performer.identifier.value = site
         }
       }
@@ -330,7 +327,6 @@ export async function withdrawDispenseNotification(site, table: DataTable, ctx) 
   data.groupIdentifier.value = ctx.shortPrescId
   data.identifier[0].value = crypto.randomUUID()
   data.focus.identifier.value = ctx.identifierValue
-  data.authoredOn = new Date().toISOString()
   data.owner.identifier.value = site
   data.statusReason.coding[0].code = table.hashes()[0].statusReasonCode
   data.statusReason.coding[0].display = table.hashes()[0].statusReasonDisplay
@@ -358,7 +354,7 @@ export async function sendDispenseClaim(site, claimNo = 1, table: DataTable = nu
   if (table !== null && Object.prototype.hasOwnProperty.call(table.hashes()[0], "createdDate")) {
     ctx.data.created = table.hashes()[0].createdDate
   } else {
-    ctx.data.created = authoredOn
+    ctx.data.created = new Date().toISOString()
   }
   const identifierValue = setBundleIdAndValue(ctx.data, "claim")
   ctx.data.prescription.extension[0].extension[1].valueIdentifier.value = ctx.longPrescId

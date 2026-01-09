@@ -18,7 +18,9 @@ import {RepeatInstanceInfo} from "../../../../../../models/hl7-v3/withdraw"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
-  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
+  // Since AEA-3650 removes the authoredOn requirement, we default to current time.
+  // Still use the Task.authoredOn fhir field tag, though
+  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(new Date().toISOString(), "Task.authoredOn")
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   const practitionerRoleRef = task.requester

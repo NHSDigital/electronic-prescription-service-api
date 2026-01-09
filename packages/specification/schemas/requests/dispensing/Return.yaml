@@ -40,7 +40,7 @@ properties:
           $ref: ../../components/_fragments/codes.yaml#/components/schemas/EpsTaskDispenseReturnStatusReason
   intent:
     type: string
-    description: | 
+    description: |
       The intent of the Medication Requests being returned.
       For acute prescriptions, this should be 'order'.
       For repeat and eRD prescriptions, this should be 'original-order' for the first prescription issue. For subsequent issues, this should be 'instance-order'.
@@ -66,11 +66,6 @@ properties:
     properties:
       identifier:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
-  authoredOn:
-    type: string
-    description: The time the prescription is being returned to Spine.
-    format: date-time
-    example: "2022-11-21T14:30:00+00:00"
   requester:
     type: object
     description: The dispenser returning the prescription.

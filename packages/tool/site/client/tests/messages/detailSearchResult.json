@@ -60,7 +60,6 @@
             "value": "9449304106"
           }
         },
-        "authoredOn": "2021-11-05",
         "owner": {
           "identifier": {
             "system": "https://fhir.nhs.uk/Id/ods-organization-code",

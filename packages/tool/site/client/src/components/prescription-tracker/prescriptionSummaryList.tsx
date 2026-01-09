@@ -23,7 +23,7 @@ export function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryP
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
-    creationDate: moment.utc(task.authoredOn),
+    creationDate: moment.utc(task.lastModified),
     status: task.businessStatus.coding[0].display,
     prescriber: task.requester && formatReference(task.requester),
     dispenser: task.owner && formatReference(task.owner)

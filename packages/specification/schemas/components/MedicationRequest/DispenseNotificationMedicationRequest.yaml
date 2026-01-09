@@ -42,7 +42,7 @@ properties:
   status:
     type: string
     description: |
-      The status of a MedicationRequest object. 
+      The status of a MedicationRequest object.
       This must be consistent across all MedicationRequests in a Bundle.
     enum: [active, cancelled, completed]
   intent:
@@ -93,11 +93,6 @@ properties:
       display:
         type: string
         example: Ms Marisa Stacey Twitchett
-  authoredOn:
-    type: string
-    description: Reserved for future use and will currently be ignored. Do not use.
-    format: date-time
-    example: "2021-05-07T14:47:29+00:00"
   requester:
     type: object
     description: Reference object to identify the requester of a prescription.
@@ -131,7 +126,7 @@ properties:
   dispenseRequest:
     type: object
     description: |
-      A FHIR object containing information relevant to how the prescription should be dispensed. 
+      A FHIR object containing information relevant to how the prescription should be dispensed.
       These values should be consistent across all MedicationRequests in a Bundle.
     required: [extension, quantity]
     properties:
@@ -160,14 +155,14 @@ properties:
             description: |
               End date of an issue; capped at 12 months and cannot exceed the prescription's end date.
               Overall validity of the drug.
-              Must be in date-time format with the time set to 23:59:59 on the last valid day of the prescription, including for single-day prescriptions. 
+              Must be in date-time format with the time set to 23:59:59 on the last valid day of the prescription, including for single-day prescriptions.
               Example: "2022-10-21T23:59:59Z"
-            format: date-time   
-            example: "2022-10-21T23:59:59Z"        
+            format: date-time
+            example: "2022-10-21T23:59:59Z"
       expectedSupplyDuration:
         type: object
         description: |
-          For eRD prescriptions only. 
+          For eRD prescriptions only.
           Duration of each issue in days; defaults to 28.
         properties:
           value:
@@ -228,12 +223,12 @@ properties:
   basedOn:
     type: array
     description: |
-      For eRD and repeat prescriptions only. 
+      For eRD and repeat prescriptions only.
       The current issue and the total number of issues that a prescription is valid for.
     items:
       type: object
-      properties: 
-        extension: 
+      properties:
+        extension:
           type: array
           description: FHIR extension array.
           items:
@@ -252,7 +247,7 @@ properties:
                         url:
                           type: string
                           description: |
-                            The current issue of the prescription. 
+                            The current issue of the prescription.
                             This value will be decremented by 1.
                             For example, if the current issue is the first issue, then the `numberOfRepeatsIssued` value will be 0.
                           enum: ["numberOfRepeatsIssued"]
@@ -264,8 +259,8 @@ properties:
                         url:
                           type: string
                           description: |
-                            The total number of issues the prescription is valid for. 
-                            This value will be decremented by 1. 
+                            The total number of issues the prescription is valid for.
+                            This value will be decremented by 1.
                             For example, if a prescription is valid for 6 issues, then the `numberOfRepeatsAllowed` value will be 5.
                           enum: ["numberOfRepeatsAllowed"]
                         valueInteger:

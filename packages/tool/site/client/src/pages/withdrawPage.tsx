@@ -10,7 +10,6 @@ import ReloadButton from "../components/common/reloadButton"
 import {axiosInstance} from "../requests/axiosInstance"
 import {getResponseDataIfValid} from "../requests/getValidResponse"
 import {ApiResult, isApiResult} from "../requests/apiResult"
-import {formatCurrentDateTimeIsoFormat} from "../formatters/dates"
 import {VALUE_SET_WITHDRAW_STATUS_REASON} from "../fhir/reference-data/valueSets"
 import WithdrawForm, {WithdrawFormValues} from "../components/withdraw/withdrawForm"
 import PrescriptionActions from "../components/common/prescriptionActions"
@@ -232,7 +231,6 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotifica
         value
       }
     },
-    authoredOn: formatCurrentDateTimeIsoFormat(),
     owner: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",

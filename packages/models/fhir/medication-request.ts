@@ -54,7 +54,7 @@ export interface BaseMedicationRequest extends common.Resource {
   medicationCodeableConcept?: common.CodeableConcept
   medicationReference?: common.Reference<medication.Medication>
   subject: common.Reference<patient.Patient>
-  authoredOn?: string
+  authoredOn?: string // TODO: Should we delete this entirely? Or is optional okay?
   requester: common.Reference<practitionerRole.PractitionerRole>
   groupIdentifier: MedicationRequestGroupIdentifier
   note?: Array<Annotation>
