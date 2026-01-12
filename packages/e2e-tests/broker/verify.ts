@@ -40,6 +40,7 @@ async function verify(endpoint: string, operation?: string): Promise<string> {
     providerBaseUrl: providerBaseUrl,
     logLevel: "error",
     pactUrls: [fileName],
+    timeout: 60000, // Increase timeout to 60 seconds for slow Azure CI environment
     customProviderHeaders: {
       "NHSD-Session-URID": "555254242106" // for user UID 656005750108
     },
