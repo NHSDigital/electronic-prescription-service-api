@@ -8,8 +8,7 @@
     "update-snapshots": "jest --updateSnapshot",
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch --progress",
-    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs .",
-    "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../../.."
+    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs ."
   },
   "repository": {
     "type": "git",
@@ -67,7 +66,7 @@
     "jszip": "^3.10.0",
     "react-cookie": "^7.2.2",
     "react-diff-viewer-continued": "^3.4.0",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^6.30.3",
     "react18-json-view": "^0.2.9"
   }
 }

@@ -9,7 +9,6 @@
     "resolve": "swagger-cli bundle electronic-prescription-service-api.yaml -r -o dist/electronic-prescription-service-api.resolved.json",
     "resolve-prescribing": "swagger-cli bundle fhir-prescribing.yaml -r -o dist/fhir-prescribing.resolved.json",
     "resolve-dispensing": "swagger-cli bundle fhir-dispensing.yaml -r -o dist/fhir-dispensing.resolved.json",
-    "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../..",
     "combine-specification": "node combineSpec.mjs"
   },
   "author": "NHS Digital",
