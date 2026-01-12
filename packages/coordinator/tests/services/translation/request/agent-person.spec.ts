@@ -54,8 +54,8 @@ describe("convertOrganization", () => {
     expect(result.code).toStrictEqual(new hl7V3.OrganizationTypeCode(OrganisationTypeCode.NOT_SPECIFIED))
     expect(result.name).toStrictEqual(new hl7V3.Text(testData.organization.name))
 
-    expect(mockConvertAddress).toBeCalledWith(testData.organization.address[0], "Organization.address")
-    expect(mockConvertTelecom).toBeCalledWith(testData.organization.telecom[0], "Organization.telecom")
+    expect(mockConvertAddress).toHaveBeenCalledWith(testData.organization.address[0], "Organization.address")
+    expect(mockConvertTelecom).toHaveBeenCalledWith(testData.organization.telecom[0], "Organization.telecom")
   })
 
   test("Uses passed in telecom if organization doesn't have one", () => {
@@ -65,7 +65,7 @@ describe("convertOrganization", () => {
     }
     convertOrganization(testOrganization, testData.telecom)
 
-    expect(mockConvertTelecom).toBeCalledWith(testData.telecom, "Organization.telecom")
+    expect(mockConvertTelecom).toHaveBeenCalledWith(testData.telecom, "Organization.telecom")
   })
 
   test("Converts organization correctly if organization is missing address", () => {

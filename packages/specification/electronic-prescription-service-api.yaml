@@ -45,25 +45,24 @@ info:
        
     ### Services
     These services must be used alongside EPS to create a functioning prescribing or dispensing system.
-    * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard.
-    * [Directory of Services (DOS)](https://digital.nhs.uk/services/directory-of-services-dos) - prescribers must use the DOS to find dispensing sites for patients.
+    * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard or a modern alternative.
+    * [Directory of Services (DOS)](https://digital.nhs.uk/developer/api-catalogue/directory-of-healthcare-services/version-3) - prescribers must use the DOS to find dispensing sites for patients.
     * [Organisation Data Service (ODS)](https://digital.nhs.uk/developer/api-catalogue/organisation-data-service-fhir) - use this to access ODS codes for prescribing organisations.
     * [Personal Demographics Service (PDS)](https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir) - use PDS to synchronise a patient's demographic details including their name, date of birth and address.
     * [Digital Signature Service](https://digital.nhs.uk/developer/api-catalogue/signing-service) - use the signing service API to create signatures for prescriptions. The signing service is only used for EPS.
     * [Role-Based Access Controls (RBAC)](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/national-rbac-for-developers) - RBAC rules are stored in the National RBAC Database (NRD) and are used to limit what prescribers can and cannot do.
-    * [GP2GP](https://digital.nhs.uk/services/gp2gp) - use the GP2GP service to transfer patient details, including nominated dispensers, between GPs.
     * [Message Exchange for Social Care and Health (MESH)](https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api) - Use MESH to deliver and receive cancel responses.
     * [Prescription Tracker](https://developer.nhs.uk/apis/eps-tracker) - use this if you want a read-only interface to get information about a patient's prescriptions.
     * [Real-Time Exemption Checking](https://nhsconnect.github.io/prescription-exemptions/) - dispensing systems must use the Real-Time Exemption Checking service to prevent prescriptions fraud and enable effective processing of charge exemptions.
 
     ### Documentation
     This documentation provides important context
-    * [Dictionary of Medicines and Devices (DM+D)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
+    * [Dictionary of Medicines and Devices (dm+d)](https://www.nhsbsa.nhs.uk/pharmacies-gp-practices-and-appliance-contractors/dictionary-medicines-and-devices-dmd) - the dm+d has the names, descriptions and unique identifiers for medicines and devices that can be prescribed.
     * [Requirements and Guidance for Endorsement in the Electronic Prescription Service (EPS)](https://www.nhsbsa.nhs.uk/sites/default/files/2023-03/NHSBSAGuidanceforEndorsement_v8.0.pdf) - guidance on handling prescription types, prescription endorsements, and patient charge exemptions within EPS.
 
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
-    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/ukcoreimplementationguideformedicines?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
+    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/nhsdigital-medicines/home/introduction/directory) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
     * [Building healthcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with prescriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
@@ -96,7 +95,7 @@ info:
 
     It conforms to the [FHIR](https://digital.nhs.uk/developer/guides-and-documentation/our-api-technologies#fhir) global standard for health care data exchange, specifically to [FHIR R4 (v4.0.1)](https://hl7.org/fhir/r4/), except that it does not support the [capabilities](http://hl7.org/fhir/R4/http.html#capabilities) interaction.
 
-    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core, specifically [UKcore.stu1 0.5.1](https://simplifier.net/packages/fhir.r4.ukcore.stu1/0.5.1).
+    It includes some country-specific FHIR extensions, which are built against [FHIR UK Core](https://simplifier.net/guide/ukcoreversionhistory/home?version=current).
 
     You do not need to know much about FHIR to use this API - FHIR APIs are just RESTful APIs that follow specific rules. In particular:
     * resource names are capitalised and singular, for example `/Patient` not `/patients`
@@ -112,9 +111,8 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
-    This API has 2 access modes:
+    This API has 1 access mode:
     * user-restricted access
-    * application-restricted access
 
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -122,14 +120,6 @@ info:
 
     EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
     do not use combined authentication and authorisation.
-
-    The only interaction that is not user-restricted is releasing nominated prescriptions.
-
-    ### Application-restricted access
-    Use this access mode to release nominated prescriptions while dispensing. 
-
-    To use this access mode, use the following security pattern:
-    * [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
     | Environment      | Base URL                                                            |
@@ -160,7 +150,7 @@ info:
     ## Onboarding
     Your software must be approved by us before you can begin the EPS onboarding process and go live with this FHIR API. EPS 'onboarding' is the term used for the development and assurance required before IT suppliers can offer EPS to NHS organisations.
 
-    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-developers/onboarding-and-assurance) page.
+    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-suppliers) page.
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.
@@ -248,7 +238,7 @@ info:
     | 403           | FORBIDDEN             | Insufficient authorization.                                                                                                           |
     | 404           | NOT_FOUND             | Route not found.                                                                                                                      |
     | 500           | INTERNAL SERVER ERROR | The server has encountered a situation it does not know how to handle.                                                                |
-    | 504           | GATEWAY_TIMEOUT       | If your request has not been fully processed within 59 seconds, you will get this response. Retry the request with identical payload. |
+    | 504           | GATEWAY_TIMEOUT       | If your request has not been fully processed within 30 seconds, you will get this response. Retry the request with identical payload. |
 
     For further details on common error codes, see [HTTP status codes](https://digital.nhs.uk/developer/guides-and-documentation/reference-guide#http-status-codes)
 
@@ -568,28 +558,87 @@ paths:
           description: |
             An error occurred as follows:
 
-            | HTTP status | Error code  | Description                                                                              |
-            |-------------|-------------|------------------------------------------------------------------------------------------|
-            | 400         | R-0002      | Prescription or item was not cancelled. With dispenser. Marked for cancellation.         |
-            | 400         | R-0003      | Prescription or item was not cancelled. With dispenser active. Marked for cancellation.  |
-            | 400         | R-0004      | Prescription or item was not cancelled. Prescription has been dispensed.                 |
-            | 400         | R-0005      | Prescription or item had expired.                                                        |
-            | 400         | R-0006      | Prescription or item had already been cancelled.                                         |
-            | 400         | R-0007      | Prescription or item cancellation requested by another prescriber.                       |
-            | 400         | R-0010      | Prescription or item was not cancelled. Prescription has been not dispensed.             |
-            | 400         | R-0008      | Prescription or item not found.                                                          |
-            | 400         | R-5000      | Unable to process message due to invalid information within the cancel request.          |
+            | HTTP status | Error code  | Description                                                                            | Response format    |
+            |-------------|-------------|----------------------------------------------------------------------------------------|--------------------|
+            | 400         | R-0002      | Prescription/item was not cancelled. With dispenser. Marked for cancellation           | Bundle             |
+            | 400         | R-0003      | Prescription/item was not cancelled. With dispenser active. Marked for cancellation    | Bundle             |
+            | 400         | R-0004      | Prescription/item was not cancelled. Prescription has been dispensed.                  | Bundle             |
+            | 400         | R-0005      | Prescription/item has expired                                                          | Bundle             |
+            | 400         | R-0006      | Prescription/item had already been cancelled                                           | Bundle             |
+            | 400         | R-0007      | Prescription/item cancellation requested by another prescriber                         | Bundle             |
+            | 400         | R-0008      | Prescription/item not found                                                            | OperationOutcome   |
+            | 400         | R-0009      | Cancellation functionality disabled in SPINE                                           | OperationOutcome   |
+            | 400         | R-0010      | Prescription/item was not cancelled. Prescription has been not dispensed.              | Bundle             |
+            | 400         | R-5000      | Unable to process message. Information missing or invalid - ...                        | OperationOutcome   |
+            | 400         | R-5888      | Invalid Message.                                                                       | OperationOutcome   |
           content:
             application/fhir+json:
               schema:
-                $ref: "#/components/schemas/operation-outcome"
+                oneOf:
+                  - $ref: "#/components/schemas/operation-outcome"
+                  - $ref: "#/components/schemas/Cancel-Response-Bundle"
               examples:
                 OperationOutcome:
+                  summary: Missing Field
                   description: |
                     An error response.
                   value:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
-
+                R-0002:
+                  summary: R-0002
+                  description: Prescription/item was not cancelled. With dispenser. Marked for cancellation
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0002-Cancellation.json
+                R-0003:
+                  summary: R-0003
+                  description: Prescription/item was not cancelled. With dispenser active. Marked for cancellation
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0003-Cancellation.json
+                R-0004:
+                  summary: R-0004
+                  description: Prescription/item was not cancelled. Prescription has been dispensed.
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0004-Cancellation.json
+                R-0005:
+                  summary: R-0005
+                  description: Prescription/item has expired
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0005-Cancellation.json
+                R-0006:
+                  summary: R-0006
+                  description: Prescription/item had already been cancelled
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0006-Cancellation.json
+                R-0007:
+                  summary: R-0007
+                  description: Prescription/item cancellation requested by another prescriber
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0007-Cancellation.json
+                R-0008:
+                  summary: R-0008
+                  description: Prescription/item not found
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0008-Cancellation.json
+                R-0009:
+                  summary: R-0009
+                  description: Cancellation functionality disabled in SPINE
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0009-Cancellation.json
+                R-0010:
+                  summary: R-0010
+                  description: Prescription/item was not cancelled. Prescription has been not dispensed.
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-0010-Cancellation.json
+                R-5000:
+                  summary: R-5000
+                  description: Mismatch between prescription and cancellation NHSNumber
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-5000-Cancellation.json
+                R-5888:
+                  summary: R-5888
+                  description: Invalid Message.
+                  value:
+                    $ref: examples/spec/errors/prescription-order-update/R-5888-Cancellation.json
   /FHIR/R4/Task/$release:
     post:
       operationId: release
@@ -824,6 +873,11 @@ paths:
                 description: A valid acute, primary care dispense notification request.
                 value:
                   $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-04-req.json
+              acute-primary-05:
+                summary: Acute 05
+                description: A valid acute, primary care dispense notification request not dispensed.
+                value:
+                  $ref: examples/spec/dispensing/dispense-notification/acute-primary-example-05-req.json
               repeat-primary:
                 summary: Repeat
                 description: A valid repeat, primary care dispense notification request.
@@ -1049,7 +1103,7 @@ components:
         If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
 
         This field is optional.
-      required: false
+      required: true
       schema:
         type: string
         pattern: "^[0-9]+$"
@@ -1059,9 +1113,11 @@ components:
       name: X-Request-ID
       required: true
       description: |
-        A globally unique identifier (GUID) for the request, which we use to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
+        A globally unique identifier (GUID) for the request. This is used to de-duplicate repeated requests and to trace the request if you contact our helpdesk.
 
-        Must be a universally unique identifier (UUID) (ideally version 4).
+        Each new HTTP request must use a different X-Request-ID even if they are related to the same prescription.
+
+        Must be a universally unique identifier (UUID) (ideally version 4) formatted using numbers and lower case alphabetic characters.
 
         Mirrored back in a response header.
 
@@ -1071,7 +1127,7 @@ components:
       schema:
         type: string
         pattern: "^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$"
-        example: 60E0B220-8136-4CA5-AE46-1D97EF59D068
+        example: 60e0b220-8136-4ca5-ae46-1d97ef59d068
     CorrelationID:
       in: header
       name: X-Correlation-ID

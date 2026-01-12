@@ -1,0 +1,18 @@
+{
+    "resourceType": "OperationOutcome",
+    "issue": [
+        {
+            "severity": "error",
+            "code": "not-supported",
+            "details": {
+                "coding": [
+                    {
+                        "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+                        "code": "R-0009",
+                        "display": "Cancellation functionality disabled in SPINE"
+                    }
+                ]
+            }
+        }
+    ]
+}

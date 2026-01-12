@@ -1,9 +1,9 @@
 import {createInteraction, CreatePactOptions, pactOptions} from "../../resources/common"
-import {InteractionObject, Pact} from "@pact-foundation/pact"
+import {InteractionObject, PactV2} from "@pact-foundation/pact"
 
 test("task tracker e2e test", async () => {
   const options = new CreatePactOptions("live", "task", "tracker")
-  const provider = new Pact(pactOptions(options))
+  const provider = new PactV2(pactOptions(options))
   await provider.setup()
   const interaction = getInteraction(process.env["API_DEPLOYMENT_METHOD"], options)
   await provider.addInteraction(interaction)

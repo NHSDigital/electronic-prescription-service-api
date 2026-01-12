@@ -1,12 +1,11 @@
 import {convertOrganizationAndProviderLicense} from "../../../../src/services/translation/request/organization"
-import * as uuid from "uuid"
 import {fhir, processingErrors as errors} from "@models"
 import {getMessageHeader} from "../../../../src/services/translation/common/getResourcesOfType"
 
 function bundleOf(resources: Array<fhir.Resource>): fhir.Bundle {
   return {
     resourceType: "Bundle",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     entry: resources.map(resource => ({resource, fullUrl: `urn:uuid:${resource.id}`}))
   }
 }
@@ -38,7 +37,7 @@ describe("convertOrganizationAndProviderLicense", () => {
     }
     organization2 = {
       resourceType: "Organization",
-      id: uuid.v4(),
+      id: crypto.randomUUID(),
       identifier: [{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
         value: "ORG002"
@@ -63,7 +62,7 @@ describe("convertOrganizationAndProviderLicense", () => {
     }
     organization1 = {
       resourceType: "Organization",
-      id: uuid.v4(),
+      id: crypto.randomUUID(),
       identifier: [{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
         value: "ORG001"
@@ -91,7 +90,7 @@ describe("convertOrganizationAndProviderLicense", () => {
     }
     location = {
       resourceType: "Location",
-      id: uuid.v4(),
+      id: crypto.randomUUID(),
       address: {
         use: "work",
         line: ["Healthcare Service Address"]
@@ -99,7 +98,7 @@ describe("convertOrganizationAndProviderLicense", () => {
     }
     healthcareService = {
       resourceType: "HealthcareService",
-      id: uuid.v4(),
+      id: crypto.randomUUID(),
       identifier: [{
         system: "https://fhir.nhs.uk/Id/ods-organization-code",
         value: "HS001"
@@ -136,16 +135,16 @@ describe("convertOrganizationAndProviderLicense", () => {
         expect(() => {
           bundle = bundleOf([messageHeader, organization1, organization2, healthcareService])
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if Location is ambiguous", () => {
         expect(() => {
           healthcareService.location.push({
-            reference: `urn:uuid:${uuid.v4()}`
+            reference: `urn:uuid:${crypto.randomUUID()}`
           })
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test.each([
@@ -157,7 +156,7 @@ describe("convertOrganizationAndProviderLicense", () => {
         expect(() => {
           delete (healthcareService as unknown as Record<string, unknown>)[field]
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if telecom is ambiguous", () => {
@@ -167,14 +166,14 @@ describe("convertOrganizationAndProviderLicense", () => {
             value: "44444444444"
           })
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if address not present in Location", () => {
         expect(() => {
           delete location.address
           convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test.each([
@@ -225,7 +224,7 @@ describe("convertOrganizationAndProviderLicense", () => {
         expect(() => {
           delete (organization1 as unknown as Record<string, unknown>)[field]
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if address is ambiguous", () => {
@@ -235,7 +234,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             line: ["Organization 1 Mystery Alternative Address"]
           })
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("throws if telecom is ambiguous", () => {
@@ -245,7 +244,7 @@ describe("convertOrganizationAndProviderLicense", () => {
             value: "55555555555"
           })
           convertOrganizationAndProviderLicense(bundle, organization1, undefined)
-        }).toThrowError(errors.FhirMessageProcessingError)
+        }).toThrow(errors.FhirMessageProcessingError)
       })
 
       test("uses Organization for organization details if Healthcare Service not present", () => {
@@ -304,7 +303,7 @@ describe("convertOrganizationAndProviderLicense", () => {
           expect(() => {
             delete (organization2 as unknown as Record<string, unknown>)[field]
             convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-          }).toThrowError(errors.FhirMessageProcessingError)
+          }).toThrow(errors.FhirMessageProcessingError)
         })
 
         test.each([
@@ -340,7 +339,7 @@ describe("convertOrganizationAndProviderLicense", () => {
           expect(() => {
             delete (organization1 as unknown as Record<string, unknown>)[field]
             convertOrganizationAndProviderLicense(bundle, organization1, healthcareService)
-          }).toThrowError(errors.FhirMessageProcessingError)
+          }).toThrow(errors.FhirMessageProcessingError)
         })
 
         test("uses Organization for organization details", () => {

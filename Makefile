@@ -86,6 +86,7 @@ install-node:
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
 		--workspace packages/bdd-tests \
+		--workspace packages/cdk \
 		--include-workspace-root
 
 install-python:
@@ -192,6 +193,7 @@ release-api:
 
 release-epsat:
 	mkdir -p dist/packages/tool/e2e-tests
+	mkdir -p dist/scripts
 	cp ecs-proxies-deploy.yml dist/ecs-deploy-all.yml
 	for env in internal-dev prod; do \
 		cp ecs-proxies-deploy.yml dist/ecs-deploy-$$env.yml; \
@@ -205,6 +207,11 @@ release-epsat:
 	rsync -av --progress packages/tool/e2e-tests/ dist/packages/tool/e2e-tests --exclude node_modules
 	cp package-lock.json dist/
 	cp package.json dist/
+	cp Makefile dist/
+	cp poetry.lock dist/
+	cp pyproject.toml dist/
+	cp poetry.toml dist/
+	cp -r scripts/* dist/scripts/
 
 release-all:
 	echo "Can not release all"
@@ -317,16 +324,9 @@ lint-all: lint-api lint-epsat lint-githubactions
 ## check licenses
 
 check-licenses-api:
-	npm run check-licenses --workspace packages/specification
-	npm run check-licenses --workspace packages/coordinator 
-	npm run check-licenses --workspace packages/e2e-tests 
-	npm run check-licenses --workspace packages/bdd-tests 
-	scripts/check_python_licenses.sh
-
+	echo "not implemented in console"
 check-licenses-epsat:
-	npm run check-licenses --workspace packages/tool/site/client
-	npm run check-licenses --workspace packages/tool/site/server
-	npm run check-licenses --workspace packages/tool/e2e-tests
+	echo "not implemented in console"
 
 check-licenses-all: check-licenses-api check-licenses-epsat
 
@@ -425,3 +425,9 @@ cdk-synth:
 	npx cdk synth \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
+
+verify-signature:
+	cd packages/coordinator && npm run verify-signature
+
+compile:
+	echo "Does nothing"

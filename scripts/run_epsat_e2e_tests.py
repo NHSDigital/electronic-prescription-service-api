@@ -1,25 +1,23 @@
 #!/usr/bin/env python
 
 """
-  Script to generate user defined unique ID which can be used to
-  check the status of the regression test run to be reported to the CI.
+Script to generate user defined unique ID which can be used to
+check the status of the regression test run to be reported to the CI.
 """
 import argparse
 from datetime import datetime, timedelta, timezone
 import random
 import string
-import requests
 import time
-from requests.auth import HTTPBasicAuth
+import requests
+from requests.auth import HTTPBasicAuth, AuthBase
 
 # This should be set to a known good version of regression test repo
-REGRESSION_TESTS_REPO_TAG = "v2.34.1"
-
-GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api-regression-tests/actions"
-GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-api-regression-tests/actions/runs"
+GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api/actions"
+GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-api/actions/runs"
 
 
-class BearerAuth(requests.auth.AuthBase):
+class BearerAuth(AuthBase):
     def __init__(self, token):
         self.token = token
 
@@ -46,24 +44,28 @@ def generate_timestamp():
     return date_time
 
 
-def trigger_test_run(env, pr_label, product, auth_header):
+def trigger_test_run(
+    apigee_environment,
+    service_base_path,
+    auth_header,
+    run_id,
+    branch,
+):
     body = {
-        "ref": "main",
+        "ref": branch,
         "inputs": {
             "id": run_id,
-            "tags": "@regression",
-            "environment": env,
-            "pull_request_id": pr_label,
-            "product": product,
-            "github_tag": REGRESSION_TESTS_REPO_TAG
+            "SERVICE_BASE_PATH": service_base_path,
+            "APIGEE_ENVIRONMENT": apigee_environment
         },
     }
 
     response = requests.post(
-        url=f"{GITHUB_API_URL}/workflows/regression_tests.yml/dispatches",
+        url=f"{GITHUB_API_URL}/workflows/run_epsat_tests.yml/dispatches",
         headers=get_headers(),
         auth=auth_header,
         json=body,
+        timeout=120,
     )
 
     print(f"Dispatch workflow. Unique workflow identifier: {run_id}")
@@ -72,12 +74,13 @@ def trigger_test_run(env, pr_label, product, auth_header):
     ), f"Failed to trigger test run. Expected 204, got {response.status_code}. Response: {response.text}"
 
 
-def get_workflow_runs(auth_header):
+def get_workflow_runs(auth_header, run_date_filter):
     print(f"Getting workflow runs after date: {run_date_filter}")
     response = requests.get(
         f"{GITHUB_API_URL}/runs?created=%3E{run_date_filter}",
         headers=get_headers(),
         auth=auth_header,
+        timeout=120,
     )
     assert (
         response.status_code == 200
@@ -87,14 +90,14 @@ def get_workflow_runs(auth_header):
 
 def get_jobs_for_workflow(jobs_url, auth_header):
     print("Getting jobs for workflow...")
-    response = requests.get(jobs_url, auth=auth_header)
+    response = requests.get(jobs_url, auth=auth_header, timeout=120)
     assert (
         response.status_code == 200
     ), f"Unable to get workflow jobs. Expected 200, got {response.status_code}"
     return response.json()["jobs"]
 
 
-def find_workflow(auth_header):
+def find_workflow(auth_header, run_id, run_date_filter):
     max_attempts = 5
     current_attempt = 0
 
@@ -103,7 +106,7 @@ def find_workflow(auth_header):
         current_attempt = current_attempt + 1
         print(f"Attempt {current_attempt}")
 
-        workflow_runs = get_workflow_runs(auth_header)
+        workflow_runs = get_workflow_runs(auth_header, run_date_filter)
         for workflow in workflow_runs:
             time.sleep(3)
             current_workflow_id = workflow["id"]
@@ -112,12 +115,12 @@ def find_workflow(auth_header):
             list_of_jobs = get_jobs_for_workflow(jobs_url, auth_header)
 
             if list_of_jobs:
-                job = list_of_jobs[0]
+                job = list_of_jobs[0]  # this is fine to get the first job
                 steps = job["steps"]
 
-                if len(steps) >= 2:
-                    third_step = steps[2]
-                    if third_step["name"] == run_id:
+                if len(steps) >= 5:
+                    index_step = steps[5]
+                    if index_step["name"] == run_id:
                         print(f"Workflow Job found! Using ID: {current_workflow_id}")
                         return current_workflow_id
                 else:
@@ -130,99 +133,115 @@ def find_workflow(auth_header):
 
 
 def get_auth_header(is_called_from_github, token, user):
-    if (is_called_from_github):
+    if is_called_from_github:
         return BearerAuth(token)
     else:
         user_credentials = user.split(":")
         return HTTPBasicAuth(user_credentials[0], user_credentials[1])
 
 
-def get_job(auth_header):
+def get_upload_result_job(auth_header, workflow_id):
     job_request_url = f"{GITHUB_API_URL}/runs/{workflow_id}/jobs"
     job_response = requests.get(
         job_request_url,
         headers=get_headers(),
         auth=auth_header,
+        timeout=120,
     )
+    jobs = job_response.json()["jobs"]
+    upload_result_job = next(
+        (job for job in jobs if job["name"] == "run_epsat_tests"),
+        {"status": "can not find run_epsat_tests job - tests are likely still starting"},
+    )
+    return upload_result_job
 
-    return job_response.json()["jobs"][0]
 
+def check_job(auth_header, workflow_id):
+    max_attempts = 720  # this is about 2 hours
+    current_attempt = 0
 
-def check_job(auth_header):
     print("Checking job status, please wait...")
-    print("Current status:", end=" ")
-    job = get_job(auth_header)
+    job = get_upload_result_job(auth_header, workflow_id)
     job_status = job["status"]
 
     while job_status != "completed":
-        print(job_status)
+        if current_attempt > max_attempts:
+            raise TimeoutError(
+                f"Regression test job not completed after {current_attempt} attempts"
+            )
+        print(
+            f"Current upload results job status: {job_status} after {current_attempt} attempts"
+        )
         time.sleep(10)
-        job = get_job(auth_header)
+        current_attempt = current_attempt + 1
+        job = get_upload_result_job(auth_header, workflow_id)
         job_status = job["status"]
 
     return job["conclusion"]
 
 
-if __name__ == "__main__":
+def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument(
-        "--pr_label",
+        "--service_base_path",
         required=False,
-        help="Please provide the PR number.",
+        help="Please provide the service base path.",
     )
     parser.add_argument(
-        "--env",
+        "--apigee_environment",
         required=True,
-        help="Please provide the environment you wish to run in.",
+        help="Please provide the apigee environment you wish to run in.",
     )
     parser.add_argument(
         "--user", required=False, help="Please provide the user credentials."
     )
     parser.add_argument(
-        '--is_called_from_github',
-        default=False,
-        type=lambda x: (str(x).lower() == 'true'),
-        help="If this is being called from github actions rather than azure"
-    )
-    parser.add_argument(
-        "--product", required=True, help="Please provide the product to run the tests for."
-    )
-    parser.add_argument(
         "--token", required=False, help="Please provide the authentication token."
+    )
+    parser.add_argument(
+        "--branch",
+        required=False,
+        help="Please provide the branch to trigger job on.",
+        default="master"
+    )
+    parser.add_argument(
+        "--is_called_from_github",
+        default=False,
+        type=lambda x: (str(x).lower() == "true"),
+        help="If this is being called from github actions rather than azure",
     )
 
     arguments = parser.parse_args()
 
-    print(f"pr_label: {arguments.pr_label}")
-    print(f"env: {arguments.env}")
+    print(f"service_base_path: {arguments.service_base_path}")
+    print(f"apigee_environment: {arguments.apigee_environment}")
     print(f"is_called_from_github: {arguments.is_called_from_github}")
-    print(f"product: {arguments.product}")
-    print(f"regression_tests_repo_tag: {REGRESSION_TESTS_REPO_TAG}")
+    print(f"branch: {arguments.branch}")
 
     run_id = generate_unique_run_id()
     run_date_filter = generate_timestamp()
-    auth_header = get_auth_header(arguments.is_called_from_github, arguments.token, arguments.user)
-
-    pr_label = arguments.pr_label.lower()
-    trigger_test_run(
-        arguments.env,
-        pr_label,
-        arguments.product,
-        auth_header
+    auth_header = get_auth_header(
+        arguments.is_called_from_github, arguments.token, arguments.user
     )
 
-    workflow_id = find_workflow(auth_header)
-    job_status = check_job(auth_header)
+    trigger_test_run(
+        apigee_environment=arguments.apigee_environment,
+        service_base_path=arguments.service_base_path,
+        auth_header=auth_header,
+        run_id=run_id,
+        branch=arguments.branch
+    )
+
+    workflow_id = find_workflow(auth_header, run_id, run_date_filter)
+    print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details")
+    job_status = check_job(auth_header, workflow_id)
     if job_status != "success":
-        if arguments.pr_label:
-            pr_label = arguments.pr_label.lower()
-            env = f"PULL-REQUEST/{pr_label}"
-        else:
-            env = arguments.env.upper()
         print("The regressions test step failed! There are likely test failures.")
-        print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details)")
-        print(f"See https://nhsdigital.github.io/eps-test-reports/{arguments.product}/{env}/ for allure report")
-        raise Exception("Regression test failed")
+        raise SystemError("Regression test failed")
 
     print("Success!")
+
+
+if __name__ == "__main__":
+    main()

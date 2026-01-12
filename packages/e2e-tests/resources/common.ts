@@ -1,7 +1,6 @@
 import {fhir} from "@models"
-import {InteractionObject, PactOptions} from "@pact-foundation/pact"
+import {InteractionObject, PactV2Options} from "@pact-foundation/pact"
 import path from "path"
-import * as uuid from "uuid"
 import * as LosslessJson from "lossless-json"
 import {HTTPMethod} from "@pact-foundation/pact/src/common/request"
 import {AnyTemplate} from "@pact-foundation/pact/src/dsl/matchers"
@@ -26,7 +25,7 @@ export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
                         "release" | "return" | "withdraw" | "amend" | "tracker"
 
 // used to add type-safety for adding a new pact
-export function pactOptions(options: CreatePactOptions): PactOptions {
+export function pactOptions(options: CreatePactOptions): PactV2Options {
   const pacticipantSuffix = getPacticipantSuffix(options.apiMode)
   const providerName = createProviderName(
     pacticipantSuffix,
@@ -174,8 +173,8 @@ export const successfulOperationOutcome = {
 }
 
 export function getHeaders(): {[header: string]: string} {
-  const requestId = uuid.v4()
-  const correlationId = uuid.v4()
+  const requestId = crypto.randomUUID()
+  const correlationId = crypto.randomUUID()
   return {
     "Content-Type": "application/fhir+json; fhirVersion=4.0",
     "X-Request-ID": requestId,
