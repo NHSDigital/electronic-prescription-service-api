@@ -45,7 +45,7 @@ for i in {1..30}; do
     --repository-name "$REPOSITORY_NAME" \
     --image-id imageDigest="$IMAGE_DIGEST" \
     --query 'imageScanStatus.status' \
-    --output text 2>/dev/null || echo "NONE")
+    --output text | grep -v "None" | head -n 1 2>/dev/null || echo "NONE"| grep -oE '^[^ ]+' | grep -v "None")
 
   if [[ "$STATUS" == "COMPLETE" ]]; then
     echo "ECR scan completed."
