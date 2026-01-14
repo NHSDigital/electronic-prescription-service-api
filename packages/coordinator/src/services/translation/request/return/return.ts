@@ -17,14 +17,14 @@ import {
   IntegerExtension,
   PrescriptionExtension
 } from "../../../../../../models/fhir/extension"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
+import {createCurrentHl7V3Timestamp} from "../../common/dateTime"
 
 export function convertTaskToDispenseProposalReturn(
   task: fhir.Task
 ): hl7V3.DispenseProposalReturn {
   const idValue = getMessageId(task.identifier, "Task.identifier")
   const id = new hl7V3.GlobalIdentifier(idValue)
-  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
+  const effectiveTime = createCurrentHl7V3Timestamp()
   let taskPractitionerRole: fhir.PractitionerRole
   let taskOrganization: fhir.Organization
 

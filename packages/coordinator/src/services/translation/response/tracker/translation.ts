@@ -71,8 +71,7 @@ function convertPrescriptionToTask(
     for: fhir.createIdentifierReference(fhir.createIdentifier(
       "https://fhir.nhs.uk/Id/nhs-number",
       prescription.patientNhsNumber
-    )),
-    authoredOn: convertHL7V3DateTimeStringToFhirDate(prescription.prescriptionIssueDate)
+    ))
   }
 
   //TODO - owner is mandatory in the profile but we don't get it back in the summary response
@@ -104,7 +103,7 @@ function convertPrescriptionToTask(
   return task
 }
 
-function getPrescriptionStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
+function getPrescriptionStatusCodesFromDisplay(display: string): {status: fhir.TaskStatus, businessStatus: string} {
   //TODO - some of these cases aren't in the code system, but can be produced by Spine
   switch (display) {
     case "Awaiting Release Ready":

@@ -9,8 +9,6 @@ export interface TrackerClient {
   getPrescriptionsByPatientId(
     patientId: string,
     businessStatus: string,
-    earliestDate: string,
-    latestDate: string,
     headers: Hapi.Utils.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse>

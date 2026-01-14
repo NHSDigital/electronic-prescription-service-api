@@ -61,13 +61,13 @@ describe("getAgentPersonTelecom", () => {
     }
   ]
 
-  function roleSource() : AgentPersonTelecomSource {
+  function roleSource(): AgentPersonTelecomSource {
     return {
       contactPoints: roleTelecom,
       fhirPath: "PractitionerRole.telecom"
     }
   }
-  function childSource() : AgentPersonTelecomSource {
+  function childSource(): AgentPersonTelecomSource {
     return {
       contactPoints: childTelecom,
       fhirPath: "Practitioner.telecom"
@@ -165,7 +165,7 @@ describe("getAgentPersonTelecom", () => {
     return practitionerRole
   }
 
-  function examplePractitioner(withTelecom: boolean): fhir.Practitioner{
+  function examplePractitioner(withTelecom: boolean): fhir.Practitioner {
     const practitioner: fhir.Practitioner = {
       resourceType: "Practitioner"
     }
@@ -175,7 +175,7 @@ describe("getAgentPersonTelecom", () => {
     return practitioner
   }
 
-  function exampleOrganization(withTelecom: boolean): fhir.Organization{
+  function exampleOrganization(withTelecom: boolean): fhir.Organization {
     const organization: fhir.Organization = {
       resourceType: "Organization"
     }
@@ -336,7 +336,7 @@ describe("convertAuthor", () => {
   })
 })
 
-function buildNoRPTestBundle(): fhir.Bundle{
+function buildNoRPTestBundle(): fhir.Bundle {
   const bundle: fhir.Bundle = {
     resourceType: "Bundle"
   }
@@ -375,14 +375,14 @@ function buildNoRPTestBundle(): fhir.Bundle{
   return bundle
 }
 
-function buildRPTestBundle(baseRP: string): fhir.Bundle{
+function buildRPTestBundle(baseRP: string): fhir.Bundle {
   const bundle: fhir.Bundle = buildNoRPTestBundle()
 
-  const responsibleParty: fhir.PractitionerRole= {...practitionerRoles.get(baseRP)}
-  if (isReference(responsibleParty.practitioner)){
+  const responsibleParty: fhir.PractitionerRole = {...practitionerRoles.get(baseRP)}
+  if (isReference(responsibleParty.practitioner)) {
     responsibleParty.practitioner.reference = bundle.entry[3].fullUrl
   }
-  if (responsibleParty.organization){
+  if (responsibleParty.organization) {
     (responsibleParty.organization as fhir.Reference<fhir.Organization>).reference = bundle.entry[4].fullUrl
   }
 

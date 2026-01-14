@@ -69,6 +69,10 @@ export function convertMomentToHl7V3DateTime(dateTime: moment.Moment): hl7V3.Tim
   return new hl7V3.Timestamp(hl7V3DateTimeStr)
 }
 
+export function createCurrentHl7V3Timestamp(): hl7V3.Timestamp {
+  return convertMomentToHl7V3DateTime(moment.utc())
+}
+
 function convertHL7V3DateTimeToMoment(hl7Date: hl7V3.Timestamp) {
   return moment.utc(hl7Date._attributes.value, HL7_V3_DATE_TIME_FORMAT)
 }

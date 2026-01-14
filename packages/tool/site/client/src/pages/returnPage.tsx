@@ -183,7 +183,6 @@ function createReturn(returnFormValues: ReturnFormValues): fhir.Task {
         value: "9999999999"
       }
     },
-    authoredOn: formatCurrentDateTimeIsoFormat(),
     owner: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",

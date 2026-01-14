@@ -3,8 +3,6 @@ import {SummaryList} from "nhsuk-react-components"
 import {Reference, Task} from "fhir/r4"
 import {formatNhsNumber} from "../../formatters/demographics"
 import {getCourseOfTherapyTypeExtension} from "../../fhir/customExtensions"
-import moment from "moment"
-import {formatMomentAsDate} from "../../formatters/dates"
 import PrescriptionActions from "../common/prescriptionActions"
 import styled from "styled-components"
 
@@ -12,7 +10,6 @@ export interface PrescriptionSummaryProps {
   id: string
   type: string
   patientNhsNumber: string
-  creationDate: moment.Moment
   status: string
   prescriber?: string
   dispenser?: string
@@ -23,7 +20,6 @@ export function createPrescriptionSummaryProps(task: Task): PrescriptionSummaryP
     id: task.focus.identifier.value,
     type: getCourseOfTherapyTypeExtension(task.extension).valueCoding.display,
     patientNhsNumber: formatNhsNumber(task.for.identifier.value),
-    creationDate: moment.utc(task.authoredOn),
     status: task.businessStatus.coding[0].display,
     prescriber: task.requester && formatReference(task.requester),
     dispenser: task.owner && formatReference(task.owner)
@@ -46,7 +42,6 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
   patientNhsNumber,
   prescriber,
   dispenser,
-  creationDate,
   status
 }) => {
   const dispenserDesc = status === "To Be Dispensed" ? "Nominated Dispenser" : "Assigned Dispenser"
@@ -76,10 +71,6 @@ export const PrescriptionSummaryList: React.FC<PrescriptionSummaryProps> = ({
           <SummaryList.Value id="prescriptionDispenser">{dispenser}</SummaryList.Value>
         </SummaryList.Row>
       )}
-      <SummaryList.Row>
-        <SummaryList.Key>Created On</SummaryList.Key>
-        <SummaryList.Value>{formatMomentAsDate(creationDate)}</SummaryList.Value>
-      </SummaryList.Row>
       <SummaryList.Row>
         <SummaryList.Key>Status</SummaryList.Key>
         <SummaryList.Value>

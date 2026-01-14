@@ -19,8 +19,8 @@ function createPrescriptionLevelDetails(
 
   const courseOfTherapyTypeCoding = VALUE_SET_COURSE_OF_THERAPY_TYPE.find(coding => coding.code === medicationRequest.courseOfTherapyType.coding[0].code)
 
-  const authoredOn = formatCurrentDate()
-  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? authoredOn
+  const defaultDate = formatCurrentDate()
+  const startDate = formatDate(medicationRequest.dispenseRequest.validityPeriod?.start) ?? defaultDate
   const nominatedOds = medicationRequest.dispenseRequest?.performer?.identifier?.value || "None"
 
   const nominatedTypeExtension = getPerformerSiteTypeExtension(medicationRequest.dispenseRequest.extension)
@@ -40,7 +40,6 @@ function createPrescriptionLevelDetails(
       medicationRequest.extension?.find(
         e => e.url === "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType"
       )?.valueCoding.code,
-    authoredOn,
     startDate,
     nominatedOds,
     nominatedType,
@@ -62,7 +61,6 @@ interface PrescriptionLevelDetailsProps {
   prescriptionTypeCode: string
   currentIssueNumber?: number
   endIssueNumber?: number
-  authoredOn: string
   startDate: string
   nominatedOds?: string
   nominatedType?: string
@@ -85,7 +83,6 @@ const PrescriptionLevelDetails = ({
   prescriptionTypeCode,
   currentIssueNumber,
   endIssueNumber,
-  authoredOn,
   startDate,
   nominatedOds,
   nominatedType,
@@ -105,7 +102,6 @@ const PrescriptionLevelDetails = ({
         : null
       }
 
-      <SummaryListRow label="Authored On" value={authoredOn} />
       <SummaryListRow label="Effective Date" value={startDate} />
 
       {nominatedOds &&

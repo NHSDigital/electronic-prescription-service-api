@@ -135,7 +135,7 @@ export function verifyCommonBundle(
   }).filter(isTruthy).map(extension => extension.valueReference.reference)
 
   const practitionerRoles = getBundleEntriesOfType(bundle, "PractitionerRole")
-  practitionerRoles.forEach(practitionerRole =>{
+  practitionerRoles.forEach(practitionerRole => {
     const isResponsibleParty = responsiblePartyUrls.some(
       responsiblePartyUrl => responsiblePartyUrl === practitionerRole.fullUrl
     )
@@ -223,7 +223,7 @@ function validatePractitionerRole(
 function verifyPractitionerRoleID(
   identifier: Array<fhir.Identifier>,
   accessTokenSDSRoleID: string,
-  logger: pino.Logger<never>): void{
+  logger: pino.Logger<never>): void {
   const bodySDSRoleID = getIdentifierValueForSystem(
     identifier,
     "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -241,7 +241,7 @@ function verifyPractitionerID(
   identifier: Array<fhir.Identifier>,
   accessTokenSDSUserID: string,
   logger: pino.Logger<never>
-): void{
+): void {
   const bodySDSUserID = getIdentifierValueOrNullForSystem(
     identifier,
     "https://fhir.nhs.uk/Id/sds-user-id",
@@ -256,7 +256,7 @@ function verifyPractitionerID(
   }
 }
 
-function isPlanOrReflex(intent:fhir.MedicationRequestIntent):boolean {
+function isPlanOrReflex(intent: fhir.MedicationRequestIntent): boolean {
   return (
     intent === fhir.MedicationRequestIntent.PLAN ||
     intent === fhir.MedicationRequestIntent.REFLEX_ORDER
@@ -268,10 +268,18 @@ export function verifyPrescriptionBundle(bundle: fhir.Bundle): Array<fhir.Operat
 
   const allErrors: Array<fhir.OperationOutcomeIssue> = []
 
+  // Previously, we supported 'authoredOn' in MedicationRequest. However, this has been removed with ticket AEA-3650
+  // Now, reject bundles that contain this deprecated field.
+  const medicationRequestsWithAuthoredOn = medicationRequests.filter(
+    (medicationRequest) => "authoredOn" in medicationRequest
+  )
+  if (medicationRequestsWithAuthoredOn.length > 0) {
+    allErrors.push(errors.createMedicationRequestProhibitedFieldIssue("authoredOn"))
+  }
+
   const fhirPaths = [
     "groupIdentifier",
     "category",
-    "authoredOn",
     "subject",
     "requester",
     "dispenseRequest.performer",
@@ -378,7 +386,7 @@ export function verifyRepeatDispensingPrescription(
     "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
     "MedicationRequest.extension"
   )
-  if(repeatInformationExtension && repeatInformationExtension.extension?.length) {
+  if (repeatInformationExtension && repeatInformationExtension.extension?.length) {
     fhirPaths.push(
       'extension("https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation")')
   }
@@ -480,7 +488,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
     "Organization.extension"
   )
-  if (!BSAExtension){
+  if (!BSAExtension) {
     allErrors.push(
       errors.createMissingReimbursementAuthority()
     )
@@ -493,7 +501,7 @@ export function verifyDispenseBundle(bundle: fhir.Bundle): Array<fhir.OperationO
     "Organization.extension[0].extension[0]"
   ) as fhir.IdentifierExtension
 
-  if (!commissionedByExtension){
+  if (!commissionedByExtension) {
     allErrors.push(
       errors.createMissingODSCodeForReimbursementAuthority()
     )
@@ -557,10 +565,10 @@ function validateTelecoms(bundle: fhir.Bundle, incorrectValueErrors: Array<fhir.
   const telecoms = getPathedTelecoms(bundle)
 
   const validateTelecom = (resource: PathedResource<fhir.ContactPoint>) => {
-    if(!resource.resource.value){
+    if (!resource.resource.value) {
       incorrectValueErrors.push(errors.missingRequiredField(`${resource.path}.value`))
     }
-    if(!resource.resource.use){
+    if (!resource.resource.use) {
       incorrectValueErrors.push(errors.missingRequiredField(`${resource.path}.use`))
     }
   }

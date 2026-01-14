@@ -14,8 +14,6 @@ export class LiveTrackerClient implements TrackerClient {
   async getPrescriptionsByPatientId(
     patientId: string,
     businessStatus: string,
-    earliestDate: string,
-    latestDate: string,
     inboundHeaders: Hapi.Utils.Dictionary<string>,
     logger: pino.Logger
   ): Promise<spine.SummaryTrackerResponse> {
@@ -25,12 +23,6 @@ export class LiveTrackerClient implements TrackerClient {
     }
     if (businessStatus) {
       queryParams.prescriptionStatus = businessStatus
-    }
-    if (earliestDate) {
-      queryParams.earliestDate = earliestDate
-    }
-    if (latestDate) {
-      queryParams.latestDate = latestDate
     }
     return await LiveTrackerClient.makeTrackerRequest(inboundHeaders, address, queryParams, logger)
   }

@@ -6,57 +6,19 @@ exports[`Clicking back from the detail search results returns to the summary sea
   <caption class="nhsuk-table__caption">Prescription Search Results</caption>
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
-      <th class="nhsuk-table__header" scope="col">ID</th>
-      <th class="nhsuk-table__header" scope="col">NHS Number</th>
-      <th class="nhsuk-table__header" scope="col">Status</th>
       <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-pNWxu kwDIXx" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-        </svg>Creation Date</th>
+        </svg>ID</th>
+      <th class="nhsuk-table__header" scope="col">NHS Number</th>
+      <th class="nhsuk-table__header" scope="col">Status</th>
       <th class="nhsuk-table__header" scope="col"></th>
     </tr>
   </thead>
   <tbody class="nhsuk-table__body">
     <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">003D4D-A99968-4C5AAJ</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">Claimed</td>
-      <td class="nhsuk-table__cell">05-Nov-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
       <td class="nhsuk-table__cell">030E79-A99968-4A6DAS</td>
       <td class="nhsuk-table__cell">944 930 4106</td>
       <td class="nhsuk-table__cell">Claimed</td>
-      <td class="nhsuk-table__cell">04-Nov-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">012339-A99968-4234AN</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">26-Oct-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">010E34-A99968-467D9Z</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">21-Oct-2021</td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -68,7 +30,39 @@ exports[`Clicking back from the detail search results returns to the summary sea
       <td class="nhsuk-table__cell">021949-A99968-42DF9G</td>
       <td class="nhsuk-table__cell">944 930 4106</td>
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">14-Oct-2021</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">012339-A99968-4234AN</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">With Dispenser - Active</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">010E34-A99968-467D9Z</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">With Dispenser - Active</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">003D4D-A99968-4C5AAJ</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -104,19 +98,6 @@ exports[`Clicking back from the summary search results returns to the form 1`] =
       <option value="0006">Dispensed</option>
       <option value="0007">Not Dispensed</option>
     </select></div>
-  <div class="nhsuk-form-group">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="authoredOn.type--label" for="authoredOn.type">Creation Date</label>
-        <div class="nhsuk-hint" id="authoredOn.type--hint">Ranges are inclusive of their start and end dates</div><select class="nhsuk-select" aria-describedby="authoredOn.type--hint" name="authoredOn.type" id="authoredOn.type">
-          <option value=""></option>
-          <option value="On">On</option>
-          <option value="From">From</option>
-          <option value="Until">Until</option>
-          <option value="Between">Between</option>
-        </select>
-      </div>
-    </fieldset>
-  </div>
   <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button" aria-disabled="false" type="submit">Search</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
@@ -262,100 +243,6 @@ exports[`Displays an error message if summary search returns invalid response 1`
 <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="submit">Back</button></div>"
 `;
 
-exports[`Displays error if creation date field invalid 1`] = `
-"<form>
-  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Search for a Prescription</label></h1>
-  <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label>
-    <div class="nhsuk-hint" id="prescriptionId--hint">Use the short form here, e.g. D7AC09-A99968-4BA59C</div><span class="nhsuk-error-message" id="prescriptionId--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>One of Prescription ID or NHS Number is required</span><input class="nhsuk-input nhsuk-input--width-20 nhsuk-input--error" type="text" aria-describedby="prescriptionId--hint prescriptionId--error-message" name="prescriptionId" id="prescriptionId" autocomplete="off" value="">
-  </div>
-  <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="patientId--label" for="patientId">NHS Number</label><span class="nhsuk-error-message" id="patientId--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>One of Prescription ID or NHS Number is required</span><input class="nhsuk-input nhsuk-input--width-10 nhsuk-input--error" type="text" name="patientId" id="patientId" autocomplete="off" value="" aria-describedby="patientId--error-message"></div>
-  <div class="nhsuk-form-group"><label class="nhsuk-label" id="businessStatus--label" for="businessStatus">Status</label><select class="nhsuk-select" name="businessStatus" id="businessStatus">
-      <option value=""></option>
-      <option value="0001">To be Dispensed</option>
-      <option value="0002">With Dispenser</option>
-      <option value="0003">With Dispenser - Active</option>
-      <option value="0004">Expired</option>
-      <option value="0005">Cancelled</option>
-      <option value="0006">Dispensed</option>
-      <option value="0007">Not Dispensed</option>
-    </select></div>
-  <div class="nhsuk-form-group nhsuk-form-group--error">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="authoredOn.type--label" for="authoredOn.type">Creation Date</label>
-        <div class="nhsuk-hint" id="authoredOn.type--hint">Ranges are inclusive of their start and end dates</div><select class="nhsuk-select" aria-describedby="authoredOn.type--hint" name="authoredOn.type" id="authoredOn.type">
-          <option value=""></option>
-          <option value="On">On</option>
-          <option value="From">From</option>
-          <option value="Until">Until</option>
-          <option value="Between">Between</option>
-        </select>
-      </div>
-      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="authoredOn.low--label" for="authoredOn.low">Earliest Date</label><span class="nhsuk-error-message" id="authoredOn.low--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>Invalid date</span>
-        <div class="nhsuk-date-input" id="authoredOn.low" aria-describedby="authoredOn.low--error-message">
-          <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.day--label" for="authoredOn.low.day">Day</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error" id="authoredOn.low.day" name="authoredOn.low.day" pattern="[0-9]*" inputmode="numeric" type="text" value="45"></div>
-          </div>
-          <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.month--label" for="authoredOn.low.month">Month</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2 nhsuk-input--error" id="authoredOn.low.month" name="authoredOn.low.month" pattern="[0-9]*" inputmode="numeric" type="text" value="12"></div>
-          </div>
-          <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.year--label" for="authoredOn.low.year">Year</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error" id="authoredOn.low.year" name="authoredOn.low.year" pattern="[0-9]*" inputmode="numeric" type="text" value="2020"></div>
-          </div>
-        </div>
-      </div>
-    </fieldset>
-  </div>
-  <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button" aria-disabled="false" type="submit">Search</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
-</form>"
-`;
-
-exports[`Displays error if creation date field partially completed 1`] = `
-"<form>
-  <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Search for a Prescription</label></h1>
-  <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="prescriptionId--label" for="prescriptionId">Prescription ID</label>
-    <div class="nhsuk-hint" id="prescriptionId--hint">Use the short form here, e.g. D7AC09-A99968-4BA59C</div><span class="nhsuk-error-message" id="prescriptionId--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>One of Prescription ID or NHS Number is required</span><input class="nhsuk-input nhsuk-input--width-20 nhsuk-input--error" type="text" aria-describedby="prescriptionId--hint prescriptionId--error-message" name="prescriptionId" id="prescriptionId" autocomplete="off" value="">
-  </div>
-  <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="patientId--label" for="patientId">NHS Number</label><span class="nhsuk-error-message" id="patientId--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>One of Prescription ID or NHS Number is required</span><input class="nhsuk-input nhsuk-input--width-10 nhsuk-input--error" type="text" name="patientId" id="patientId" autocomplete="off" value="" aria-describedby="patientId--error-message"></div>
-  <div class="nhsuk-form-group"><label class="nhsuk-label" id="businessStatus--label" for="businessStatus">Status</label><select class="nhsuk-select" name="businessStatus" id="businessStatus">
-      <option value=""></option>
-      <option value="0001">To be Dispensed</option>
-      <option value="0002">With Dispenser</option>
-      <option value="0003">With Dispenser - Active</option>
-      <option value="0004">Expired</option>
-      <option value="0005">Cancelled</option>
-      <option value="0006">Dispensed</option>
-      <option value="0007">Not Dispensed</option>
-    </select></div>
-  <div class="nhsuk-form-group nhsuk-form-group--error">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="authoredOn.type--label" for="authoredOn.type">Creation Date</label>
-        <div class="nhsuk-hint" id="authoredOn.type--hint">Ranges are inclusive of their start and end dates</div><select class="nhsuk-select" aria-describedby="authoredOn.type--hint" name="authoredOn.type" id="authoredOn.type">
-          <option value=""></option>
-          <option value="On">On</option>
-          <option value="From">From</option>
-          <option value="Until">Until</option>
-          <option value="Between">Between</option>
-        </select>
-      </div>
-      <div class="nhsuk-form-group nhsuk-form-group--error"><label class="nhsuk-label" id="authoredOn.low--label" for="authoredOn.low">Earliest Date</label><span class="nhsuk-error-message" id="authoredOn.low--error-message"><span class="nhsuk-u-visually-hidden">Error: </span>All fields are required for a date search</span>
-        <div class="nhsuk-date-input" id="authoredOn.low" aria-describedby="authoredOn.low--error-message">
-          <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.day--label" for="authoredOn.low.day">Day</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="authoredOn.low.day" name="authoredOn.low.day" pattern="[0-9]*" inputmode="numeric" type="text" value="12"></div>
-          </div>
-          <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.month--label" for="authoredOn.low.month">Month</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-2" id="authoredOn.low.month" name="authoredOn.low.month" pattern="[0-9]*" inputmode="numeric" type="text" value="6"></div>
-          </div>
-          <div class="nhsuk-date-input__item">
-            <div class="nhsuk-form-group"><label class="nhsuk-label nhsuk-date-input__label" id="authoredOn.low.year--label" for="authoredOn.low.year">Year</label><input class="nhsuk-input nhsuk-date-input__input nhsuk-input--width-4 nhsuk-input--error" id="authoredOn.low.year" name="authoredOn.low.year" pattern="[0-9]*" inputmode="numeric" type="text" value=""></div>
-          </div>
-        </div>
-      </div>
-    </fieldset>
-  </div>
-  <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button" aria-disabled="false" type="submit">Search</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
-</form>"
-`;
-
 exports[`Displays error if mandatory field missing 1`] = `
 "<form>
   <h1 class="nhsuk-label-wrapper"><label class="nhsuk-label nhsuk-label--xl">Search for a Prescription</label></h1>
@@ -373,19 +260,6 @@ exports[`Displays error if mandatory field missing 1`] = `
       <option value="0006">Dispensed</option>
       <option value="0007">Not Dispensed</option>
     </select></div>
-  <div class="nhsuk-form-group">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="authoredOn.type--label" for="authoredOn.type">Creation Date</label>
-        <div class="nhsuk-hint" id="authoredOn.type--hint">Ranges are inclusive of their start and end dates</div><select class="nhsuk-select" aria-describedby="authoredOn.type--hint" name="authoredOn.type" id="authoredOn.type">
-          <option value=""></option>
-          <option value="On">On</option>
-          <option value="From">From</option>
-          <option value="Until">Until</option>
-          <option value="Between">Between</option>
-        </select>
-      </div>
-    </fieldset>
-  </div>
   <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button" aria-disabled="false" type="submit">Search</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
@@ -426,10 +300,6 @@ exports[`Displays results if detail search completes successfully with previous 
   <div class="nhsuk-summary-list__row">
     <dt class="nhsuk-summary-list__key">Assigned Dispenser</dt>
     <dd class="nhsuk-summary-list__value" id="prescriptionDispenser">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
-  </div>
-  <div class="nhsuk-summary-list__row">
-    <dt class="nhsuk-summary-list__key">Created On</dt>
-    <dd class="nhsuk-summary-list__value">05-Nov-2021</dd>
   </div>
   <div class="nhsuk-summary-list__row">
     <dt class="nhsuk-summary-list__key">Status</dt>
@@ -534,10 +404,6 @@ exports[`Displays results if detail search completes successfully without previo
     <dd class="nhsuk-summary-list__value" id="prescriptionDispenser">NHS BUSINESS SERVICES AUTHORITY (T1450)</dd>
   </div>
   <div class="nhsuk-summary-list__row">
-    <dt class="nhsuk-summary-list__key">Created On</dt>
-    <dd class="nhsuk-summary-list__value">05-Nov-2021</dd>
-  </div>
-  <div class="nhsuk-summary-list__row">
     <dt class="nhsuk-summary-list__key">Status</dt>
     <dd class="nhsuk-summary-list__value">
       <p>Claimed</p>
@@ -578,57 +444,19 @@ exports[`Displays results if summary search completes successfully - NHS number 
   <caption class="nhsuk-table__caption">Prescription Search Results</caption>
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
-      <th class="nhsuk-table__header" scope="col">ID</th>
-      <th class="nhsuk-table__header" scope="col">NHS Number</th>
-      <th class="nhsuk-table__header" scope="col">Status</th>
       <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-pNWxu kwDIXx" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-        </svg>Creation Date</th>
+        </svg>ID</th>
+      <th class="nhsuk-table__header" scope="col">NHS Number</th>
+      <th class="nhsuk-table__header" scope="col">Status</th>
       <th class="nhsuk-table__header" scope="col"></th>
     </tr>
   </thead>
   <tbody class="nhsuk-table__body">
     <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">003D4D-A99968-4C5AAJ</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">Claimed</td>
-      <td class="nhsuk-table__cell">05-Nov-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
       <td class="nhsuk-table__cell">030E79-A99968-4A6DAS</td>
       <td class="nhsuk-table__cell">944 930 4106</td>
       <td class="nhsuk-table__cell">Claimed</td>
-      <td class="nhsuk-table__cell">04-Nov-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">012339-A99968-4234AN</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">26-Oct-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">010E34-A99968-467D9Z</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">21-Oct-2021</td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -640,7 +468,39 @@ exports[`Displays results if summary search completes successfully - NHS number 
       <td class="nhsuk-table__cell">021949-A99968-42DF9G</td>
       <td class="nhsuk-table__cell">944 930 4106</td>
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">14-Oct-2021</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">012339-A99968-4234AN</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">With Dispenser - Active</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">010E34-A99968-467D9Z</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">With Dispenser - Active</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">003D4D-A99968-4C5AAJ</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -665,57 +525,19 @@ exports[`Displays results if summary search completes successfully - all fields 
   <caption class="nhsuk-table__caption">Prescription Search Results</caption>
   <thead class="nhsuk-table__head">
     <tr class="nhsuk-table__row">
-      <th class="nhsuk-table__header" scope="col">ID</th>
-      <th class="nhsuk-table__header" scope="col">NHS Number</th>
-      <th class="nhsuk-table__header" scope="col">Status</th>
       <th class="nhsuk-table__header" scope="col"><svg class="nhsuk-icon nhsuk-icon__chevron-right sc-pNWxu kwDIXx" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="34" width="34">
           <path d="M15.5 12a1 1 0 0 1-.29.71l-5 5a1 1 0 0 1-1.42-1.42l4.3-4.29-4.3-4.29a1 1 0 0 1 1.42-1.42l5 5a1 1 0 0 1 .29.71z"></path>
-        </svg>Creation Date</th>
+        </svg>ID</th>
+      <th class="nhsuk-table__header" scope="col">NHS Number</th>
+      <th class="nhsuk-table__header" scope="col">Status</th>
       <th class="nhsuk-table__header" scope="col"></th>
     </tr>
   </thead>
   <tbody class="nhsuk-table__body">
     <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">003D4D-A99968-4C5AAJ</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">Claimed</td>
-      <td class="nhsuk-table__cell">05-Nov-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
       <td class="nhsuk-table__cell">030E79-A99968-4A6DAS</td>
       <td class="nhsuk-table__cell">944 930 4106</td>
       <td class="nhsuk-table__cell">Claimed</td>
-      <td class="nhsuk-table__cell">04-Nov-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">012339-A99968-4234AN</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">26-Oct-2021</td>
-      <td class="nhsuk-table__cell">
-        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
-              <path d="M0 0h24v24H0z" fill="none"></path>
-              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
-            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
-      </td>
-    </tr>
-    <tr class="nhsuk-table__row">
-      <td class="nhsuk-table__cell">010E34-A99968-467D9Z</td>
-      <td class="nhsuk-table__cell">944 930 4106</td>
-      <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">21-Oct-2021</td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -727,7 +549,39 @@ exports[`Displays results if summary search completes successfully - all fields 
       <td class="nhsuk-table__cell">021949-A99968-42DF9G</td>
       <td class="nhsuk-table__cell">944 930 4106</td>
       <td class="nhsuk-table__cell">With Dispenser - Active</td>
-      <td class="nhsuk-table__cell">14-Oct-2021</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">012339-A99968-4234AN</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">With Dispenser - Active</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">010E34-A99968-467D9Z</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">With Dispenser - Active</td>
+      <td class="nhsuk-table__cell">
+        <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
+              <path d="M0 0h24v24H0z" fill="none"></path>
+              <path d="M12 2a10 10 0 0 0-9.95 9h11.64L9.74 7.05a1 1 0 0 1 1.41-1.41l5.66 5.65a1 1 0 0 1 0 1.42l-5.66 5.65a1 1 0 0 1-1.41 0 1 1 0 0 1 0-1.41L13.69 13H2.05A10 10 0 1 0 12 2z"></path>
+            </svg><span class="nhsuk-action-link__text">View Details</span></a></div>
+      </td>
+    </tr>
+    <tr class="nhsuk-table__row">
+      <td class="nhsuk-table__cell">003D4D-A99968-4C5AAJ</td>
+      <td class="nhsuk-table__cell">944 930 4106</td>
+      <td class="nhsuk-table__cell">Claimed</td>
       <td class="nhsuk-table__cell">
         <div class="nhsuk-action-link"><a class="nhsuk-action-link__link"><svg class="nhsuk-icon nhsuk-icon__arrow-right-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true" height="36" width="36">
               <path d="M0 0h24v24H0z" fill="none"></path>
@@ -763,19 +617,6 @@ exports[`Displays search form 1`] = `
       <option value="0006">Dispensed</option>
       <option value="0007">Not Dispensed</option>
     </select></div>
-  <div class="nhsuk-form-group">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="authoredOn.type--label" for="authoredOn.type">Creation Date</label>
-        <div class="nhsuk-hint" id="authoredOn.type--hint">Ranges are inclusive of their start and end dates</div><select class="nhsuk-select" aria-describedby="authoredOn.type--hint" name="authoredOn.type" id="authoredOn.type">
-          <option value=""></option>
-          <option value="On">On</option>
-          <option value="From">From</option>
-          <option value="Until">Until</option>
-          <option value="Between">Between</option>
-        </select>
-      </div>
-    </fieldset>
-  </div>
   <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button" aria-disabled="false" type="submit">Search</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;
@@ -797,19 +638,6 @@ exports[`Form values are populated from query string 1`] = `
       <option value="0006">Dispensed</option>
       <option value="0007">Not Dispensed</option>
     </select></div>
-  <div class="nhsuk-form-group">
-    <fieldset class="nhsuk-fieldset">
-      <div class="nhsuk-form-group"><label class="nhsuk-label" id="authoredOn.type--label" for="authoredOn.type">Creation Date</label>
-        <div class="nhsuk-hint" id="authoredOn.type--hint">Ranges are inclusive of their start and end dates</div><select class="nhsuk-select" aria-describedby="authoredOn.type--hint" name="authoredOn.type" id="authoredOn.type">
-          <option value=""></option>
-          <option value="On">On</option>
-          <option value="From">From</option>
-          <option value="Until">Until</option>
-          <option value="Between">Between</option>
-        </select>
-      </div>
-    </fieldset>
-  </div>
   <div class="sc-dlnjPU eCjBmP"><button class="nhsuk-button" aria-disabled="false" type="submit">Search</button><button class="nhsuk-button nhsuk-button--secondary" aria-disabled="false" type="button">Back</button></div>
 </form>"
 `;

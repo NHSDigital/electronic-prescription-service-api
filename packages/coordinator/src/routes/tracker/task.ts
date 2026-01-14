@@ -9,7 +9,6 @@ import * as LosslessJson from "lossless-json"
 import {isBundle, isTask} from "../../utils/type-guards"
 import {validateQueryParameters} from "../../services/validation/query-validator"
 import {getCodeableConceptCodingForSystem, toArray} from "../../services/translation/common"
-import moment from "moment"
 import pino from "pino"
 
 export interface ValidQuery {
@@ -17,7 +16,6 @@ export interface ValidQuery {
   "focus:identifier"?: string
   "patient:identifier"?: string
   "business-status"?: string
-  "authored-on"?: string | Array<string>
 }
 
 export interface QueryParamDefinition {
@@ -60,13 +58,6 @@ export const queryParamDefinitions: Array<QueryParamDefinition> = [
       "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
       "Task.businessStatus"
     ).code === value
-  },
-  {
-    name: "authored-on",
-    validInIsolation: false,
-    system: undefined,
-    dateParameter: true,
-    test: (task: fhir.Task, value: string): boolean => testDate(task.authoredOn, value)
   }
 ]
 
@@ -117,14 +108,9 @@ async function makeSpineRequest(validQuery: ValidQuery, request: Hapi.Request) {
   const patientIdentifier = getValue(validQuery["patient:identifier"])
   if (patientIdentifier) {
     const businessStatus = getValue(validQuery["business-status"])
-    const authoredOn = toArray(validQuery["authored-on"] || []).map(getValue)
-    const earliestDate = toSpineDateFormat(getEarliestDate(authoredOn))
-    const latestDate = toSpineDateFormat(getLatestDate(authoredOn))
     return await trackerClient.getPrescriptionsByPatientId(
       patientIdentifier,
       businessStatus,
-      earliestDate,
-      latestDate,
       request.headers,
       request.logger
     )
@@ -165,30 +151,4 @@ export function getSystem(rawValue: string): string {
     return rawValue.substring(0, pipeIndex)
   }
   return undefined
-}
-
-export function getEarliestDate(dateParameterValues: Array<string>): string {
-  return dateParameterValues.find(value => value.startsWith("eq") || value.startsWith("ge"))?.substring(2)
-}
-
-export function getLatestDate(dateParameterValues: Array<string>): string {
-  return dateParameterValues.find(value => value.startsWith("eq") || value.startsWith("le"))?.substring(2)
-}
-
-export function toSpineDateFormat(date: string): string {
-  return date ? moment.utc(date, true).format("YYYYMMDD") : date
-}
-
-export function testDate(actualValueStr: string, value: string): boolean {
-  const actualValue = moment.utc(actualValueStr, true)
-  const searchValue = moment.utc(value.substring(2), true)
-  if (value.startsWith("eq")) {
-    return actualValue.isSame(searchValue, "d")
-  } else if (value.startsWith("le")) {
-    return actualValue.isSameOrBefore(searchValue, "d")
-  } else if (value.startsWith("ge")) {
-    return actualValue.isSameOrAfter(searchValue, "d")
-  } else {
-    throw new Error("Unhandled comparator")
-  }
 }

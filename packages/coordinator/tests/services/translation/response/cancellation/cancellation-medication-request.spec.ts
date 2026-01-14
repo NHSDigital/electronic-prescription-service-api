@@ -91,8 +91,9 @@ describe("createMedicationRequest", () => {
     expect(subject.reference).toBe(`urn:uuid:${patientId}`)
   })
 
-  test("authoredOn", () => {
-    expect(medicationRequest.authoredOn).toBeUndefined()
+  test("does not include authoredOn", () => {
+    const hasAuthoredOn = Object.prototype.hasOwnProperty.call(medicationRequest, "authoredOn")
+    expect(hasAuthoredOn).toBe(false)
   })
 
   test("requester", () => {

@@ -2,7 +2,6 @@ import {
   filterBundleEntries,
   getValue,
   matchesQuery,
-  testDate,
   ValidQuery
 } from "../../../src/routes/tracker/task"
 import {fetcher, fhir} from "@models"
@@ -75,46 +74,4 @@ test("getValue returns correct result when value present and system specified", 
 test("getValue returns correct result when value not present", () => {
   const value = getValue(undefined)
   expect(value).toBeFalsy()
-})
-
-describe("testDate", () => {
-  test("returns true when comparator is eq and actual datetime is on the same day as search date", () => {
-    expect(testDate("2021-12-08T14:25:00.000Z", "eq2021-12-08")).toBeTruthy()
-  })
-
-  test("returns false when comparator is eq and actual datetime is on a day before the search date", () => {
-    expect(testDate("2021-12-07T14:25:00.000Z", "eq2021-12-08")).toBeFalsy()
-  })
-
-  test("returns false when comparator is eq and actual datetime is on a day after the search date", () => {
-    expect(testDate("2021-12-09T14:25:00.000Z", "eq2021-12-08")).toBeFalsy()
-  })
-
-  test("returns true when comparator is le and actual datetime is on the same day as search date", () => {
-    expect(testDate("2021-12-08T14:25:00.000Z", "le2021-12-08")).toBeTruthy()
-  })
-
-  test("returns true when comparator is le and actual datetime is on a day before the search date", () => {
-    expect(testDate("2021-12-07T14:25:00.000Z", "le2021-12-08")).toBeTruthy()
-  })
-
-  test("returns false when comparator is le and actual datetime is on a day after the search date", () => {
-    expect(testDate("2021-12-09T14:25:00.000Z", "le2021-12-08")).toBeFalsy()
-  })
-
-  test("returns true when comparator is ge and actual datetime is on the same day as search date", () => {
-    expect(testDate("2021-12-08T14:25:00.000Z", "ge2021-12-08")).toBeTruthy()
-  })
-
-  test("returns false when comparator is ge and actual datetime is on a day before the search date", () => {
-    expect(testDate("2021-12-07T14:25:00.000Z", "ge2021-12-08")).toBeFalsy()
-  })
-
-  test("returns true when comparator is ge and actual datetime is on a day after the search date", () => {
-    expect(testDate("2021-12-09T14:25:00.000Z", "ge2021-12-08")).toBeTruthy()
-  })
-
-  test("throws when comparator is something other than eq, le and ge", () => {
-    expect(() => testDate("2021-12-09T14:25:00.000Z", "ne2021-12-08")).toThrow()
-  })
 })

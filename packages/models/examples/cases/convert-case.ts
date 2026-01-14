@@ -75,7 +75,15 @@ export class ConvertCase extends Case {
       "<id root=\\\"[0-9A-F]{8}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{12}\\\"\\/>"
     )
 
-    if (operation === "dispense" || operation === "release" || operation === "cancel") {
+    const operationsWithDynamicEffectiveTime = [
+      "dispense",
+      "release",
+      "cancel",
+      "return",
+      "withdraw"
+    ]
+
+    if (operationsWithDynamicEffectiveTime.includes(operation)) {
       responseXml = responseXml.replace(
         /<effectiveTime value=\\"[0-9]*\\"\\\/>/g,
         "<effectiveTime value=\\\"[0-9]*\\\"\\/>"

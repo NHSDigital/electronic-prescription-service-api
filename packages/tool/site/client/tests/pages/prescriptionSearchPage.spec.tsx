@@ -12,7 +12,6 @@ import {Bundle, OperationOutcome} from "fhir/r4"
 import {axiosInstance} from "../../src/requests/axiosInstance"
 import {MomentInput} from "moment"
 import {PrescriptionStatus} from "../../src/fhir/reference-data/valueSets"
-import {DateRangeType} from "../../src/components/prescription-tracker/dateRangeField"
 import {internalDev} from "../../src/services/environment"
 import {MemoryRouter} from "react-router-dom"
 
@@ -27,7 +26,7 @@ const context: AppContextValue = {baseUrl, environment: internalDev}
 
 const taskTrackerBaseUrl = `${baseUrl}taskTracker`
 
-const dispenseNotifications = `${baseUrl}dispenseNotifications/${prescriptionId}`
+const dispenseNotificationsUrl = new RegExp(`${baseUrl}dispenseNotifications/[^/]+$`)
 
 const summarySearchResult = readBundleFromFile("summarySearchResult.json")
 const detailSearchResult = readBundleFromFile("detailSearchResult.json")
@@ -52,7 +51,7 @@ test("Displays search form", async () => {
 })
 
 test("Form values are populated from query string", async () => {
-  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   expect(screen.getByLabelText<HTMLInputElement>("Prescription ID").value).toEqual(prescriptionId)
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -63,33 +62,6 @@ test("Displays error if mandatory field missing", async () => {
   userEvent.click(screen.getByText("Search"))
   await waitFor(() =>
     expect(screen.getAllByText("One of Prescription ID or NHS Number is required")).toHaveLength(2)
-  )
-
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
-test("Displays error if creation date field partially completed", async () => {
-  const container = await renderPage()
-  await enterDateRangeType(DateRangeType.FROM)
-  await enterDateField("Day", "12")
-  await enterDateField("Month", "6")
-  userEvent.click(screen.getByText("Search"))
-  await waitFor(() =>
-    expect(screen.getByText("All fields are required for a date search")).toBeTruthy()
-  )
-
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
-})
-
-test("Displays error if creation date field invalid", async () => {
-  const container = await renderPage()
-  await enterDateRangeType(DateRangeType.FROM)
-  await enterDateField("Day", "45")
-  await enterDateField("Month", "12")
-  await enterDateField("Year", "2020")
-  userEvent.click(screen.getByText("Search"))
-  await waitFor(() =>
-    expect(screen.getByText("Invalid date")).toBeTruthy()
   )
 
   expect(pretty(container.innerHTML)).toMatchSnapshot()
@@ -123,7 +95,6 @@ test("Displays results if summary search completes successfully - all fields pop
   await enterPrescriptionId()
   await enterNhsNumber()
   await enterStatus()
-  await enterDate()
   await clickSearchButton()
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
@@ -210,7 +181,7 @@ test("Displays results if detail search completes successfully without previous 
     .replyOnce(200, summarySearchResult)
     .onAny(taskTrackerBaseUrl)
     .reply(200, detailSearchResult)
-  mock.onAny(dispenseNotifications).reply(200, [])
+  mock.onAny(dispenseNotificationsUrl).reply(200, [])
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -230,7 +201,7 @@ test("Displays results if detail search completes successfully with previous dis
     .replyOnce(200, summarySearchResult)
     .onAny(taskTrackerBaseUrl)
     .reply(200, detailSearchResult)
-  mock.onAny(dispenseNotifications).reply(200, [dispenseNotificationResult])
+  mock.onAny(dispenseNotificationsUrl).reply(200, [dispenseNotificationResult])
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -250,7 +221,7 @@ test("Clicking back from the detail search results returns to the summary search
     .replyOnce(200, summarySearchResult)
     .onAny(taskTrackerBaseUrl)
     .reply(200, detailSearchResult)
-  mock.onAny(dispenseNotifications).reply(200, [])
+  mock.onAny(dispenseNotificationsUrl).reply(200, [])
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -265,7 +236,7 @@ test("Clicking back from the detail search results returns to the summary search
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   return container
 }
@@ -288,27 +259,6 @@ async function enterStatus() {
   userEvent.selectOptions(screen.getByLabelText("Status"), PrescriptionStatus.DISPENSED)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLSelectElement>("Status").value).toEqual(PrescriptionStatus.DISPENSED)
-  )
-}
-
-async function enterDate() {
-  await enterDateRangeType(DateRangeType.FROM)
-  await enterDateField("Day", "1")
-  await enterDateField("Month", "1")
-  await enterDateField("Year", "2020")
-}
-
-async function enterDateRangeType(value: DateRangeType) {
-  userEvent.selectOptions(screen.getByLabelText("Creation Date"), value)
-  await waitFor(
-    () => expect(screen.getByLabelText<HTMLSelectElement>("Creation Date").value).toEqual(value)
-  )
-}
-
-async function enterDateField(labelText: "Day" | "Month" | "Year", value: string) {
-  userEvent.type(screen.getByLabelText(labelText), value)
-  await waitFor(
-    () => expect(screen.getByLabelText<HTMLInputElement>(labelText).value).toEqual(value)
   )
 }
 

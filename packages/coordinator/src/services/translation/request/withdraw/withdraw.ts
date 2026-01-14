@@ -6,7 +6,7 @@ import {
   getIdentifierValueForSystem,
   getMessageId
 } from "../../common"
-import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
+import {createCurrentHl7V3Timestamp} from "../../common/dateTime"
 import {getMessageIdFromTaskFocusIdentifier, getPrescriptionShortFormIdFromTaskGroupIdentifier} from "../task"
 import {
   getContainedOrganizationViaReference,
@@ -18,7 +18,7 @@ import {RepeatInstanceInfo} from "../../../../../../models/hl7-v3/withdraw"
 
 export function convertTaskToEtpWithdraw(task: fhir.Task): hl7V3.EtpWithdraw {
   const id = getMessageId(task.identifier, "Task.identifier")
-  const effectiveTime = convertIsoDateTimeStringToHl7V3DateTime(task.authoredOn, "Task.authoredOn")
+  const effectiveTime = createCurrentHl7V3Timestamp()
   const etpWithdraw = new hl7V3.EtpWithdraw(new hl7V3.GlobalIdentifier(id), effectiveTime)
 
   const practitionerRoleRef = task.requester

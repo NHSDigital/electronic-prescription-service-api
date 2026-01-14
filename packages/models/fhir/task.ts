@@ -15,7 +15,6 @@ export class Task extends common.Resource {
   intent: TaskIntent
   focus: common.IdentifierReference<bundle.Bundle>
   for: common.IdentifierReference<patient.Patient>
-  authoredOn: string
   requester?: common.Reference<practitionerRole.PractitionerRole> |
     common.IdentifierReference<practitionerRole.Organization>
   owner?: common.IdentifierReference<practitionerRole.PersonOrOrganization>

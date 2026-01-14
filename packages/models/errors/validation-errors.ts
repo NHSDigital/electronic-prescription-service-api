@@ -39,11 +39,9 @@ export function createMedicationRequestInconsistentValueIssue<T>(
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
-    diagnostics: `Expected all MedicationRequests to have the same value for ${
-      fieldName
-    }. Received ${
-      LosslessJson.stringify(uniqueFieldValues)
-    }.`,
+    diagnostics:
+      `Expected all MedicationRequests to have the same value for ${fieldName}. ` +
+      `Received ${LosslessJson.stringify(uniqueFieldValues)}.`,
     expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }
@@ -62,11 +60,9 @@ export function createMedicationDispenseInconsistentValueIssue<T>(
   return {
     severity: "error",
     code: fhir.IssueCodes.VALUE,
-    diagnostics: `Expected all MedicationDispenses to have the same value for ${
-      fieldName
-    }. Received ${
-      LosslessJson.stringify(uniqueFieldValues)
-    }.`,
+    diagnostics:
+      `Expected all MedicationDispenses to have the same value for ${fieldName}. ` +
+      `Received ${LosslessJson.stringify(uniqueFieldValues)}.`,
     expression: [`Bundle.entry.resource.ofType(MedicationDispense).${fieldName}`]
   }
 }
@@ -83,9 +79,9 @@ export function createMedicationDispenseMissingValueIssue(fieldName: string): fh
 export const medicationRequestNumberIssue: fhir.OperationOutcomeIssue = {
   severity: "error",
   code: fhir.IssueCodes.VALUE,
-  diagnostics: `The Bundle must contain exactly one MedicationRequest if MessageHeader.eventCoding.code is '${
-    fhir.EventCodingCode.CANCELLATION
-  }'.`,
+  diagnostics:
+    `The Bundle must contain exactly one MedicationRequest if ` +
+    `MessageHeader.eventCoding.code is '${fhir.EventCodingCode.CANCELLATION}'.`,
   expression: ["Bundle.entry.resource.ofType(MedicationRequest)"]
 }
 
@@ -94,6 +90,15 @@ export function createMedicationRequestMissingValueIssue(fieldName: string): fhi
     severity: "error",
     code: fhir.IssueCodes.VALUE,
     diagnostics: `Expected MedicationRequest to have a value for ${fieldName}.`,
+    expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
+  }
+}
+
+export function createMedicationRequestProhibitedFieldIssue(fieldName: string): fhir.OperationOutcomeIssue {
+  return {
+    severity: "error",
+    code: fhir.IssueCodes.VALUE,
+    diagnostics: `MedicationRequest must not include ${fieldName}.`,
     expression: [`Bundle.entry.resource.ofType(MedicationRequest).${fieldName}`]
   }
 }
@@ -279,7 +284,7 @@ export function createMissingODSCodeForReimbursementAuthority(): fhir.OperationO
     severity: "error",
     code: fhir.IssueCodes.INVALID,
     diagnostics: "The dispense notification is missing the ODS code " +
-    "for reimbursement authority and it should be provided."
+      "for reimbursement authority and it should be provided."
   }
 }
 
@@ -291,7 +296,7 @@ export function createMissingDosageSequenceInstructions(): fhir.OperationOutcome
       coding: [{
         code: "MISSING_VALUE",
         display: "The request contains multiple dosage instruction " +
-        "lines but no corresponding dosage sequence number."
+          "lines but no corresponding dosage sequence number."
       }]
     }
   }
