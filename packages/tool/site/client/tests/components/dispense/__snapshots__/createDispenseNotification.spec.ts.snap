@@ -97,7 +97,6 @@ exports[`Produces expected result when status full dispense is done on a partial
             ],
           },
           {
-            "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": [
               {
                 "extension": [
@@ -619,7 +618,6 @@ exports[`Produces expected result when status fully dispensed 1`] = `
             ],
           },
           {
-            "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": [
               {
                 "extension": [
@@ -1141,7 +1139,6 @@ exports[`Produces expected result when status partial dispense is done on a part
             ],
           },
           {
-            "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": [
               {
                 "extension": [
@@ -1663,7 +1660,6 @@ exports[`Produces expected result when status partially dispensed 1`] = `
             ],
           },
           {
-            "authoredOn": "2021-05-07T14:47:29+00:00",
             "basedOn": [
               {
                 "extension": [

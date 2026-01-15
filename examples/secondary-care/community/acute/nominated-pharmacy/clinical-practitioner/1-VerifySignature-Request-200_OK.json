@@ -94,8 +94,13 @@
                 {
                   "use": "usual",
                   "family": "FORREST",
-                  "given": ["LILAC", "EMERSON"],
-                  "prefix": ["MS"]
+                  "given": [
+                    "LILAC",
+                    "EMERSON"
+                  ],
+                  "prefix": [
+                    "MS"
+                  ]
                 }
               ],
               "gender": "female",
@@ -103,7 +108,11 @@
               "address": [
                 {
                   "use": "home",
-                  "line": ["10 HAWKHURST", "COBHAM", "SURREY"],
+                  "line": [
+                    "10 HAWKHURST",
+                    "COBHAM",
+                    "SURREY"
+                  ],
                   "postalCode": "KT11 2QX"
                 }
               ],
@@ -165,7 +174,10 @@
               "id": "3b613208-7a00-497f-a9a2-25890c5d3fe6",
               "address": {
                 "use": "work",
-                "line": ["MUSGROVE PARK HOSPITAL", "TAUNTON"],
+                "line": [
+                  "MUSGROVE PARK HOSPITAL",
+                  "TAUNTON"
+                ],
                 "postalCode": "TA1 5DA"
               }
             },
@@ -184,8 +196,12 @@
               "name": [
                 {
                   "family": "FIFTYSEVEN",
-                  "given": ["RANDOM"],
-                  "prefix": ["MR"]
+                  "given": [
+                    "RANDOM"
+                  ],
+                  "prefix": [
+                    "MR"
+                  ]
                 }
               ]
             },
@@ -212,7 +228,10 @@
               "address": [
                 {
                   "use": "work",
-                  "line": ["MUSGROVE PARK HOSPITAL", "TAUNTON"],
+                  "line": [
+                    "MUSGROVE PARK HOSPITAL",
+                    "TAUNTON"
+                  ],
                   "postalCode": "TA1 5DA"
                 }
               ],
@@ -265,7 +284,6 @@
               "subject": {
                 "reference": "urn:uuid:bf47a6f3-6ffc-4e49-af55-dac73f0f7108"
               },
-              "authoredOn": "2022-02-17T04:40:01+00:00",
               "category": [
                 {
                   "coding": [

@@ -52,7 +52,11 @@
         {
           "city": "West Yorkshire",
           "use": "work",
-          "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+          "line": [
+            "17 Austhorpe Road",
+            "Crossgates",
+            "Leeds"
+          ],
           "postalCode": "LS15 8BA"
         }
       ],
@@ -158,7 +162,6 @@
       "value": "9449304130"
     }
   },
-  "authoredOn": "2022-11-29T11:45:00+00:00",
   "requester": {
     "reference": "#requester"
   },

@@ -53,7 +53,6 @@ export function createMedicationRequests(
       subject: {
         reference: "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
       },
-      authoredOn: "2021-05-07T14:47:29+00:00",
       requester: {
         reference: "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
       },
@@ -113,31 +112,31 @@ function createPrescriptionType(row: PrescriptionRow): any {
 // eslint-disable-next-line max-len
 function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number): fhir.MedicationRequestDispenseRequest {
   const dispenseRequest: fhir.MedicationRequestDispenseRequest =
-    {
-      extension: [
-        {
-          url:
-            "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
-          valueCoding: {
-            system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
-            code: "P1"
-          }
+  {
+    extension: [
+      {
+        url:
+          "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PerformerSiteType",
+        valueCoding: {
+          system: "https://fhir.nhs.uk/CodeSystem/dispensing-site-preference",
+          code: "P1"
         }
-      ],
-      performer: {
-        identifier: {
-          system: "https://fhir.nhs.uk/Id/ods-organization-code",
-          value: "VNCEL"
-        }
-      },
-      quantity: getMedicationQuantity(row),
-      expectedSupplyDuration: {
-        value: parseInt(row.issueDurationInDays),
-        unit: "day",
-        system: "http://unitsofmeasure.org",
-        code: "d"
       }
+    ],
+    performer: {
+      identifier: {
+        system: "https://fhir.nhs.uk/Id/ods-organization-code",
+        value: "VNCEL"
+      }
+    },
+    quantity: getMedicationQuantity(row),
+    expectedSupplyDuration: {
+      value: parseInt(row.issueDurationInDays),
+      unit: "day",
+      system: "http://unitsofmeasure.org",
+      code: "d"
     }
+  }
 
   if (row.startDate) {
     dispenseRequest.validityPeriod = {
@@ -161,7 +160,7 @@ function getDispenseRequest(row: PrescriptionRow, numberOfRepeatsAllowed: number
 export function getMedicationQuantity(row: PrescriptionRow): fhir.Quantity {
   const value = parseFloat(row.medicationQuantity)
   return {
-    value: Number.isNaN(value) ? null: value,
+    value: Number.isNaN(value) ? null : value,
     unit: row.medicationUnitOfMeasureName,
     system: "http://snomed.info/sct",
     code: row.medicationUnitOfMeasureCode

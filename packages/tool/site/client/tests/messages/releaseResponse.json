@@ -284,7 +284,6 @@
               "subject": {
                 "reference": "urn:uuid:9fd10741-fe4b-4669-8fa1-b26b5fcb307c"
               },
-              "authoredOn": "2022-02-21T02:56:29+00:00",
               "category": [
                 {
                   "coding": [
@@ -395,7 +394,6 @@
               "subject": {
                 "reference": "urn:uuid:9fd10741-fe4b-4669-8fa1-b26b5fcb307c"
               },
-              "authoredOn": "2022-02-21T02:56:29+00:00",
               "category": [
                 {
                   "coding": [

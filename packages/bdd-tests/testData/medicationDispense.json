@@ -1,52 +1,52 @@
 {
   "medication": [
     {
-      "fullUrl":"urn:uuid:4509b70d-d8b8-ea03-1105-64557cb64a77",
-      "resource":{
-        "resourceType":"MedicationDispense",
-        "id":"urn:uuid:4509b70d-d8b8-ea03-1105-64557cb64a77",
-        "contained":[
+      "fullUrl": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb64a77",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "id": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb64a77",
+        "contained": [
           {
-            "resourceType":"PractitionerRole",
-            "id":"performer",
-            "identifier":[
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
               {
-                "system":"https://fhir.nhs.uk/Id/sds-role-profile-id",
-                "value":"555086415105"
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
               }
             ],
-            "practitioner":{
-              "identifier":{
-                "system":"https://fhir.nhs.uk/Id/sds-user-id",
-                "value":"3415870201"
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
               },
-              "display":"Jackie Clark"
+              "display": "Jackie Clark"
             },
-            "organization":{
-              "reference":"urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+            "organization": {
+              "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
             },
-            "code":[
+            "code": [
               {
-                "coding":[
+                "coding": [
                   {
-                    "system":"https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                    "code":"R8000",
-                    "display":"Clinical Practitioner Access Role"
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
                   }
                 ]
               }
             ],
-            "telecom":[
+            "telecom": [
               {
-                "system":"phone",
-                "use":"work",
-                "value":"02380798431"
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
               }
             ]
           },
           {
-            "resourceType":"MedicationRequest",
-            "id":"m1",
+            "resourceType": "MedicationRequest",
+            "id": "m1",
             "extension": [
               {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -77,7 +77,6 @@
             "subject": {
               "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
             },
-            "authoredOn": "2021-05-07T14:47:29+00:00",
             "category": [
               {
                 "coding": [
@@ -173,121 +172,121 @@
             }
           }
         ],
-        "extension":[
+        "extension": [
           {
-            "url":"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
-            "valueCoding":{
-              "system":"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code":"0006",
-              "display":"Dispensed"
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
             }
           }
         ],
-        "identifier":[
+        "identifier": [
           {
-            "system":"https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value":"a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
           }
         ],
-        "status":"completed",
-        "medicationCodeableConcept":{
-          "coding":[
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
             {
-              "system":"http://snomed.info/sct",
+              "system": "http://snomed.info/sct",
               "code": "39720311000001101",
               "display": "Paracetamol 500mg soluble tablets"
             }
           ]
         },
-        "subject":{
-          "reference":"urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-          "identifier":{
-            "system":"https://fhir.nhs.uk/Id/nhs-number",
-            "value":"9449304130"
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
           }
         },
-        "performer":[
+        "performer": [
           {
-            "actor":{
-              "reference":"#performer"
+            "actor": {
+              "reference": "#performer"
             }
           }
         ],
-        "authorizingPrescription":[
+        "authorizingPrescription": [
           {
-            "reference":"#m1"
+            "reference": "#m1"
           }
         ],
-        "type":{
-          "coding":[
+        "type": {
+          "coding": [
             {
-              "system":"https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-              "code":"0001",
-              "display":"Item fully dispensed"
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
             }
           ]
         },
-        "quantity":{
-          "value":60,
-          "unit":"dose",
-          "system":"http://snomed.info/sct",
-          "code":"3317411000001100"
+        "quantity": {
+          "value": 60,
+          "unit": "dose",
+          "system": "http://snomed.info/sct",
+          "code": "3317411000001100"
         },
-        "whenHandedOver":"2021-05-07T14:47:29+00:00",
-        "dosageInstruction":[
+        "whenHandedOver": "2021-05-07T14:47:29+00:00",
+        "dosageInstruction": [
           {
-            "text":"5 times a day - Inhalation"
+            "text": "5 times a day - Inhalation"
           }
         ]
       }
     },
     {
-      "fullUrl":"urn:uuid:4509b70d-d8b8-ea03-1105-64557cb89a99",
-      "resource":{
-        "resourceType":"MedicationDispense",
-        "id":"urn:uuid:4509b70d-d8b8-ea03-1105-64557cb89a99",
-        "contained":[
+      "fullUrl": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb89a99",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "id": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb89a99",
+        "contained": [
           {
-            "resourceType":"PractitionerRole",
-            "id":"performer",
-            "identifier":[
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
               {
-                "system":"https://fhir.nhs.uk/Id/sds-role-profile-id",
-                "value":"555086415105"
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
               }
             ],
-            "practitioner":{
-              "identifier":{
-                "system":"https://fhir.nhs.uk/Id/sds-user-id",
-                "value":"3415870201"
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
               },
-              "display":"Jackie Clark"
+              "display": "Jackie Clark"
             },
-            "organization":{
-              "reference":"urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+            "organization": {
+              "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
             },
-            "code":[
+            "code": [
               {
-                "coding":[
+                "coding": [
                   {
-                    "system":"https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                    "code":"R8000",
-                    "display":"Clinical Practitioner Access Role"
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
                   }
                 ]
               }
             ],
-            "telecom":[
+            "telecom": [
               {
-                "system":"phone",
-                "use":"work",
-                "value":"02380798431"
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
               }
             ]
           },
           {
-            "resourceType":"MedicationRequest",
-            "id":"m1",
+            "resourceType": "MedicationRequest",
+            "id": "m1",
             "extension": [
               {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -329,7 +328,6 @@
             "subject": {
               "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
             },
-            "authoredOn": "2021-05-07T14:47:29+00:00",
             "requester": {
               "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
             },
@@ -439,121 +437,121 @@
             }
           }
         ],
-        "extension":[
+        "extension": [
           {
-            "url":"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
-            "valueCoding":{
-              "system":"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code":"0006",
-              "display":"Dispensed"
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
             }
           }
         ],
-        "identifier":[
+        "identifier": [
           {
-            "system":"https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value":"a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
           }
         ],
-        "status":"completed",
-        "medicationCodeableConcept":{
-          "coding":[
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
             {
-              "system":"http://snomed.info/sct",
+              "system": "http://snomed.info/sct",
               "code": "15517911000001104",
               "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
             }
           ]
         },
-        "subject":{
-          "reference":"urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-          "identifier":{
-            "system":"https://fhir.nhs.uk/Id/nhs-number",
-            "value":"9449304130"
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
           }
         },
-        "performer":[
+        "performer": [
           {
-            "actor":{
-              "reference":"#performer"
+            "actor": {
+              "reference": "#performer"
             }
           }
         ],
-        "authorizingPrescription":[
+        "authorizingPrescription": [
           {
-            "reference":"#m1"
+            "reference": "#m1"
           }
         ],
-        "type":{
-          "coding":[
+        "type": {
+          "coding": [
             {
-              "system":"https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-              "code":"0001",
-              "display":"Item fully dispensed"
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
             }
           ]
         },
-        "quantity":{
-          "value":1,
-          "unit":"dose",
-          "system":"http://snomed.info/sct",
-          "code":"3317411000001100"
+        "quantity": {
+          "value": 1,
+          "unit": "dose",
+          "system": "http://snomed.info/sct",
+          "code": "3317411000001100"
         },
-        "whenHandedOver":"2021-05-07T14:47:29+00:00",
-        "dosageInstruction":[
+        "whenHandedOver": "2021-05-07T14:47:29+00:00",
+        "dosageInstruction": [
           {
-            "text":"Inject 10 milligram - 5 times a day - Subcutaneous route - for 10 days"
+            "text": "Inject 10 milligram - 5 times a day - Subcutaneous route - for 10 days"
           }
         ]
       }
     },
     {
-      "fullUrl":"urn:uuid:4509b70d-d8b8-ea03-1105-64557cb34a44",
-      "resource":{
-        "resourceType":"MedicationDispense",
-        "id":"urn:uuid:4509b70d-d8b8-ea03-1105-64557cb89a99",
-        "contained":[
+      "fullUrl": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb34a44",
+      "resource": {
+        "resourceType": "MedicationDispense",
+        "id": "urn:uuid:4509b70d-d8b8-ea03-1105-64557cb89a99",
+        "contained": [
           {
-            "resourceType":"PractitionerRole",
-            "id":"performer",
-            "identifier":[
+            "resourceType": "PractitionerRole",
+            "id": "performer",
+            "identifier": [
               {
-                "system":"https://fhir.nhs.uk/Id/sds-role-profile-id",
-                "value":"555086415105"
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "555086415105"
               }
             ],
-            "practitioner":{
-              "identifier":{
-                "system":"https://fhir.nhs.uk/Id/sds-user-id",
-                "value":"3415870201"
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
               },
-              "display":"Jackie Clark"
+              "display": "Jackie Clark"
             },
-            "organization":{
-              "reference":"urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
+            "organization": {
+              "reference": "urn:uuid:3b4b03a5-52ba-4ba6-9b82-70350aa109d8"
             },
-            "code":[
+            "code": [
               {
-                "coding":[
+                "coding": [
                   {
-                    "system":"https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-                    "code":"R8000",
-                    "display":"Clinical Practitioner Access Role"
+                    "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+                    "code": "R8000",
+                    "display": "Clinical Practitioner Access Role"
                   }
                 ]
               }
             ],
-            "telecom":[
+            "telecom": [
               {
-                "system":"phone",
-                "use":"work",
-                "value":"02380798431"
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
               }
             ]
           },
           {
-            "resourceType":"MedicationRequest",
-            "id":"m1",
+            "resourceType": "MedicationRequest",
+            "id": "m1",
             "extension": [
               {
                 "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionType",
@@ -595,18 +593,6 @@
             "subject": {
               "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
             },
-            "authoredOn": "2021-05-07T14:47:29+00:00",
-            "category": [
-              {
-                "coding": [
-                  {
-                    "system": "http://terminology.hl7.org/CodeSystem/medicationrequest-category",
-                    "code": "community",
-                    "display": "Community"
-                  }
-                ]
-              }
-            ],
             "requester": {
               "reference": "urn:uuid:56166769-c1c4-4d07-afa8-132b5dfca666"
             },
@@ -691,57 +677,57 @@
             }
           }
         ],
-        "extension":[
+        "extension": [
           {
-            "url":"https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
-            "valueCoding":{
-              "system":"https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
-              "code":"0006",
-              "display":"Dispensed"
+            "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-TaskBusinessStatus",
+            "valueCoding": {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
+              "code": "0006",
+              "display": "Dispensed"
             }
           }
         ],
-        "identifier":[
+        "identifier": [
           {
-            "system":"https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value":"a54219b8-f741-4c47-b662-e4f8dfa49ab7"
+            "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
+            "value": "a54219b8-f741-4c47-b662-e4f8dfa49ab7"
           }
         ],
-        "status":"completed",
-        "medicationCodeableConcept":{
-          "coding":[
+        "status": "completed",
+        "medicationCodeableConcept": {
+          "coding": [
             {
-              "system":"http://snomed.info/sct",
+              "system": "http://snomed.info/sct",
               "code": "15517911000001104",
               "display": "Methotrexate 10mg/0.2ml solution for injection pre-filled syringes"
             }
           ]
         },
-        "subject":{
-          "reference":"urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
-          "identifier":{
-            "system":"https://fhir.nhs.uk/Id/nhs-number",
-            "value":"9449304130"
+        "subject": {
+          "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2",
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "9449304130"
           }
         },
-        "performer":[
+        "performer": [
           {
-            "actor":{
-              "reference":"#performer"
+            "actor": {
+              "reference": "#performer"
             }
           }
         ],
-        "authorizingPrescription":[
+        "authorizingPrescription": [
           {
-            "reference":"#m1"
+            "reference": "#m1"
           }
         ],
-        "type":{
-          "coding":[
+        "type": {
+          "coding": [
             {
-              "system":"https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
-              "code":"0001",
-              "display":"Item fully dispensed"
+              "system": "https://fhir.nhs.uk/CodeSystem/medicationdispense-type",
+              "code": "0001",
+              "display": "Item fully dispensed"
             }
           ]
         },
@@ -751,10 +737,10 @@
           "system": "http://snomed.info/sct",
           "code": "3316911000001105"
         },
-        "whenHandedOver":"2021-05-07T14:47:29+00:00",
-        "dosageInstruction":[
+        "whenHandedOver": "2021-05-07T14:47:29+00:00",
+        "dosageInstruction": [
           {
-            "text":"4 times a day for 7 days"
+            "text": "4 times a day for 7 days"
           }
         ]
       }

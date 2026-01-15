@@ -226,7 +226,6 @@ export async function returnPrescription(site, identifierValue, table: DataTable
   data.groupIdentifier.value = ctx.shortPrescId
   data.identifier[0].value = crypto.randomUUID()
   data.focus.identifier.value = identifierValue
-  data.authoredOn = new Date().toISOString()
   data.statusReason.coding[0].code = table.hashes()[0].statusReasonCode
   data.statusReason.coding[0].display = table.hashes()[0].statusReasonDisplay
   await Req()
@@ -262,7 +261,6 @@ export async function sendDispenseNotification(site, medDispNo = 1, table: DataT
         if (contained.resourceType === "MedicationRequest") {
           contained.groupIdentifier.extension[0].valueIdentifier.value = ctx.longPrescId
           contained.groupIdentifier.value = ctx.shortPrescId
-          contained.authoredOn = new Date().toISOString()
           contained.dispenseRequest.performer.identifier.value = site
         }
       }
@@ -330,7 +328,6 @@ export async function withdrawDispenseNotification(site, table: DataTable, ctx) 
   data.groupIdentifier.value = ctx.shortPrescId
   data.identifier[0].value = crypto.randomUUID()
   data.focus.identifier.value = ctx.identifierValue
-  data.authoredOn = new Date().toISOString()
   data.owner.identifier.value = site
   data.statusReason.coding[0].code = table.hashes()[0].statusReasonCode
   data.statusReason.coding[0].display = table.hashes()[0].statusReasonDisplay

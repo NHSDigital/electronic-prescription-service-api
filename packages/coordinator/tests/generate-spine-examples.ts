@@ -14,9 +14,7 @@ import * as fs from "fs"
 import * as path from "path"
 import {getExtensionForUrl, getExtensionForUrlOrNull} from "../src/services/translation/common"
 import * as LosslessJson from "lossless-json"
-import * as moment from "moment"
 import {clone} from "./resources/test-helpers"
-import {convertMomentToISODateTime} from "../src/services/translation/common/dateTime"
 import {fhir} from "@models"
 
 function updateMessageHeaderAndProvenance(bundle: fhir.Bundle) {
@@ -162,14 +160,13 @@ function generateShortFormID() {
     runningTotal = runningTotal + parseInt(character, 36) * (2 ** (prscIDLength - index))
   })
   checkValue = (38 - runningTotal % 37) % 37
-  checkValue = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue+1)
+  checkValue = _PRESC_CHECKDIGIT_VALUES.substring(checkValue, checkValue + 1)
   prescriptionID += checkValue
   return prescriptionID
 }
 
 function setIdsAndTimestamps(bundle: fhir.Bundle) {
   bundle.identifier.value = generateResourceId()
-  const timeNow = convertMomentToISODateTime(moment.utc())
 
   const medicationShortFormId = generateShortFormID()
   const medicationLongFormId = generateResourceId()
@@ -182,7 +179,6 @@ function setIdsAndTimestamps(bundle: fhir.Bundle) {
         "MedicationRequest.groupIdentifier.extension"
       ) as fhir.IdentifierExtension
       extension.valueIdentifier.value = medicationLongFormId
-      medicationRequest.authoredOn = timeNow
     })
   return medicationShortFormId
 }
@@ -210,7 +206,7 @@ function createPrescriptionOrdersToBeCancelledByDifferentUsers() {
     setRequesterOnMedicationRequestsAndProvenance(prescriptionOrderMessage, cancelPair.prescriber)
 
     fs.writeFileSync(
-      path.join(__dirname, `${shortFormId+cancelPair.prescriber+cancelPair.canceller}-prescription-order.json`),
+      path.join(__dirname, `${shortFormId + cancelPair.prescriber + cancelPair.canceller}-prescription-order.json`),
       LosslessJson.stringify(prescriptionOrderMessage), "utf-8"
     )
 
@@ -220,7 +216,10 @@ function createPrescriptionOrdersToBeCancelledByDifferentUsers() {
     }
 
     fs.writeFileSync(
-      path.join(__dirname, `${shortFormId+cancelPair.prescriber+cancelPair.canceller}-prescription-order-update.json`),
+      path.join(
+        __dirname,
+        `${shortFormId + cancelPair.prescriber + cancelPair.canceller}-prescription-order-update.json`
+      ),
       LosslessJson.stringify(cancelMessage), "utf-8"
     )
   })

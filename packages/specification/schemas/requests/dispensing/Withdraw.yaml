@@ -26,14 +26,14 @@ properties:
     type: array
     items:
       $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
-  status: 
+  status:
     type: string
     enum: [in-progress]
   statusReason:
     type: object
     description: The reason the prescription is being withdrawn, which must be coded as per the Withdraw Reason vocabulary.
     properties:
-      coding: 
+      coding:
         type: array
         items:
           type: object
@@ -55,7 +55,7 @@ properties:
       For acute prescriptions, this should be 'order'.
       For repeat and eRD prescriptions, this should be 'original-order' for the first prescription issue. For subsequent issues, this should be 'instance-order'.
     example: order
-  code: 
+  code:
     type: object
     properties:
       coding:
@@ -84,14 +84,9 @@ properties:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/Rfc4122
   for:
     type: object
-    properties: 
+    properties:
       identifier:
         $ref: ../../components/_fragments/identifiers.yaml#/components/schemas/NhsNumber
-  authoredOn:
-    type: string
-    description: The time the dispense notification is being withdrawn from Spine
-    format: date-time
-    example: "2020-12-21T17:03:20-00:00"
   owner:
     type: object
     description: Who is responsible for actioning the Withdraw request.
@@ -101,9 +96,9 @@ properties:
   requester:
     type: object
     description: |
-      Reference object to identify the author of a prescription. 
+      Reference object to identify the author of a prescription.
       A PractitionerRole resource within the Bundle must be referenced.
-    properties: 
+    properties:
       reference:
         type: string
         description: A reference to a PractitionerRole resource within the Bundle

@@ -1,23 +1,23 @@
 {
   "resourceType": "Task",
   "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
-  "contained":  [
+  "contained": [
     {
       "resourceType": "PractitionerRole",
       "id": "requester",
-      "identifier":  [
+      "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
           "value": "200102238987"
         }
       ],
-      "code":  [
+      "code": [
         {
-          "coding":  [
+          "coding": [
             {
-              "system":"https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
-              "code":"R8000",
-              "display":"Clinical Practitioner Access Role"
+              "system": "https://fhir.hl7.org.uk/CodeSystem/UKCore-SDSJobRoleName",
+              "code": "R8000",
+              "display": "Clinical Practitioner Access Role"
             }
           ]
         }
@@ -32,7 +32,7 @@
       "organization": {
         "reference": "#organisation"
       },
-      "telecom":  [
+      "telecom": [
         {
           "system": "phone",
           "use": "work",
@@ -43,17 +43,17 @@
     {
       "resourceType": "Organization",
       "id": "organisation",
-      "identifier":  [
+      "identifier": [
         {
           "system": "https://fhir.nhs.uk/Id/ods-organization-code",
           "value": "FCG75"
         }
       ],
-      "address":  [
+      "address": [
         {
           "city": "West Yorkshire",
           "use": "work",
-          "line":  [
+          "line": [
             "17 Austhorpe Road",
             "Crossgates",
             "Leeds"
@@ -62,9 +62,9 @@
         }
       ],
       "active": true,
-      "type":  [
+      "type": [
         {
-          "coding":  [
+          "coding": [
             {
               "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
               "code": "182",
@@ -74,7 +74,7 @@
         }
       ],
       "name": "The Simple Pharmacy",
-      "telecom":  [
+      "telecom": [
         {
           "system": "phone",
           "use": "work",
@@ -83,7 +83,7 @@
       ]
     }
   ],
-  "extension":  [
+  "extension": [
     {
       "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Provenance-agent",
       "valueReference": {
@@ -94,7 +94,7 @@
       }
     }
   ],
-  "identifier":  [
+  "identifier": [
     {
       "system": "https://tools.ietf.org/html/rfc4122",
       "value": "5AC84C11-DB8B-44DA-8FCF-8980B3D13596"
@@ -106,7 +106,7 @@
   },
   "status": "in-progress",
   "statusReason": {
-    "coding":  [
+    "coding": [
       {
         "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
         "code": "MU",
@@ -116,7 +116,7 @@
   },
   "intent": "order",
   "code": {
-    "coding":  [
+    "coding": [
       {
         "system": "http://hl7.org/fhir/CodeSystem/task-code",
         "code": "abort",
@@ -137,7 +137,6 @@
       "value": "9449304130"
     }
   },
-  "authoredOn": "2022-11-29T11:45:00+00:00",
   "requester": {
     "reference": "#requester"
   },
@@ -148,7 +147,7 @@
     }
   },
   "reasonCode": {
-    "coding":  [
+    "coding": [
       {
         "system": "http://snomed.info/sct",
         "code": "373784005",

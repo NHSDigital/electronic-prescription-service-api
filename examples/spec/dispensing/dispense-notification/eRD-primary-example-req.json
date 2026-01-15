@@ -168,7 +168,6 @@
               },
               "display": "Ms Marisa Stacey Twitchett"
             },
-            "authoredOn": "2022-10-21T13:47:00+00:00",
             "requester": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -489,7 +488,6 @@
               },
               "display": "Ms Marisa Stacey Twitchett"
             },
-            "authoredOn": "2022-10-21T13:47:00+00:00",
             "requester": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -810,7 +808,6 @@
               },
               "display": "Ms Marisa Stacey Twitchett"
             },
-            "authoredOn": "2022-10-21T13:47:00+00:00",
             "requester": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -1166,7 +1163,6 @@
               },
               "display": "Ms Marisa Stacey Twitchett"
             },
-            "authoredOn": "2022-10-21T13:47:00+00:00",
             "requester": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
@@ -1412,7 +1408,11 @@
           {
             "city": "West Yorkshire",
             "use": "work",
-            "line": [ "17 Austhorpe Road", "Crossgates", "Leeds" ],
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
             "postalCode": "LS15 8BA"
           }
         ],

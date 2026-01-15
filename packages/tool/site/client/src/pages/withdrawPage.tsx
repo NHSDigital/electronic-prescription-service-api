@@ -232,7 +232,6 @@ function createWithdraw(withdrawFormValues: WithdrawFormValues, dispenseNotifica
         value
       }
     },
-    authoredOn: formatCurrentDateTimeIsoFormat(),
     owner: {
       identifier: {
         system: "https://fhir.nhs.uk/Id/ods-organization-code",

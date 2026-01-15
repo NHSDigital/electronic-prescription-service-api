@@ -15,7 +15,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     "@models": "<rootDir>../models",
-    
+
     // lossless-json is now published with both ESM and CommonJS exports.
     // Because Jest runs code in Node, we have to force it to
     // use the CommonJS import.
@@ -29,4 +29,5 @@ module.exports = {
   // https://github.com/facebook/jest/issues/10144
   // https://jestjs.io/docs/cli#--maxworkersnumstring
   maxWorkers: 2,
+  workerIdleMemoryLimit: '512MB',
 }
