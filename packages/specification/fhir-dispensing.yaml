@@ -26,12 +26,12 @@ info:
     * view a prescription's detailed dispense history
 
     ## Who can use this API
-      This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
+      This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development.
 
     You must get approval before you can go live. For more information, see the 'Onboarding' section.
 
     ## Related APIs, services and documentation
-      
+
     ### Services
     These services must be used alongside EPS to create a functioning prescribing or dispensing system.
     * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard or a modern alternative.
@@ -95,8 +95,9 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
-    This API has 1 access mode:
+    This API has 2 access modes:
     * user-restricted access
+    * application-restricted access (Download prescriptions - Dispensing only)
 
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -104,6 +105,12 @@ info:
 
     EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
     do not use combined authentication and authorisation.
+
+    ### Application-restricted access
+    The Download prescriptions - Dispensing endpoint also supports [application-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis)
+    so that dispensing systems can download prescriptions without an active user session. Use the
+    [signed JWT authentication flow](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
+    to obtain an OAuth 2.0 bearer token for this machine-to-machine use case.
 
     ## Environment and testing
     | Environment      | Base URL                                                   |
@@ -166,7 +173,7 @@ info:
     | 400         | invalid       | The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.                                                                     | The necessary ODS code is not included in the dispense notification and it should be provided.                 | `/$process-message`, `#dispense-notification`                         |
     | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.                          | `/Claim`, `/Task/$release`, `/Task`                                   |
     | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                                    | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
-    | 403         | forbidden     | Dispensing functionality can only be accessed using the user-restricted access mode.                                                                                             | The requested function requires user-restricted access mode.                                                   | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
+    | 403         | forbidden     | Dispensing functionality requires user-restricted access unless otherwise stated.                                                                                                | The requested function requires user-restricted access mode unless otherwise stated.                           | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
 
     ### System Errors
     #### Nominated Release Errors
@@ -233,6 +240,8 @@ paths:
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
         Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) to this endpoint to download the prescription.
+
+        You can authenticate using either a user-restricted CIS2 session or an application-restricted signed JWT.
       tags:
         - dispensing
       parameters:
@@ -310,6 +319,7 @@ paths:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
         - nhs-cis2-aal3: []
+        - app-level0: []
   /FHIR/R4/Task:
     post:
       operationId: process-message
@@ -758,8 +768,8 @@ components:
 
         If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
 
-        This field is optional.
-      required: true
+        This field is optional and should only be supplied when using user-restricted access. Do not send it when using application-restricted access.
+      required: false
       schema:
         type: string
         pattern: "^[0-9]+$"
@@ -1339,6 +1349,9 @@ x-nhsd-apim:
     - title: FHIR Dispensing Service API User Restricted
       grants:
         nhs-cis2-aal3: []
+    - title: FHIR Dispensing Service API Application Restricted
+      grants:
+        app-level0: []
   target:
     type: external
     healthcheck: /_status
