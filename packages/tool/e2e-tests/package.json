@@ -17,7 +17,7 @@
     "devDependencies": {
         "@types/fhir": "^0.0.41",
         "@types/lodash": "^4.17.23",
-        "@types/selenium-webdriver": "^4.35.4",
+        "@types/selenium-webdriver": "^4.35.5",
         "chromedriver": "^143.0.3",
         "geckodriver": "^6.1.0",
         "lodash": "^4.17.21",
