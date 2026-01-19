@@ -14,12 +14,15 @@ import {fhir, spine} from "@models"
 import {identifyMessageType} from "../../src/services/translation/common"
 import * as Hapi from "@hapi/hapi"
 import * as HapiShot from "@hapi/shot"
+import pino from "pino"
 
 jest.mock("../../src/services/translation/response", () => ({
   translateToFhir: () => ({statusCode: 200, fhirResponse: {value: "some FHIR response"}})
 }))
 
 const mock = new MockAdapter(axios)
+
+const logger = pino()
 
 describe("forward header", ()=> {
   afterEach(() => {
@@ -38,7 +41,7 @@ describe("forward header", ()=> {
       "nhsd-request-id": "my_nhsd_request_id"
     }
 
-    await callFhirValidator("data", exampleHeaders)
+    await callFhirValidator("data", exampleHeaders, logger)
     const requestHeaders = mock.history.post[0].headers
     expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
     expect(requestHeaders["Content-Type"]).toBe("application/my-content-type")
@@ -56,7 +59,7 @@ describe("forward header", ()=> {
       "nhsd-request-id": "my_nhsd_request_id"
     }
 
-    await callFhirValidator("data", exampleHeaders)
+    await callFhirValidator("data", exampleHeaders, logger)
     const requestHeaders = mock.history.post[0].headers
     expect(requestHeaders["Accept"]).not.toBe("application/json+fhir")
     expect(requestHeaders["x-request-id"]).toBe("my_nhsd_request_id")
