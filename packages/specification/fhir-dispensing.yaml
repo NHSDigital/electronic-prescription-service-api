@@ -96,8 +96,8 @@ info:
 
     ## Security and authorisation
     This API has 2 access modes:
-    * user-restricted access
-    * application-restricted access (Download prescriptions - Dispensing only)
+    * user-restricted access for all requests
+    * [application-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), meaning we authenticate the calling application but not the end user for the Download Prescriptions - Dispensing request only
 
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -107,10 +107,8 @@ info:
     do not use combined authentication and authorisation.
 
     ### Application-restricted access
-    The Download prescriptions - Dispensing endpoint also supports [application-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis)
-    so that dispensing systems can download prescriptions without an active user session. Use the
-    [signed JWT authentication flow](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
-    to obtain an OAuth 2.0 bearer token for this machine-to-machine use case.
+    No end user session, the Download prescriptions - Dispensing request is submitted as part of a back end process to download prescriptions to the pharmacy. Use the following security pattern:
+    [Application-restricted RESTful API - signed JWT authentication](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication)
 
     ## Environment and testing
     | Environment      | Base URL                                                   |
