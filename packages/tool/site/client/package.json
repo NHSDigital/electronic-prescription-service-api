@@ -52,7 +52,7 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "engines": {
-    "node": "24.12.x",
+    "node": "24.13.x",
     "npm": "11.6.x"
   },
   "dependencies": {
