@@ -14,7 +14,7 @@ WORKDIR /build
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
 RUN npm ci --ignore-scripts --workspace packages/tool/site/client --include-workspace-root
-COPY node_modules/nhsuk-frontend/dist/nhsuk.css ./packages/tool/site/client/static/
+COPY node_modules/nhsuk-frontend/dist/nhsuk/nhsuk-frontend.css ./packages/tool/site/client/static/
 RUN npm run build --workspace packages/tool/site/client
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
@@ -29,7 +29,7 @@ RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 # --- Runtime ---
 FROM base AS runtime
-ENV NO_UPDATE_NOTIFIER true
+ENV NO_UPDATE_NOTIFIER=true
 COPY --from=build-server /build/package.json /app
 COPY --from=build-server /build/package-lock.json /app
 COPY --from=build-server /build/packages/tool/site/server/dist/ /app/packages/tool/site/server/
