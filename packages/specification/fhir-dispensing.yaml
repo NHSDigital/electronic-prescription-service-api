@@ -317,7 +317,7 @@ paths:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
         - nhs-cis2-aal3: []
-        - app-level0: []
+        - app-level3: []
   /FHIR/R4/Task:
     post:
       operationId: process-message
@@ -738,13 +738,13 @@ paths:
         "200":
           description: "Dummy response"
       security:
-        - app-level0: []
+        - app-level3: []
 components:
   securitySchemes:
     nhs-cis2-aal3:
       $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
-    app-level0:
-      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
+    app-level3:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
   parameters:
     BearerAuthorization:
       in: header
@@ -1339,7 +1339,7 @@ components:
           $ref: "schemas/components/Location/CreateLocation.yaml"
 security:
   - nhs-cis2-aal3: []
-  - app-level0: []
+  - app-level3: []
 x-nhsd-apim:
   temporary: false
   monitoring: true
@@ -1349,7 +1349,7 @@ x-nhsd-apim:
         nhs-cis2-aal3: []
     - title: FHIR Dispensing Service API Application Restricted
       grants:
-        app-level0: []
+        app-level3: []
   target:
     type: external
     healthcheck: /_status
