@@ -95,18 +95,34 @@ function createDispenseClaimPertinentInformation1(
 ) {
   const supplyHeader = new hl7V3.DispenseClaimSupplyHeader(new hl7V3.GlobalIdentifier(messageId))
 
+  let useDeprecatedRepeatInfoLocation = false
   const repeatInfoExtension = getExtensionForUrlOrNull(
-    item.detail[0].extension,
+    item.extension,
     "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "Claim.item.detail.extension"
+    "Claim.item.extension"
   ) as fhir.ExtensionExtension<fhir.IntegerExtension>
   if (repeatInfoExtension) {
     supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
       repeatInfoExtension,
-      "Claim.item.detail.extension",
+      "Claim.item.extension",
       true,
       true
     )
+  } else { // Fallback to deprecated location
+    useDeprecatedRepeatInfoLocation = true
+    const repeatInfoExtensionDeprecated = getExtensionForUrlOrNull(
+      item.detail[0].extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "Claim.item.detail.extension"
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+    if (repeatInfoExtensionDeprecated) {
+      supplyHeader.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+        repeatInfoExtensionDeprecated,
+        "Claim.item.detail.extension",
+        true,
+        true
+      )
+    }
   }
 
   const practitionerRole = getContainedPractitionerRoleViaReference(
@@ -138,7 +154,7 @@ function createDispenseClaimPertinentInformation1(
   supplyHeader.pertinentInformation3 = new hl7V3.SupplyHeaderPertinentInformation3(prescriptionStatus)
 
   supplyHeader.pertinentInformation1 = item.detail.map(detail => {
-    const suppliedLineItem = createSuppliedLineItem(claim, item, detail)
+    const suppliedLineItem = createSuppliedLineItem(claim, item, detail, useDeprecatedRepeatInfoLocation)
     return new hl7V3.DispenseClaimSupplyHeaderPertinentInformation1(suppliedLineItem)
   })
 
@@ -185,7 +201,8 @@ function getSuppliedLineItemNonDispensingReason(detail: fhir.ClaimItemDetail) {
 function createSuppliedLineItem(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
-  detail: fhir.ClaimItemDetail
+  detail: fhir.ClaimItemDetail,
+  useDeprecatedRepeatInfoLocation: boolean = false
 ): hl7V3.DispenseClaimSuppliedLineItem {
   const claimSequenceIdentifierExtension = getExtensionForUrl(
     detail.extension,
@@ -197,10 +214,28 @@ function createSuppliedLineItem(
   )
   suppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
 
-  if (detail.subDetail?.length) {
+  if (useDeprecatedRepeatInfoLocation && detail.subDetail?.length) {
     const subDetails = detail.subDetail[0] as ClaimItemDetail
     const repeatInfoExtension = getExtensionForUrlOrNull(
       subDetails.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "Claim.item.detail.extension" // TODO: is it a mistake that this doesn't refer to subDetail?
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+    if (repeatInfoExtension) {
+      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+        repeatInfoExtension,
+        "Claim.item.detail.extension",
+        true,
+        true
+      )
+    }
+    suppliedLineItem.component = detail.subDetail.map(subDetail => {
+      const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
+      return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
+    })
+  } else if (detail.subDetail?.length) {
+    const repeatInfoExtension = getExtensionForUrlOrNull(
+      detail.extension,
       "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
       "Claim.item.detail.extension"
     ) as fhir.ExtensionExtension<fhir.IntegerExtension>
