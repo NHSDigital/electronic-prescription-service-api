@@ -1,5 +1,7 @@
 import {TrackerClient} from "."
 import {spine} from "@models"
+import Hapi from "@hapi/hapi"
+import pino from "pino"
 
 const mockSummaryPrescriptions: Record<string, spine.SummaryPrescription> = {
   "2D35F7-ZA0448-11E88Z": {
@@ -86,7 +88,21 @@ const mockDetailedPrescriptions: Record<string, spine.DetailPrescription> = {
 }
 
 export class SandboxTrackerClient implements TrackerClient {
-  getPrescriptionsByPatientId(): Promise<spine.SummaryTrackerResponse> {
+  getPrescriptionsByPatientId(
+    // Omitting these parameters seems to be causing Jest to run out of memory (??? I don't understand how or why ???)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _patientId: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _businessStatus: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _earliestDate: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _latestDate: string,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _headers: Hapi.Utils.Dictionary<string>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    _logger: pino.Logger
+  ): Promise<spine.SummaryTrackerResponse> {
     return Promise.resolve({
       version: "1",
       reason: "",

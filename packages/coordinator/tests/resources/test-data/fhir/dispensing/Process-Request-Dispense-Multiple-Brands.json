@@ -143,7 +143,6 @@
 						"subject": {
 							"reference": "urn:uuid:cf2d5448-46ab-4891-a29e-da472897640a"
 						},
-						"authoredOn": "2023-01-08T15:54:44+00:00",
 						"category": [
 							{
 								"coding": [
@@ -364,7 +363,6 @@
 						"subject": {
 							"reference": "urn:uuid:cf2d5448-46ab-4891-a29e-da472897640a"
 						},
-						"authoredOn": "2023-01-08T15:54:44+00:00",
 						"category": [
 							{
 								"coding": [
@@ -585,7 +583,6 @@
 						"subject": {
 							"reference": "urn:uuid:cf2d5448-46ab-4891-a29e-da472897640a"
 						},
-						"authoredOn": "2023-01-08T15:54:44+00:00",
 						"category": [
 							{
 								"coding": [

@@ -104,7 +104,7 @@ function convertPrescriptionToTask(
   return task
 }
 
-function getPrescriptionStatusCodesFromDisplay(display: string): { status: fhir.TaskStatus, businessStatus: string } {
+function getPrescriptionStatusCodesFromDisplay(display: string): {status: fhir.TaskStatus, businessStatus: string} {
   //TODO - some of these cases aren't in the code system, but can be produced by Spine
   switch (display) {
     case "Awaiting Release Ready":

@@ -539,27 +539,35 @@
             "meta": {
               "lastUpdated": "2021-07-15T11:25:30+00:00"
             },
-            "extension": [{
-              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription",
-              "valueReference": {
-                "identifier": {
-                  "system": "https://tools.ietf.org/html/rfc4122",
-                  "value": "1012093c-788a-445a-a197-04c02fcaf829"
+            "extension": [
+              {
+                "url": "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription",
+                "valueReference": {
+                  "identifier": {
+                    "system": "https://tools.ietf.org/html/rfc4122",
+                    "value": "1012093c-788a-445a-a197-04c02fcaf829"
+                  }
                 }
               }
-            }],
-            "issue": [{
-              "severity": "error",
-              "code": "invalid",
-              "details": {
-                "coding": [{
-                  "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-                  "code": "INVALID_VALUE",
-                  "display": "Signature is invalid."
-                }]
-              },
-              "expression": ["Provenance.signature.data"]
-            }]
+            ],
+            "issue": [
+              {
+                "severity": "error",
+                "code": "invalid",
+                "details": {
+                  "coding": [
+                    {
+                      "system": "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                      "code": "INVALID_VALUE",
+                      "display": "Signature is invalid."
+                    }
+                  ]
+                },
+                "expression": [
+                  "Provenance.signature.data"
+                ]
+              }
+            ]
           },
           {
             "resourceType": "Bundle",
@@ -647,7 +655,6 @@
                   "subject": {
                     "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
                   },
-                  "authoredOn": "2021-05-07T14:47:29+00:00",
                   "category": [
                     {
                       "coding": [
@@ -777,7 +784,6 @@
                   "subject": {
                     "reference": "urn:uuid:78d3c2eb-009e-4ec8-a358-b042954aa9b2"
                   },
-                  "authoredOn": "2021-05-07T14:47:29+00:00",
                   "category": [
                     {
                       "coding": [

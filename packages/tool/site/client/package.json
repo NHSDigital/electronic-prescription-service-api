@@ -8,8 +8,7 @@
     "update-snapshots": "jest --updateSnapshot",
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch --progress",
-    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs .",
-    "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../../.."
+    "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs ."
   },
   "repository": {
     "type": "git",
@@ -18,13 +17,13 @@
   "author": "NHS Digital",
   "license": "MIT",
   "devDependencies": {
-    "@babel/core": "^7.28.5",
+    "@babel/core": "^7.28.6",
     "@babel/plugin-transform-runtime": "^7.28.5",
-    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-env": "^7.28.6",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@testing-library/dom": "^10.4.1",
-    "@testing-library/react": "^16.3.0",
+    "@testing-library/react": "^16.3.1",
     "@testing-library/user-event": "^14.6.1",
     "@types/crypto-js": "^4.2.2",
     "@types/fhir": "^0.0.41",
@@ -47,14 +46,14 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "style-loader": "^4.0.0",
-    "styled-components": "^6.1.19",
-    "webpack": "^5.103.0",
+    "styled-components": "^6.3.8",
+    "webpack": "^5.104.1",
     "webpack-cli": "^6.0.1",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "engines": {
-    "node": "20.10.x",
-    "npm": "10.2.x"
+    "node": "24.13.x",
+    "npm": "11.6.x"
   },
   "dependencies": {
     "@types/file-saver": "^2.0.7",
@@ -67,7 +66,7 @@
     "jszip": "^3.10.0",
     "react-cookie": "^7.2.2",
     "react-diff-viewer-continued": "^3.4.0",
-    "react-router-dom": "^6.28.0",
+    "react-router-dom": "^6.30.3",
     "react18-json-view": "^0.2.9"
   }
 }

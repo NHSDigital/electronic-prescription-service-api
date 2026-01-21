@@ -55,7 +55,6 @@ export function createMedicationRequest(
       lineItem.product.manufacturedProduct.manufacturedRequestedMaterial.code
     ),
     subject: fhir.createReference(patientId),
-    authoredOn: convertHL7V3DateTimeToIsoDateTimeString(prescription.author.time),
     category: [fhir.createCodeableConcept(
       "http://terminology.hl7.org/CodeSystem/medicationrequest-category", "outpatient", "Outpatient"
     )],
@@ -281,7 +280,7 @@ function createDispenseRequestQuantity(lineItemQuantity: hl7V3.LineItemQuantity)
   // Catch numbers like `.5`, which cannot be parsed, and prepend a 0
   // `0.5` can be parsed correctly.
   if (value.startsWith(".")) {
-    value = "0"+value
+    value = "0" + value
   };
   return {
     value: new LosslessNumber(value),

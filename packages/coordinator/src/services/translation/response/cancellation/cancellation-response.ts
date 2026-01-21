@@ -38,7 +38,7 @@ export function translateSpineCancelResponseIntoOperationOutcome(
   }
 }
 
-export function translateSpineCancelResponse (cancellationResponse: hl7V3.CancellationResponse):
+export function translateSpineCancelResponse(cancellationResponse: hl7V3.CancellationResponse):
   fhir.Bundle | fhir.OperationOutcome {
   const prescriptionStatusInformation = extractStatusCode(cancellationResponse)
   if (prescriptionStatusInformation.issueCode) {
@@ -121,7 +121,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {
   return {
     performer: {
-      extension:  [
+      extension: [
         {
           url: "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
           valueReference: fhir.createReference(practitionerId)

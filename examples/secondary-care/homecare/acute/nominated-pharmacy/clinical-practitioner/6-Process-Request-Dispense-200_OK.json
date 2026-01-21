@@ -151,7 +151,6 @@
             "subject": {
               "reference": "urn:uuid:fd9384b8-5086-4f2e-a41f-fda2f3259447"
             },
-            "authoredOn": "2022-03-15T13:45:09+00:00",
             "category": [
               {
                 "coding": [
@@ -325,10 +324,10 @@
       "fullUrl": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
       "resource": {
         "resourceType": "Organization",
-        "extension":  [
+        "extension": [
           {
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-ODS-OrganisationRelationships",
-            "extension":  [
+            "extension": [
               {
                 "url": "reimbursementAuthority",
                 "valueIdentifier": {

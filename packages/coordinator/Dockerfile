@@ -1,16 +1,15 @@
 # syntax=docker/dockerfile:1
 
 # --- Dependencies ---
-FROM node:23.9.0-alpine AS base
+FROM node:24.13.0-alpine AS base
 WORKDIR /app
 RUN apk update; \
-    apk upgrade
+    apk upgrade; \
+    npm install -g npm@latest
 
 # --- Build---
-FROM node:23.9.0-alpine AS build
+FROM base AS build
 WORKDIR /build
-RUN apk update; \
-    apk upgrade
 COPY package*.json ./
 COPY packages/coordinator ./packages/coordinator
 COPY packages/models ./packages/models
@@ -20,7 +19,7 @@ RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 # --- Runtime ---
 FROM base AS runtime
-ENV NO_UPDATE_NOTIFIER true
+ENV NO_UPDATE_NOTIFIER=true
 COPY --from=build /build/package.json /app
 COPY --from=build /build/package-lock.json /app
 COPY --from=build /build/packages/coordinator/package.json /app/packages/coordinator/package.json
