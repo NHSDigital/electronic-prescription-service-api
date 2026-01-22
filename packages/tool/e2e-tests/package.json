@@ -20,7 +20,7 @@
         "@types/selenium-webdriver": "^4.35.4",
         "chromedriver": "^143.0.3",
         "geckodriver": "^6.1.0",
-        "lodash": "^4.17.21",
+        "lodash": "^4.17.23",
         "selenium-webdriver": "^4.39.0"
     }
 }
