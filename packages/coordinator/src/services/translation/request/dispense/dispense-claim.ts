@@ -16,6 +16,7 @@ import {
 } from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
+import {ClaimItemDetail} from "../../../../../../models/fhir"
 
 export function convertDispenseClaim(
   claim: fhir.Claim
@@ -227,22 +228,18 @@ function createSuppliedLineItem(
     )
   }
   if (useDeprecatedRepeatInfoLocation && detail.subDetail?.length) {
-    const repeatNumbers = detail.subDetail
-      .map(subDetail => {
-        const repeatInfoExt = getExtensionForUrlOrNull(
-          subDetail.extension,
-          "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-          "Claim.item.detail.subDetail.extension"
-        ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-        return repeatInfoExt
-          ? getRepeatNumberFromRepeatInfoExtension(repeatInfoExt, "Claim.item.detail.subDetail.extension", true, true)
-          : null
-      })
-      .filter(num => num !== null)
-
-    if (repeatNumbers.length > 0) {
-      suppliedLineItem.repeatNumber = repeatNumbers.reduce((max, current) =>
-        current.high > max.high ? current : max
+    const subDetails = detail.subDetail[0] as ClaimItemDetail
+    const repeatInfoExtension = getExtensionForUrlOrNull(
+      subDetails.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "Claim.item.detail.extension"
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+    if (repeatInfoExtension) {
+      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+        repeatInfoExtension,
+        "Claim.item.detail.extension",
+        true,
+        true
       )
     }
 
