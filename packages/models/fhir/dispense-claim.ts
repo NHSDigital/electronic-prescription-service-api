@@ -52,7 +52,7 @@ export interface ClaimItemDetail extends BaseClaimItemDetail {
 /**
  * Details of the dispense event
  */
-export type ClaimItemSubDetail = BaseClaimItemDetail
+export type ClaimItemSubDetail = ClaimItemDetail
 
 interface BaseClaimItemDetail {
   sequence: string | LosslessNumber

@@ -16,7 +16,6 @@ import {
 } from "../../common/getResourcesOfType"
 import {isReference} from "../../../../utils/type-guards"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../common/dateTime"
-import {ClaimItemDetail} from "../../../../../../models/fhir/dispense-claim"
 
 export function convertDispenseClaim(
   claim: fhir.Claim
@@ -214,39 +213,39 @@ function createSuppliedLineItem(
   )
   suppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
 
+  const repeatInfoExtension = getExtensionForUrlOrNull(
+    detail.extension,
+    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+    "Claim.item.detail.extension"
+  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+  if (repeatInfoExtension) {
+    suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+      repeatInfoExtension,
+      "Claim.item.detail.extension",
+      true,
+      true
+    )
+  }
   if (useDeprecatedRepeatInfoLocation && detail.subDetail?.length) {
-    const subDetails = detail.subDetail[0] as ClaimItemDetail
-    const repeatInfoExtension = getExtensionForUrlOrNull(
-      subDetails.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "Claim.item.detail.extension" // TODO: is it a mistake that this doesn't refer to subDetail?
-    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-    if (repeatInfoExtension) {
-      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-        repeatInfoExtension,
-        "Claim.item.detail.extension",
-        true,
-        true
+    const repeatNumbers = detail.subDetail
+      .map(subDetail => {
+        const repeatInfoExt = getExtensionForUrlOrNull(
+          subDetail.extension,
+          "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          "Claim.item.detail.subDetail.extension"
+        ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+        return repeatInfoExt
+          ? getRepeatNumberFromRepeatInfoExtension(repeatInfoExt, "Claim.item.detail.subDetail.extension", true, true)
+          : null
+      })
+      .filter(num => num !== null)
+
+    if (repeatNumbers.length > 0) {
+      suppliedLineItem.repeatNumber = repeatNumbers.reduce((max, current) =>
+        current.high > max.high ? current : max
       )
     }
-    suppliedLineItem.component = detail.subDetail.map(subDetail => {
-      const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
-      return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
-    })
-  } else if (detail.subDetail?.length) {
-    const repeatInfoExtension = getExtensionForUrlOrNull(
-      detail.extension,
-      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-      "Claim.item.detail.extension"
-    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-    if (repeatInfoExtension) {
-      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-        repeatInfoExtension,
-        "Claim.item.detail.extension",
-        true,
-        true
-      )
-    }
+
     suppliedLineItem.component = detail.subDetail.map(subDetail => {
       const hl7SuppliedLineItemQuantity = createSuppliedLineItemQuantity(claim, item, detail, subDetail)
       return new hl7V3.DispenseClaimSuppliedLineItemComponent(hl7SuppliedLineItemQuantity)
