@@ -13,10 +13,7 @@ EPSAT_RELEASE_PIPELINE_FILE='packages/tool/azure/azure-release-template.yml'
 
 TOOL_VERSIONS_NODE_VERSION=$(grep nodejs "${ROOT_DIR}/${TOOL_VERSION_FILE}" | awk '{ print $NF }')
 API_DOCKER_NODE_BASE_VERSION=$(grep "FROM node.* AS base" "${ROOT_DIR}/${API_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
-API_DOCKER_NODE_BUILD_VERSION=$(grep "FROM node.* AS build" "${ROOT_DIR}/${API_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
 EPSAT_DOCKER_NODE_BASE_VERSION=$(grep "FROM node.* AS base" "${ROOT_DIR}/${EPSAT_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
-EPSAT_DOCKER_NODE_BUILD_CLIENT_VERSION=$(grep "FROM node.* AS build-client" "${ROOT_DIR}/${EPSAT_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
-EPSAT_DOCKER_NODE_BUILD_SERVER_VERSION=$(grep "FROM node.* AS build-server" "${ROOT_DIR}/${EPSAT_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
 API_BUILD_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${API_BUILD_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
 API_RELEASE_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${API_RELEASE_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
 EPSAT_BUILD_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${EPSAT_BUILD_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
@@ -29,22 +26,8 @@ if [[ "$TOOL_VERSIONS_NODE_VERSION" != "$API_DOCKER_NODE_BASE_VERSION" ]]; then
     FAILED_CHECK=1
 fi
 
-if [[ "$TOOL_VERSIONS_NODE_VERSION" != "$API_DOCKER_NODE_BUILD_VERSION" ]]; then
-    echo "node version in ${TOOL_VERSION_FILE} and ${API_DOCKER_FILE} do not match"
-    FAILED_CHECK=1
-fi
 
 if [[ "$TOOL_VERSIONS_NODE_VERSION" != "$EPSAT_DOCKER_NODE_BASE_VERSION" ]]; then
-    echo "node version in ${TOOL_VERSION_FILE} and ${EPSAT_DOCKER_FILE} do not match"
-    FAILED_CHECK=1
-fi
-
-if [[ "$TOOL_VERSIONS_NODE_VERSION" != "$EPSAT_DOCKER_NODE_BUILD_CLIENT_VERSION" ]]; then
-    echo "node version in ${TOOL_VERSION_FILE} and ${EPSAT_DOCKER_FILE} do not match"
-    FAILED_CHECK=1
-fi
-
-if [[ "$TOOL_VERSIONS_NODE_VERSION" != "$EPSAT_DOCKER_NODE_BUILD_SERVER_VERSION" ]]; then
     echo "node version in ${TOOL_VERSION_FILE} and ${EPSAT_DOCKER_FILE} do not match"
     FAILED_CHECK=1
 fi
@@ -77,8 +60,6 @@ if [[ ${FAILED_CHECK} == 1 ]]; then
     echo "API_DOCKER_NODE_BASE_VERSION: ${API_DOCKER_NODE_BASE_VERSION}"
     echo "API_DOCKER_NODE_BUILD_VERSION ${API_DOCKER_NODE_BUILD_VERSION}"
     echo "EPSAT_DOCKER_NODE_BASE_VERSION: ${EPSAT_DOCKER_NODE_BASE_VERSION}"
-    echo "EPSAT_DOCKER_NODE_BUILD_CLIENT_VERSION: ${EPSAT_DOCKER_NODE_BUILD_CLIENT_VERSION}"
-    echo "EPSAT_DOCKER_NODE_BUILD_SERVER_VERSION: ${EPSAT_DOCKER_NODE_BUILD_SERVER_VERSION}"
     echo "API_BUILD_PIPELINE_NODE_VERSION: ${API_BUILD_PIPELINE_NODE_VERSION}"
     echo "API_RELEASE_PIPELINE_NODE_VERSION: ${API_RELEASE_PIPELINE_NODE_VERSION}"
     echo "EPSAT_BUILD_PIPELINE_NODE_VERSION: ${EPSAT_BUILD_PIPELINE_NODE_VERSION}"

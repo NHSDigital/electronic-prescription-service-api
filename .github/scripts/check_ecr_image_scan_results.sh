@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -e
 
+AWS_MAX_ATTEMPTS=20
+export AWS_MAX_ATTEMPTS
+
 if [ -z "${REPOSITORY_NAME}" ]; then
   echo "REPOSITORY_NAME not set"
   exit 1
@@ -11,65 +14,125 @@ if [ -z "${IMAGE_TAG}" ]; then
   exit 1
 fi
 
-function wait_for_scan() {
-  echo "Giving some time for scan to begin..."
-  sleep 3
-  while [[ $(aws ecr describe-image-scan-findings --repository-name "${REPOSITORY_NAME}" --image-id imageTag="${IMAGE_TAG}" | jq -r .imageScanStatus.status) != "COMPLETE" ]];do 
-    echo "SCAN IS NOT YET COMPLETE..."
-    sleep 3
-  done
-  echo "Final sleep to ensure suppressions are applied correctly"
-  sleep 5
-}
+if [ -z "${AWS_REGION}" ]; then
+  echo "AWS_REGION not set"
+  exit 1
+fi
 
-function check_for_high_critical_vuln() {
-  scan_results=$(aws ecr describe-image-scan-findings --repository-name "${REPOSITORY_NAME}" --image-id imageTag="${IMAGE_TAG}")
-  high=$(echo "$scan_results" | jq '.imageScanFindings.enhancedFindings[]? | select(.severity == "HIGH" and .status != "SUPPRESSED")')
-  critical=$(echo "$scan_results" | jq '.imageScanFindings.enhancedFindings[]? | select(.severity == "CRITICAL" and .status != "SUPPRESSED")')
-}
+if [ -z "${ACCOUNT_ID}" ]; then
+  echo "AWS_REGION not set"
+  exit 1
+fi
 
-function return_scan_results() {
-    echo "=== BEGIN IMAGE SCAN RESULTS ==="
-    echo "$scan_results"
-    echo "=== END IMAGE SCAN RESULTS ==="
-}
+IMAGE_DIGEST=$(aws ecr describe-images \
+  --repository-name "$REPOSITORY_NAME" \
+  --image-ids imageTag="$IMAGE_TAG" \
+  --query 'imageDetails[0].imageDigest' \
+  --output text)
 
-function return_error() {
-    echo -e "\n**********************************************************"
-    echo "**********************************************************"
-    echo "**********************************************************"
-    echo "ERROR: There are CRITICAL/HIGH vulnerabilities. Stopping build."
-    echo "**********************************************************"
-    echo "**********************************************************"
-    echo "**********************************************************"
-    exit 2
-}
+RESOURCE_ARN="arn:aws:ecr:${AWS_REGION}:${ACCOUNT_ID}:repository/${REPOSITORY_NAME}/${IMAGE_DIGEST}"
 
-function analyze_scan_results() {
-  if [[ -n "$critical" ]]; then
-    echo "ERROR: There are CRITICAL vulnerabilities. Stopping build."
+echo "Monitoring scan for ${REPOSITORY_NAME}:${IMAGE_TAG}"
+echo "Resource ARN: ${RESOURCE_ARN}"
+echo
 
-    echo "=== BEGIN CRITICAL IMAGE SCAN RESULTS ==="
-    echo "$critical"
-    echo "=== END CRITICAL IMAGE SCAN RESULTS ==="
+# Wait for ECR scan to reach COMPLETE
+STATUS=""
+echo "Waiting for ECR scan to complete..."
+for i in {1..30}; do
+  echo "Checking scan status. Attempt ${i}"
+  STATUS=$(aws ecr describe-image-scan-findings \
+    --repository-name "$REPOSITORY_NAME" \
+    --image-id imageDigest="$IMAGE_DIGEST" \
+    --query 'imageScanStatus.status' \
+    --output text | grep -v "None" | head -n 1 2>/dev/null || echo "NONE"| grep -oE '^[^ ]+' | grep -v "None")
 
-    return_scan_results
-
-    return_error
-  elif [[ -n "$high" ]]; then
-    echo "ERROR: There are HIGH vulnerabilities. Stopping build."
-
-    echo "=== BEGIN HIGH IMAGE SCAN RESULTS ==="
-    echo "$high"
-    echo "=== END HIGH IMAGE SCAN RESULTS ==="
-
-    return_scan_results
-    return_error
-  else
-    return_scan_results
+  if [[ "$STATUS" == "COMPLETE" ]]; then
+    echo "ECR scan completed."
+    break
   fi
-}
 
-wait_for_scan
-check_for_high_critical_vuln
-analyze_scan_results
+  if [[ "$STATUS" == "FAILED" ]]; then
+    echo "Scan failed."
+    exit 1
+  fi
+
+  echo "SCAN IS NOT YET COMPLETE. Waiting 10 seconds before checking again..."
+  sleep 10
+done
+
+if [[ "$STATUS" != "COMPLETE" ]]; then
+  echo "Timeout waiting for ECR scan to complete."
+  exit 1
+fi
+
+# Wait for Inspector2 findings to appear & stabilize
+# this is in place as scan may show as complete but findings have not yet stabilize
+echo
+echo "Waiting for Inspector2 findings to stabilize..."
+
+PREV_HASH=""
+for i in {1..12}; do  # ~2 minutes max
+  FINDINGS=$(aws inspector2 list-findings \
+    --filter-criteria "{
+      \"resourceId\": [{\"comparison\": \"EQUALS\", \"value\": \"${RESOURCE_ARN}\"}],
+      \"findingStatus\": [{\"comparison\": \"EQUALS\", \"value\": \"ACTIVE\"}]
+    }" \
+    --output json 2>/dev/null || echo "{}")
+
+  CURR_HASH=$(echo "$FINDINGS" | sha256sum)
+  COUNT=$(echo "$FINDINGS" | jq '.findings | length')
+
+  if [[ "$COUNT" -gt 0 && "$CURR_HASH" == "$PREV_HASH" ]]; then
+    echo "Findings stabilized ($COUNT findings)."
+    break
+  fi
+
+  PREV_HASH="$CURR_HASH"
+  echo "Attempt: ${i}. Still waiting... (${COUNT} findings so far)"
+  sleep 10
+done
+
+# Extract counts and display findings
+echo
+echo "Final Inspector2 findings with suppressions removed:"
+echo
+
+echo "$FINDINGS" | jq '{
+  findings: [
+    .findings[]? | {
+      severity: .severity,
+      title: .title,
+      package: .packageVulnerabilityDetails.vulnerablePackages[0].name,
+      sourceUrl: .packageVulnerabilityDetails.sourceUrl,
+      recommendation: (.remediation.recommendation.text // "N/A")
+    }
+  ]
+}'
+
+echo
+
+# Check for critical/high severity
+CRITICAL_COUNT=$(echo "$FINDINGS" | jq '[.findings[]? | select(.severity=="CRITICAL")] | length')
+HIGH_COUNT=$(echo "$FINDINGS" | jq '[.findings[]? | select(.severity=="HIGH")] | length')
+
+if (( CRITICAL_COUNT > 0 || HIGH_COUNT > 0 )); then
+  echo "${CRITICAL_COUNT} CRITICAL and ${HIGH_COUNT} HIGH vulnerabilities detected!"
+  echo
+  echo "Critical/High vulnerabilities:"
+  echo "$FINDINGS" | jq -r '
+    .findings[]? |
+    select(.severity=="CRITICAL" or .severity=="HIGH") |{
+      severity: .severity,
+      title: .title,
+      package: .packageVulnerabilityDetails.vulnerablePackages[0].name,
+      sourceUrl: .packageVulnerabilityDetails.sourceUrl,
+      recommendation: (.remediation.recommendation.text // "N/A")
+    }'
+  echo
+  echo "Failing pipeline due to Critical/High vulnerabilities."
+  exit 2
+else
+  echo "No Critical or High vulnerabilities found."
+  exit 0
+fi

@@ -1,10 +1,10 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Produces expected result when status full dispense is done on a partial dispense 1`] = `
 {
   "entry": [
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "destination": [
           {
@@ -24,13 +24,13 @@ exports[`Produces expected result when status full dispense is done on a partial
         },
         "focus": [
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "resourceType": "MessageHeader",
         "response": {
           "code": "ok",
@@ -50,7 +50,7 @@ exports[`Produces expected result when status full dispense is done on a partial
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "authorizingPrescription": [
           {
@@ -354,11 +354,11 @@ exports[`Produces expected result when status full dispense is done on a partial
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "test-uuid",
+            "value": "test-uuid-in-uuid-format",
           },
         ],
         "medicationCodeableConcept": {
@@ -391,7 +391,7 @@ exports[`Produces expected result when status full dispense is done on a partial
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449305552",
           },
-          "reference": "urn:uuid:test-uuid",
+          "reference": "urn:uuid:test-uuid-in-uuid-format",
         },
         "type": {
           "coding": [
@@ -406,7 +406,7 @@ exports[`Produces expected result when status full dispense is done on a partial
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "address": [
           {
@@ -429,7 +429,7 @@ exports[`Produces expected result when status full dispense is done on a partial
             },
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -512,10 +512,10 @@ exports[`Produces expected result when status full dispense is done on a partial
       },
     },
   ],
-  "id": "test-uuid",
+  "id": "test-uuid-in-uuid-format",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "test-uuid",
+    "value": "test-uuid-in-uuid-format",
   },
   "resourceType": "Bundle",
   "type": "message",
@@ -526,7 +526,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
 {
   "entry": [
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "destination": [
           {
@@ -546,13 +546,13 @@ exports[`Produces expected result when status fully dispensed 1`] = `
         },
         "focus": [
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "resourceType": "MessageHeader",
         "response": {
           "code": "ok",
@@ -572,7 +572,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "authorizingPrescription": [
           {
@@ -876,11 +876,11 @@ exports[`Produces expected result when status fully dispensed 1`] = `
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "test-uuid",
+            "value": "test-uuid-in-uuid-format",
           },
         ],
         "medicationCodeableConcept": {
@@ -913,7 +913,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449305552",
           },
-          "reference": "urn:uuid:test-uuid",
+          "reference": "urn:uuid:test-uuid-in-uuid-format",
         },
         "type": {
           "coding": [
@@ -928,7 +928,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "address": [
           {
@@ -951,7 +951,7 @@ exports[`Produces expected result when status fully dispensed 1`] = `
             },
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -1034,10 +1034,10 @@ exports[`Produces expected result when status fully dispensed 1`] = `
       },
     },
   ],
-  "id": "test-uuid",
+  "id": "test-uuid-in-uuid-format",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "test-uuid",
+    "value": "test-uuid-in-uuid-format",
   },
   "resourceType": "Bundle",
   "type": "message",
@@ -1048,7 +1048,7 @@ exports[`Produces expected result when status partial dispense is done on a part
 {
   "entry": [
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "destination": [
           {
@@ -1068,13 +1068,13 @@ exports[`Produces expected result when status partial dispense is done on a part
         },
         "focus": [
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "resourceType": "MessageHeader",
         "response": {
           "code": "ok",
@@ -1094,7 +1094,7 @@ exports[`Produces expected result when status partial dispense is done on a part
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "authorizingPrescription": [
           {
@@ -1398,11 +1398,11 @@ exports[`Produces expected result when status partial dispense is done on a part
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "test-uuid",
+            "value": "test-uuid-in-uuid-format",
           },
         ],
         "medicationCodeableConcept": {
@@ -1435,7 +1435,7 @@ exports[`Produces expected result when status partial dispense is done on a part
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449305552",
           },
-          "reference": "urn:uuid:test-uuid",
+          "reference": "urn:uuid:test-uuid-in-uuid-format",
         },
         "type": {
           "coding": [
@@ -1450,7 +1450,7 @@ exports[`Produces expected result when status partial dispense is done on a part
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "address": [
           {
@@ -1473,7 +1473,7 @@ exports[`Produces expected result when status partial dispense is done on a part
             },
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -1556,10 +1556,10 @@ exports[`Produces expected result when status partial dispense is done on a part
       },
     },
   ],
-  "id": "test-uuid",
+  "id": "test-uuid-in-uuid-format",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "test-uuid",
+    "value": "test-uuid-in-uuid-format",
   },
   "resourceType": "Bundle",
   "type": "message",
@@ -1570,7 +1570,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
 {
   "entry": [
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "destination": [
           {
@@ -1590,13 +1590,13 @@ exports[`Produces expected result when status partially dispensed 1`] = `
         },
         "focus": [
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
           {
-            "reference": "urn:uuid:test-uuid",
+            "reference": "urn:uuid:test-uuid-in-uuid-format",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "resourceType": "MessageHeader",
         "response": {
           "code": "ok",
@@ -1616,7 +1616,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "authorizingPrescription": [
           {
@@ -1920,11 +1920,11 @@ exports[`Produces expected result when status partially dispensed 1`] = `
             "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-            "value": "test-uuid",
+            "value": "test-uuid-in-uuid-format",
           },
         ],
         "medicationCodeableConcept": {
@@ -1957,7 +1957,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
             "system": "https://fhir.nhs.uk/Id/nhs-number",
             "value": "9449305552",
           },
-          "reference": "urn:uuid:test-uuid",
+          "reference": "urn:uuid:test-uuid-in-uuid-format",
         },
         "type": {
           "coding": [
@@ -1972,7 +1972,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
       },
     },
     {
-      "fullUrl": "urn:uuid:test-uuid",
+      "fullUrl": "urn:uuid:test-uuid-in-uuid-format",
       "resource": {
         "address": [
           {
@@ -1995,7 +1995,7 @@ exports[`Produces expected result when status partially dispensed 1`] = `
             },
           },
         ],
-        "id": "test-uuid",
+        "id": "test-uuid-in-uuid-format",
         "identifier": [
           {
             "system": "https://fhir.nhs.uk/Id/nhs-number",
@@ -2078,10 +2078,10 @@ exports[`Produces expected result when status partially dispensed 1`] = `
       },
     },
   ],
-  "id": "test-uuid",
+  "id": "test-uuid-in-uuid-format",
   "identifier": {
     "system": "https://tools.ietf.org/html/rfc4122",
-    "value": "test-uuid",
+    "value": "test-uuid-in-uuid-format",
   },
   "resourceType": "Bundle",
   "type": "message",

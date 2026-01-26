@@ -1,5 +1,4 @@
 import Hapi from "@hapi/hapi"
-import * as uuid from "uuid"
 import {
   AWS_DISPENSING_USER_SCOPE,
   AWS_PRESCRIBING_USER_SCOPE,
@@ -38,7 +37,7 @@ export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 const DEFAULT_APPLICATION_ID = "00000000-0000-0000-0000-000000000000"
 
 function getHeaderIdentifier(headers: Hapi.Utils.Dictionary<string>, identifier: RequestHeaders): string {
-  return isSandbox() ? uuid.v4() : headers[identifier].toUpperCase()
+  return isSandbox() ? crypto.randomUUID() : headers[identifier].toUpperCase()
 }
 
 export function getRequestId(headers: Hapi.Utils.Dictionary<string>): string {

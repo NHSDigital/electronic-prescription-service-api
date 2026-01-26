@@ -1,0 +1,369 @@
+{
+  "resourceType": "Bundle",
+  "type": "message",
+  "identifier": {
+      "system": "https://tools.ietf.org/html/rfc4122",
+      "value": "47c2efe1-f29b-4108-8c63-53bc164497c2"
+  },
+  "timestamp": "2025-09-11T14:41:57+00:00",
+  "entry": [
+      {
+          "fullUrl": "urn:uuid:c801b425-21c1-4a4f-bb25-e1c0cf1d5726",
+          "resource": {
+              "resourceType": "MessageHeader",
+              "id": "c801b425-21c1-4a4f-bb25-e1c0cf1d5726",
+              "extension": [
+                  {
+                      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-MessageHeader-messageId",
+                      "valueIdentifier": {
+                          "system": "https://tools.ietf.org/html/rfc4122",
+                          "value": "47c2efe1-f29b-4108-8c63-53bc164497c2"
+                      }
+                  }
+              ],
+              "eventCoding": {
+                  "system": "https://fhir.nhs.uk/CodeSystem/message-event",
+                  "code": "prescription-order-response",
+                  "display": "Prescription Order Response"
+              },
+              "destination": [
+                  {
+                      "endpoint": "urn:nhs-uk:addressing:ods:RRERP",
+                      "receiver": {
+                          "identifier": {
+                              "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                              "value": "RRERP"
+                          }
+                      }
+                  }
+              ],
+              "sender": {
+                  "identifier": {
+                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                      "value": "X2601"
+                  },
+                  "display": "NHS Digital Spine"
+              },
+              "source": {
+                  "name": "NHS Spine",
+                  "endpoint": "undefined/$process-message"
+              },
+              "response": {
+                  "identifier": "47c2efe1-f29b-4108-8c63-53bc164497c2",
+                  "code": "ok"
+              },
+              "focus": [
+                  {
+                      "reference": "urn:uuid:78e03686-151a-493b-9e60-29799193b05e"
+                  },
+                  {
+                      "reference": "urn:uuid:cd83e683-4cb3-4b83-b452-4016180632ed"
+                  }
+              ]
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:cd83e683-4cb3-4b83-b452-4016180632ed",
+          "resource": {
+              "resourceType": "MedicationRequest",
+              "id": "cd83e683-4cb3-4b83-b452-4016180632ed",
+              "extension": [
+                  {
+                      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-PrescriptionStatusHistory",
+                      "extension": [
+                          {
+                              "url": "status",
+                              "valueCoding": {
+                                  "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-status-history",
+                                  "code": "R-0007",
+                                  "display": "Prescription/item cancellation requested by another prescriber"
+                              }
+                          },
+                          {
+                              "url": "statusDate",
+                              "valueDateTime": "2025-09-11T14:41:57+00:00"
+                          }
+                      ]
+                  },
+                  {
+                      "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-ResponsiblePractitioner",
+                      "valueReference": {
+                          "reference": "urn:uuid:b623021c-9892-4eab-a4aa-ff8036286abe"
+                      }
+                  }
+              ],
+              "identifier": [
+                  {
+                      "system": "https://fhir.nhs.uk/Id/prescription-order-item-number",
+                      "value": "b36c5a15-d23e-444e-9a21-4dd0ea594d8a"
+                  }
+              ],
+              "status": "active",
+              "intent": "order",
+              "medicationCodeableConcept": {
+                  "coding": [
+                      {
+                          "system": "http://snomed.info/sct",
+                          "code": "763158003",
+                          "display": "Medicinal product"
+                      }
+                  ]
+              },
+              "subject": {
+                  "reference": "urn:uuid:78e03686-151a-493b-9e60-29799193b05e"
+              },
+              "requester": {
+                  "reference": "urn:uuid:b623021c-9892-4eab-a4aa-ff8036286abe"
+              },
+              "groupIdentifier": {
+                  "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+                  "value": "FB6EC1-A83008-DC0346"
+              },
+              "dispenseRequest": {
+                  "performer": {
+                      "extension": [
+                          {
+                              "url": "https://fhir.nhs.uk/StructureDefinition/Extension-DM-DispensingPerformer",
+                              "valueReference": {
+                                  "reference": "urn:uuid:3fb98f62-c55b-42b2-a388-771b3faf2f57"
+                              }
+                          }
+                      ],
+                      "identifier": {
+                          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                          "value": "VNFKT"
+                      },
+                      "display": "The Simple Pharmacy"
+                  }
+              }
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:78e03686-151a-493b-9e60-29799193b05e",
+          "resource": {
+              "resourceType": "Patient",
+              "id": "78e03686-151a-493b-9e60-29799193b05e",
+              "identifier": [
+                  {
+                      "system": "https://fhir.nhs.uk/Id/nhs-number",
+                      "value": "5839945242"
+                  }
+              ],
+              "name": [
+                  {
+                      "use": "usual",
+                      "family": "FORREST",
+                      "given": [
+                          "LILAC",
+                          "EMERSON"
+                      ],
+                      "prefix": [
+                          "MS"
+                      ]
+                  }
+              ],
+              "gender": "female",
+              "birthDate": "2011-03-30",
+              "address": [
+                  {
+                      "use": "home",
+                      "line": [
+                          "10 HAWKHURST",
+                          "COBHAM",
+                          "SURREY"
+                      ],
+                      "postalCode": "KT11 2QX"
+                  }
+              ],
+              "generalPractitioner": [
+                  {
+                      "identifier": {
+                          "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                          "value": "B81001"
+                      }
+                  }
+              ]
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:3cc24113-9d45-4229-830c-eb7a437b4cc7",
+          "resource": {
+              "resourceType": "Practitioner",
+              "id": "3cc24113-9d45-4229-830c-eb7a437b4cc7",
+              "name": [
+                  {
+                      "family": "FIFTYSEVEN",
+                      "given": [
+                          "RANDOM"
+                      ],
+                      "prefix": [
+                          "MR"
+                      ]
+                  }
+              ],
+              "identifier": [
+                  {
+                      "system": "https://fhir.hl7.org.uk/Id/professional-code",
+                      "value": "656005750107"
+                  }
+              ]
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:4179eed1-015c-4116-a747-da44c1656ab1",
+          "resource": {
+              "resourceType": "Practitioner",
+              "id": "4179eed1-015c-4116-a747-da44c1656ab1",
+              "name": [
+                  {
+                      "text": "Jackie Clark"
+                  }
+              ],
+              "identifier": [
+                  {
+                      "system": "https://fhir.hl7.org.uk/Id/professional-code",
+                      "value": "3415870201"
+                  }
+              ]
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:b623021c-9892-4eab-a4aa-ff8036286abe",
+          "resource": {
+              "resourceType": "PractitionerRole",
+              "id": "b623021c-9892-4eab-a4aa-ff8036286abe",
+              "identifier": [
+                  {
+                      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                      "value": "601986680555"
+                  }
+              ],
+              "practitioner": {
+                  "reference": "urn:uuid:3cc24113-9d45-4229-830c-eb7a437b4cc7"
+              },
+              "code": [
+                  {
+                      "coding": [
+                          {
+                              "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                              "code": "S8000:G8000:R8000",
+                              "display": "Clinical Practitioner Access Role"
+                          }
+                      ]
+                  }
+              ],
+              "telecom": [
+                  {
+                      "system": "phone",
+                      "use": "work",
+                      "value": "01234567890"
+                  }
+              ],
+              "organization": {
+                  "reference": "urn:uuid:d821023a-b8d5-46de-acc4-3a899924d4da"
+              }
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:3fb98f62-c55b-42b2-a388-771b3faf2f57",
+          "resource": {
+              "resourceType": "PractitionerRole",
+              "id": "3fb98f62-c55b-42b2-a388-771b3faf2f57",
+              "identifier": [
+                  {
+                      "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                      "value": "555086415105"
+                  }
+              ],
+              "practitioner": {
+                  "reference": "urn:uuid:4179eed1-015c-4116-a747-da44c1656ab1"
+              },
+              "code": [
+                  {
+                      "coding": [
+                          {
+                              "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                              "code": "S8000:G8000:R8000",
+                              "display": "Clinical Practitioner Access Role"
+                          }
+                      ]
+                  }
+              ],
+              "telecom": [
+                  {
+                      "system": "phone",
+                      "use": "work",
+                      "value": "02380798431"
+                  }
+              ],
+              "organization": {
+                  "reference": "urn:uuid:cda5cbef-ff34-4e20-9b9a-acd2cc7bbbfd"
+              }
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:d821023a-b8d5-46de-acc4-3a899924d4da",
+          "resource": {
+              "resourceType": "Organization",
+              "id": "d821023a-b8d5-46de-acc4-3a899924d4da",
+              "identifier": [
+                  {
+                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                      "value": "RRERP"
+                  }
+              ],
+              "name": "PRESCRIBER 240",
+              "telecom": [
+                  {
+                      "system": "phone",
+                      "use": "work",
+                      "value": "01233123123"
+                  }
+              ],
+              "address": [
+                  {
+                      "line": [
+                          "SEVERN FIELDS MEDICAL PRACTICE",
+                          "SUNDORNE ROAD",
+                          "SHREWSBURY"
+                      ],
+                      "postalCode": "SY1 4RQ"
+                  }
+              ]
+          }
+      },
+      {
+          "fullUrl": "urn:uuid:cda5cbef-ff34-4e20-9b9a-acd2cc7bbbfd",
+          "resource": {
+              "resourceType": "Organization",
+              "id": "cda5cbef-ff34-4e20-9b9a-acd2cc7bbbfd",
+              "identifier": [
+                  {
+                      "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                      "value": "VNFKT"
+                  }
+              ],
+              "name": "The Simple Pharmacy",
+              "telecom": [
+                  {
+                      "system": "phone",
+                      "use": "work",
+                      "value": "01133180277"
+                  }
+              ],
+              "address": [
+                  {
+                      "use": "work",
+                      "line": [
+                          "17 Austhorpe Road",
+                          "Crossgates",
+                          "Leeds",
+                          "West Yorkshire"
+                      ],
+                      "postalCode": "LS15 8BA"
+                  }
+              ]
+          }
+      }
+  ]
+}

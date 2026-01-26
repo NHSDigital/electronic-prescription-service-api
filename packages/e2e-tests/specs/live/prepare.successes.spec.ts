@@ -4,8 +4,8 @@ import {
   getStringParameterByName,
   pactOptions
 } from "../../resources/common"
-import {Matchers} from "@pact-foundation/pact"
-import {Pact} from "@pact-foundation/pact"
+import {MatchersV2} from "@pact-foundation/pact"
+import {PactV2} from "@pact-foundation/pact"
 import * as TestResources from "../../resources/test-resources"
 import {fhir} from "@models"
 
@@ -14,7 +14,7 @@ describe("prepare e2e tests", () => {
     "should be able to prepare a %s message",
     async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
       const options = new CreatePactOptions("live", "prepare")
-      const provider = new Pact(pactOptions(options))
+      const provider = new PactV2(pactOptions(options))
       await provider.setup()
 
       const interaction = createInteraction(
@@ -36,15 +36,15 @@ function getResponseExpectation(response: fhir.Parameters) {
     parameter: [
       {
         name: "digest",
-        valueString: Matchers.like(getStringParameterByName(response, "digest").valueString)
+        valueString: MatchersV2.like(getStringParameterByName(response, "digest").valueString)
       },
       {
         name: "timestamp",
-        valueString: Matchers.like(getStringParameterByName(response, "timestamp").valueString)
+        valueString: MatchersV2.like(getStringParameterByName(response, "timestamp").valueString)
       },
       {
         name: "algorithm",
-        valueString: Matchers.like(getStringParameterByName(response, "algorithm").valueString)
+        valueString: MatchersV2.like(getStringParameterByName(response, "algorithm").valueString)
       }
     ]
   }
