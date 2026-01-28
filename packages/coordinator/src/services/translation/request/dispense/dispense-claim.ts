@@ -202,7 +202,7 @@ function createSuppliedLineItem(
   claim: fhir.Claim,
   item: fhir.ClaimItem,
   detail: fhir.ClaimItemDetail,
-  useDeprecatedRepeatInfoLocation: boolean = false
+  useDeprecatedRepeatInfoLocation: boolean
 ): hl7V3.DispenseClaimSuppliedLineItem {
   const claimSequenceIdentifierExtension = getExtensionForUrl(
     detail.extension,
