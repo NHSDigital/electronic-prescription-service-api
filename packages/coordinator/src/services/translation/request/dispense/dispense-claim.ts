@@ -214,19 +214,22 @@ function createSuppliedLineItem(
   )
   suppliedLineItem.effectiveTime = hl7V3.Null.NOT_APPLICABLE
 
-  const repeatInfoExtension = getExtensionForUrlOrNull(
-    detail.extension,
-    "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-    "Claim.item.detail.extension"
-  ) as fhir.ExtensionExtension<fhir.IntegerExtension>
-  if (repeatInfoExtension) {
-    suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
-      repeatInfoExtension,
-      "Claim.item.detail.extension",
-      true,
-      true
-    )
+  if (!useDeprecatedRepeatInfoLocation) {
+    const repeatInfoExtension = getExtensionForUrlOrNull(
+      detail.extension,
+      "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+      "Claim.item.detail.extension"
+    ) as fhir.ExtensionExtension<fhir.IntegerExtension>
+    if (repeatInfoExtension) {
+      suppliedLineItem.repeatNumber = getRepeatNumberFromRepeatInfoExtension(
+        repeatInfoExtension,
+        "Claim.item.detail.extension",
+        true,
+        true
+      )
+    }
   }
+
   if (useDeprecatedRepeatInfoLocation && detail.subDetail?.length) {
     const subDetails = detail.subDetail[0] as ClaimItemDetail
     const repeatInfoExtension = getExtensionForUrlOrNull(
