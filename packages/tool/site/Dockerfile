@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # --- Dependencies ---
-FROM node:24.13.0-alpine AS base
+FROM node:25.5.0-alpine AS base
 WORKDIR /app
 RUN apk update; \
     apk upgrade; \
