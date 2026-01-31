@@ -10,14 +10,14 @@
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs ."
   },
   "engines": {
-    "node": "24.12.x",
+    "node": "24.13.x",
     "npm": "11.6.x"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@babel/preset-env": "^7.28.5",
+    "@babel/preset-env": "^7.28.6",
     "@cucumber/cucumber": "^11.3.0",
     "@types/fhir": "^0.0.41",
     "axios": "^1.13.2",

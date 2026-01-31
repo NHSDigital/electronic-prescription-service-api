@@ -44,9 +44,9 @@ extends:
           version: $(VALIDATOR_VERSION)
           downloadPath: "validator"
       - task: NodeTool@0
-        displayName: Use Node v24.12.0
+        displayName: Use Node v24.13.0
         inputs:
-          versionSpec: "24.12.0"
+          versionSpec: "24.13.0"
       - task: UseDotNet@2
         inputs:
           version: "3.1.x"

@@ -40,7 +40,6 @@ export function createMedicationRequest(
     intent: fhir.MedicationRequestIntent.ORDER,
     medicationCodeableConcept: MEDICINAL_PRODUCT_CODEABLE_CONCEPT,
     subject: fhir.createReference(patientId),
-    authoredOn: undefined, //the v3 message doesnt have enough information for authoredOn
     requester: fhir.createReference(originalPrescriptionAuthorPractitionerRoleId),
     groupIdentifier: createGroupIdentifierFromPertinentInformation2(cancellationResponse.pertinentInformation2)
   }
