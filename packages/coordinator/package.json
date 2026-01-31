@@ -44,7 +44,7 @@
     "xsd-schema-validator": "^0.11.0"
   },
   "devDependencies": {
-    "@aws-sdk/client-dynamodb": "^3.974.0",
+    "@aws-sdk/client-dynamodb": "^3.980.0",
     "@hapi/shot": "^6.0.2",
     "@types/crypto-js": "^4.2.2",
     "@types/hapi-pino": "^9.1.3",
