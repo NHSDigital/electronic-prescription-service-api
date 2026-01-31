@@ -1,5 +1,5 @@
 SHELL=/bin/bash -euo pipefail
-LATEST_VALIDATOR_VERSION=v1.0.344-alpha
+LATEST_VALIDATOR_VERSION=v1.0.311-alpha
 
 ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	TEST_TARGET=test-epsat
