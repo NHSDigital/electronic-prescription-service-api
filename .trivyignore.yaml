@@ -1,0 +1,4 @@
+vulnerabilities:
+  - id: CVE-2026-24842
+    statement: downstream dependency for tar - waiting for new npm release
+    expired_at: 2026-06-01
