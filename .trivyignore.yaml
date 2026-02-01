@@ -95,4 +95,7 @@ vulnerabilities:
   - id: CVE-2024-55887
     statement: hapi-fhir vulnerability accepted as risk
     expired_at: 2027-01-01
+  - id: CVE-2026-25128
+    statement: fast-xml-parser vulnerability accepted as risk - dependency of aws-sdk/client-dynamodb
+    expired_at: 2026-03-01
   
