@@ -90,22 +90,8 @@ export function createAgentPersonUsingPractitionerRoleAndOrganization(
   )
   agentPerson.id = new hl7V3.SdsRoleProfileIdentifier(sdsId)
 
-  const fallbackJobRoleCode = "applicationrestricted"
-  let resolvedJobRoleCode: string | null = null
-
-  try {
-    resolvedJobRoleCode = getJobRoleCodeOrName(practitionerRole)?.code
-  } catch (error: unknown) {
-    if (error instanceof errors.TooFewValuesError) {
-      resolvedJobRoleCode = null
-    } else {
-      throw error
-    }
-  }
-
-  // Fallback allows application-restricted journeys where no SDS job role accompanies the token
-  const jobRoleCodeValue = resolvedJobRoleCode ?? fallbackJobRoleCode
-  agentPerson.code = new hl7V3.SdsJobRoleCode(jobRoleCodeValue)
+  const sdsRoleCode = getJobRoleCodeOrName(practitionerRole).code
+  agentPerson.code = new hl7V3.SdsJobRoleCode(sdsRoleCode)
 
   agentPerson.telecom = [convertTelecom(practitionerRole.telecom[0], "")]
 

@@ -31,20 +31,6 @@ describe("createAgentPersonUsingPractitionerRoleAndOrganization", () => {
     expect(result.code).toStrictEqual(new hl7V3.SdsJobRoleCode("R8000"))
     expect(result.telecom).toStrictEqual([mockTelecomResponse])
   })
-
-  test("Defaults job role code when PractitionerRole has no SDS coding", () => {
-    const practitionerRoleWithoutJobRole: fhir.PractitionerRole = {
-      ...testData.practitionerRole,
-      code: []
-    }
-
-    const result = createAgentPersonUsingPractitionerRoleAndOrganization(
-      practitionerRoleWithoutJobRole,
-      testData.organization
-    )
-
-    expect(result.code).toStrictEqual(new hl7V3.SdsJobRoleCode("applicationrestricted"))
-  })
 })
 
 describe("createAgentPersonPersonUsingPractitionerRole", () => {
