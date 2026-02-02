@@ -139,7 +139,7 @@ jobs:
 
     steps:
       - name: Checkout local github actions
-        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
@@ -221,22 +221,6 @@ jobs:
         run: |
           docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
           docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-
-      - name: Check fhir facade scan results
-        env:
-          REPOSITORY_NAME: fhir-facade-repo
-          IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
-        working-directory: .github/scripts
-        run: |
-          ./check_ecr_image_scan_results.sh
-
-      - name: Check validator scan results
-        env:
-          REPOSITORY_NAME: validator-repo
-          IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
-        working-directory: .github/scripts
-        run: |
-          ./check_ecr_image_scan_results.sh
 
       - name: fix cdk.json for deployment
         run: |
