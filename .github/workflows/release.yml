@@ -110,6 +110,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MARK_JIRA_RELEASED: false
+      CREATE_INT_RELEASE_NOTES: true
+      CREATE_INT_RC_RELEASE_NOTES: false
+      CREATE_PROD_RELEASE_NOTES: true
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: false
     secrets:
@@ -158,6 +162,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MARK_JIRA_RELEASED: false
+      CREATE_INT_RELEASE_NOTES: false
+      CREATE_INT_RC_RELEASE_NOTES: false
+      CREATE_PROD_RELEASE_NOTES: false
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: false
     secrets:
@@ -209,6 +217,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
+      MARK_JIRA_RELEASED: false
+      CREATE_INT_RELEASE_NOTES: false
+      CREATE_INT_RC_RELEASE_NOTES: false
+      CREATE_PROD_RELEASE_NOTES: false
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: false
     secrets:
@@ -256,6 +268,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MARK_JIRA_RELEASED: false
+      CREATE_INT_RELEASE_NOTES: false
+      CREATE_INT_RC_RELEASE_NOTES: false
+      CREATE_PROD_RELEASE_NOTES: false
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: false
     secrets:
@@ -302,6 +318,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MARK_JIRA_RELEASED: false
+      CREATE_INT_RELEASE_NOTES: true
+      CREATE_INT_RC_RELEASE_NOTES: true
+      CREATE_PROD_RELEASE_NOTES: false
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: false
     secrets:
@@ -350,6 +370,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MARK_JIRA_RELEASED: false
+      CREATE_INT_RELEASE_NOTES: false
+      CREATE_INT_RC_RELEASE_NOTES: false
+      CREATE_PROD_RELEASE_NOTES: false
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: false
     secrets:
@@ -393,6 +417,10 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
       SERVICE_CPU: 4096
       SERVICE_MEMORY: 8192
+      MARK_JIRA_RELEASED: true
+      CREATE_INT_RELEASE_NOTES: false
+      CREATE_INT_RC_RELEASE_NOTES: false
+      CREATE_PROD_RELEASE_NOTES: true
       MTLS_KEY: fhir-facade-mtls-1
       FORWARD_CSOC_LOGS: true
     secrets:

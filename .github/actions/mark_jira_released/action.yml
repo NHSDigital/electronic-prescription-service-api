@@ -1,0 +1,26 @@
+name: "Create confluence release notes"
+description: "Do release note actions in confluence and jira"
+inputs:
+  RELEASE_TAG:
+    required: false
+    description: "The tag we are marking as released in jira"
+  DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
+    required: true
+    description: "The role to assume to execute the release notes lambda"
+
+runs:
+  using: "composite"
+  steps:
+    - name: connect to dev account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: eu-west-2
+        role-to-assume: ${{ inputs.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+        role-session-name: fhir-facade-release-notes-run-lambda
+
+    - name: call markJiraReleased lambda
+      shell: bash
+      working-directory: .github/scripts
+      env:
+        RELEASE_TAG: ${{ inputs.RELEASE_TAG }}
+      run: ./call_mark_jira_released.sh

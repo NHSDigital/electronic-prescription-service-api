@@ -1,0 +1,89 @@
+name: "Create confluence release notes"
+description: "Do release note actions in confluence and jira"
+inputs:
+  TARGET_ENVIRONMENT:
+    required: true
+    description: "Target Environment"
+  RELEASE_TAG:
+    required: false
+    description: "The tag we are releasing - only used for create_rc_release_notes"
+  CONFLUENCE_PAGE_ID:
+    required: true
+    description: "The id of confluence page to update or create under"
+  CREATE_RC_RELEASE_NOTES:
+    required: true
+    description: "whether to create rc release notes page instead of normal release notes"
+    default: "false"
+  DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE:
+    required: true
+    description: "The role to assume to execute the release notes lambda"
+  DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+    required: true
+    description: "The dev cloud formation deploy role"
+  TARGET_CLOUD_FORMATION_CHECK_VERSION_ROLE:
+    required: true
+    description: "The target cloud formation deploy role"
+
+runs:
+  using: "composite"
+  steps:
+    - name: connect to target account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: eu-west-2
+        role-to-assume: ${{ inputs.TARGET_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+        role-session-name: fhir-facade-release-notes-target
+
+    - name: Get deployed tag on target
+      shell: bash
+      working-directory: .github/scripts
+      env:
+        TARGET_ENVIRONMENT: ${{ inputs.TARGET_ENVIRONMENT }}
+      run: ./get_target_deployed_tag.sh
+
+    - name: connect to dev account
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: eu-west-2
+        role-to-assume: ${{ inputs.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+        role-session-name: cpt-api-release-notes-dev
+
+    - name: get current dev tag
+      shell: bash
+      working-directory: .github/scripts
+      run: ./get_current_dev_tag.sh
+
+    - name: connect to dev account to run release notes lambda
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: eu-west-2
+        role-to-assume: ${{ inputs.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+        role-session-name: fhir-facade-release-notes-run-lambda
+        unset-current-credentials: true
+
+    - name: create int release notes
+      shell: bash
+      working-directory: .github/scripts
+      if: inputs.TARGET_ENVIRONMENT == 'int' && inputs.CREATE_RC_RELEASE_NOTES == 'false'
+      env:
+        ENV: INT
+        PAGE_ID: ${{ inputs.CONFLUENCE_PAGE_ID }}
+      run: ./create_env_release_notes.sh
+
+    - name: create int rc release notes
+      shell: bash
+      working-directory: .github/scripts
+      if: inputs.TARGET_ENVIRONMENT == 'int' && inputs.CREATE_RC_RELEASE_NOTES == 'true'
+      env:
+        RELEASE_TAG: ${{ inputs.RELEASE_TAG }}
+        PAGE_ID: ${{ inputs.CONFLUENCE_PAGE_ID }}
+      run: ./create_int_rc_release_notes.sh
+
+    - name: create prod release notes
+      shell: bash
+      working-directory: .github/scripts
+      if: inputs.TARGET_ENVIRONMENT == 'prod'
+      env:
+        ENV: PROD
+        PAGE_ID: ${{ inputs.CONFLUENCE_PAGE_ID }}
+      run: ./create_env_release_notes.sh
