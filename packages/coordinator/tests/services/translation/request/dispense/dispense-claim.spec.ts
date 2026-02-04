@@ -1,6 +1,8 @@
 import * as TestResources from "../../../../resources/test-resources"
 import {MomentFormatSpecification, MomentInput} from "moment"
 import {fhir, hl7V3} from "@models"
+import * as fs from "fs"
+import * as path from "path"
 import {toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
 import {
@@ -8,6 +10,7 @@ import {
   medicationDispenseEndorsementPresent
 } from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
+import {writeXmlStringPretty} from "../../../../../src/services/serialisation/xml"
 import requireActual = jest.requireActual
 
 const actualMoment = requireActual("moment")
@@ -217,6 +220,11 @@ describe("convertDispenseClaim for repeat ERD with repeat information at item an
     "../../tests/resources/test-data/fhir/dispensing/claim/Claim-Request-Repeat.json"
   )
   const result = convertDispenseClaim(claim)
+  const xml = writeXmlStringPretty(result)
+  const outputPath = path.join(__dirname,
+    "Claim-Request-Repeat.xml")
+  fs.writeFileSync(outputPath, xml, "utf8")
+
   const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
   const countSupplyHeaderPertInfo = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.length
   const supplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
