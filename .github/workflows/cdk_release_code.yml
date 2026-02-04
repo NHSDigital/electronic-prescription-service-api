@@ -344,15 +344,18 @@ jobs:
         run: |
           cd gh-pages
           NOW=$(date +'%Y-%m-%dT%H:%M:%S')
-          echo "tag,release_datetime" > _data/${{ inputs.APIGEE_ENVIRONMENT }}_latest.csv
-          echo "${{ inputs.VERSION_NUMBER }},${NOW}" >> _data/${{ inputs.APIGEE_ENVIRONMENT }}_latest.csv
-          echo "${{ inputs.VERSION_NUMBER }},${NOW}" >> _data/${{ inputs.APIGEE_ENVIRONMENT }}_deployments.csv
+          echo "tag,release_datetime" > "_data/${APIGEE_ENVIRONMENT}_latest.csv"
+          echo "${VERSION_NUMBER},${NOW}" >> "_data/${APIGEE_ENVIRONMENT}_latest.csv"
+          echo "${VERSION_NUMBER},${NOW}" >> "_data/${APIGEE_ENVIRONMENT}_deployments.csv"
           git config user.name github-actions
           git config user.email github-actions@github.com
-          git add _data/${{ inputs.APIGEE_ENVIRONMENT }}_latest.csv
-          git add _data/${{ inputs.APIGEE_ENVIRONMENT }}_deployments.csv
-          git commit -m 'update releases for ${{ inputs.APIGEE_ENVIRONMENT }}'
+          git add "_data/${APIGEE_ENVIRONMENT}_latest.csv"
+          git add "_data/${APIGEE_ENVIRONMENT}_deployments.csv"
+          git commit -m "update releases for ${APIGEE_ENVIRONMENT}"
           parallel --retries 10 --delay 3 ::: "git pull --rebase && git push"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
   
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
