@@ -1,4 +1,5 @@
 SHELL=/bin/bash -euo pipefail
+LATEST_VALIDATOR_VERSION=v1.0.311-alpha
 
 ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	TEST_TARGET=test-epsat
@@ -403,3 +404,13 @@ verify-signature:
 
 compile:
 	echo "Does nothing"
+
+docker-build: docker-build-fhir-facade docker-build-validator
+
+docker-build-fhir-facade:
+	docker build -t "fhir-facade" -f packages/coordinator/Dockerfile .
+docker-build-validator:
+	curl -L -o /tmp/Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/Dockerfile"
+	curl -L -o /tmp/manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/manifest.json"
+	curl -L -o /tmp/fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/fhir-validator.jar"
+	cd /tmp &&docker build -t "validator" -f Dockerfile .
