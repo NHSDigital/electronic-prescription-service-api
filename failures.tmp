@@ -1,0 +1,25 @@
+Failures:
+
+1) Verifying a pact between live+local_testing and live+process+send+local_testing - a request to process prescription: 64866A-A83008-4566BF - secondary-care homecare acute nominated-pharmacy consecutive-dosage-instructions 1 200-OK send message to Spine
+    1.1) has a matching body
+           $.issue[0].severity -> Expected 'error' (String) to be equal to 'information' (String)
+           $.issue[0].code -> Expected 'business-rule' (String) to be equal to 'informational' (String)
+
+    1.2) has status code 200
+           expected 200 but was 400
+2) Verifying a pact between live+local_testing and live+process+send+local_testing - a request to process prescription: 9FCEA0-510420-4DE7BO - secondary-care homecare acute nominated-pharmacy consecutive-and-concurrent-dosage-instructions 1 200-OK send message to Spine
+    2.1) has a matching body
+           $.issue[0].severity -> Expected 'error' (String) to be equal to 'information' (String)
+           $.issue[0].code -> Expected 'business-rule' (String) to be equal to 'informational' (String)
+
+    2.2) has status code 200
+           expected 200 but was 400
+3) Verifying a pact between live+local_testing and live+process+send+local_testing - a request to process prescription: A7DFEB-395879-4E6C9S - secondary-care homecare acute nominated-pharmacy concurrent-dosage-instructions 1 200-OK send message to Spine
+    3.1) has a matching body
+           $.issue[0].code -> Expected 'business-rule' (String) to be equal to 'informational' (String)
+           $.issue[0].severity -> Expected 'error' (String) to be equal to 'information' (String)
+
+    3.2) has status code 200
+           expected 200 but was 400
+
+There were 3 pact failures
