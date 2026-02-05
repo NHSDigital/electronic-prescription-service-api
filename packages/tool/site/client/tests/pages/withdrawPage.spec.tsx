@@ -111,9 +111,9 @@ describe("Withdraw Page", () => {
 
   describe("When the user submits the withdraw form successfully with two dispense notifications", () => {
     let container: HTMLElement
-    let user: ReturnType<typeof userEvent.setup>
+    let userA: ReturnType<typeof userEvent.setup>
     beforeEach(async () => {
-      user = userEvent.setup()
+      userA = userEvent.setup()
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
       mock.onAny(withdrawUrl).reply(200, {
         success: true,
@@ -125,7 +125,7 @@ describe("Withdraw Page", () => {
 
       container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context).container
       await screen.findByText(`Withdrawing Dispense: ${dispenseNotificationId}`)
-      await user.click(screen.getByText("Withdraw"))
+      await userA.click(screen.getByText("Withdraw"))
       await screen.findByText("Withdraw Result")
     })
 
@@ -148,9 +148,9 @@ describe("Withdraw Page", () => {
 
   describe("When the user submits the withdraw form successfully with one dispense notifications", () => {
     let container: HTMLElement
-    let user: ReturnType<typeof userEvent.setup>
+    let userB: ReturnType<typeof userEvent.setup> // Sonar is angry about duplicated code...
     beforeEach(async () => {
-      user = userEvent.setup()
+      userB = userEvent.setup()
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
       mock.onAny(withdrawUrl).reply(200, {
         success: true,
@@ -162,7 +162,7 @@ describe("Withdraw Page", () => {
 
       container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context).container
       await screen.findByText(`Withdrawing Dispense: ${dispenseNotificationId}`)
-      await user.click(screen.getByText("Withdraw"))
+      await userB.click(screen.getByText("Withdraw"))
       await screen.findByText("Withdraw Result")
     })
 
