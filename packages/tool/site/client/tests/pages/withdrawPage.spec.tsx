@@ -35,11 +35,11 @@ describe("Withdraw Page", () => {
           setTimeout(function () {
             resolve([200])
           }
-          , 1000)
+            , 1000)
         })
       })
 
-      renderWithContext(<WithdrawPage prescriptionId={prescriptionId}/>, context)
+      renderWithContext(<WithdrawPage prescriptionId={prescriptionId} />, context)
     })
 
     it("should make a request to get the dispense notifications", () => {
@@ -61,7 +61,7 @@ describe("Withdraw Page", () => {
     beforeEach(async () => {
       mock.onAny(dispenseNotificationUrl).reply(200, [])
 
-      renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+      renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
       await waitFor(() => screen.getByText("Withdraw Unavailable"))
     })
 
@@ -75,11 +75,11 @@ describe("Withdraw Page", () => {
   })
 
   describe("When there are two dispense notifications", () => {
-    let container:HTMLElement
+    let container: HTMLElement
     beforeEach(async () => {
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
 
-      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context).container
+      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context).container
       await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
     })
 
@@ -100,7 +100,7 @@ describe("Withdraw Page", () => {
     beforeEach(async () => {
       mock.onAny(dispenseNotificationUrl).reply(500, {})
       await React.act(async () => {
-        renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+        renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
       })
     })
 
@@ -110,8 +110,10 @@ describe("Withdraw Page", () => {
   })
 
   describe("When the user submits the withdraw form successfully with two dispense notifications", () => {
-    let container:HTMLElement
+    let container: HTMLElement
+    let user: ReturnType<typeof userEvent.setup>
     beforeEach(async () => {
+      user = userEvent.setup()
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification, dispenseNotification])
       mock.onAny(withdrawUrl).reply(200, {
         success: true,
@@ -121,10 +123,10 @@ describe("Withdraw Page", () => {
         response_xml: "XML Response"
       })
 
-      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context).container
-      await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
-      userEvent.click(screen.getByText("Withdraw"))
-      await waitFor(() => screen.getByText("Withdraw Result"))
+      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context).container
+      await screen.findByText(`Withdrawing Dispense: ${dispenseNotificationId}`)
+      await user.click(screen.getByText("Withdraw"))
+      await screen.findByText("Withdraw Result")
     })
 
     it("should display the first dispense notifications", () => {
@@ -145,8 +147,10 @@ describe("Withdraw Page", () => {
   })
 
   describe("When the user submits the withdraw form successfully with one dispense notifications", () => {
-    let container:HTMLElement
+    let container: HTMLElement
+    let user: ReturnType<typeof userEvent.setup>
     beforeEach(async () => {
+      user = userEvent.setup()
       mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
       mock.onAny(withdrawUrl).reply(200, {
         success: true,
@@ -156,10 +160,10 @@ describe("Withdraw Page", () => {
         response_xml: "XML Response"
       })
 
-      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId}/></MemoryRouter>, context).container
-      await waitFor(() => screen.getByText(`Withdrawing Dispense: ${dispenseNotificationId}`))
-      userEvent.click(screen.getByText("Withdraw"))
-      await waitFor(() => screen.getByText("Withdraw Result"))
+      container = renderWithContext(<MemoryRouter><WithdrawPage prescriptionId={prescriptionId} /></MemoryRouter>, context).container
+      await screen.findByText(`Withdrawing Dispense: ${dispenseNotificationId}`)
+      await user.click(screen.getByText("Withdraw"))
+      await screen.findByText("Withdraw Result")
     })
 
     it("should not display the dispense notification table", () => {
