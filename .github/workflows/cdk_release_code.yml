@@ -339,6 +339,13 @@ jobs:
             ./.build/packages/specification/dist/fhir-dispensing.resolved.json
             ./.build/packages/specification/dist/fhir-prescribing.resolved.json
 
+      - name: Checkout gh-pages
+        if: ${{ !startsWith(inputs.STACK_NAME, 'cpt-pr-') }}
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+        with:
+          ref: gh-pages
+          path: gh-pages
+  
       - name: Update release tag in github pages
         if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}
         run: |
