@@ -339,6 +339,24 @@ jobs:
             ./.build/packages/specification/dist/fhir-dispensing.resolved.json
             ./.build/packages/specification/dist/fhir-prescribing.resolved.json
 
+      - name: Update release tag in github pages
+        if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}
+        run: |
+          cd gh-pages
+          NOW=$(date +'%Y-%m-%dT%H:%M:%S')
+          echo "tag,release_datetime" > "_data/${APIGEE_ENVIRONMENT}_latest.csv"
+          echo "${VERSION_NUMBER},${NOW}" >> "_data/${APIGEE_ENVIRONMENT}_latest.csv"
+          echo "${VERSION_NUMBER},${NOW}" >> "_data/${APIGEE_ENVIRONMENT}_deployments.csv"
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add "_data/${APIGEE_ENVIRONMENT}_latest.csv"
+          git add "_data/${APIGEE_ENVIRONMENT}_deployments.csv"
+          git commit -m "update releases for ${APIGEE_ENVIRONMENT}"
+          parallel --retries 10 --delay 3 ::: "git pull --rebase && git push"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
+  
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Prescribing Regression Tests
