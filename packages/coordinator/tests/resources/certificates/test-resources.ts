@@ -14,10 +14,13 @@ const readFile = (filename: string): string => {
   return fs.readFileSync(filePath, "utf-8")
 }
 
-const getBERFromPEM = (contents: string, delimiter: RegExp): ArrayBufferLike => {
+const toArrayBuffer = (data: Uint8Array): ArrayBuffer =>
+  data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength) as ArrayBuffer
+
+const getBERFromPEM = (contents: string, delimiter: RegExp): ArrayBuffer => {
   const b64 = contents.replace(delimiter, "")
   const der = Buffer.from(b64, "base64")
-  return new Uint8Array(der).buffer
+  return toArrayBuffer(new Uint8Array(der))
 }
 
 const getBufferFromPem = (contents: string): Buffer => {
@@ -33,7 +36,7 @@ const getBufferFromPem = (contents: string): Buffer => {
 
 const decodeCertificate = (contents: string) => {
   const der = getBufferFromPem(contents)
-  return new X509Certificate(der)
+  return new X509Certificate(toArrayBuffer(new Uint8Array(der)))
 }
 
 const decodeValidCertificate = (contents: string) => {
@@ -66,7 +69,7 @@ const revokedCertificates: MockCertificates = {
   )
 }
 
-type StaticMockCerts = { caCert: string, revokedCaCert: string, caArl: ArrayBufferLike }
+type StaticMockCerts = {caCert: string, revokedCaCert: string, caArl: ArrayBuffer}
 
 // See packages/coordinator/tests/resources/certificates/static/README.md
 const staticCaCerts: StaticMockCerts = {
@@ -76,7 +79,7 @@ const staticCaCerts: StaticMockCerts = {
 }
 
 const encodedRevocationList = readFile("crl/ca.crl")
-const berRevocationList: ArrayBufferLike = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
+const berRevocationList: ArrayBuffer = getBERFromPEM(encodedRevocationList, REGEX_X509_CRL)
 const revocationList: X509Crl = decodeCrl(encodedRevocationList)
 
 export type {MockCertificates}
