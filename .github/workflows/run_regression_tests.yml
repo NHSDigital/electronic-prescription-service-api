@@ -97,7 +97,17 @@ jobs:
             # This will normally be the same as REGRESSION_TEST_REPO_TAG
             REGRESSION_TEST_WORKFLOW_TAG=aea-0000-patch-fhir-validator
 
-            curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/tags/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
+            echo "Running regression tests for $TARGET_ENVIRONMENT environment with version number $VERSION_NUMBER, and using regression test repo tag $REGRESSION_TEST_REPO_TAG and regression test workflow tag $REGRESSION_TEST_WORKFLOW_TAG"
+
+            # If this is a release (which starts with a v), then we need to use /refs/tags/. Otherwise we use /refs/heads/
+            # We can look at the version number, which will start with PR- for pull requests.
+            if [[ "$VERSION_NUMBER" == PR-* ]]; then
+              subpath="heads"
+            else
+              subpath="tags"
+            fi
+
+            curl https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/refs/${subpath}/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py -o run_regression_tests.py
             poetry install
             echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
             poetry run python -u run_regression_tests.py \
