@@ -8,13 +8,43 @@ env:
   BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
 
 jobs:
+  dependabot-auto-approve-and-merge:
+    needs: quality_checks
+    uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@693bca96690773dea12c3985c49b85923d2abe40
+    secrets:
+      AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
+      AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
+
+  get_asdf_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+
   quality_checks:
-    uses: NHSDigital/eps-workflow-quality-checks/.github/workflows/quality-checks.yml@v4.0.5
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks.yml@e31e25273fb87450be4ef763ddbed4f531c45f8e
+    needs: [get_asdf_version]
+    with:
+      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      run_docker_scan: true
+      docker_images: fhir-facade,validator
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   pr_title_format_check:
-    uses: ./.github/workflows/pr_title_check.yml
+    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@e31e25273fb87450be4ef763ddbed4f531c45f8e
 
   get_issue_number:
     runs-on: ubuntu-22.04
@@ -24,7 +54,7 @@ jobs:
       version: ${{ steps.get_issue_number.outputs.version_number }}
 
     steps:
-      - uses: actions/github-script@v7
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
         name: get issue number
         id: get_issue_number
         with:
@@ -52,7 +82,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
 
@@ -100,6 +130,8 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
@@ -142,6 +174,8 @@ jobs:
       DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
       SERVICE_CPU: 2048
       SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
       CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}

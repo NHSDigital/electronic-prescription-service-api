@@ -22,26 +22,45 @@ on:
       SIGNING_CERT:
         required: true
 jobs:
+  get_asdf_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+
   run_pact_tests:
     runs-on: ubuntu-22.04
+    needs: [get_asdf_version]
     permissions:
       id-token: write
       contents: read
       packages: read
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
 
       # using git commit sha for version of action to ensure we have stable version
       - name: Install asdf
-        uses: asdf-vm/actions/setup@1902764435ca0dd2f3388eea723a4f92a4eb8302
+        uses: asdf-vm/actions/setup@b7bcd026f18772e44fe1026d729e1611cc435d47
         with:
-          asdf_branch: v0.11.3
-  
+          asdf_version: ${{ needs.get_asdf_version.outputs.asdf_version }}
+
       - name: Cache asdf
-        uses: actions/cache@v4
+        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
         with:
           path: |
             ~/.asdf
@@ -50,12 +69,12 @@ jobs:
             ${{ runner.os }}-asdf-
 
       - name: Install asdf dependencies in .tool-versions
-        uses: asdf-vm/actions/install@1902764435ca0dd2f3388eea723a4f92a4eb8302
+        uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47
         with:
           asdf_branch: v0.11.3
         env:
           PYTHON_CONFIGURE_OPTS: --enable-shared
-      
+
       - name: Run make install
         run: |
           make install
@@ -95,9 +114,8 @@ jobs:
           API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
           API_MODE: live
           SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
-          SIGNING_CERT:  ${{ secrets.SIGNING_CERT }}
+          SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
           API_DEPLOYMENT_METHOD: proxygen
-
 
       - name: Verify pacts
         shell: bash
@@ -127,7 +145,7 @@ jobs:
           API_DEPLOYMENT_METHOD: proxygen
           API_MODE: live
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
         name: Upload pact_tests
         if: success() || failure()
         with:
@@ -135,4 +153,3 @@ jobs:
           path: |
             packages/e2e-tests/prescriptions*.txt
             packages/e2e-tests/pact
-      

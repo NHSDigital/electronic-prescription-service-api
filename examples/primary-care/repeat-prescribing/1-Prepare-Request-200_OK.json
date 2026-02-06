@@ -18,7 +18,7 @@
         },
         "destination": [
           {
-            "endpoint": "https://sandbox.api.service.nhs.uk/fhir-prescribing/$post-message",
+            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/FHIR/R4/$prepare",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -76,10 +76,6 @@
           {
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
-              {
-                "url": "numberOfPrescriptionsIssued",
-                "valueUnsignedInt": 2
-              },
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2023-04-07"
@@ -238,10 +234,6 @@
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
               {
-                "url": "numberOfPrescriptionsIssued",
-                "valueUnsignedInt": 2
-              },
-              {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2023-04-07"
               }
@@ -399,10 +391,6 @@
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
               {
-                "url": "numberOfPrescriptionsIssued",
-                "valueUnsignedInt": 2
-              },
-              {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2023-04-07"
               }
@@ -559,10 +547,6 @@
           {
             "url": "https://fhir.hl7.org.uk/StructureDefinition/Extension-UKCore-MedicationRepeatInformation",
             "extension": [
-              {
-                "url": "numberOfPrescriptionsIssued",
-                "valueUnsignedInt": 2
-              },
               {
                 "url": "authorisationExpiryDate",
                 "valueDateTime": "2023-04-07"

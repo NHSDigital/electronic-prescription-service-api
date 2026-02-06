@@ -1,17 +1,16 @@
 # syntax=docker/dockerfile:1
 
 # --- Dependencies ---
-FROM node:23.9.0-alpine AS base
+FROM node:24.13.0-alpine AS base
 WORKDIR /app
 RUN apk update; \
-    apk upgrade
+    apk upgrade; \
+    npm install -g npm@latest
 
 
 # --- Build Client ---
-FROM node:23.9.0-alpine AS build-client
+FROM base AS build-client
 WORKDIR /build
-RUN apk update; \
-    apk upgrade
 COPY package*.json ./
 COPY packages/tool/site/client ./packages/tool/site/client
 RUN npm ci --ignore-scripts --workspace packages/tool/site/client --include-workspace-root
@@ -20,10 +19,8 @@ RUN npm run build --workspace packages/tool/site/client
 RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +
 
 # --- Build Server ---
-FROM node:23.9.0-alpine AS build-server
+FROM base AS build-server
 WORKDIR /build
-RUN apk update; \
-    apk upgrade
 COPY package*.json ./
 COPY packages/tool/site/server ./packages/tool/site/server
 RUN npm ci --ignore-scripts --workspace packages/tool/site/server --include-workspace-root

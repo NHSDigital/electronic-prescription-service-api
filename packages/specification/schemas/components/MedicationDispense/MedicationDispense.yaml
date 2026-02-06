@@ -18,7 +18,9 @@ properties:
     type: array
     description: FHIR extension array.
     items:
-      $ref: "../_extensions/EPSTaskBusinessStatus.yaml"
+      anyOf:
+        - $ref: "../_extensions/EPSTaskBusinessStatus.yaml"
+        - $ref: "../_extensions/DMPrescriptionNonDispensingReason.yaml"
   identifier:
     type: array
     description: Unique identifier for this record of dispensing against the line item.
@@ -37,17 +39,8 @@ properties:
     type: string
     description: |
       The status of the individual medication item.
-      This will normally indicate whether the medication has been picked up or not.
-    enum:
-      - preparation
-      - in-progress
-      - cancelled
-      - on-hold
-      - completed
-      - entered-in-error
-      - stopped
-      - declined
-      - unknown
+      We do not use this field but it is required by the FHIR standard and so should be hard coded to 'in-progress'.
+    enum: [in-progress]
   statusReasonCodeableConcept:
     type: object
     description: Where a medication item is not dispensed, the reason it was not dispensed.

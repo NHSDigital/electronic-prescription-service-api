@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Renders correctly 1`] = `
 "<form action="#">
@@ -7,7 +7,7 @@ exports[`Renders correctly 1`] = `
         <div class="nhsuk-form-group"><input class="nhsuk-input nhsuk-input--width-500" type="text" name="numberOfCopies" id="numberOfCopies" value="1"></div>
       </div>
     </label></h1>
-  <div class="sc-bXdtCk fhMUre"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
+  <div class="sc-beySbL biysak"><button class="nhsuk-button" aria-disabled="false" type="button">Download this Prescription</button></div>
   <dl class="nhsuk-summary-list">
     <div class="nhsuk-summary-list__row">
       <dt class="nhsuk-summary-list__key">ID</dt>

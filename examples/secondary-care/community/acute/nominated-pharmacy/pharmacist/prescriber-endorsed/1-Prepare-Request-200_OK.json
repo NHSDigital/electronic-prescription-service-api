@@ -70,7 +70,7 @@
                 {
                   "system": "https://fhir.nhs.uk/CodeSystem/medicationrequest-endorsement",
                   "code": "FS",
-                  "display": "Sexual Health"
+                  "display": "Free Supply for Specified Use"
                 }
               ]
             }

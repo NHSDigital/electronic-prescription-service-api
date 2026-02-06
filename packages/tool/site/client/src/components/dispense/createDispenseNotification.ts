@@ -1,6 +1,5 @@
 import * as fhir from "fhir/r4"
 import {DispenseFormValues, LineItemFormValues, PrescriptionFormValues} from "./dispenseForm"
-import * as uuid from "uuid"
 import {TaskBusinessStatusExtension, URL_TASK_BUSINESS_STATUS} from "../../fhir/customExtensions"
 import {
   LineItemStatus,
@@ -58,7 +57,7 @@ export function createDispenseNotification(
 
   return {
     resourceType: "Bundle",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     identifier: createIdentifier(),
     type: "message",
     entry: [
@@ -73,7 +72,7 @@ export function createDispenseNotification(
 function createPatient(patient: fhir.Patient) {
   const patientCopy = {...patient}
 
-  patientCopy.id = uuid.v4()
+  patientCopy.id = crypto.randomUUID()
 
   //TODO - work out why we're getting validation errors
   patientCopy.identifier[0] = {
@@ -108,11 +107,11 @@ function createMedicationDispense(
 
   return {
     resourceType: "MedicationDispense",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     extension: extensions,
     identifier: [{
       system: "https://fhir.nhs.uk/Id/prescription-dispense-item-number",
-      value: uuid.v4()
+      value: crypto.randomUUID()
     }],
     contained: [practitionerRole, medicationRequest],
     //TODO - map from line item status (nice to have)
@@ -286,7 +285,7 @@ function createMessageHeader(
 ): fhir.MessageHeader {
   const header: fhir.MessageHeader = {
     resourceType: "MessageHeader",
-    id: uuid.v4(),
+    id: crypto.randomUUID(),
     destination: prescriptionOrderMessageHeader.destination,
     sender: {
       ...prescriptionOrderMessageHeader.sender,

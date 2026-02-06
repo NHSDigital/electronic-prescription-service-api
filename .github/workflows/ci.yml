@@ -1,0 +1,270 @@
+name: merge to main workflow
+
+on:
+  push:
+    branches: [master]
+
+env:
+  BRANCH_NAME: ${{ github.event.ref.BRANCH_NAME }}
+
+jobs:
+  get_asdf_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      asdf_version: ${{ steps.asdf-version.outputs.version }}
+      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+
+      - name: Get asdf version
+        id: asdf-version
+        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
+      - name: Load config value
+        id: load-config
+        run: |
+          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+  quality_checks:
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks.yml@e31e25273fb87450be4ef763ddbed4f531c45f8e
+    needs: [get_asdf_version]
+    with:
+      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      run_docker_scan: true
+      docker_images: fhir-facade,validator
+    secrets:
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+  get_version:
+    runs-on: ubuntu-22.04
+    outputs:
+      version: ${{ steps.set_version.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - name: Set version
+        id: set_version
+        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
+
+  get_commit_id:
+    runs-on: ubuntu-22.04
+    outputs:
+      commit_id: ${{ steps.commit_id.outputs.commit_id }}
+      short_commit_id: ${{ steps.short_commit_id.outputs.short_commit_id }}
+    steps:
+      - name: Get Commit ID
+        id: commit_id
+        run: echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+      - name: Get Short Commit ID
+        id: short_commit_id
+        run: echo "short_commit_id=$(echo ${{ github.sha }} | cut -c1-7)" >>   "$GITHUB_OUTPUT"
+
+  tag_release:
+    needs: [quality_checks, get_commit_id, get_asdf_version]
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release.yml@e31e25273fb87450be4ef763ddbed4f531c45f8e
+    with:
+      dry_run: true
+      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      branch_name: master
+      tag_format: ${{ needs.get_asdf_version.outputs.tag_format }}
+      main_branch: master
+    secrets: inherit
+
+  package_code:
+    needs: [get_version, get_commit_id, tag_release]
+    uses: ./.github/workflows/cdk_package_code.yml
+    with:
+      VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
+      COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
+
+  release_dev:
+    needs: [tag_release, package_code, get_commit_id]
+    uses: ./.github/workflows/cdk_release_code.yml
+    with:
+      STACK_NAME: prescribe-dispense
+      AWS_ENVIRONMENT: dev
+      APIGEE_ENVIRONMENT: internal-dev
+      ENABLE_MUTUAL_TLS: true
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
+      LOG_RETENTION_DAYS: 30
+      DEPLOY_APIGEE: true
+      # CREATE_INT_RELEASE_NOTES: true
+      # CREATE_PROD_RELEASE_NOTES: true
+      TARGET_SPINE_SERVER: msg.veit07.devspineservices.nhs.uk
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
+      RUN_REGRESSION_TEST: true
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
+      SANDBOX_MODE_ENABLED: 0
+      DESIRED_FHIR_FACADE_COUNT: 1
+      DESIRED_CLAIMS_COUNT: 1
+      DESIRED_PEAK_CLAIMS_COUNT: 1
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
+      SERVICE_CPU: 2048
+      SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+      DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
+      DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
+
+  release_dev_sandbox:
+    needs: [tag_release, package_code, get_commit_id]
+    uses: ./.github/workflows/cdk_release_code.yml
+    with:
+      STACK_NAME: prescribe-dispense-sandbox
+      AWS_ENVIRONMENT: dev
+      APIGEE_ENVIRONMENT: internal-dev-sandbox
+      ENABLE_MUTUAL_TLS: true
+      TRUSTSTORE_FILE: fhirfacade-sandbox-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
+      LOG_RETENTION_DAYS: 30
+      DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: unused
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
+      RUN_REGRESSION_TEST: false
+      TO_ASID: unused
+      TO_PARTY_KEY: unused
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
+      SANDBOX_MODE_ENABLED: 1
+      DESIRED_FHIR_FACADE_COUNT: 1
+      DESIRED_CLAIMS_COUNT: 1
+      DESIRED_PEAK_CLAIMS_COUNT: 1
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
+      SERVICE_CPU: 2048
+      SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.DEV_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.DEV_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: unused
+      DEFAULT_PTL_PARTY_KEY: unused
+
+  release_ref:
+    needs:
+      [
+        tag_release,
+        release_dev,
+        release_dev_sandbox,
+        package_code,
+        get_commit_id,
+      ]
+    uses: ./.github/workflows/cdk_release_code.yml
+    with:
+      STACK_NAME: prescribe-dispense
+      AWS_ENVIRONMENT: ref
+      APIGEE_ENVIRONMENT: ref
+      ENABLE_MUTUAL_TLS: true
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
+      LOG_RETENTION_DAYS: 30
+      DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: prescriptions.refspineservices.nhs.uk
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
+      RUN_REGRESSION_TEST: false
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b
+      SANDBOX_MODE_ENABLED: 0
+      DESIRED_FHIR_FACADE_COUNT: 2
+      DESIRED_CLAIMS_COUNT: 2
+      DESIRED_PEAK_CLAIMS_COUNT: 2
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 2
+      SERVICE_CPU: 4096
+      SERVICE_MEMORY: 8192
+      MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
+
+  release_qa:
+    needs:
+      [
+        tag_release,
+        release_dev,
+        release_dev_sandbox,
+        package_code,
+        get_commit_id,
+      ]
+    uses: ./.github/workflows/cdk_release_code.yml
+    with:
+      STACK_NAME: prescribe-dispense
+      AWS_ENVIRONMENT: qa
+      APIGEE_ENVIRONMENT: internal-qa
+      ENABLE_MUTUAL_TLS: true
+      TRUSTSTORE_FILE: fhirfacade-truststore.pem
+      VERSION_NUMBER: ${{needs.tag_release.outputs.version_tag}}
+      COMMIT_ID: ${{needs.get_commit_id.outputs.commit_id}}
+      LOG_LEVEL: debug
+      VALIDATOR_LOG_LEVEL: INFO
+      LOG_RETENTION_DAYS: 30
+      DEPLOY_APIGEE: true
+      TARGET_SPINE_SERVER: msg.intspineservices.nhs.uk
+      DOCKER_IMAGE_TAG: ${{needs.tag_release.outputs.version_tag}}
+      RUN_REGRESSION_TEST: true
+      TO_ASID: 567456789789
+      TO_PARTY_KEY: YES-0000806
+      IS_PULL_REQUEST: false
+      ENABLE_DEFAULT_ASID_PARTY_KEY: true
+      SHA1_ENABLED_APPLICATION_IDS: 5ad18b73-df45-4d41-9a1e-764d5a2b8671,8082cea1-1016-4ebf-9d80-5057c8275074
+      SANDBOX_MODE_ENABLED: 0
+      DESIRED_FHIR_FACADE_COUNT: 1
+      DESIRED_CLAIMS_COUNT: 1
+      DESIRED_PEAK_CLAIMS_COUNT: 1
+      DESIRED_OFF_PEAK_CLAIMS_COUNT: 1
+      SERVICE_CPU: 2048
+      SERVICE_MEMORY: 4096
+      MTLS_KEY: fhir-facade-mtls-1
+      FORWARD_CSOC_LOGS: false
+    secrets:
+      CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
+      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
+      PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
+      REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
+      API_CLIENT_ID: ${{ secrets.QA_API_CLIENT_ID }}
+      API_CLIENT_SECRET: ${{ secrets.QA_API_CLIENT_SECRET }}
+      SIGNING_PRIVATE_KEY: ${{ secrets.QA_SIGNING_PRIVATE_KEY }}
+      SIGNING_CERT: ${{ secrets.QA_SIGNING_CERT }}
+      DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
+      DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}

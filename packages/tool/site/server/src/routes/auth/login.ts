@@ -2,7 +2,6 @@ import Hapi, {RouteDefMethods} from "@hapi/hapi"
 import {clearSession, setSessionValue} from "../../services/session"
 import {createOAuthState, getRegisteredCallbackUrl} from "../helpers"
 import * as jsonwebtoken from "jsonwebtoken"
-import * as uuid from "uuid"
 import {URLSearchParams} from "url"
 import axios from "axios"
 import {CONFIG} from "../../config"
@@ -27,7 +26,7 @@ function getRedirectUri(authorizeUrl: string, clientId: string, callbackUri: str
     state: createOAuthState()
   }
   if (scopes) {
-    queryParams.scope = scopes.join("%20")
+    queryParams.scope = scopes.join(" ")
   }
 
   return `${authorizeUrl}?${new URLSearchParams(queryParams)}`
@@ -63,7 +62,7 @@ export default {
         audience: audience,
         keyid: keyId,
         expiresIn: 300,
-        jwtid: uuid.v4()
+        jwtid: crypto.randomUUID()
       })
       const url = `${CONFIG.apigeeEgressHost}/oauth2/token`
       const urlParams = new URLSearchParams([
@@ -98,7 +97,7 @@ export default {
     if (loginInfo.authLevel === "user-separate") {
       // eslint-disable-next-line max-len
       const authorizationUri = "https://am.nhsint.auth-ptl.cis2.spineservices.nhs.uk:443/openam/oauth2/realms/root/realms/NHSIdentity/realms/Healthcare/authorize"
-      const scopes = ["openid", "profile"]
+      const scopes = ["openid", "profile", "nationalrbacaccess"]
       const redirectUri = getRedirectUri(authorizationUri, CONFIG.cis2AppClientId, callbackUri, scopes)
 
       request.logger.info(`Redirecting browser to: ${redirectUri}`)

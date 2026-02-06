@@ -4,6 +4,8 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 3,15 * * *"
+  push:
+    branches: [master]
 
 jobs:
   delete-old-cloudformation-stacks:
@@ -14,14 +16,14 @@ jobs:
 
     steps:
       - name: Checkout local github scripts
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
           sparse-checkout: |
             .github/scripts
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@v5
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
@@ -42,13 +44,13 @@ jobs:
 
     steps:
       - name: Checkout local code
-        uses: actions/checkout@v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
-  
+
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
+        uses: aws-actions/configure-aws-credentials@00943011d9042930efac3dcd3a170e4273319bc8
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.PROXYGEN_PTL_ROLE }}
@@ -58,3 +60,5 @@ jobs:
         shell: bash
         working-directory: .github/scripts
         run: ./delete_proxygen_deployments.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

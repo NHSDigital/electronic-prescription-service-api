@@ -43,6 +43,6 @@ properties:
       description: FHIR wrapper object to contain the medication item.
       properties:
         item: 
-          type: object
+          type: string
           description: A medication item, represented using its dm+d name and description.
           example: "Bendroflumethiazide 2.5mg tablets (3/6)"

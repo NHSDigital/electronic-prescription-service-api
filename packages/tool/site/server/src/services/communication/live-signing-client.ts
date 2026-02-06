@@ -1,5 +1,4 @@
-import * as uuid from "uuid"
-import axios from "axios"
+import {AxiosInstance} from "axios"
 import jwt from "jsonwebtoken"
 import {
   PrepareResponse,
@@ -13,29 +12,35 @@ import {getSessionValue} from "../session"
 import {isDev} from "../environment"
 import {getPrNumber} from "../../routes/helpers"
 import {Ping} from "../../routes/health/get-status"
+import LoggingAxios from "./logging-axios"
+// add an extra line to keep gitsecrets happy
 
 export class LiveSigningClient implements SigningClient {
-  private request: Hapi.Request
-  private accessToken: string
+  private readonly request: Hapi.Request
+  private readonly accessToken: string
+  private readonly axiosInstance: AxiosInstance
 
   constructor(request: Hapi.Request, accessToken: string) {
     this.request = request
     this.accessToken = accessToken
+    this.axiosInstance = new LoggingAxios(request.logger).getInstance()
   }
 
-  // eslint-disable-next-line max-len
-  async uploadSignatureRequest(prepareResponses: Array<PrepareResponse>, signingOptions: string): Promise<SignatureUploadResponse> {
+  async uploadSignatureRequest(
+    prepareResponses: Array<PrepareResponse>,
+    correlationId: string,
+    userId: string
+  ): Promise<SignatureUploadResponse> {
     const baseUrl = this.getBaseUrl()
     const stateJson = {prNumber: getPrNumber(CONFIG.basePath)}
     const stateString = JSON.stringify(stateJson)
     const state = Buffer.from(stateString, "utf-8").toString("base64")
     const url = `${baseUrl}/signaturerequest?state=${state}`
     const headers = {
-      "nhsd-identity-authentication-method": `[${signingOptions}]`,
       "Authorization": `Bearer ${this.accessToken}`,
       "Content-Type": "text/plain",
-      "x-request-id": uuid.v4(),
-      "x-correlation-id": uuid.v4()
+      "x-request-id": crypto.randomUUID(),
+      "x-correlation-id": correlationId
     }
 
     const payload = {
@@ -52,12 +57,12 @@ export class LiveSigningClient implements SigningClient {
       algorithm: "RS512",
       keyid: CONFIG.apigeeAppJWTKeyId,
       issuer: CONFIG.apigeeAppClientId,
-      subject: CONFIG.subject,
+      subject: userId,
       audience: this.getBaseUrl(true),
       expiresIn: 600
     })
 
-    return (await axios.post<SignatureUploadResponse>(url, body, {headers: headers})).data
+    return (await this.axiosInstance.post<SignatureUploadResponse>(url, body, {headers: headers})).data
   }
 
   async makeSignatureDownloadRequest(token: string): Promise<SignatureDownloadResponse> {
@@ -65,10 +70,10 @@ export class LiveSigningClient implements SigningClient {
     const url = `${baseUrl}/signatureresponse/${token}`
     const headers = {
       "Authorization": `Bearer ${this.accessToken}`,
-      "x-request-id": uuid.v4(),
-      "x-correlation-id": uuid.v4()
+      "x-request-id": crypto.randomUUID(),
+      "x-correlation-id": crypto.randomUUID()
     }
-    return (await axios.get<SignatureDownloadResponse>(url, {
+    return (await this.axiosInstance.get<SignatureDownloadResponse>(url, {
       headers: headers
     })).data
   }
@@ -76,7 +81,7 @@ export class LiveSigningClient implements SigningClient {
   async makePingRequest(): Promise<Ping> {
     const baseUrl = this.getBaseUrl()
     const url = `${baseUrl}/_ping`
-    return (await axios.get<Ping>(url)).data
+    return (await this.axiosInstance.get<Ping>(url)).data
   }
 
   private static getPrivateKey(private_key_secret: string) {

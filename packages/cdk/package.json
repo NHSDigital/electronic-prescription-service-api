@@ -6,16 +6,15 @@
       "watch": "tsc -w",
       "test": "jest",
       "cdk": "cdk",
-      "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
-      "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../.."
+      "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs ."
     },
     "dependencies": {
     },
     "devDependencies": {
-      "aws-cdk": "^2.1021.0",
-      "aws-cdk-lib": "^2.204.0",
-      "cdk-nag": "^2.36.39",
-      "constructs": "^10.4.2",
+      "aws-cdk": "^2.1104.0",
+      "aws-cdk-lib": "^2.236.0",
+      "cdk-nag": "^2.37.55",
+      "constructs": "^10.4.5",
       "source-map-support": "^0.5.21"
     }
   }

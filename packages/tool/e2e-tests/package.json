@@ -5,8 +5,7 @@
     "scripts": {
         "test-live": "jest live --ci --reporters=default --reporters=jest-junit",
         "test-sandbox": "jest sandbox --ci --reporters=default --reporters=jest-junit",
-        "lint": "eslint  --max-warnings 0 --fix --config ../../../eslint.config.mjs .",
-        "check-licenses": "license-checker --failOn GPL --failOn LGPL --start ../../.."
+        "lint": "eslint  --max-warnings 0 --fix --config ../../../eslint.config.mjs ."
     },
     "jest-junit": {
         "outputDirectory": "test_results",
@@ -17,13 +16,11 @@
     "license": "ISC",
     "devDependencies": {
         "@types/fhir": "^0.0.41",
-        "@types/lodash": "^4.17.20",
-        "@types/selenium-webdriver": "^4.1.28",
-        "@types/uuid": "^10.0.0",
-        "chromedriver": "^138.0.3",
-        "geckodriver": "^5.0.0",
-        "lodash": "^4.17.21",
-        "selenium-webdriver": "^4.34.0",
-        "uuid": "^11.1.0"
+        "@types/lodash": "^4.17.23",
+        "@types/selenium-webdriver": "^4.35.4",
+        "chromedriver": "^145.0.0",
+        "geckodriver": "^6.1.0",
+        "lodash": "^4.17.23",
+        "selenium-webdriver": "^4.39.0"
     }
 }
