@@ -192,7 +192,6 @@
           "validityPeriod": {
             "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 0,
           "quantity": {
             "value": 20,
             "unit": "tablet",
@@ -349,7 +348,6 @@
           "validityPeriod": {
             "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 0,
           "quantity": {
             "value": 20,
             "unit": "tablet",
@@ -506,7 +504,6 @@
           "validityPeriod": {
             "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 0,
           "quantity": {
             "value": 30,
             "unit": "tablet",
@@ -663,7 +660,6 @@
           "validityPeriod": {
             "start": "2022-10-21"
           },
-          "numberOfRepeatsAllowed": 0,
           "quantity": {
             "value": 30,
             "unit": "tablet",
