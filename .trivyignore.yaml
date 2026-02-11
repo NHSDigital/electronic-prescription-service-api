@@ -98,4 +98,6 @@ vulnerabilities:
   - id: CVE-2026-25128
     statement: fast-xml-parser vulnerability accepted as risk - dependency of aws-sdk/client-dynamodb
     expired_at: 2026-03-01
-  
+  - id: CVE-2026-25639
+    statement: axios vulnerability accepted as risk - dependence of axios-retry
+    expired_at: 2026-03-01
