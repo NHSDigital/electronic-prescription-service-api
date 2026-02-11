@@ -7,7 +7,7 @@ import {verifyPrescriptionSignature} from "../../src/services/verification"
 import pino from "pino"
 import axios from "axios"
 
-test.skip("verify prescription signature", async () => {
+test("verify prescription signature", async () => {
   // 1. Prescription record is pulled from dynamodb
   // 2. Prescription creation document id is extracted
   // 3. Document is pulled from dynamodb and zlib decompressed
@@ -16,7 +16,7 @@ test.skip("verify prescription signature", async () => {
   // 6. verifyPrescriptionSignature is called to verify the signature
 
   // Set prescription id below and run the test to verify a prescription signature
-  const prescriptionId = "SET_PRESCRIPTION_ID_HERE"
+  const prescriptionId = "4C07DC-H81056-D2E9A"
 
   const ddbClient = new DynamoDBClient({region: "eu-west-2"})
 
@@ -82,10 +82,7 @@ test.skip("verify prescription signature", async () => {
     throw new Error(`Failed to fetch CA Issuer certificate from ${caIssuerURI}`)
   }
 
-  const caCert = (
-    typeof caIssuerResponse.data === "string" &&
-    caIssuerResponse.data.startsWith("-----BEGIN CERTIFICATE-----")
-  ) ?
+  const caCert = caIssuerResponse.data.toString().startsWith("-----BEGIN CERTIFICATE-----") ?
     caIssuerResponse.data :
     `-----BEGIN CERTIFICATE-----\n${caIssuerResponse.data.toString("base64")}\n-----END CERTIFICATE-----`
 
