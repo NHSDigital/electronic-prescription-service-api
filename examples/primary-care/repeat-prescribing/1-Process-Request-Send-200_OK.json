@@ -18,7 +18,7 @@
         },
         "destination": [
           {
-            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/FHIR/R4/$prepare",
+            "endpoint": "https://sandbox.api.service.nhs.uk/electronic-prescriptions/FHIR/R4/$process-message#prescription-order",
             "receiver": {
               "identifier": {
                 "system": "https://fhir.nhs.uk/Id/ods-organization-code",
@@ -190,8 +190,7 @@
             }
           ],
           "validityPeriod": {
-            "start": "2026-02-10",
-            "end": "2026-03-10"
+            "start": "2026-02-10"
           },
           "quantity": {
             "value": 20,
@@ -347,8 +346,7 @@
             }
           ],
           "validityPeriod": {
-            "start": "2026-02-10",
-            "end": "2026-03-10"
+            "start": "2026-02-10"
           },
           "quantity": {
             "value": 20,
@@ -504,8 +502,7 @@
             }
           ],
           "validityPeriod": {
-            "start": "2026-02-10",
-            "end": "2026-03-10"
+            "start": "2026-02-10"
           },
           "quantity": {
             "value": 30,
@@ -661,8 +658,7 @@
             }
           ],
           "validityPeriod": {
-            "start": "2026-02-10",
-            "end": "2026-03-10"
+            "start": "2026-02-10"
           },
           "quantity": {
             "value": 30,
