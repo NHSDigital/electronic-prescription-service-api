@@ -1,0 +1,396 @@
+meta {
+  name: Withdraw
+  type: http
+  seq: 5
+}
+
+post {
+  url: https://{{host}}/fhir-dispensing/FHIR/R4/Task
+  body: json
+  auth: inherit
+}
+
+headers {
+  x-request-id: {{Request_ID}}
+  NHSD-Session-URID: {{Dispenser_Role_ID}}
+}
+
+body:json {
+  {
+    "resourceType": "Task",
+    "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
+    "contained": [
+      {
+        "resourceType": "PractitionerRole",
+        "id": "16708936-6397-4e03-b84f-4aaa790633e0",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+            "value": "{{Dispenser_Role_ID}}"
+          }
+        ],
+        "practitioner": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/sds-user-id",
+            "value": "{{Dispenser_User_ID}}"
+          },
+          "display": "Jackie Clark"
+        },
+        "organization": {
+          "reference": "#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+        },
+        "code": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                "code": "S8000:G8000:R8000",
+                "display": "Clinical Practitioner Access Role"
+              }
+            ]
+          }
+        ],
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "02380798431"
+          }
+        ]
+      },
+      {
+        "resourceType": "Organization",
+        "id": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X25"
+          }
+        ],
+        "address": [
+          {
+            "city": "West Yorkshire",
+            "use": "work",
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
+            "postalCode": "LS15 8BA"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "use": "work",
+            "value": "0113 3180277"
+          }
+        ]
+      }
+    ],
+    "identifier": [
+      {
+        "system": "https://tools.ietf.org/html/rfc4122",
+        "value": "{{$randomUUID}}"
+      }
+    ],
+    "status": "in-progress",
+    "intent": "order",
+    "groupIdentifier": {
+      "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+      "value": "{{Prescription_ID}}"
+    },
+    "code": {
+      "coding": [
+        {
+          "system": "http://hl7.org/fhir/CodeSystem/task-code",
+          "code": "abort",
+          "display": "Mark the focal resource as no longer active"
+        }
+      ]
+    },
+    "focus": {
+      "type": "Bundle",
+      "identifier": {
+        "system": "https://tools.ietf.org/html/rfc4122",
+        "value": "{{Dispense_Notification_ID}}"
+      }
+    },
+    "for": {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/nhs-number",
+        "value": "{{nhs_number}}"
+      }
+    },
+    "authoredOn": "2020-12-21T17:03:20-00:00",
+    "owner": {
+      "identifier": {
+        "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+        "value": "X2601"
+      }
+    },
+    "statusReason": {
+      "coding": [
+        {
+          "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
+          "code": "OC",
+          "display": "Other Clinical"
+        }
+      ]
+    },
+    "requester": {
+      "reference": "#16708936-6397-4e03-b84f-4aaa790633e0"
+    }
+  }
+}
+
+script:pre-request {
+  var uuid = require('uuid');
+  
+  myGuid = uuid.v4();
+  bru.setVar("Request_ID", myGuid);
+}
+
+script:post-response {
+  var jsonResponse = res.getBody();
+  test("Response code is 200", function () {
+      expect(res.getStatus()).to.equal(200);
+  });
+  test("Content Type is FHIR JSON", function () {
+      expect(res.getHeader("Content-Type")).to.include("application/fhir+json");
+      expect(jsonResponse).to.be.an("object");
+  });
+  test("Expected Request ID Is Returned", function () {
+      expect(res.getHeader("X-Request-ID")).to.equal(bru.getVar("Request_ID"));
+  });
+  
+  test("Expected Operation Outcome Format is Returned", function () {
+      expect(jsonResponse.resourceType).to.equal("OperationOutcome");
+      expect(jsonResponse.meta).to.be.an("object");
+      expect(jsonResponse.issue).to.be.an("array");
+  
+      expect(jsonResponse.meta.lastUpdated).to.be.a("string");
+      
+      expect(jsonResponse.issue[0].code).to.equal("informational");
+      expect(jsonResponse.issue[0].severity).to.equal("information");
+  });
+}
+
+settings {
+  encodeUrl: true
+}
+
+example {
+  name: Withdraw - Success
+  
+  request: {
+    url: https://{{host}}/electronic-prescriptions/FHIR/R4/Task
+    method: POST
+    mode: json
+    headers: {
+      x-request-id: {{Request_ID}}
+      NHSD-Session-URID: {{role_id}}
+    }
+  
+    body:json: {
+      {
+        "resourceType": "Task",
+        "id": "6a2624a2-321b-470e-91a6-8ae7a065e2f0",
+        "contained": [
+          {
+            "resourceType": "PractitionerRole",
+            "id": "16708936-6397-4e03-b84f-4aaa790633e0",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/sds-role-profile-id",
+                "value": "{{role_id}}"
+              }
+            ],
+            "practitioner": {
+              "identifier": {
+                "system": "https://fhir.nhs.uk/Id/sds-user-id",
+                "value": "3415870201"
+              },
+              "display": "Jackie Clark"
+            },
+            "organization": {
+              "reference": "#urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b"
+            },
+            "code": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.nhs.uk/CodeSystem/NHSDigital-SDS-JobRoleCode",
+                    "code": "S8000:G8000:R8000",
+                    "display": "Clinical Practitioner Access Role"
+                  }
+                ]
+              }
+            ],
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "02380798431"
+              }
+            ]
+          },
+          {
+            "resourceType": "Organization",
+            "id": "urn:uuid:2bf9f37c-d88b-4f86-ad5f-373c1416e04b",
+            "identifier": [
+              {
+                "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+                "value": "X25"
+              }
+            ],
+            "address": [
+              {
+                "city": "West Yorkshire",
+                "use": "work",
+                "line": [
+                  "17 Austhorpe Road",
+                  "Crossgates",
+                  "Leeds"
+                ],
+                "postalCode": "LS15 8BA"
+              }
+            ],
+            "active": true,
+            "type": [
+              {
+                "coding": [
+                  {
+                    "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                    "code": "182",
+                    "display": "PHARMACY"
+                  }
+                ]
+              }
+            ],
+            "name": "The Simple Pharmacy",
+            "telecom": [
+              {
+                "system": "phone",
+                "use": "work",
+                "value": "0113 3180277"
+              }
+            ]
+          }
+        ],
+        "identifier": [
+          {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "{{$randomUUID}}"
+          }
+        ],
+        "status": "in-progress",
+        "intent": "order",
+        "groupIdentifier": {
+          "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+          "value": "{{Prescription_ID}}"
+        },
+        "code": {
+          "coding": [
+            {
+              "system": "http://hl7.org/fhir/CodeSystem/task-code",
+              "code": "abort",
+              "display": "Mark the focal resource as no longer active"
+            }
+          ]
+        },
+        "focus": {
+          "type": "Bundle",
+          "identifier": {
+            "system": "https://tools.ietf.org/html/rfc4122",
+            "value": "{{Dispense_Notification_ID}}"
+          }
+        },
+        "for": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/nhs-number",
+            "value": "{{NHS_Num}}"
+          }
+        },
+        "authoredOn": "2020-12-21T17:03:20-00:00",
+        "owner": {
+          "identifier": {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "X2601"
+          }
+        },
+        "statusReason": {
+          "coding": [
+            {
+              "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-withdraw-reason",
+              "code": "OC",
+              "display": "Other Clinical"
+            }
+          ]
+        },
+        "requester": {
+          "reference": "#16708936-6397-4e03-b84f-4aaa790633e0"
+        }
+      }
+    }
+  }
+  
+  response: {
+    headers: {
+      Date: Tue, 10 Sep 2024 08:49:45 GMT
+      Content-Type: application/fhir+json; fhirVersion=4.0
+      Content-Length: 322
+      Connection: keep-alive
+      vary: origin
+      access-control-expose-headers: WWW-Authenticate,Server-Authorization
+      cache-control: no-cache
+      x-request-id: 6d0bafe6-2366-4f95-a849-71041aa9ff54
+      strict-transport-security: max-age=31536000; includeSubDomains
+    }
+  
+    status: {
+      code: Bad Request
+      text: 400
+    }
+  
+    body: {
+      type: text
+      content: '''
+        {
+            "resourceType": "OperationOutcome",
+            "meta": {
+                "lastUpdated": "2024-09-10T08:49:45+00:00"
+            },
+            "issue": [
+                {
+                    "code": "business-rule",
+                    "severity": "error",
+                    "details": {
+                        "coding": [
+                            {
+                                "system": "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+                                "code": "PRESCRIPTION_INVALID_STATE_TRANSITION",
+                                "display": "Invalid State Transition for Prescription"
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+      '''
+    }
+  }
+}
