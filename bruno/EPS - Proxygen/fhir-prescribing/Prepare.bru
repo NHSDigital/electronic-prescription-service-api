@@ -372,11 +372,16 @@ body:json {
 
 script:pre-request {
   var uuid = require('uuid');
-  
+
   myGuid = uuid.v4();
   bru.setVar("Request_ID", myGuid);
-  
+
   bru.setVar("Item_1_ID", uuid.v4())
+
+  const overrideBody = bru.getVar("Prepare_Override_Body");
+  if (overrideBody) {
+    req.setBody(overrideBody);
+  }
 }
 
 script:post-response {
@@ -400,8 +405,8 @@ script:post-response {
       expect(jsonResponse.parameter[2].name).to.equal("algorithm");
       expect(jsonResponse.parameter[2].valueString).to.equal("RS256");
   });
-  
-  
+
+
 }
 
 settings {
@@ -411,7 +416,7 @@ settings {
 
 example {
   name: 1 Item Acute
-  
+
   request: {
     url: https://{{host}}/fhir-prescribing/FHIR/R4/$prepare
     method: POST
@@ -420,7 +425,7 @@ example {
       x-request-id: {{Request_ID}}
       NHSD-Session-URID: 555254242105
     }
-  
+
     body:json: {
       {
         "resourceType": "Bundle",
@@ -776,7 +781,7 @@ example {
       }
     }
   }
-  
+
   response: {
     headers: {
       Date: Thu, 20 Feb 2025 15:39:20 GMT
@@ -789,12 +794,12 @@ example {
       Strict-Transport-Security: max-age=31536000; includeSubDomains
       X-Request-ID: 43b21498-3bc3-4301-a376-b06d78b9254b
     }
-  
+
     status: {
       code: OK
       text: 200
     }
-  
+
     body: {
       type: text
       content: '''

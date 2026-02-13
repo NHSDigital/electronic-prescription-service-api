@@ -8,11 +8,40 @@ auth {
 
 vars:pre-request {
   nhs_number: 9449304130
+  Dispenser_User_ID: 555260695103
+  Dispenser_Role_ID: 555265434108
+  Prescriber_User_ID: 656005750107
+  Prescriber_Role_ID: 555254242105
   Prescription_ID: B064F4-E52074-6D1FDD
   Item_1_ID: 73014c50-1bd1-4359-9c9f-d587d7d03e66
-  Item_2_ID:
-  Item_3_ID:
-  Item_4_ID:
+  Item_2_ID: 
+  Item_3_ID: 
+  Item_4_ID: 
   _________________________________________: =========================================
-  Request_ID:
+  Request_ID: 
+}
+
+docs {
+  Enrivonrment variables:
+  
+  - `host`
+    - `<environment>.api.service.nhs.uk`
+    - `environment` can be `internal-dev`, `qa`, `int`, `ref`
+  - `api_key`
+    - This is the api key for the app [TomM-QA-PSU](https://apigee.com/organizations/nhsd-nonprod/apps/details/4f3b0242-ad42-4072-ab4e-3176fa3694b9)
+    - We must use this app as it has roles and user IDs set up in CIS2.
+  - `client_secret`
+    - This is the secret that corresponds to the API key in that app. You can get it from apigee, or from the digital onboarding service.
+  - `ptl_prescription_signing_key`
+    - This is the RSA signing key for signing prescription payloads. 
+    - You can get this in the AWS console, [here](https://eu-west-2.console.aws.amazon.com/secretsmanager/secret?name=secrets-ptlPrescriptionSigningPrivateKey&region=eu-west-2)
+    - The secret is named `secrets-ptlPrescriptionSigningPrivateKey` in AWS
+  - `ptl_prescription_public_key`
+    - This is the corresponding public key. 
+    - This is available [here](https://eu-west-2.console.aws.amazon.com/secretsmanager/secret?name=secrets-ptlPrescriptionSigningPublicKey&region=eu-west-2)
+    - The secret is named `secrets-ptlPrescriptionSigningPublicKey` in AWS
+  
+  # Usage
+  
+  You should be able to submit multiple items by setting the `Item_N_ID` variables at the collection level. If you do this, make sure you also set appropriate values for the Claim and Dispense levels.
 }

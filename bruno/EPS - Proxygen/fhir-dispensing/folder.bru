@@ -14,7 +14,7 @@ auth:oauth2 {
   refresh_token_url: https://{{host}}/oauth2-mock/token
   client_id: {{api_key}}
   client_secret: {{client_secret}}
-  scope:
+  scope: 
   state: {{$randomUUID}}
   pkce: false
   credentials_placement: basic_auth_header
@@ -41,28 +41,26 @@ auth:oauth2:additional_params:refresh_token_req:body {
 }
 
 vars:pre-request {
-  Prescriber_User_ID: 656005750107
-  Prescriber_Role_ID: 555254242105
-  Dispense_Notification_ID:
-  Dispense_Items:
-  Focus_IDs:
+  Dispense_Notification_ID: 
+  Dispense_Items: 
+  Focus_IDs: 
 }
 
 docs {
   # Usage
-
+  
   NOTE: The prescribing endpoint does *not* actually create any prescriptions! It only prepares the data payload that should be signed by suppliers. If you want to use the dispensing API, you'll first need to create a prescription in EPSAT.
-
-
+  
+  
   # Auth
-
+  
   To get an auth token, go to the auth tab and scroll to the bottom. Click on "Get Access Token". However, the collection should fetch one automatically if one is not present.
-
+  
   For the mock auth available in the internal-dev environment you'll need to sign in to mock CIS2 auth.
-
+  
   For internal dev, use the following Role IDs:
   - Prescribe: `656005750107`
   - Dispense: `555260695103`
-
+  
   And use this Apigee app: [TomM-QA-PSU](https://apigee.com/organizations/nhsd-nonprod/apps/details/4f3b0242-ad42-4072-ab4e-3176fa3694b9)
 }
