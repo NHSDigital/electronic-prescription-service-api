@@ -2,8 +2,11 @@
 module.exports = {
   roots: ["./tests"],
   transform: {
-    "^.+\\.tsx?$": "ts-jest"
+    "^.+\\.[tj]sx?$": "ts-jest"
   },
+  transformIgnorePatterns: [
+    "/node_modules/(?!(react-diff-viewer-continued)/)"
+  ],
   testRegex: "(/__tests__/.*|(\\.|/)(test|spec))\\.tsx?$",
   moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
   testEnvironment: "jsdom",
