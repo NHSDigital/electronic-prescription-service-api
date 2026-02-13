@@ -190,19 +190,6 @@
             "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
             "display": "Dispensed"
           }
-        },
-        {
-          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-          "extension": [
-            {
-              "url": "numberOfRepeatsAllowed",
-              "valueInteger": 5
-            },
-            {
-              "url": "numberOfRepeatsIssued",
-              "valueInteger": 2
-            }
-          ]
         }
       ],
       "sequence": 1,
@@ -326,6 +313,19 @@
                       "value": "fd833d33-f128-4fa2-a807-1fc8a7db2658"
                     }
                   }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 6
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 3
+                    }
+                  ]
                 }
               ],
               "sequence": 1,
@@ -437,6 +437,19 @@
                       "value": "06167339-9337-d030-0366-514a6a46da17"
                     }
                   }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
                 }
               ],
               "sequence": 1,
@@ -548,6 +561,19 @@
                       "value": "496f4a02-a845-4f19-934e-ae1a7e12a193"
                     }
                   }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
                 }
               ],
               "sequence": 1,
@@ -577,6 +603,19 @@
                       "value": "95c42b8b-a13d-4227-bce6-f31dad456eda"
                     }
                   }
+                },
+                {
+                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+                  "extension": [
+                    {
+                      "url": "numberOfRepeatsAllowed",
+                      "valueInteger": 5
+                    },
+                    {
+                      "url": "numberOfRepeatsIssued",
+                      "valueInteger": 2
+                    }
+                  ]
                 }
               ],
               "sequence": 2,
