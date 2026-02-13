@@ -30,7 +30,7 @@ put_secret_lambda=lambda-resources-ProxygenPTLMTLSSecretPut
 instance_put_lambda=lambda-resources-ProxygenPTLInstancePut
 spec_publish_lambda=lambda-resources-ProxygenPTLSpecPublish
 
-if [[ "$APIGEE_ENVIRONMENT" =~ ^(int|sandbox|prod)$ ]]; then 
+if [[ "$APIGEE_ENVIRONMENT" =~ ^(int|sandbox|prod)$ ]]; then
     put_secret_lambda=lambda-resources-ProxygenProdMTLSSecretPut
     instance_put_lambda=lambda-resources-ProxygenProdInstancePut
     spec_publish_lambda=lambda-resources-ProxygenProdSpecPublish
@@ -61,7 +61,7 @@ if [[ "${IS_PULL_REQUEST}" == "true" ]]; then
     jq '."x-nhsd-apim".monitoring = false' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 fi
 
-# Find and replace the specification version number 
+# Find and replace the specification version number
 jq --arg version "${VERSION_NUMBER}" '.info.version = $version' "${SPEC_PATH}" > temp.json && mv temp.json "${SPEC_PATH}"
 
 # Find and replace the x-nhsd-apim.target.url value
@@ -116,7 +116,7 @@ if [[ "${ENABLE_MUTUAL_TLS}" == "true" ]]; then
         aws lambda invoke --function-name "${put_secret_lambda}" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
             echo 'Error calling lambda'
-            cat out.txt
+            cat out.txt | jq .
             exit 1
         fi
         echo "Secret stored successfully"
@@ -141,7 +141,7 @@ if [[ "${DRY_RUN}" == "false" ]]; then
 
     if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
         echo 'Error calling lambda'
-        cat out.txt
+        cat out.txt | jq .
         exit 1
     fi
     echo "Instance deployed"
@@ -175,7 +175,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "int" ]]; then
 
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
             echo 'Error calling lambda'
-            cat out.txt
+            cat out.txt | jq .
             exit 1
         fi
         echo "Spec deployed"
@@ -200,7 +200,7 @@ if [[ "${APIGEE_ENVIRONMENT}" == "internal-dev" && "${IS_PULL_REQUEST}" == "fals
 
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
             echo 'Error calling lambda'
-            cat out.txt
+            cat out.txt | jq .
             exit 1
         fi
         echo "Spec deployed"
