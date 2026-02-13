@@ -40,6 +40,12 @@ auth:oauth2:additional_params:refresh_token_req:body {
   client_secret: {{client_secret}}
 }
 
+vars:pre-request {
+  Dispenser_User_ID: 555260695103
+  Dispenser_Role_ID: 555265434108
+  Nominated_Pharmacy: X25
+}
+
 docs {
   To get an auth token, go to the auth tab and scroll to the bottom. Click on "Get Access Token". However, the collection should fetch one automatically if one is not present.
 
