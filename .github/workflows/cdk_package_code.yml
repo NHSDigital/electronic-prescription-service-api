@@ -32,7 +32,7 @@ jobs:
   package_code:
     runs-on: ubuntu-22.04
     container:
-        image: ghcr.io/nhsdigital/eps-devcontainers/fhir_facade_api:v1.0.0
+        image: ghcr.io/nhsdigital/eps-devcontainers/fhir_facade_api:pr-15-a1b9b25
     needs: [get_asdf_version]
     permissions:
       id-token: write
