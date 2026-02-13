@@ -12,6 +12,13 @@ const config: Configuration = {
   module: {
     rules: [
       {
+        test: /\.m?js$/,
+        include: /node_modules\/react-diff-viewer-continued/,
+        resolve: {
+          fullySpecified: false
+        }
+      },
+      {
         test: /\.(ts|js)x?$/,
         exclude: /node_modules/,
         use: {
