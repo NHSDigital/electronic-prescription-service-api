@@ -7,7 +7,7 @@ import {verifyPrescriptionSignature} from "../../src/services/verification"
 import pino from "pino"
 import axios from "axios"
 
-test("verify prescription signature", async () => {
+test.skip("verify prescription signature", async () => {
   // 1. Prescription record is pulled from dynamodb
   // 2. Prescription creation document id is extracted
   // 3. Document is pulled from dynamodb and zlib decompressed
@@ -16,7 +16,7 @@ test("verify prescription signature", async () => {
   // 6. verifyPrescriptionSignature is called to verify the signature
 
   // Set prescription id below and run the test to verify a prescription signature
-  const prescriptionId = "4C07DC-H81056-D2E9A"
+  const prescriptionId = "SET_PRESCRIPTION_ID_HERE"
 
   const ddbClient = new DynamoDBClient({region: "eu-west-2"})
 
@@ -83,7 +83,7 @@ test("verify prescription signature", async () => {
   }
 
   const caCert = caIssuerResponse.data.toString().startsWith("-----BEGIN CERTIFICATE-----") ?
-    caIssuerResponse.data :
+    caIssuerResponse.data.toString() :
     `-----BEGIN CERTIFICATE-----\n${caIssuerResponse.data.toString("base64")}\n-----END CERTIFICATE-----`
 
   process.env.SUBCACC_CERT = caCert
