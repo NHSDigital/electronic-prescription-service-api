@@ -375,6 +375,8 @@ script:pre-request {
   
   myGuid = uuid.v4();
   bru.setVar("Request_ID", myGuid);
+  
+  bru.setVar("Item_1_ID", uuid.v4())
 }
 
 script:post-response {
