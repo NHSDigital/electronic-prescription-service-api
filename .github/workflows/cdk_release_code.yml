@@ -252,6 +252,7 @@ jobs:
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
           FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
+          AWS_MAX_ATTEMPTS: 5
 
       - name: Show diff
         run: |

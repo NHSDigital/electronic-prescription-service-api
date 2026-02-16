@@ -15,11 +15,12 @@ jobs:
       AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
       AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
 
-  get_asdf_version:
+  get_config_values:
     runs-on: ubuntu-22.04
     outputs:
       asdf_version: ${{ steps.asdf-version.outputs.version }}
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+      devcontainer_version: ${{ steps.load-config.outputs.DEVCONTAINER_VERSION }}
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
@@ -31,13 +32,15 @@ jobs:
         id: load-config
         run: |
           TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
+          DEVCONTAINER_VERSION=$(jq -r '.build.args.IMAGE_VERSION' .devcontainer/devcontainer.json)
           echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+          echo "DEVCONTAINER_VERSION=$DEVCONTAINER_VERSION" >> "$GITHUB_OUTPUT"
 
   quality_checks:
     uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks.yml@5ccebbf821beef2de6abdce9e392b3cbeb4999e3
-    needs: [get_asdf_version]
+    needs: [get_config_values]
     with:
-      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      asdfVersion: ${{ needs.get_config_values.outputs.asdf_version }}
       run_docker_scan: true
       docker_images: fhir-facade,validator
     secrets:

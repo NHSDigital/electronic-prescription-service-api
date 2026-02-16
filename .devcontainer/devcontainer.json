@@ -1,21 +1,29 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-  "name": "Ubuntu",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "name": "eps-fhir-facade-api",
   "build": {
     "dockerfile": "Dockerfile",
     "context": "..",
     "args": {
-      "DEVCONTAINER_VERSION": "pr-15-a1b9b25"
-    }
+      "DOCKER_GID": "${env:DOCKER_GID:}",
+      "IMAGE_NAME": "fhir_facade_api",
+      "IMAGE_VERSION": "e0808a3",
+      "USER_UID": "${localEnv:USER_ID:}",
+      "USER_GID": "${localEnv:GROUP_ID:}"
+    },
+    "updateRemoteUserUID": false
   },
+  "postAttachCommand": "git-secrets --register-aws; git-secrets --add-provider -- cat /usr/share/secrets-scanner/nhsd-rules-deny.txt",
   "mounts": [
     "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.gnupg,target=/home/vscode/.gnupg,type=bind",
-    "source=${env:HOME}${env:USERPROFILE}/.gitconfig,target=/home/vscode/.gitconfig,type=bind"
+    "source=${env:HOME}${env:USERPROFILE}/.npmrc,target=/home/vscode/.npmrc,type=bind"
   ],
+  "containerUser": "vscode",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+  "features": {},
   "customizations": {
     "vscode": {
       "extensions": [
@@ -60,9 +68,5 @@
         ]
       }
     }
-  },
-  "remoteEnv": {
-    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
-  },
-  "features": {}
+  }
 }
