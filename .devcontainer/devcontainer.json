@@ -54,11 +54,11 @@
         "python.testing.pytestEnabled": true,
         "python.linting.pylintEnabled": false,
         "python.linting.flake8Enabled": true,
-        "python.linting.enabled": true, // required to format on save
+        "python.linting.enabled": true,
         "editor.defaultFormatter": "baeumer.vscode-eslint",
-        "editor.formatOnPaste": false, // required
-        "editor.formatOnType": false, // required
-        "editor.formatOnSave": true, // optional
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false,
+        "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
         "cSpell.words": [
           "fhir",
