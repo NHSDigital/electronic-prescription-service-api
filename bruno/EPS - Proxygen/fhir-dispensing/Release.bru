@@ -120,21 +120,10 @@ body:json {
 
 script:pre-request {
   var uuid = require('uuid');
-
+  
   myGuid = uuid.v4();
   bru.setVar("Request_ID", myGuid);
-
-  const releaseBody = req.getBody();
-  bru.setVar("Prepare_Override_Body", releaseBody);
-
-  try {
-    const prepareResponse = await bru.runRequest("fhir-prescribing/Prepare");
-    console.log("Prepare response:", prepareResponse);
-  } catch (error) {
-    console.error("Prepare request failed:", error);
-  } finally {
-    bru.deleteVar("Prepare_Override_Body");
-  }
+  
 }
 
 script:post-response {
@@ -152,7 +141,7 @@ script:post-response {
   test("Expected Parameters Format is Returned", function () {
       expect(jsonResponse.resourceType).to.equal("Parameters");
       expect(jsonResponse.parameter).to.be.an("array");
-
+  
       // CHECK PASSED PRESCRIPTIONS IS EXPECTED FORMAT
       expect(jsonResponse.parameter[0].name).to.equal("passedPrescriptions");
       expect(jsonResponse.parameter[0].resource).to.be.an("object");
@@ -160,7 +149,7 @@ script:post-response {
       expect(jsonResponse.parameter[0].resource.type).to.equal("searchset");
       expect(jsonResponse.parameter[0].resource.total).to.equal(1);
       expect(jsonResponse.parameter[0].resource.entry).to.be.an("array");
-
+  
       // CHECK FAILED PRESCRIPTIONS IS EXPECTED FORMAT
       expect(jsonResponse.parameter[1].name).to.equal("failedPrescriptions");
       expect(jsonResponse.parameter[1].resource).to.be.an("object");
@@ -169,7 +158,7 @@ script:post-response {
       expect(jsonResponse.parameter[1].resource.total).to.equal(0);
       expect(jsonResponse.parameter[1].resource.entry).to.be.an("array");
   });
-
+  
   test("Expected Prescription Bundle Is Returned", function () {
       // CHECK RETURNED BUNDLE FOR THE SUCCESSFUL PRESCRIPTION
       expect(jsonResponse.parameter[0].resource.entry[0]).to.be.an("object");
@@ -177,14 +166,14 @@ script:post-response {
       expect(jsonResponse.parameter[0].resource.entry[0].resource.resourceType).to.equal("Bundle");
       expect(jsonResponse.parameter[0].resource.entry[0].resource.type).to.equal("message");
       expect(jsonResponse.parameter[0].resource.entry[0].resource.entry).to.be.an("array");
-
+  
       // CHECK HEADER
       expect(jsonResponse.parameter[0].resource.entry[0].resource.entry[0]).to.be.an("object");
       expect(jsonResponse.parameter[0].resource.entry[0].resource.entry[0].resource.resourceType).to.equal("MessageHeader");
       expect(jsonResponse.parameter[0].resource.entry[0].resource.entry[0].resource.eventCoding.code).to.equal("prescription-order");
       expect(jsonResponse.parameter[0].resource.entry[0].resource.entry[0].resource.eventCoding.display).to.equal("Prescription Order");
   });
-
+  
 }
 
 settings {

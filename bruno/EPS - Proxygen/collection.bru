@@ -44,4 +44,21 @@ docs {
   # Usage
   
   You should be able to submit multiple items by setting the `Item_N_ID` variables at the collection level. If you do this, make sure you also set appropriate values for the Claim and Dispense levels.
+  
+  
+  # Authentication
+  
+  The prescribe and dispense endpoints use different roles (to my knowledge). It's difficut, but possible, to have both available at once in the collection, since CIS2 only allows a single login session per browser, and the two auth flows use the same browser. The simple way around this is to clear the auth cache (there is a button to do this at the bottom of the auth tab in the folders) whenever you swap between prescribe and dispense endpoints, and log in again with the appropriate role.
+  
+  For internal dev, use the following Role IDs:
+  - Prescribe: `656005750107`
+  - Dispense: `555260695103`
+  
+  ## The hard way
+  
+  To get both, first follow the normal login flow for the `fhir-dispensing` folder. Go to the folder, click `Auth`, and scroll to the bottom. Click on clear cache first, to purge any previous logins, then click `Get Access Token` and log in as `656005750107`.
+  
+  Then, navigate to the `fhir-prescribing` folder, and scroll down to the bottom of the `Auth` tab again. *do not* clear the cache this time - just click on the `Get Access Token` button. In the window that pops up, open the developer tools, go to `Memory`, and clear the cache. Then, close the window, and click the `Get Access Token` button again. This time, log in with the prescribing role ID, ``. It should work and you should get both tokens.
+  
+  To avoid doing this constantly throughout your session, make use of the token refresh action. This should be automatic, but there is a button to do it manually at the bottom of the auth tab.
 }
