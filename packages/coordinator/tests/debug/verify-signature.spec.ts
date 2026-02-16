@@ -77,12 +77,16 @@ test.skip("verify prescription signature", async () => {
   console.log(`CA Issuer URI: ${caIssuerURI}`)
 
   console.log("Fetching CA Issuer certificate...")
-  const caIssuerResponse = await axios.get(caIssuerURI)
+  const caIssuerResponse = await axios.get(caIssuerURI, {responseType: "arraybuffer"})
   if (caIssuerResponse.status !== 200) {
     throw new Error(`Failed to fetch CA Issuer certificate from ${caIssuerURI}`)
   }
 
-  process.env.SUBCACC_CERT = caIssuerResponse.data
+  const caCert = caIssuerResponse.data.toString().startsWith("-----BEGIN CERTIFICATE-----") ?
+    caIssuerResponse.data.toString() :
+    `-----BEGIN CERTIFICATE-----\n${caIssuerResponse.data.toString("base64")}\n-----END CERTIFICATE-----`
+
+  process.env.SUBCACC_CERT = caCert
 
   const verificationResponse = await verifyPrescriptionSignature(
     prescriptionDocument.ParentPrescription,
