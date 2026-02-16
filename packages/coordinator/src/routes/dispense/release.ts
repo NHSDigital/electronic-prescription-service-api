@@ -39,7 +39,9 @@ export default [
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
 
       // If we're application-restricted, we don't have an SDS role ID, and can skip that check
-      const checkAccessTokenSDSRoleID = !(isApplicationRestrictedScope(scope))
+      const appRestricted = isApplicationRestrictedScope(scope)
+      logger.info(`Application restricted scope? appRestricted=${appRestricted}, scope=${scope}`)
+      const checkAccessTokenSDSRoleID = !appRestricted
       const issues = parametersValidator.verifyParameters(
         parameters,
         scope,
