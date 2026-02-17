@@ -2,6 +2,7 @@ import {
   callFhirValidator,
   ContentTypes,
   filterValidatorResponse,
+  getPayload,
   handleResponse,
   VALIDATOR_HOST
 } from "../../src/routes/util"
@@ -243,5 +244,208 @@ describe("filterValidatorResponse", () => {
       ]
     }
     expect(filterValidatorResponse(validatorResponse, false).issue).toHaveLength(0)
+  })
+})
+
+describe("CodeSystem URL normalization", () => {
+  let server: Hapi.Server
+  const loggerInfoSpy = jest.fn()
+
+  beforeEach(async () => {
+    server = Hapi.server({
+      routes: {
+        payload: {
+          parse: false
+        }
+      }
+    })
+    // Mock logger on server
+    server.decorate("request", "logger", {
+      info: loggerInfoSpy,
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn()
+    })
+    loggerInfoSpy.mockClear()
+  })
+
+  afterEach(async () => {
+    await server.stop()
+  })
+
+  test("normalizes https CodeSystem URLs to http during payload parsing", async () => {
+    const payloadWithHttps = JSON.stringify({
+      resourceType: "Claim",
+      type: {
+        coding: [
+          {
+            system: "https://terminology.hl7.org/CodeSystem/claim-type",
+            code: "pharmacy",
+            display: "Pharmacy"
+          }
+        ]
+      },
+      priority: {
+        coding: [
+          {
+            system: "https://terminology.hl7.org/CodeSystem/processpriority",
+            code: "normal"
+          }
+        ]
+      }
+    })
+
+    server.route({
+      method: "POST",
+      path: "/test",
+      handler: async (request) => {
+        const payload = await getPayload(request)
+        return payload
+      }
+    })
+
+    const response = await server.inject({
+      method: "POST",
+      url: "/test",
+      headers: {
+        "x-request-id": "test-id",
+        "content-type": "application/fhir+json"
+      },
+      payload: payloadWithHttps
+    })
+
+    const parsedResponse = JSON.parse(response.payload)
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
+    expect(parsedResponse.priority.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/processpriority")
+
+    // Verify that normalization was logged
+    expect(loggerInfoSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        originalUrl: "https://terminology.hl7.org/CodeSystem/claim-type",
+        normalizedUrl: "http://terminology.hl7.org/CodeSystem/claim-type"
+      }),
+      "Normalizing CodeSystem URL from https to http"
+    )
+  })
+
+  test("leaves http CodeSystem URLs unchanged", async () => {
+    const payloadWithHttp = JSON.stringify({
+      resourceType: "Claim",
+      type: {
+        coding: [
+          {
+            system: "http://terminology.hl7.org/CodeSystem/claim-type",
+            code: "pharmacy"
+          }
+        ]
+      }
+    })
+
+    server.route({
+      method: "POST",
+      path: "/test",
+      handler: async (request) => {
+        const payload = await getPayload(request)
+        return payload
+      }
+    })
+
+    const response = await server.inject({
+      method: "POST",
+      url: "/test",
+      headers: {
+        "x-request-id": "test-id",
+        "content-type": "application/fhir+json"
+      },
+      payload: payloadWithHttp
+    })
+
+    const parsedResponse = JSON.parse(response.payload)
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
+
+    // Verify that no normalization was logged (since URL already http)
+    const normalizationCalls = loggerInfoSpy.mock.calls.filter(call =>
+      call[1] === "Normalizing CodeSystem URL from https to http"
+    )
+    expect(normalizationCalls).toHaveLength(0)
+  })
+
+  test("only normalizes terminology.hl7.org CodeSystem URLs", async () => {
+    const payloadWithMixedUrls = JSON.stringify({
+      resourceType: "Claim",
+      type: {
+        coding: [
+          {
+            system: "https://terminology.hl7.org/CodeSystem/claim-type",
+            code: "pharmacy"
+          }
+        ]
+      },
+      extension: [
+        {
+          url: "https://fhir.nhs.uk/StructureDefinition/Extension-other",
+          valueString: "some value"
+        }
+      ]
+    })
+
+    server.route({
+      method: "POST",
+      path: "/test",
+      handler: async (request) => {
+        const payload = await getPayload(request)
+        return payload
+      }
+    })
+
+    const response = await server.inject({
+      method: "POST",
+      url: "/test",
+      headers: {
+        "x-request-id": "test-id",
+        "content-type": "application/fhir+json"
+      },
+      payload: payloadWithMixedUrls
+    })
+
+    const parsedResponse = JSON.parse(response.payload)
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
+    expect(parsedResponse.extension[0].url).toBe("https://fhir.nhs.uk/StructureDefinition/Extension-other")
+  })
+
+  test("handles Buffer payloads with https CodeSystem URLs", async () => {
+    const payloadWithHttps = {
+      resourceType: "Claim",
+      type: {
+        coding: [
+          {
+            system: "https://terminology.hl7.org/CodeSystem/claim-type",
+            code: "pharmacy"
+          }
+        ]
+      }
+    }
+
+    server.route({
+      method: "POST",
+      path: "/test",
+      handler: async (request) => {
+        const payload = await getPayload(request)
+        return payload
+      }
+    })
+
+    const response = await server.inject({
+      method: "POST",
+      url: "/test",
+      headers: {
+        "x-request-id": "test-id",
+        "content-type": "application/fhir+json"
+      },
+      payload: Buffer.from(JSON.stringify(payloadWithHttps))
+    })
+
+    const parsedResponse = JSON.parse(response.payload)
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
   })
 })
