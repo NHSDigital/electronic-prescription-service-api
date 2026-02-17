@@ -83,8 +83,18 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Utils.Dictionary<string>
+  requestHeaders: Hapi.Utils.Dictionary<string>,
+  logger: pino.Logger = null
 ): Promise<fhir.OperationOutcome> {
+  if (logger) {
+    const problematicPayload = payload.toString().includes("https://terminology.hl7.org/")
+      || payload.toString().includes("https://hl7.org/fhir/CodeSystem")
+    if (problematicPayload) {
+      logger.warn({payload: payload.toString()}, "Payload contains HL7 terminology URIs that need normalization")
+    } else {
+      logger.info({payload: payload.toString()}, "No normalisation of HL7 URIs needed")
+    }
+  }
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
     headers: {
       "Content-Type": requestHeaders["content-type"],
@@ -113,7 +123,7 @@ export async function getFhirValidatorErrors(
     request.logger.info("Skipping call to FHIR validator")
   } else {
     request.logger.info("Making call to FHIR validator")
-    const validatorResponseData = await callFhirValidator(request.payload, request.headers)
+    const validatorResponseData = await callFhirValidator(request.payload, request.headers, request.logger)
     request.logger.info("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
     if (filteredResponse.issue.length) {
@@ -171,13 +181,19 @@ function createCodeSystemNormalizer(logger: pino.Logger, traceIds: Record<string
   return (key: string, value: unknown): unknown => {
     // Only normalize HL7 terminology URIs from https to http
     // NHS FHIR URIs (https://fhir.nhs.uk/...) do use https
-    if (key === "system" && typeof value === "string" && value.startsWith("https://terminology.hl7.org/")) { // NOSONAR
+    if (key === "system" && typeof value === "string"
+      && (value.startsWith("https://terminology.hl7.org/")
+        || value.startsWith("https://hl7.org/fhir/CodeSystem"))) {
+      value = value.replace("https://terminology.hl7.org/", "http://terminology.hl7.org/") // NOSONAR
+        .replace("https://hl7.org/fhir/CodeSystem", "http://hl7.org/fhir/CodeSystem") // NOSONAR
+      logger.info({traceIds, originalUrl: value, normalizedUrl: value},
+        "Normalizing HL7 URIs from https to http")
+      return value
+    } else {
       logger.info({
         traceIds,
-        originalUrl: value,
-        normalizedUrl: value.replace("https://", "http://")
-      }, "Normalizing HL7 URIs from https to http")
-      return value.replace("https://", "http://")
+        originalUrl: value
+      }, "No need to normalize HL7 URIs from https to http")
     }
     return value
   }
