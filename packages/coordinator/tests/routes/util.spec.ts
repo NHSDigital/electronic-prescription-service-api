@@ -324,7 +324,7 @@ describe("CodeSystem URL normalization", () => {
         originalUrl: "https://terminology.hl7.org/CodeSystem/claim-type",
         normalizedUrl: "http://terminology.hl7.org/CodeSystem/claim-type"
       }),
-      "Normalizing CodeSystem URL from https to http"
+      "Normalizing HL7 URIs from https to http"
     )
   })
 
@@ -365,7 +365,7 @@ describe("CodeSystem URL normalization", () => {
 
     // Verify that no normalization was logged (since URL already http)
     const normalizationCalls = loggerInfoSpy.mock.calls.filter(call =>
-      call[1] === "Normalizing CodeSystem URL from https to http"
+      call[1] === "Normalizing HL7 URIs from https to http"
     )
     expect(normalizationCalls).toHaveLength(0)
   })

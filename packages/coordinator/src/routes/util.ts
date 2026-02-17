@@ -169,12 +169,14 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
 
 function createCodeSystemNormalizer(logger: pino.Logger, traceIds: Record<string, string>) {
   return (key: string, value: unknown): unknown => {
-    if (key === "system" && typeof value === "string" && value.startsWith("https://terminology.hl7.org/CodeSystem/")) {
+    // Only normalize HL7 terminology URIs from https to http
+    // NHS FHIR URIs (https://fhir.nhs.uk/...) do use https
+    if (key === "system" && typeof value === "string" && value.startsWith("https://terminology.hl7.org/")) {
       logger.info({
         traceIds,
         originalUrl: value,
         normalizedUrl: value.replace("https://", "http://")
-      }, "Normalizing CodeSystem URL from https to http")
+      }, "Normalizing HL7 URIs from https to http")
       return value.replace("https://", "http://")
     }
     return value
