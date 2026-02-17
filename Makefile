@@ -442,3 +442,6 @@ docker-build-validator:
 	curl -L -o /tmp/manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/manifest.json"
 	curl -L -o /tmp/fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/fhir-validator.jar"
 	cd /tmp &&docker build -t "validator" -f Dockerfile .
+
+%:
+	@$(MAKE) -f /usr/local/share/eps/Mk/common.mk $@
