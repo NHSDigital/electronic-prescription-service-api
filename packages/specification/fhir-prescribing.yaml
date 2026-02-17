@@ -14,7 +14,7 @@ info:
     If you are using this API in [user-restricted mode](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis) a healthcare worker must be present and authenticated with an [NHS smartcard or a modern alternative](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/nhs-smartcards-for-developers) to use this API.
 
 
-    ### Prescribers in primary and secondary care can:
+    ### Prescribers in primary and secondary care can: 
     * create a prescription
     * encode data so the prescription is ready to sign
     * cancel a prescription
@@ -22,12 +22,12 @@ info:
     Creating and cancelling a prescription are both done by the prescriber. Encoding data so the prescription is ready to sign is done by the prescribing system.
 
     ## Who can use this API
-      This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development.
+      This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
 
     You must get approval before you can go live. For more information, see the 'Onboarding' section.
 
     ## Related APIs, services and documentation
-
+      
     ### Services
     These services must be used alongside EPS to create a functioning prescribing or dispensing system.
     * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard or a modern alternative.
