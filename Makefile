@@ -65,7 +65,7 @@ all:
 	$(MAKE) test | tee -a build.log
 	$(MAKE) release | tee -a build.log
 
-.PHONY: install build test publish release clean
+.PHONY: install build test publish release clean build-api
 
 ## install stuff
 
