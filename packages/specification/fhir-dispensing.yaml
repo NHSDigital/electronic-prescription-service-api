@@ -238,8 +238,6 @@ paths:
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
         Send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) to this endpoint to download the prescription.
-
-        You can authenticate using either a user-restricted CIS2 session or an application-restricted signed JWT.
       tags:
         - dispensing
       parameters:
@@ -317,7 +315,6 @@ paths:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
         - nhs-cis2-aal3: []
-        - app-level3: []
   /FHIR/R4/Task:
     post:
       operationId: process-message
@@ -569,6 +566,7 @@ paths:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
         - nhs-cis2-aal3: []
+        - app-level3: []
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
