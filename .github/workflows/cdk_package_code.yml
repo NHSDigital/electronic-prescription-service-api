@@ -9,42 +9,23 @@ on:
       COMMIT_ID:
         required: true
         type: string
-
+      runtime_docker_image:
+        type: string
+        required: true
 jobs:
-  get_config_values:
-    runs-on: ubuntu-22.04
-    outputs:
-      asdf_version: ${{ steps.asdf-version.outputs.version }}
-      tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
-      devcontainer_version: ${{ steps.load-config.outputs.DEVCONTAINER_VERSION }}
-      devcontainer_image: ${{ steps.load-config.outputs.DEVCONTAINER_IMAGE }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-
-      - name: Get asdf version
-        id: asdf-version
-        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
-      - name: Load config value
-        id: load-config
-        run: |
-          TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
-          DEVCONTAINER_IMAGE=$(jq -r '.build.args.IMAGE_NAME' .devcontainer/devcontainer.json)
-          DEVCONTAINER_VERSION=$(jq -r '.build.args.IMAGE_VERSION' .devcontainer/devcontainer.json)
-          {
-            echo "TAG_FORMAT=$TAG_FORMAT" 
-            echo "DEVCONTAINER_IMAGE=$DEVCONTAINER_IMAGE"
-            echo "DEVCONTAINER_VERSION=$DEVCONTAINER_VERSION"
-          } >> "$GITHUB_OUTPUT"
-
   package_code:
     runs-on: ubuntu-22.04
-    needs: [get_config_values]
+    container:
+      image: "ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}"
+      options: --user 1001:1001
     permissions:
       id-token: write
       contents: read
       packages: read
     steps:
+      - name: copy .tool-versions
+        run: |
+          cp /home/vscode/.tool-versions "$HOME/.tool-versions"
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -54,7 +35,7 @@ jobs:
         uses: anthony-nhs/docker-run-action-fork@83cfde66c34330c3ec4f6270a569a6701530d775
         with:
           workspace_folder: ${{ github.workspace }}
-          image: ghcr.io/nhsdigital/eps-devcontainers/${{ needs.get_config_values.outputs.devcontainer_image }}:${{ needs.get_config_values.outputs.devcontainer_version }}
+          image: ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}
           run: |
             make install build-proxygen-specification
 

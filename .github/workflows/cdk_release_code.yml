@@ -99,6 +99,9 @@ on:
       FORWARD_CSOC_LOGS:
         type: boolean
         required: true
+      runtime_docker_image:
+        type: string
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -131,6 +134,9 @@ on:
 jobs:
   release_code_and_api:
     runs-on: ubuntu-22.04
+    container:
+      image: "ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}"
+      options: --user 1001:1001
     environment: ${{ inputs.AWS_ENVIRONMENT }}
     name: deploy to ${{ inputs.AWS_ENVIRONMENT }}
     permissions:
@@ -138,6 +144,9 @@ jobs:
       contents: write
 
     steps:
+      - name: copy .tool-versions
+        run: |
+          cp /home/vscode/.tool-versions "$HOME/.tool-versions"
       - name: Checkout local github actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -374,6 +383,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-PRESCRIBING
+      runtime_docker_image: ${{ inputs.runtime_docker_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
@@ -386,6 +396,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-DISPENSING
+      runtime_docker_image: ${{ inputs.runtime_docker_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
@@ -398,6 +409,7 @@ jobs:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+      runtime_docker_image: ${{ inputs.runtime_docker_image }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
       API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
