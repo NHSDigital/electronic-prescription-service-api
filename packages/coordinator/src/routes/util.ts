@@ -171,7 +171,7 @@ function createCodeSystemNormalizer(logger: pino.Logger, traceIds: Record<string
   return (key: string, value: unknown): unknown => {
     // Only normalize HL7 terminology URIs from https to http
     // NHS FHIR URIs (https://fhir.nhs.uk/...) do use https
-    if (key === "system" && typeof value === "string" && value.startsWith("https://terminology.hl7.org/")) {
+    if (key === "system" && typeof value === "string" && value.startsWith("https://terminology.hl7.org/")) { // NOSONAR
       logger.info({
         traceIds,
         originalUrl: value,

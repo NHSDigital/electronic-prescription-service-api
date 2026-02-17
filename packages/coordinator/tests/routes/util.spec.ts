@@ -315,14 +315,15 @@ describe("CodeSystem URL normalization", () => {
     })
 
     const parsedResponse = JSON.parse(response.payload)
-    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
-    expect(parsedResponse.priority.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/processpriority")
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
+    expect(parsedResponse.priority.coding[0].system)
+      .toBe("http://terminology.hl7.org/CodeSystem/processpriority") // NOSONAR
 
     // Verify that normalization was logged
     expect(loggerInfoSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         originalUrl: "https://terminology.hl7.org/CodeSystem/claim-type",
-        normalizedUrl: "http://terminology.hl7.org/CodeSystem/claim-type"
+        normalizedUrl: "http://terminology.hl7.org/CodeSystem/claim-type" // NOSONAR
       }),
       "Normalizing HL7 URIs from https to http"
     )
@@ -334,7 +335,7 @@ describe("CodeSystem URL normalization", () => {
       type: {
         coding: [
           {
-            system: "http://terminology.hl7.org/CodeSystem/claim-type",
+            system: "http://terminology.hl7.org/CodeSystem/claim-type", // NOSONAR
             code: "pharmacy"
           }
         ]
@@ -361,7 +362,7 @@ describe("CodeSystem URL normalization", () => {
     })
 
     const parsedResponse = JSON.parse(response.payload)
-    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
 
     // Verify that no normalization was logged (since URL already http)
     const normalizationCalls = loggerInfoSpy.mock.calls.filter(call =>
@@ -409,7 +410,7 @@ describe("CodeSystem URL normalization", () => {
     })
 
     const parsedResponse = JSON.parse(response.payload)
-    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
     expect(parsedResponse.extension[0].url).toBe("https://fhir.nhs.uk/StructureDefinition/Extension-other")
   })
 
@@ -446,6 +447,6 @@ describe("CodeSystem URL normalization", () => {
     })
 
     const parsedResponse = JSON.parse(response.payload)
-    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type")
+    expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
   })
 })
