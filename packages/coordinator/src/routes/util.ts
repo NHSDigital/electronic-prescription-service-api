@@ -59,6 +59,15 @@ export async function handleResponse<T>(
   }
 }
 
+function extractTraceIds(headers: Hapi.Utils.Dictionary<string>): Record<string, string> {
+  return {
+    "x-request-id": headers["x-request-id"] || headers["nhsd-request-id"],
+    "x-amzn-trace-id": headers["x-amzn-trace-id"],
+    "nhsd-correlation-id": headers["nhsd-correlation-id"],
+    "nhsd-request-id": headers["nhsd-request-id"]
+  }
+}
+
 const getCircularReplacer = () => {
   const seen = new WeakSet()
   return (key: string, value: unknown) => {
@@ -79,10 +88,7 @@ export async function callFhirValidator(
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
     headers: {
       "Content-Type": requestHeaders["content-type"],
-      "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
-      "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
-      "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
-      "nhsd-request-id": requestHeaders["nhsd-request-id"]
+      ...extractTraceIds(requestHeaders)
     }
   })
 
@@ -161,13 +167,27 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
   }
 }
 
-const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
-  logger.info("Parsing request payload")
+function createCodeSystemNormalizer(logger: pino.Logger, traceIds: Record<string, string>) {
+  return (key: string, value: unknown): unknown => {
+    if (key === "system" && typeof value === "string" && value.startsWith("https://terminology.hl7.org/CodeSystem/")) {
+      logger.info({
+        traceIds,
+        originalUrl: value,
+        normalizedUrl: value.replace("https://", "http://")
+      }, "Normalizing CodeSystem URL from https to http")
+      return value.replace("https://", "http://")
+    }
+    return value
+  }
+}
 
+const parsePayload = (payload: HapiPayload, logger: pino.Logger, traceIds: Record<string, string>): unknown => {
+  logger.info("Parsing request payload")
+  const normalizeCodeSystemReviver = createCodeSystemNormalizer(logger, traceIds)
   if (Buffer.isBuffer(payload)) {
-    return LosslessJson.parse(payload.toString())
+    return LosslessJson.parse(payload.toString(), normalizeCodeSystemReviver)
   } else if (typeof payload === "string") {
-    return LosslessJson.parse(payload)
+    return LosslessJson.parse(payload, normalizeCodeSystemReviver)
   } else {
     return {}
   }
@@ -176,7 +196,7 @@ const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
 type FhirPayload = fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task
 
 export const getPayload = async (request: Hapi.Request): Promise<FhirPayload> => {
-  const payload = parsePayload(request.payload, request.logger)
+  const payload = parsePayload(request.payload, request.logger, extractTraceIds(request.headers))
 
   if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
     // AEA-2743 - Log identifiers within incoming payloads
