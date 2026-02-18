@@ -10,6 +10,8 @@ import {convertHL7V3DateTimeToIsoDateTimeString} from "../../common/dateTime"
 import {fhir, hl7V3} from "@models"
 import {createPatient} from "../patient"
 
+const CANCELLATION_CODES_WITH_DISPENSER_DETAILS = ["0002", "0003", "0004"]
+
 export function translateSpineCancelResponseIntoBundle(cancellationResponse: hl7V3.CancellationResponse): fhir.Bundle {
   return {
     resourceType: "Bundle",
@@ -94,7 +96,7 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
   )
   bundleResources.unshift(messageHeader)
 
-  if (cancellationResponse.performer) {
+  if (cancellationResponse.performer && includeDispenserDetails(cancellationResponse)) {
     const performerAgentPerson = cancellationResponse.performer.AgentPerson
     let translatedPerformer
     if (roleProfileIdIdentical(performerAgentPerson, cancelRequesterAgentPerson)) {
@@ -116,6 +118,11 @@ function createBundleEntries(cancellationResponse: hl7V3.CancellationResponse) {
 
   bundleResources.sort(orderBundleResources)
   return bundleResources.map(convertResourceToBundleEntry)
+}
+
+function includeDispenserDetails(cancellationResponse: hl7V3.CancellationResponse) {
+  const cancellationCode = cancellationResponse.pertinentInformation3.pertinentResponse.value._attributes.code
+  return CANCELLATION_CODES_WITH_DISPENSER_DETAILS.includes(cancellationCode)
 }
 
 function createDispenserInfoReference(practitionerId: string, organizationCode: string, organizationName: string) {

@@ -117,6 +117,44 @@ describe("bundle entries", () => {
     expect(getMedicationRequests(performerFhirBundle)[0].dispenseRequest).toBeDefined()
   })
 
+  test.each([
+    "0002",
+    "0003",
+    "0004"
+  ])("performer details are added when cancellation code is %s", (cancellationCode) => {
+    const cancellationResponse = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
+    cancellationResponse.pertinentInformation3.pertinentResponse.value._attributes.code = cancellationCode
+
+    const bundle = translateSpineCancelResponseIntoBundle(cancellationResponse)
+    const practitioners = getPractitioners(bundle)
+    const practitionerRoles = getPractitionerRoles(bundle)
+    const organizations = getOrganizations(bundle)
+
+    const practitionerNames = practitioners.map(practitioner => practitioner.name[0].text)
+    expect(practitionerNames).toContain("Taylor Paul")
+
+    const practitionerRoleCodes = practitionerRoles.map(practitionerRole => practitionerRole.code[0].coding[0].code)
+    expect(practitionerRoleCodes).toContain("S8003:G8003:R8003")
+
+    const organizationPostcodes = organizations.flatMap(organization => organization.address.map(a => a.postalCode))
+    expect(organizationPostcodes).toContain("PR26 7QN")
+  })
+
+  test.each([
+    "0001",
+    "0005",
+    "0006"
+  ])("performer details are not added when cancellation code is outside 0002/0003/0004 -> %s", (cancellationCode) => {
+    const nonDispenserCancellationResponse = getCancellationResponse(
+      TestResources.spineResponses.cancellationDispensedError)
+    nonDispenserCancellationResponse.pertinentInformation3.pertinentResponse.value._attributes.code = cancellationCode
+    nonDispenserCancellationResponse.pertinentInformation3.pertinentResponse.value._attributes.displayName =
+      "Prescription/item has expired"
+
+    const nonDispenserBundle = translateSpineCancelResponseIntoBundle(nonDispenserCancellationResponse)
+    expect(getMedicationRequests(nonDispenserBundle)[0].dispenseRequest).toBeUndefined()
+  })
+
   test("entries are not duplicated", () => {
     const dispenseError = getCancellationResponse(TestResources.spineResponses.cancellationDispensedError)
     dispenseError.performer.AgentPerson.id = dispenseError.author.AgentPerson.id
