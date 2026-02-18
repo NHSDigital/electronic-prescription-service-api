@@ -88,9 +88,13 @@ export async function callFhirValidator(
   logger: pino.Logger = null
 ): Promise<fhir.OperationOutcome> {
   // Payload is already normalised if it went through externalValidator or getPayload
+  if (logger) {
+    logger.info({payloadType: typeof payload, isBuffer: Buffer.isBuffer(payload), ...extractTraceIds(requestHeaders)},
+      "Preparing to send payload to FHIR validator")
+  }
   const payloadString = typeof payload === "string" || Buffer.isBuffer(payload)
     ? payload.toString()
-    : JSON.stringify(payload)
+    : LosslessJson.stringify(payload)
 
   if (logger) {
     logger.info({payload, payloadString, ...extractTraceIds(requestHeaders)}, "Sending payload to FHIR validator")
@@ -126,6 +130,7 @@ export async function getFhirValidatorErrors(
     request.logger.info("Making call to FHIR validator")
     // Use the already-parsed and normalised payload if available, otherwise use raw payload
     const payload = request.app.parsedPayload ?? request.payload
+    request.logger.info({payloadType: typeof payload}, "XXXXMaking call to FHIR validator")
     const validatorResponseData = await callFhirValidator(payload as HapiPayload, request.headers, request.logger)
     request.logger.info("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
