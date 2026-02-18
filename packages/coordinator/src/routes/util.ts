@@ -96,7 +96,7 @@ export async function callFhirValidator(
     }
   }
   const normalisedPayload = problematicPayload
-    ? parsePayload(payload, logger, extractTraceIds(requestHeaders)) : payload
+    ? JSON.stringify(parsePayload(payload, logger, extractTraceIds(requestHeaders))) : payload
   if (logger) {
     logger.warn({normalisedPayload: normalisedPayload.toString()}, "Normalised payload to be sent to FHIR validator")
   }
