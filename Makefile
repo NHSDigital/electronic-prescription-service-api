@@ -57,7 +57,7 @@ install:
 	$(BUILD_MESSAGE)
 	$(MAKE) $(INSTALL_TARGET)
 
-lint:
+lint: check-language-versions
 	$(BUILD_MESSAGE)
 	$(MAKE) $(LINT_TARGET)
 
@@ -329,13 +329,6 @@ lint-githubactions:
 lint-all: lint-api lint-epsat lint-githubactions
 
 ## check licenses
-
-check-licenses-api:
-	echo "not implemented in console"
-check-licenses-epsat:
-	echo "not implemented in console"
-
-check-licenses-all: check-licenses-api check-licenses-epsat
 
 check-language-versions:
 	./scripts/check_language_versions.sh
