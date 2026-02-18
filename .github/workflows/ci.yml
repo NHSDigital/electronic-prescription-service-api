@@ -11,7 +11,6 @@ jobs:
   get_config_values:
     runs-on: ubuntu-22.04
     outputs:
-      asdf_version: ${{ steps.asdf-version.outputs.version }}
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
       devcontainer_version: ${{ steps.load-config.outputs.DEVCONTAINER_VERSION }}
       devcontainer_image: ${{ steps.load-config.outputs.DEVCONTAINER_IMAGE }}
@@ -19,9 +18,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: Get asdf version
-        id: asdf-version
-        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
       - name: Load config value
         id: load-config
         run: |
@@ -35,10 +31,10 @@ jobs:
           } >> "$GITHUB_OUTPUT"
   
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks.yml@997a1946c83bb2a9eda418847ed640738af949ff
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@use_container_at_job_level
     needs: [get_config_values]
     with:
-      asdfVersion: ${{ needs.get_config_values.outputs.asdf_version }}
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
       run_docker_scan: true
       docker_images: fhir-facade,validator
     secrets:
@@ -70,10 +66,10 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_config_values]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release.yml@997a1946c83bb2a9eda418847ed640738af949ff
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@use_container_at_job_level
     with:
       dry_run: true
-      asdfVersion: ${{ needs.get_config_values.outputs.asdf_version }}
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
       branch_name: master
       tag_format: ${{ needs.get_config_values.outputs.tag_format }}
       main_branch: master
