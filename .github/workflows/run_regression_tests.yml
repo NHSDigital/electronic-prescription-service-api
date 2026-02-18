@@ -25,7 +25,10 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: "ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}"
-      options: --user 1001:1001
+      options: --user 1001:1001 --group-add 128
+    defaults:
+      run:
+        shell: bash
     environment: ${{ inputs.ENVIRONMENT }}
     permissions:
       id-token: write

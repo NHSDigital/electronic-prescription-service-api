@@ -17,7 +17,10 @@ jobs:
     runs-on: ubuntu-22.04
     container:
       image: "ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}"
-      options: --user 1001:1001
+      options: --user 1001:1001 --group-add 128
+    defaults:
+      run:
+        shell: bash
     permissions:
       id-token: write
       contents: read
@@ -32,12 +35,8 @@ jobs:
           ref: ${{ env.BRANCH_NAME }}
 
       - name: make install
-        uses: anthony-nhs/docker-run-action-fork@83cfde66c34330c3ec4f6270a569a6701530d775
-        with:
-          workspace_folder: ${{ github.workspace }}
-          image: ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}
-          run: |
-            make install build-proxygen-specification
+        run: |
+          make install build-proxygen-specification
 
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
