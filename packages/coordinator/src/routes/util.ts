@@ -170,7 +170,6 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
     const parsedPayload = parsePayload(request.payload, request.logger, extractTraceIds(request.headers))
-
     // keep payload for reuse in the handler
     request.app.parsedPayload = parsedPayload
 
@@ -190,19 +189,14 @@ function createUriNormaliser(logger: pino.Logger, traceIds: Record<string, strin
     // Only normalise HL7 terminology URIs from https to http
     // NHS FHIR URIs (https://fhir.nhs.uk/...) do use https
     if (key === "system" && typeof value === "string"
-      && (value.startsWith("https://terminology.hl7.org/")
-        || value.startsWith("https://hl7.org/fhir/CodeSystem"))) {
+      && (value.startsWith("https://terminology.hl7.org/") || value.startsWith("https://hl7.org/fhir/CodeSystem"))) {
       const originalUrl = value
       const normalisedUrl = value.replace("https://terminology.hl7.org/", "http://terminology.hl7.org/") // NOSONAR
         .replace("https://hl7.org/fhir/CodeSystem", "http://hl7.org/fhir/CodeSystem") // NOSONAR
-      logger.info({traceIds, originalUrl, normalisedUrl},
-        "Normalizing HL7 URIs from https to http")
+      logger.info({traceIds, originalUrl, normalisedUrl}, "Normalizing HL7 URIs from https to http")
       return normalisedUrl
     } else {
-      logger.info({
-        traceIds,
-        originalUrl: value
-      }, "No need to normalise HL7 URIs from https to http")
+      logger.info({traceIds, originalUrl: value}, "No need to normalise HL7 URIs from https to http")
     }
     return value
   }
