@@ -86,16 +86,18 @@ export async function callFhirValidator(
   requestHeaders: Hapi.Utils.Dictionary<string>,
   logger: pino.Logger = null
 ): Promise<fhir.OperationOutcome> {
+  const problematicPayload = payload.toString().includes("https://terminology.hl7.org/")
+    || payload.toString().includes("https://hl7.org/fhir/CodeSystem")
   if (logger) {
-    const problematicPayload = payload.toString().includes("https://terminology.hl7.org/")
-      || payload.toString().includes("https://hl7.org/fhir/CodeSystem")
     if (problematicPayload) {
       logger.warn({payload: payload.toString()}, "Payload contains HL7 terminology URIs that need normalization")
     } else {
       logger.info({payload: payload.toString()}, "No normalisation of HL7 URIs needed")
     }
   }
-  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
+  const normalisedPayload = problematicPayload
+    ? parsePayload(payload, logger, extractTraceIds(requestHeaders)) : payload
+  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, normalisedPayload.toString(), {
     headers: {
       "Content-Type": requestHeaders["content-type"],
       ...extractTraceIds(requestHeaders)
