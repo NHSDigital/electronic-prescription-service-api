@@ -38,7 +38,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks.yml@use_container_at_job_level
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@use_container_at_job_level
     needs: [get_config_values]
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
