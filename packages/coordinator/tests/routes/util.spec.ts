@@ -273,7 +273,7 @@ describe("CodeSystem URL normalization", () => {
     await server.stop()
   })
 
-  test("normalizes https CodeSystem URLs to http during payload parsing", async () => {
+  test("normalises https CodeSystem URLs to http during payload parsing", async () => {
     const payloadWithHttps = JSON.stringify({
       resourceType: "Claim",
       type: {
@@ -323,7 +323,7 @@ describe("CodeSystem URL normalization", () => {
     expect(loggerInfoSpy).toHaveBeenCalledWith(
       expect.objectContaining({
         originalUrl: "https://terminology.hl7.org/CodeSystem/claim-type",
-        normalizedUrl: "http://terminology.hl7.org/CodeSystem/claim-type" // NOSONAR
+        normalisedUrl: "http://terminology.hl7.org/CodeSystem/claim-type" // NOSONAR
       }),
       "Normalizing HL7 URIs from https to http"
     )
@@ -371,7 +371,7 @@ describe("CodeSystem URL normalization", () => {
     expect(normalizationCalls).toHaveLength(0)
   })
 
-  test("only normalizes terminology.hl7.org CodeSystem URLs", async () => {
+  test("only normalises terminology.hl7.org CodeSystem URLs", async () => {
     const payloadWithMixedUrls = JSON.stringify({
       resourceType: "Claim",
       type: {
