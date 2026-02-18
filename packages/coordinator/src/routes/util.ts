@@ -97,6 +97,9 @@ export async function callFhirValidator(
   }
   const normalisedPayload = problematicPayload
     ? parsePayload(payload, logger, extractTraceIds(requestHeaders)) : payload
+  if (logger) {
+    logger.warn({normalisedPayload: normalisedPayload.toString()}, "Normalised payload to be sent to FHIR validator")
+  }
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, normalisedPayload.toString(), {
     headers: {
       "Content-Type": requestHeaders["content-type"],
