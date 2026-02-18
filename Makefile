@@ -433,7 +433,12 @@ verify-signature:
 compile:
 	echo "Does nothing"
 
-docker-build: docker-build-fhir-facade docker-build-validator
+docker-build: guard-DOCKER_IMAGE
+	@case "$${DOCKER_IMAGE:-}" in \
+		fhir-facade) $(MAKE) docker-build-fhir-facade ;; \
+		validator) $(MAKE) docker-build-validator ;; \
+		*) echo "Error: DOCKER_IMAGE must be 'fhir-facade' or 'validator'"; exit 1 ;; \
+	esac
 
 docker-build-fhir-facade:
 	docker build -t "fhir-facade" -f packages/coordinator/Dockerfile .
