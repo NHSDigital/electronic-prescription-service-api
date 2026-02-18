@@ -315,6 +315,7 @@ paths:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
         - nhs-cis2-aal3: []
+        - app-level3: []
   /FHIR/R4/Task:
     post:
       operationId: process-message
@@ -439,7 +440,6 @@ paths:
           description: "Dummy response"
       security:
         - nhs-cis2-aal3: []
-        - app-level3: [] # I think I need this here too, to get through to the #dispense-notification operation with app-restricted access.
   /FHIR/R4/$validate:
     post:
       operationId: validate
@@ -567,7 +567,6 @@ paths:
                     $ref: examples/spec/errors/example-a-validation-error-missing-field/Response-FhirError.json
       security:
         - nhs-cis2-aal3: []
-        - app-level3: []
   /FHIR/R4/Task#withdraw:
     post:
       operationId: withdraw
