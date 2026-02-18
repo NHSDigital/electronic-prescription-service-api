@@ -6,7 +6,7 @@
     "args": {
       "DOCKER_GID": "${env:DOCKER_GID:}",
       "IMAGE_NAME": "fhir_facade_api",
-      "IMAGE_VERSION": "pr-20-b2ea009",
+      "IMAGE_VERSION": "v1.0.4",
       "USER_UID": "${localEnv:USER_ID:}",
       "USER_GID": "${localEnv:GROUP_ID:}"
     },

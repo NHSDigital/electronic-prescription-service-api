@@ -18,7 +18,6 @@ jobs:
   get_config_values:
     runs-on: ubuntu-22.04
     outputs:
-      asdf_version: ${{ steps.asdf-version.outputs.version }}
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
       devcontainer_version: ${{ steps.load-config.outputs.DEVCONTAINER_VERSION }}
       devcontainer_image: ${{ steps.load-config.outputs.DEVCONTAINER_IMAGE }}
@@ -26,9 +25,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: Get asdf version
-        id: asdf-version
-        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
       - name: Load config value
         id: load-config
         run: |
