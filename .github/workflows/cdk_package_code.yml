@@ -66,7 +66,6 @@ jobs:
       - name: "package cdk"
         run: |
           tar -rf artifact.tar \
-            .tool-versions \
             packages/cdk \
             packages/specification \
             node_modules \
