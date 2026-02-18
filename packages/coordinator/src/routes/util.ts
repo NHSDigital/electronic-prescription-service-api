@@ -186,11 +186,12 @@ function createCodeSystemNormalizer(logger: pino.Logger, traceIds: Record<string
     if (key === "system" && typeof value === "string"
       && (value.startsWith("https://terminology.hl7.org/")
         || value.startsWith("https://hl7.org/fhir/CodeSystem"))) {
-      value = value.replace("https://terminology.hl7.org/", "http://terminology.hl7.org/") // NOSONAR
+      const originalVal = value
+      const normalizedVal = value.replace("https://terminology.hl7.org/", "http://terminology.hl7.org/") // NOSONAR
         .replace("https://hl7.org/fhir/CodeSystem", "http://hl7.org/fhir/CodeSystem") // NOSONAR
-      logger.info({traceIds, originalUrl: value, normalizedUrl: value},
+      logger.info({traceIds, originalUrl: originalVal, normalizedUrl: normalizedVal},
         "Normalizing HL7 URIs from https to http")
-      return value
+      return normalizedVal
     } else {
       logger.info({
         traceIds,
