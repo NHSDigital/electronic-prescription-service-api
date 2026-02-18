@@ -93,7 +93,7 @@ export async function callFhirValidator(
     : JSON.stringify(payload)
 
   if (logger) {
-    logger.info("Sending payload to FHIR validator")
+    logger.info({payload, payloadString, ...extractTraceIds(requestHeaders)}, "Sending payload to FHIR validator")
   }
 
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payloadString, {
