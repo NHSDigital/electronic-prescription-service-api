@@ -104,12 +104,14 @@ jobs:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
 
   release_code:
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
@@ -155,6 +157,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox

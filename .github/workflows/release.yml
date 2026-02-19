@@ -71,6 +71,7 @@ jobs:
       branch_name: master
       tag_format: ${{ needs.get_config_values.outputs.tag_format }}
       main_branch: master
+      verify_published_from_main_image: true
     secrets: inherit
 
   package_code:
@@ -80,12 +81,14 @@ jobs:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
-
+      verify_published_from_main_image: true
+  
   release_dev:
     needs: [tag_release, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
@@ -137,6 +140,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
@@ -190,6 +194,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: ref
       APIGEE_ENVIRONMENT: ref
@@ -239,6 +244,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: qa
       APIGEE_ENVIRONMENT: internal-qa
@@ -284,6 +290,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: int
       APIGEE_ENVIRONMENT: int
@@ -335,6 +342,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense-sandox
       AWS_ENVIRONMENT: int
       APIGEE_ENVIRONMENT: sandbox
@@ -377,6 +385,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: true
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: prod
       APIGEE_ENVIRONMENT: prod

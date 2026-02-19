@@ -76,6 +76,7 @@ jobs:
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
       STACK_NAME: prescribe-dispense
       AWS_ENVIRONMENT: ref
       APIGEE_ENVIRONMENT: ref

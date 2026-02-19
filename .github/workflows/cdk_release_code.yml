@@ -102,6 +102,9 @@ on:
       runtime_docker_image:
         type: string
         required: true
+      verify_published_from_main_image:
+        type: boolean
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -132,10 +135,17 @@ on:
       DEFAULT_PTL_PARTY_KEY:
         required: false
 jobs:
+  verify_attestation:
+    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@use_container_at_job_level
+    with:
+      runtime_docker_image: "${{ inputs.runtime_docker_image }}"
+      verify_published_from_main_image: ${{ inputs.verify_published_from_main_image }}
+
   release_code_and_api:
     runs-on: ubuntu-22.04
+    needs: verify_attestation
     container:
-      image: "ghcr.io/nhsdigital/eps-devcontainers/${{ inputs.runtime_docker_image }}"
+      image: ${{ needs.verify_attestation.outputs.pinned_image }}
       options: --user 1001:1001 --group-add 128
     defaults:
       run:
@@ -334,7 +344,7 @@ jobs:
             ./.build/packages/specification/dist/fhir-prescribing.resolved.json
 
       - name: Checkout gh-pages
-        if: ${{ !startsWith(inputs.STACK_NAME, 'cpt-pr-') }}
+        if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: gh-pages
