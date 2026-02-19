@@ -40,7 +40,10 @@ export default [
 
       // If we're application-restricted, we don't have an SDS role ID, and can skip that check
       const appRestricted = isApplicationRestrictedScope(scope)
-      logger.info(`Application restricted scope? appRestricted=${appRestricted}, scope=${scope}`)
+      logger.info(
+        {appRestricted, scope}, // pino places the object first, which looks backwards to me
+        "Application restricted state for incoming request"
+      )
       const checkAccessTokenSDSRoleID = !appRestricted
       const issues = parametersValidator.verifyParameters(
         parameters,
