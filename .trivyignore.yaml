@@ -104,3 +104,9 @@ vulnerabilities:
   - id: CVE-2026-26960
     statement: tar vulnerability accepted as risk
     expired_at: 2026-06-01
+  - id: CVE-2026-2699
+    statement: tar vulnerability accepted as risk
+    expired_at: 2026-06-01
+  - id: CVE-2026-26996
+    statement: minimatch vulnerability accepted as risk
+    expired_at: 2026-06-01
