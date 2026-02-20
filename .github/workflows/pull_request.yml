@@ -10,7 +10,7 @@ env:
 jobs:
   dependabot-auto-approve-and-merge:
     needs: quality_checks
-    uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@997a1946c83bb2a9eda418847ed640738af949ff
+    uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@d215f841eb18b803e339e4ed597ed1f30e086e17
     secrets:
       AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
       AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
