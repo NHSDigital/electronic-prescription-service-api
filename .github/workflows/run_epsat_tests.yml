@@ -64,7 +64,7 @@ jobs:
           echo run identifier "$ID"-"$ENV"  >> "$GITHUB_STEP_SUMMARY"
   verify_attestation:
     needs: get_config_values
-    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@use_container_at_job_level
+    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
     with:
       runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
       verify_published_from_main_image: false
