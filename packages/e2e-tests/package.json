@@ -28,7 +28,7 @@
     "@types/jsonwebtoken": "^9.0.10",
     "axios": "^1.13.5",
     "axios-cookiejar-support": "^6.0.5",
-    "jsdom": "^28.0.0",
+    "jsdom": "^28.1.0",
     "jsonwebtoken": "^9.0.3",
     "lossless-json": "^4.3.0",
     "moment": "^2.30.1",
