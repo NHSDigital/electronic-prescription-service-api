@@ -25,16 +25,16 @@ const ComparePage: React.FC = () => {
         {
           compareResult => {
             const compareResultReady = compareResult.prescription1 && compareResult.prescription2
-            if (compareResultReady){
+            if (compareResultReady) {
               return <CompareResult compareResult={compareResult} />
             }
 
             const comparePrescriptionsReady = comparePrescriptions.prescription1 && comparePrescriptions.prescription2
-            if(comparePrescriptionsReady){
+            if (comparePrescriptionsReady) {
               return <CompareSelectedPrescriptions comparePrescriptions={comparePrescriptions} />
             }
 
-            return <PrescriptionSelection initialValues={initialValues} onSubmit={values => setComparePrescriptions(values)}/>
+            return <PrescriptionSelection initialValues={initialValues} onSubmit={values => setComparePrescriptions(values)} />
           }
         }
       </LongRunningTask>
@@ -73,7 +73,7 @@ const CompareSelectedPrescriptions = comparePrescriptions => {
 const PrescriptionSelection = (intialValues, onSubmit) => {
   return (
     <Formik<ComparePrescriptions>
-      initialValues = {intialValues}
+      initialValues={intialValues}
       onSubmit={onSubmit}
     >
       {formik =>
