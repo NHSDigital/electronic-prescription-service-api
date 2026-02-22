@@ -11,6 +11,7 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
+import {isApplicationRestrictedScope} from "../../services/validation/scope-validator"
 import {
   getAsid,
   getScope,
@@ -36,7 +37,21 @@ export default [
       const scope = getScope(request.headers)
       const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
       const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-      const issues = parametersValidator.verifyParameters(parameters, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+
+      // If we're application-restricted, we don't have an SDS role ID, and can skip that check
+      const appRestricted = isApplicationRestrictedScope(scope)
+      logger.info(
+        {appRestricted, scope}, // pino places the object first, which looks backwards to me
+        "Application restricted state for incoming request"
+      )
+      const checkAccessTokenSDSRoleID = !appRestricted
+      const issues = parametersValidator.verifyParameters(
+        parameters,
+        scope,
+        accessTokenSDSUserID,
+        accessTokenSDSRoleID,
+        checkAccessTokenSDSRoleID
+      )
 
       if (issues.length) {
         const response = fhir.createOperationOutcome(issues, parameters.meta?.lastUpdated)
