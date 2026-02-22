@@ -43,7 +43,7 @@ describe("header functions do the right thing", () => {
 
   test("getAsid gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
-    const newHeaders = validTestHeaders
+    const newHeaders = {...validTestHeaders}
     newHeaders["nhsd-asid"] = "new-asid"
     const asid = getAsid(newHeaders)
     expect(asid).toBe("new-asid")
@@ -103,9 +103,9 @@ describe("header functions do the right thing", () => {
 
   test("getSdsUserUniqueId gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
-    const newHeaders = validTestHeaders
+    const newHeaders = {...validTestHeaders}
     newHeaders["nhsd-identity-uuid"] = "new-identity-uuid"
-    const sdsUserUniqueId = getSdsUserUniqueId(validTestHeaders)
+    const sdsUserUniqueId = getSdsUserUniqueId(newHeaders)
     expect(sdsUserUniqueId).toBe("new-identity-uuid")
   })
 
@@ -117,9 +117,9 @@ describe("header functions do the right thing", () => {
 
   test("getSdsRoleProfileId gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
-    const newHeaders = validTestHeaders
+    const newHeaders = {...validTestHeaders}
     newHeaders["nhsd-session-urid"] = "new-session-urid"
-    const sdsUserUniqueId = getSdsRoleProfileId(validTestHeaders)
+    const sdsUserUniqueId = getSdsRoleProfileId(newHeaders)
     expect(sdsUserUniqueId).toBe("new-session-urid")
   })
 
@@ -132,9 +132,9 @@ describe("header functions do the right thing", () => {
   test("getScope gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
     process.env.MTLS_SPINE_CLIENT = "false"
-    const newHeaders = validTestHeaders
+    const newHeaders = {...validTestHeaders}
     newHeaders["nhsd-scope"] = "scope1 scope2"
-    const scope = getScope(validTestHeaders)
+    const scope = getScope(newHeaders)
     expect(scope).toBe("scope1 scope2")
   })
 
@@ -153,9 +153,9 @@ describe("header functions do the right thing", () => {
 
   test("getShowValidationWarnings gets correct value when not sandbox", () => {
     process.env.SANDBOX = "0"
-    const newHeaders = validTestHeaders
+    const newHeaders = {...validTestHeaders}
     newHeaders["x-show-validation-warnings"] = "true"
-    const showValidationWarnings = getShowValidationWarnings(validTestHeaders)
+    const showValidationWarnings = getShowValidationWarnings(newHeaders)
     expect(showValidationWarnings).toBe("true")
   })
 

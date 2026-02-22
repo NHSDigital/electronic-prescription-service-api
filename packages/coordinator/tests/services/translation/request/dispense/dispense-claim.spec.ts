@@ -212,14 +212,47 @@ describe("convertDispenseClaim", () => {
   })
 })
 
-describe("convertDispenseClaim for repeat ERD", () => {
+describe("convertDispenseClaim for repeat ERD with repeat information at item and detail only", () => {
   const claim: fhir.Claim = TestResources.getClaimFromTestFile(
-    "../../tests/resources/test-data/fhir/dispensing/Claim-Request-Repeat.json"
+    "../../tests/resources/test-data/fhir/dispensing/claim/Claim-Request-Repeat.json"
   )
   const result = convertDispenseClaim(claim)
   const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
-  const suuplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
-  const supplyLineItemRepeatNumber = suuplyHeaderPertOne.pertinentSuppliedLineItem.repeatNumber
+  const countSupplyHeaderPertInfo = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.length
+  const supplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
+  const supplyLineItemRepeatNumber = supplyHeaderPertOne.pertinentSuppliedLineItem.repeatNumber
+  test("should have 4 pertinentInformation1 elements in supplyHeader of FHIR claim", () => {
+    expect(countSupplyHeaderPertInfo).toEqual(4)
+  })
+
+  test("should plus one to numberofRepeatsIssued converted to pertinentSupplyHeader.repeatNumber.low", () => {
+    expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("2")
+  })
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyHeader.repeatNumber.high", () => {
+    expect(supplyHeaderRepeatNumber.high._attributes.value).toEqual("5")
+  })
+
+  test("should plus one to numberofRepeatsIssued to converted pertinentSupplyLineitem.repeatNumber.low", () => {
+    expect(supplyLineItemRepeatNumber.low._attributes.value).toEqual("3")
+  })
+  test("should plus one to numberofRepeatsAllowed converted to pertinentSupplyLineitem.repeatNumber.high", () => {
+    expect(supplyLineItemRepeatNumber.high._attributes.value).toEqual("6")
+  })
+})
+
+describe("convertDispenseClaim for repeat ERD with deprecated subDetail repeat information", () => {
+  const claim: fhir.Claim = TestResources.getClaimFromTestFile(
+    "../../tests/resources/test-data/fhir/dispensing/claim/Claim-Request-Repeat-deprecated.json"
+  )
+  const result = convertDispenseClaim(claim)
+  const supplyHeaderRepeatNumber = result.pertinentInformation1.pertinentSupplyHeader.repeatNumber
+  const countSupplyHeaderPertInfo = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1.length
+  const supplyHeaderPertOne = result.pertinentInformation1.pertinentSupplyHeader.pertinentInformation1[0]
+  const supplyLineItemRepeatNumber = supplyHeaderPertOne.pertinentSuppliedLineItem.repeatNumber
+  test("should have 4 pertinentInformation1 elements in supplyHeader of FHIR claim", () => {
+    expect(countSupplyHeaderPertInfo).toEqual(4)
+  })
+
   test("should plus one to numberofRepeatsIssued converted to pertinentSupplyHeader.repeatNumber.low", () => {
     expect(supplyHeaderRepeatNumber.low._attributes.value).toEqual("3")
   })

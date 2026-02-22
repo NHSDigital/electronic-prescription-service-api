@@ -15,6 +15,7 @@ import {
   isTask
 } from "../utils/type-guards"
 import axiosRetry from "axios-retry"
+import "../types/hapi-extensions"
 
 type HapiPayload = string | object | Buffer | stream
 
@@ -59,6 +60,15 @@ export async function handleResponse<T>(
   }
 }
 
+function extractTraceIds(headers: Hapi.Utils.Dictionary<string>): Record<string, string> {
+  return {
+    "x-request-id": headers["x-request-id"] || headers["nhsd-request-id"],
+    "x-amzn-trace-id": headers["x-amzn-trace-id"],
+    "nhsd-correlation-id": headers["nhsd-correlation-id"],
+    "nhsd-request-id": headers["nhsd-request-id"]
+  }
+}
+
 const getCircularReplacer = () => {
   const seen = new WeakSet()
   return (key: string, value: unknown) => {
@@ -74,15 +84,26 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Utils.Dictionary<string>
+  requestHeaders: Hapi.Utils.Dictionary<string>,
+  logger: pino.Logger = null
 ): Promise<fhir.OperationOutcome> {
-  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payload.toString(), {
+  // Payload is already normalised if it went through externalValidator or getPayload
+  if (logger) {
+    logger.info({payloadType: typeof payload, isBuffer: Buffer.isBuffer(payload), ...extractTraceIds(requestHeaders)},
+      "Preparing to send payload to FHIR validator")
+  }
+  const payloadString = typeof payload === "string" || Buffer.isBuffer(payload)
+    ? payload.toString()
+    : LosslessJson.stringify(payload)
+
+  if (logger) {
+    logger.info({payload, payloadString, ...extractTraceIds(requestHeaders)}, "Sending payload to FHIR validator")
+  }
+
+  const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payloadString, {
     headers: {
       "Content-Type": requestHeaders["content-type"],
-      "x-request-id": requestHeaders["x-request-id"] || requestHeaders["nhsd-request-id"],
-      "x-amzn-trace-id": requestHeaders["x-amzn-trace-id"],
-      "nhsd-correlation-id": requestHeaders["nhsd-correlation-id"],
-      "nhsd-request-id": requestHeaders["nhsd-request-id"]
+      ...extractTraceIds(requestHeaders)
     }
   })
 
@@ -107,7 +128,10 @@ export async function getFhirValidatorErrors(
     request.logger.info("Skipping call to FHIR validator")
   } else {
     request.logger.info("Making call to FHIR validator")
-    const validatorResponseData = await callFhirValidator(request.payload, request.headers)
+    // Use the already-parsed and normalised payload if available, otherwise use raw payload
+    const payload = request.app.parsedPayload ?? request.payload
+    request.logger.info({payloadType: typeof payload}, "XXXXMaking call to FHIR validator")
+    const validatorResponseData = await callFhirValidator(payload as HapiPayload, request.headers, request.logger)
     request.logger.info("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
     if (filteredResponse.issue.length) {
@@ -150,6 +174,10 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
+    const parsedPayload = parsePayload(request.payload, request.logger, extractTraceIds(request.headers))
+    // keep payload for reuse in the handler
+    request.app.parsedPayload = parsedPayload
+
     const showWarnings = getShowValidationWarnings(request.headers) === "true"
     const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
     if (fhirValidatorResponse) {
@@ -161,13 +189,31 @@ export function externalValidator(handler: Hapi.Lifecycle.Method) {
   }
 }
 
-const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
-  logger.info("Parsing request payload")
+function createUriNormaliser(logger: pino.Logger, traceIds: Record<string, string>) {
+  return (key: string, value: unknown): unknown => {
+    // Only normalise HL7 terminology URIs from https to http
+    // NHS FHIR URIs (https://fhir.nhs.uk/...) do use https
+    if (key === "system" && typeof value === "string"
+      && (value.startsWith("https://terminology.hl7.org/") || value.startsWith("https://hl7.org/fhir/CodeSystem"))) {
+      const originalUrl = value
+      const normalisedUrl = value.replace("https://terminology.hl7.org/", "http://terminology.hl7.org/") // NOSONAR
+        .replace("https://hl7.org/fhir/CodeSystem", "http://hl7.org/fhir/CodeSystem") // NOSONAR
+      logger.info({traceIds, originalUrl, normalisedUrl}, "Normalizing HL7 URIs from https to http")
+      return normalisedUrl
+    } else {
+      logger.info({traceIds, originalUrl: value}, "No need to normalise HL7 URIs from https to http")
+    }
+    return value
+  }
+}
 
+const parsePayload = (payload: HapiPayload, logger: pino.Logger, traceIds: Record<string, string>): unknown => {
+  logger.info("Parsing request payload")
+  const normaliseUriReviver = createUriNormaliser(logger, traceIds)
   if (Buffer.isBuffer(payload)) {
-    return LosslessJson.parse(payload.toString())
+    return LosslessJson.parse(payload.toString(), normaliseUriReviver)
   } else if (typeof payload === "string") {
-    return LosslessJson.parse(payload)
+    return LosslessJson.parse(payload, normaliseUriReviver)
   } else {
     return {}
   }
@@ -176,7 +222,12 @@ const parsePayload = (payload: HapiPayload, logger: pino.Logger): unknown => {
 type FhirPayload = fhir.Bundle | fhir.Claim | fhir.Parameters | fhir.Task
 
 export const getPayload = async (request: Hapi.Request): Promise<FhirPayload> => {
-  const payload = parsePayload(request.payload, request.logger)
+  // Reuse the parsed payload from externalValidator if available
+  const payload = request.app.parsedPayload ?? parsePayload(
+    request.payload,
+    request.logger,
+    extractTraceIds(request.headers)
+  )
 
   if (isBundle(payload) || isClaim(payload) || isParameters(payload) || isTask(payload)) {
     // AEA-2743 - Log identifiers within incoming payloads
