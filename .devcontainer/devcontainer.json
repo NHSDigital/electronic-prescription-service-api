@@ -1,18 +1,29 @@
-// For format details, see https://aka.ms/devcontainer.json. For config options, see the
-// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
 {
-  "name": "Ubuntu",
-  // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+  "name": "eps-fhir-facade-api",
   "build": {
     "dockerfile": "Dockerfile",
     "context": "..",
-    "args": {}
+    "args": {
+      "DOCKER_GID": "${env:DOCKER_GID:}",
+      "IMAGE_NAME": "fhir_facade_api",
+      "IMAGE_VERSION": "v1.0.7",
+      "USER_UID": "${localEnv:USER_ID:}",
+      "USER_GID": "${localEnv:GROUP_ID:}"
+    },
+    "updateRemoteUserUID": false
   },
+  "postAttachCommand": "git-secrets --register-aws; git-secrets --add-provider -- cat /usr/share/secrets-scanner/nhsd-rules-deny.txt",
   "mounts": [
     "source=${env:HOME}${env:USERPROFILE}/.aws,target=/home/vscode/.aws,type=bind",
     "source=${env:HOME}${env:USERPROFILE}/.ssh,target=/home/vscode/.ssh,type=bind",
-    "source=${env:HOME}${env:USERPROFILE}/.gnupg,target=/home/vscode/.gnupg,type=bind"
+    "source=${env:HOME}${env:USERPROFILE}/.gnupg,target=/home/vscode/.gnupg,type=bind",
+    "source=${env:HOME}${env:USERPROFILE}/.npmrc,target=/home/vscode/.npmrc,type=bind"
   ],
+  "containerUser": "vscode",
+  "remoteEnv": {
+    "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}"
+  },
+  "features": {},
   "customizations": {
     "vscode": {
       "extensions": [
@@ -43,24 +54,19 @@
         "python.testing.pytestEnabled": true,
         "python.linting.pylintEnabled": false,
         "python.linting.flake8Enabled": true,
-        "python.linting.enabled": true, // required to format on save
+        "python.linting.enabled": true,
         "editor.defaultFormatter": "baeumer.vscode-eslint",
-        "editor.formatOnPaste": false, // required
-        "editor.formatOnType": false, // required
-        "editor.formatOnSave": true, // optional
+        "editor.formatOnPaste": false,
+        "editor.formatOnType": false,
+        "editor.formatOnSave": true,
         "editor.formatOnSaveMode": "file",
-        "cSpell.words": ["fhir", "Formik", "pino", "serialisation"]
+        "cSpell.words": [
+          "fhir",
+          "Formik",
+          "pino",
+          "serialisation"
+        ]
       }
     }
-  },
-   "remoteEnv": { "LOCAL_WORKSPACE_FOLDER": "${localWorkspaceFolder}" },
-   "postAttachCommand": "docker build -f https://raw.githubusercontent.com/NHSDigital/eps-workflow-quality-checks/refs/tags/v4.0.4/dockerfiles/nhsd-git-secrets.dockerfile -t git-secrets . && poetry run pre-commit install --install-hooks -f",
-   "features": {
-     "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
-       "version": "latest",
-       "moby": "true",
-       "installDockerBuildx": "true"
-     },
-     "ghcr.io/devcontainers/features/github-cli:1": {}
-   }
+  }
 }

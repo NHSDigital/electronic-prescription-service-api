@@ -15,29 +15,33 @@ jobs:
       AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
       AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
 
-  get_asdf_version:
+  get_config_values:
     runs-on: ubuntu-22.04
     outputs:
-      asdf_version: ${{ steps.asdf-version.outputs.version }}
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+      devcontainer_version: ${{ steps.load-config.outputs.DEVCONTAINER_VERSION }}
+      devcontainer_image: ${{ steps.load-config.outputs.DEVCONTAINER_IMAGE }}
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: Get asdf version
-        id: asdf-version
-        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
       - name: Load config value
         id: load-config
         run: |
           TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
-          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+          DEVCONTAINER_IMAGE=$(jq -r '.build.args.IMAGE_NAME' .devcontainer/devcontainer.json)
+          DEVCONTAINER_VERSION=$(jq -r '.build.args.IMAGE_VERSION' .devcontainer/devcontainer.json)
+          {
+            echo "TAG_FORMAT=$TAG_FORMAT" 
+            echo "DEVCONTAINER_IMAGE=$DEVCONTAINER_IMAGE"
+            echo "DEVCONTAINER_VERSION=$DEVCONTAINER_VERSION"
+          } >> "$GITHUB_OUTPUT"
 
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks.yml@997a1946c83bb2a9eda418847ed640738af949ff
-    needs: [get_asdf_version]
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
+    needs: [get_config_values]
     with:
-      asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
       run_docker_scan: true
       docker_images: fhir-facade,validator
     secrets:
@@ -94,16 +98,20 @@ jobs:
           echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   package_code:
-    needs: [get_issue_number, get_commit_id]
+    needs: [get_issue_number, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_package_code.yml
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
 
   release_code:
-    needs: [get_issue_number, package_code, get_commit_id]
+    needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
@@ -145,9 +153,11 @@ jobs:
       DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
 
   release_sandbox_code:
-    needs: [get_issue_number, package_code, get_commit_id]
+    needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox

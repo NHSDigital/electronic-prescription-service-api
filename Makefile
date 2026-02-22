@@ -1,3 +1,19 @@
+.PHONY: \
+	all test release install lint build publish clean deep-clean compile \
+	install-api install-all install-epsat install-node install-python install-hooks install-validator \
+	download-openjdk \
+	build-api build-epsat build-all build-specification build-proxygen-specification combine-specification build-coordinator build-validator build-proxies \
+	test-api test-epsat test-all test-coordinator test-models test-bdd \
+	release-api release-epsat release-all \
+	prepare-for-api-release prepare-for-epsat-release \
+	run-specification run-coordinator run-validator run-epsat \
+	lint-api lint-epsat lint-githubactions lint-all \
+	check-licenses-api check-licenses-epsat check-licenses-all check-language-versions \
+	generate-mock-certs clear-pacts create-sandbox-pacts create-apim-pacts create-proxygen-pacts verify-pacts run-smoke-tests generate-postman-collection npm-audit-fix \
+	publish-fhir-release-notes-int publish-fhir-rc-release-notes-int publish-fhir-release-notes-prod mark-jira-released \
+	update-snapshots cdk-synth verify-signature \
+	docker-build docker-build-fhir-facade docker-build-validator %
+
 SHELL=/bin/bash -euo pipefail
 LATEST_VALIDATOR_VERSION=v1.0.311-alpha
 
@@ -27,11 +43,7 @@ else
 	BUILD_MESSAGE=echo running against all
 endif
 
-guard-%:
-	@ if [ "${${*}}" = "" ]; then \
-		echo "Environment variable $* not set"; \
-		exit 1; \
-	fi
+
 
 test:
 	$(BUILD_MESSAGE)
@@ -45,13 +57,9 @@ install:
 	$(BUILD_MESSAGE)
 	$(MAKE) $(INSTALL_TARGET)
 
-lint:
+lint: check-language-versions
 	$(BUILD_MESSAGE)
 	$(MAKE) $(LINT_TARGET)
-
-check-licenses:
-	$(BUILD_MESSAGE)
-	$(MAKE) $(CHECK_LICENSES_TARGET)
 
 build:
 	$(BUILD_MESSAGE)
@@ -64,8 +72,6 @@ all:
 	$(MAKE) build | tee -a build.log
 	$(MAKE) test | tee -a build.log
 	$(MAKE) release | tee -a build.log
-
-.PHONY: install build test publish release clean
 
 ## install stuff
 
@@ -324,13 +330,6 @@ lint-all: lint-api lint-epsat lint-githubactions
 
 ## check licenses
 
-check-licenses-api:
-	echo "not implemented in console"
-check-licenses-epsat:
-	echo "not implemented in console"
-
-check-licenses-all: check-licenses-api check-licenses-epsat
-
 check-language-versions:
 	./scripts/check_language_versions.sh
 
@@ -416,12 +415,6 @@ mark-jira-released: guard-release_version
 update-snapshots: install-all
 	npm run update-snapshots --workspace packages/tool/site/client
 
-cfn-guard:
-	./scripts/run_cfn_guard.sh
-
-aws-login:
-	aws sso login --sso-session sso-session
-
 cdk-synth:
 	npx cdk synth \
 		--quiet \
@@ -433,7 +426,12 @@ verify-signature:
 compile:
 	echo "Does nothing"
 
-docker-build: docker-build-fhir-facade docker-build-validator
+docker-build: guard-DOCKER_IMAGE
+	@case "$${DOCKER_IMAGE:-}" in \
+		fhir-facade) $(MAKE) docker-build-fhir-facade ;; \
+		validator) $(MAKE) docker-build-validator ;; \
+		*) echo "Error: DOCKER_IMAGE must be 'fhir-facade' or 'validator'"; exit 1 ;; \
+	esac
 
 docker-build-fhir-facade:
 	docker build -t "fhir-facade" -f packages/coordinator/Dockerfile .
@@ -442,3 +440,6 @@ docker-build-validator:
 	curl -L -o /tmp/manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/manifest.json"
 	curl -L -o /tmp/fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/fhir-validator.jar"
 	cd /tmp &&docker build -t "validator" -f Dockerfile .
+
+%:
+	@$(MAKE) -f /usr/local/share/eps/Mk/common.mk $@
