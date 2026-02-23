@@ -174,7 +174,29 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
 
 export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
-    const parsedPayload = parsePayload(request.payload, request.logger, extractTraceIds(request.headers))
+    const traceIds = extractTraceIds(request.headers)
+
+    let parsedPayload: unknown
+    try {
+      parsedPayload = parsePayload(request.payload, request.logger, traceIds)
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        const msg = "Failed to parse JSON encoded FHIR content"
+        request.logger.warn({errorMessage: error.message, traceIds}, msg)
+        const invalidJsonResponse: fhir.OperationOutcome = {
+          resourceType: "OperationOutcome",
+          issue: [{
+            severity: "error",
+            code: fhir.IssueCodes.INVALID,
+            diagnostics: `${msg}: ${error.message}`
+          }]
+        }
+        return responseToolkit.response(invalidJsonResponse).code(400).type(ContentTypes.FHIR)
+      }
+
+      throw error
+    }
+
     // keep payload for reuse in the handler
     request.app.parsedPayload = parsedPayload
 

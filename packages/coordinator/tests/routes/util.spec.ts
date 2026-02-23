@@ -1,6 +1,7 @@
 import {
   callFhirValidator,
   ContentTypes,
+  externalValidator,
   filterValidatorResponse,
   getPayload,
   handleResponse,
@@ -448,5 +449,56 @@ describe("CodeSystem URL normalization", () => {
 
     const parsedResponse = JSON.parse(response.payload)
     expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
+  })
+})
+
+describe("externalValidator", () => {
+  let server: Hapi.Server
+
+  beforeEach(async () => {
+    server = Hapi.server({
+      routes: {
+        payload: {
+          parse: false
+        }
+      }
+    })
+
+    server.decorate("request", "logger", {
+      info: jest.fn(),
+      error: jest.fn(),
+      warn: jest.fn(),
+      debug: jest.fn()
+    })
+  })
+
+  afterEach(async () => {
+    await server.stop()
+  })
+
+  test("returns 400 OperationOutcome when request payload is invalid JSON", async () => {
+    server.route({
+      method: "POST",
+      path: "/test",
+      handler: externalValidator(async (_, responseToolkit) => responseToolkit.response({ok: true}).code(200))
+    })
+
+    const response = await server.inject({
+      method: "POST",
+      url: "/test",
+      headers: {
+        "content-type": "application/fhir+json",
+        "x-request-id": "test-id"
+      },
+      payload: "foo"
+    })
+
+    const parsedResponse = JSON.parse(response.payload)
+    expect(response.statusCode).toBe(400)
+    expect(response.headers["content-type"]).toBe(ContentTypes.FHIR)
+    expect(parsedResponse.resourceType).toBe("OperationOutcome")
+    expect(parsedResponse.issue[0].code).toBe(fhir.IssueCodes.INVALID)
+    expect(parsedResponse.issue[0].severity).toBe("error")
+    expect(parsedResponse.issue[0].diagnostics).toContain("Failed to parse JSON encoded FHIR content")
   })
 })
