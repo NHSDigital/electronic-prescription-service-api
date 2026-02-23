@@ -60,7 +60,7 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_asdf_version]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release.yml@997a1946c83bb2a9eda418847ed640738af949ff
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release.yml@d215f841eb18b803e339e4ed597ed1f30e086e17
     with:
       dry_run: false
       asdfVersion: ${{ needs.get_asdf_version.outputs.asdf_version }}
