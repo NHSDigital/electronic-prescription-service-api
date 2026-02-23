@@ -107,3 +107,6 @@ vulnerabilities:
   - id: CVE-2026-26996
     statement: minimatch vulnerability accepted as risk
     expired_at: 2026-06-01
+  - id: CVE-2026-25896
+    statement: fast-xml-parser vulnerability accepted as risk
+    expired_at: 2026-06-01
