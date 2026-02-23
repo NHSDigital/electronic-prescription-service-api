@@ -134,6 +134,10 @@ on:
         required: false
       DEFAULT_PTL_PARTY_KEY:
         required: false
+
+env:
+  AWS_MAX_ATTEMPTS: 20
+
 jobs:
   verify_attestation:
     uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
