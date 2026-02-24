@@ -12,7 +12,8 @@ export function verifyParameters(
   parameters: fhir.Parameters,
   scope: string,
   accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string
+  accessTokenSDSRoleID: string,
+  checkAccessTokenSDSRoleID: boolean = true
 ): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
@@ -58,12 +59,12 @@ export function verifyParameters(
     if (bodySDSUserID !== accessTokenSDSUserID) {
       console.warn(
         // eslint-disable-next-line max-len
-        `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSRoleID} Body: ${bodySDSUserID}.`
+        `SDS Unique User ID does not match between access token and message body. Access Token: ${accessTokenSDSUserID} Body: ${bodySDSUserID}.`
       )
     }
   }
 
-  if (practitionerRole.identifier) {
+  if (practitionerRole.identifier && checkAccessTokenSDSRoleID) {
     const bodySDSRoleID = getIdentifierValueForSystem(
       practitionerRole.identifier,
       "https://fhir.nhs.uk/Id/sds-role-profile-id",
