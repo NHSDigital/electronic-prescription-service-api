@@ -122,14 +122,12 @@ def find_workflow(auth_header, run_id, run_date_filter):
 
             list_of_jobs = get_jobs_for_workflow(jobs_url, auth_header)
 
-            # Check the first 10 jobs for the UUID - sometimes, the relevant
-            # job can be bumped off the top place by another workflow starting,
-            # so it's not sufficient to only look at the list_of_jobs[0]
-            for job in list_of_jobs[:10]:
+            if list_of_jobs:
+                job = list_of_jobs[0]  # this is fine to get the first job
                 steps = job["steps"]
 
                 if len(steps) >= 5:
-                    index_step = steps[5]
+                    index_step = steps[4]
                     if index_step["name"] == run_id:
                         print(f"Workflow Job found! Using ID: {current_workflow_id}")
                         return current_workflow_id
