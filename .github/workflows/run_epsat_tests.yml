@@ -16,23 +16,27 @@ on:
         required: false
         default: "Manually Triggered Run"
 jobs:
-  get_asdf_version_and_show_details:
+  get_config_values:
     runs-on: ubuntu-22.04
     outputs:
-      asdf_version: ${{ steps.asdf-version.outputs.version }}
       tag_format: ${{ steps.load-config.outputs.TAG_FORMAT }}
+      devcontainer_version: ${{ steps.load-config.outputs.DEVCONTAINER_VERSION }}
+      devcontainer_image: ${{ steps.load-config.outputs.DEVCONTAINER_IMAGE }}
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
 
-      - name: Get asdf version
-        id: asdf-version
-        run: echo "version=$(awk '!/^#/ && NF {print $1; exit}' .tool-versions.asdf)" >> "$GITHUB_OUTPUT"
       - name: Load config value
         id: load-config
         run: |
           TAG_FORMAT=$(yq '.TAG_FORMAT' .github/config/settings.yml)
-          echo "TAG_FORMAT=$TAG_FORMAT" >> "$GITHUB_OUTPUT"
+          DEVCONTAINER_IMAGE=$(jq -r '.build.args.IMAGE_NAME' .devcontainer/devcontainer.json)
+          DEVCONTAINER_VERSION=$(jq -r '.build.args.IMAGE_VERSION' .devcontainer/devcontainer.json)
+          {
+            echo "TAG_FORMAT=$TAG_FORMAT" 
+            echo "DEVCONTAINER_IMAGE=$DEVCONTAINER_IMAGE"
+            echo "DEVCONTAINER_VERSION=$DEVCONTAINER_VERSION"
+          } >> "$GITHUB_OUTPUT"
       - name: show_input_parameters
         env:
           SERVICE_BASE_PATH: ${{ inputs.SERVICE_BASE_PATH }}
@@ -58,41 +62,34 @@ jobs:
         run: |
           echo run identifier "$ID"-"$ENV"
           echo run identifier "$ID"-"$ENV"  >> "$GITHUB_STEP_SUMMARY"
+  verify_attestation:
+    needs: get_config_values
+    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
+    with:
+      runtime_docker_image: "${{ needs.get_config_values.outputs.devcontainer_image }}:githubactions-${{ needs.get_config_values.outputs.devcontainer_version }}"
+      verify_published_from_main_image: false
 
   run_epsat_tests:
     runs-on: ubuntu-22.04
-    needs: [get_asdf_version_and_show_details]
+    needs: [get_config_values, verify_attestation]
+    container:
+      image: ${{ needs.verify_attestation.outputs.pinned_image }}
+      options: --user 1001:1001 --group-add 128
+    defaults:
+      run:
+        shell: bash
     permissions:
       id-token: write
       contents: read
       packages: read
     steps:
+      - name: copy .tool-versions
+        run: |
+          cp /home/vscode/.tool-versions "$HOME/.tool-versions"
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
-
-      # using git commit sha for version of action to ensure we have stable version
-      - name: Install asdf
-        uses: asdf-vm/actions/setup@b7bcd026f18772e44fe1026d729e1611cc435d47
-        with:
-          asdf_version: ${{ needs.get_asdf_version_and_show_details.outputs.asdf_version }}
-
-      - name: Cache asdf
-        uses: actions/cache@cdf6c1fa76f9f475f3d7449005a359c84ca0f306
-        with:
-          path: |
-            ~/.asdf
-          key: ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-          restore-keys: |
-            ${{ runner.os }}-asdf-${{ hashFiles('**/.tool-versions') }}
-
-      - name: Install asdf dependencies in .tool-versions
-        uses: asdf-vm/actions/install@b7bcd026f18772e44fe1026d729e1611cc435d47
-        with:
-          asdf_version: ${{ needs.get_asdf_version_and_show_details.outputs.asdf_version }}
-        env:
-          PYTHON_CONFIGURE_OPTS: --enable-shared
 
       - name: make install
         run: |
