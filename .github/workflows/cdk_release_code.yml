@@ -99,6 +99,12 @@ on:
       FORWARD_CSOC_LOGS:
         type: boolean
         required: true
+      runtime_docker_image:
+        type: string
+        required: true
+      verify_published_from_main_image:
+        type: boolean
+        required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
@@ -133,8 +139,21 @@ env:
   AWS_MAX_ATTEMPTS: 20
 
 jobs:
+  verify_attestation:
+    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
+    with:
+      runtime_docker_image: "${{ inputs.runtime_docker_image }}"
+      verify_published_from_main_image: ${{ inputs.verify_published_from_main_image }}
+
   release_code_and_api:
     runs-on: ubuntu-22.04
+    needs: verify_attestation
+    container:
+      image: ${{ needs.verify_attestation.outputs.pinned_image }}
+      options: --user 1001:1001 --group-add 128
+    defaults:
+      run:
+        shell: bash
     environment: ${{ inputs.AWS_ENVIRONMENT }}
     name: deploy to ${{ inputs.AWS_ENVIRONMENT }}
     permissions:
@@ -142,6 +161,9 @@ jobs:
       contents: write
 
     steps:
+      - name: copy .tool-versions
+        run: |
+          cp /home/vscode/.tool-versions "$HOME/.tool-versions"
       - name: Checkout local github actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
@@ -205,7 +227,6 @@ jobs:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.CLOUD_FORMATION_DEPLOY_ROLE }}
           role-session-name: fhir-facade-cloud-formation-deploy
-          output-credentials: true
 
       - name: Retrieve AWS Account ID
         id: retrieve-deploy-account-id
@@ -256,33 +277,16 @@ jobs:
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
           IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
           FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
-
-      - name: Show diff
-        run: |
-          docker run \
-          -v "$(pwd)/.build":/home/cdkuser/workspace/ \
-          -e AWS_ACCESS_KEY_ID=${{ steps.connect-aws-deploy.outputs.aws-access-key-id }} \
-          -e AWS_SECRET_ACCESS_KEY=${{ steps.connect-aws-deploy.outputs.aws-secret-access-key }} \
-          -e AWS_SESSION_TOKEN=${{ steps.connect-aws-deploy.outputs.aws-session-token }} \
-          -e AWS_REGION="eu-west-2" \
-          -e SHOW_DIFF="true" \
-          -e DEPLOY_CODE="false" \
-          -e CDK_APP_PATH="packages/cdk/bin/PrescribeDispenseApp.ts" \
-          cdk-utils-build-repo:latest
-        shell: bash
+          AWS_MAX_ATTEMPTS: 5
 
       - name: Deploy code
         run: |
-          docker run \
-          -v "$(pwd)/.build":/home/cdkuser/workspace/ \
-          -e AWS_ACCESS_KEY_ID=${{ steps.connect-aws-deploy.outputs.aws-access-key-id }} \
-          -e AWS_SECRET_ACCESS_KEY=${{ steps.connect-aws-deploy.outputs.aws-secret-access-key }} \
-          -e AWS_SESSION_TOKEN=${{ steps.connect-aws-deploy.outputs.aws-session-token }} \
-          -e AWS_REGION="eu-west-2" \
-          -e SHOW_DIFF="false" \
-          -e DEPLOY_CODE="true" \
-          -e CDK_APP_PATH="packages/cdk/bin/PrescribeDispenseApp.ts" \
-          cdk-utils-build-repo:latest
+          cd .build
+          npx cdk deploy \
+          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
+          --all \
+          --require-approval=never \
+          --ci true
         shell: bash
 
       - name: Get mtls secrets
@@ -344,7 +348,7 @@ jobs:
             ./.build/packages/specification/dist/fhir-prescribing.resolved.json
 
       - name: Checkout gh-pages
-        if: ${{ !startsWith(inputs.STACK_NAME, 'cpt-pr-') }}
+        if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: gh-pages
@@ -377,6 +381,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-PRESCRIBING
+      runtime_docker_image: ${{ inputs.runtime_docker_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
@@ -389,6 +394,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-DISPENSING
+      runtime_docker_image: ${{ inputs.runtime_docker_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
@@ -401,6 +407,7 @@ jobs:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+      runtime_docker_image: ${{ inputs.runtime_docker_image }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
       API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
