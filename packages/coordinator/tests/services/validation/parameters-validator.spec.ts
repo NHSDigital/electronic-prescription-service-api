@@ -218,12 +218,19 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_APP_SCOPE, "test_sds_user_id", "555086415105")
+    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105")
     expect(console.warn).toHaveBeenCalled()
   })
 
-  test("console warn when inconsistent accessToken and body SDS role profile ID", () => {
-    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_APP_SCOPE, "3415870201", "test_sds_role_id")
+  test("console warn when inconsistent accessToken and body SDS role profile ID for user-restricted access", () => {
+    jest.clearAllMocks()
+    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalled()
+  })
+
+  test("does not warn about SDS role profile ID for application-restricted access", () => {
+    jest.clearAllMocks()
+    verifyParameters(validUnattendedNominatedParameters, DISPENSING_APP_SCOPE, "3415870201", "")
+    expect(console.warn).not.toHaveBeenCalled()
   })
 })
