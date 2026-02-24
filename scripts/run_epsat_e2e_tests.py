@@ -90,11 +90,19 @@ def get_workflow_runs(auth_header, run_date_filter):
 
 def get_jobs_for_workflow(jobs_url, auth_header):
     print("Getting jobs for workflow...")
-    response = requests.get(jobs_url, auth=auth_header, timeout=120)
-    assert (
-        response.status_code == 200
-    ), f"Unable to get workflow jobs. Expected 200, got {response.status_code}"
-    return response.json()["jobs"]
+    response = requests.get(
+        jobs_url,
+        headers=get_headers(),
+        auth=auth_header,
+        timeout=120,
+    )
+    if response.status_code != 200:
+        print(
+            "Unable to get workflow jobs. Expected 200, "
+            f"got {response.status_code}. Will retry."
+        )
+        return None
+    return response.json().get("jobs")
 
 
 def find_workflow(auth_header, run_id, run_date_filter):
@@ -114,8 +122,10 @@ def find_workflow(auth_header, run_id, run_date_filter):
 
             list_of_jobs = get_jobs_for_workflow(jobs_url, auth_header)
 
-            if list_of_jobs:
-                job = list_of_jobs[0]  # this is fine to get the first job
+            # Check the first 10 jobs for the UUID - sometimes, the relevant
+            # job can be bumped off the top place by another workflow starting,
+            # so it's not sufficient to only look at the list_of_jobs[0]
+            for job in list_of_jobs[:10]:
                 steps = job["steps"]
 
                 if len(steps) >= 5:
@@ -148,7 +158,18 @@ def get_upload_result_job(auth_header, workflow_id):
         auth=auth_header,
         timeout=120,
     )
-    jobs = job_response.json()["jobs"]
+    if job_response.status_code != 200:
+        print(
+            "Unable to get workflow run jobs. Expected 200, "
+            f"got {job_response.status_code}. Will retry."
+        )
+        return {
+            "status": "queued",
+            "conclusion": None,
+            "name": "run_epsat_tests",
+        }
+
+    jobs = job_response.json().get("jobs", [])
     upload_result_job = next(
         (job for job in jobs if job["name"] == "run_epsat_tests"),
         {"status": "can not find run_epsat_tests job - tests are likely still starting"},
