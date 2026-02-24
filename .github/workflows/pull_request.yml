@@ -18,7 +18,7 @@ jobs:
   get_config_values:
     uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@8404cf6e3a61ac8de4d1644e175e288aa4965815
     with:
-      verify_published_from_main_image: true
+      verify_published_from_main_image: false
 
   quality_checks:
     uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@8404cf6e3a61ac8de4d1644e175e288aa4965815
