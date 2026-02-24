@@ -40,3 +40,5 @@ _site/
 .jekyll-cache
 .jekyll-metadata
 vendor
+.cfn_guard_out/
+.trivy_out/
