@@ -26,7 +26,7 @@
     "dom-parser": "^1.1.5",
     "dotenv": "^17.3.1",
     "expect": "^30.2.0",
-    "qs": "^6.14.2"
+    "qs": "^6.15.0"
   },
   "dependencies": {
     "base64url": "^3.0.1",
