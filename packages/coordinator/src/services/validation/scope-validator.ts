@@ -63,3 +63,13 @@ export function validatePermittedTrackerMessage(scope: string): Array<fhir.Opera
 function validateScope(scope: string, permittedScopes: Array<string>) {
   return scope.split(" ").find(s => permittedScopes.includes(s))
 }
+
+const APPLICATION_RESTRICTED_SCOPES = [
+  PRESCRIBING_APP_SCOPE,
+  DISPENSING_APP_SCOPE,
+  TRACKER_APP_SCOPE
+]
+
+export function isApplicationRestrictedScope(scope: string): boolean {
+  return APPLICATION_RESTRICTED_SCOPES.some(appScope => scope.split(" ").includes(appScope))
+}

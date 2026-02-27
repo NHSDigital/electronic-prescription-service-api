@@ -26,12 +26,12 @@ info:
     * view a prescription's detailed dispense history
 
     ## Who can use this API
-      This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development. 
+      This API can only be used where there is a legal basis to do so. Make sure you have a [valid use case](https://digital.nhs.uk/services/electronic-prescription-service/enabling-eps-for-your-service) before you go too far with your development.
 
     You must get approval before you can go live. For more information, see the 'Onboarding' section.
 
     ## Related APIs, services and documentation
-      
+
     ### Services
     These services must be used alongside EPS to create a functioning prescribing or dispensing system.
     * [Care Identity Service 2 (CIS2)](https://digital.nhs.uk/services/identity-and-access-management/national-care-identity-service) - use this to authenticate prescribers with their smartcard or a modern alternative.
@@ -51,7 +51,7 @@ info:
 
     ### Guidance for developers and product owners
     Documentation and guidance about EPS for technical and non-technical audiences
-    * [Simplifier implementation guide for digital medicines](https://simplifier.net/guide/nhsdigital-medicines/home/introduction/directory) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
+    * [Simplifier implementation guide for EPS](https://simplifier.net/guide/nhsengland-eps?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
     * [Building healthcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with prescriptions. This is for non-technical audiences like product owners.
 
     ## API status and roadmap
@@ -95,8 +95,9 @@ info:
     For more details see [Network access for APIs](https://digital.nhs.uk/developer/guides-and-documentation/network-access-for-apis).
 
     ## Security and authorisation
-    This API has 1 access mode:
-    * user-restricted access
+    This API has 2 access modes:
+    * user-restricted access for all requests
+    * [application-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), meaning we authenticate the calling application but not the end user for the Download prescriptions - Dispensing request only
 
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -104,6 +105,9 @@ info:
 
     EPS only supports [CIS2 separate authentication and authorisation](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation),
     do not use combined authentication and authorisation.
+
+    ### Application-restricted access
+    This access mode means there is no end user session. The Download prescriptions - Dispensing request is submitted as part of a back-end process to download prescriptions to the pharmacy. Use the [application-restricted access security pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication).
 
     ## Environment and testing
     | Environment      | Base URL                                                   |
@@ -166,7 +170,7 @@ info:
     | 400         | invalid       | The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.                                                                     | The necessary ODS code is not included in the dispense notification and it should be provided.                 | `/$process-message`, `#dispense-notification`                         |
     | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.                          | `/Claim`, `/Task/$release`, `/Task`                                   |
     | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                                    | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
-    | 403         | forbidden     | Dispensing functionality can only be accessed using the user-restricted access mode.                                                                                             | The requested function requires user-restricted access mode.                                                   | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
+    | 403         | forbidden     | Dispensing functionality requires user-restricted access unless otherwise stated.                                                                                                | The requested function requires user-restricted access mode unless otherwise stated.                           | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
 
     ### System Errors
     #### Nominated Release Errors
@@ -310,6 +314,7 @@ paths:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
         - nhs-cis2-aal3: []
+        - app-level3: []
   /FHIR/R4/Task:
     post:
       operationId: process-message
@@ -737,6 +742,8 @@ components:
       $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/nhs-cis2-aal3
     app-level0:
       $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level0
+    app-level3:
+      $ref: https://proxygen.prod.api.platform.nhs.uk/components/securitySchemes/app-level3
   parameters:
     BearerAuthorization:
       in: header
@@ -758,8 +765,8 @@ components:
 
         If you are using User-restricted RESTful APIs - NHS login separate authentication and authorisation, see [determine the user's role](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/user-restricted-restful-apis-nhs-cis2-separate-authentication-and-authorisation#step-9-determine-the-user-s-role) for guidance.
 
-        This field is optional.
-      required: true
+        This field is optional and should only be supplied when using user-restricted access. Do not send it when using application-restricted access.
+      required: false
       schema:
         type: string
         pattern: "^[0-9]+$"
@@ -1332,6 +1339,7 @@ components:
 security:
   - nhs-cis2-aal3: []
   - app-level0: []
+  - app-level3: []
 x-nhsd-apim:
   temporary: false
   monitoring: true
@@ -1339,6 +1347,9 @@ x-nhsd-apim:
     - title: FHIR Dispensing Service API User Restricted
       grants:
         nhs-cis2-aal3: []
+    - title: FHIR Dispensing Service API Application Restricted
+      grants:
+        app-level3: []
   target:
     type: external
     healthcheck: /_status
