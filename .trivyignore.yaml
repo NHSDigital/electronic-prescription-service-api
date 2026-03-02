@@ -113,3 +113,9 @@ vulnerabilities:
   - id: CVE-2026-27699
     statement: Vulnerability in AWS dependency accepted as risk
     expired_at: 2026-06-01
+  - id: CVE-2026-27903
+    statement: Vulnerability in minimatch again. We have to accept this until our dependency updates to minimatch v10.2.2
+    expired_at: 2026-06-01
+  - id: CVE-2026-27904
+    statement: Vulnerability in minimatch again. We have to accept this until our dependency updates to minimatch v10.2.2
+    expired_at: 2026-06-01
