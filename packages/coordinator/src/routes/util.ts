@@ -97,7 +97,7 @@ export async function callFhirValidator(
     : LosslessJson.stringify(payload)
 
   if (logger) {
-    logger.info({payload, payloadString, ...extractTraceIds(requestHeaders)}, "Sending payload to FHIR validator")
+    logger.debug({payload, payloadString, ...extractTraceIds(requestHeaders)}, "Sending payload to FHIR validator")
   }
 
   const validatorResponse = await axios.post(`${VALIDATOR_HOST}/$validate`, payloadString, {
