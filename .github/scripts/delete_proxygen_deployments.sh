@@ -5,6 +5,26 @@
 # set the repo name to be the name of the repo this is running in
 REPO_NAME=electronic-prescription-service-api
 
+should_delete_resources_for_pr() {
+  PR_RESPONSE=$1
+
+  STATE=$(echo "${PR_RESPONSE}" | jq -r '.state // empty')
+  AUTHOR=$(echo "${PR_RESPONSE}" | jq -r '.user.login // empty')
+  AUTO_MERGE_ENABLED=$(echo "${PR_RESPONSE}" | jq -r '.auto_merge != null')
+
+  if [ "${STATE}" == "closed" ]; then
+    DELETE_REASON="state is closed"
+    return 0
+  fi
+
+  if [ "${STATE}" == "open" ] && [ "${AUTHOR}" == "dependabot[bot]" ] && [ "${AUTO_MERGE_ENABLED}" != "true" ]; then
+    DELETE_REASON="dependabot PR is open but not in merge queue"
+    return 0
+  fi
+
+  return 1
+}
+
 # this should be customised to delete relevant proxygen deployments if they are used
 main() {
   echo "Checking fhir prescribing deployments"
@@ -49,9 +69,8 @@ delete_apigee_deployments() {
     echo "Checking pull request id ${PULL_REQUEST}"
     URL="https://api.github.com/repos/NHSDigital/${REPO_NAME}/pulls/${PULL_REQUEST}"
     RESPONSE=$(curl --header "authorization: Bearer ${GITHUB_TOKEN}" "${URL}" 2>/dev/null)
-    STATE=$(echo "${RESPONSE}" | jq -r .state)
-    if [ "$STATE" == "closed" ]; then
-      echo "** going to delete apigee deployment $i as state is ${STATE} **"
+    if should_delete_resources_for_pr "${RESPONSE}"; then
+      echo "** going to delete apigee deployment $i as ${DELETE_REASON} **"
       jq -n --arg apiName "${APIGEE_API}" \
                 --arg environment "${APIGEE_ENVIRONMENT}" \
                 --arg instance "${i}" \
@@ -68,7 +87,10 @@ delete_apigee_deployments() {
 
 
     else
-      echo "not going to delete apigee deployment $i as state is ${STATE}"
+      STATE=$(echo "${RESPONSE}" | jq -r '.state // "unknown"')
+      AUTHOR=$(echo "${RESPONSE}" | jq -r '.user.login // "unknown"')
+      AUTO_MERGE_ENABLED=$(echo "${RESPONSE}" | jq -r '.auto_merge != null')
+      echo "not going to delete apigee deployment $i as state=${STATE}, author=${AUTHOR}, auto_merge_enabled=${AUTO_MERGE_ENABLED}"
     fi
   done
 }

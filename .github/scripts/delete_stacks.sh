@@ -15,6 +15,26 @@ PULL_REQUEST_STACK_REGEX=prescribe-dispense-pr-
 # this should be a query to get old CNAME records to delete
 CNAME_QUERY=prescribe-dispense-pr-
 
+should_delete_resources_for_pr() {
+  PR_RESPONSE=$1
+
+  STATE=$(echo "${PR_RESPONSE}" | jq -r '.state // empty')
+  AUTHOR=$(echo "${PR_RESPONSE}" | jq -r '.user.login // empty')
+  AUTO_MERGE_ENABLED=$(echo "${PR_RESPONSE}" | jq -r '.auto_merge != null')
+
+  if [ "${STATE}" == "closed" ]; then
+    DELETE_REASON="state is closed"
+    return 0
+  fi
+
+  if [ "${STATE}" == "open" ] && [ "${AUTHOR}" == "dependabot[bot]" ] && [ "${AUTO_MERGE_ENABLED}" != "true" ]; then
+    DELETE_REASON="dependabot PR is open but not in merge queue"
+    return 0
+  fi
+
+  return 1
+}
+
 main() {
   delete_cloudformation_stacks
   delete_cname_records
@@ -28,21 +48,23 @@ delete_cloudformation_stacks() {
   mapfile -t ACTIVE_STACKS_ARRAY <<< "$ACTIVE_STACKS"
 
   for i in "${ACTIVE_STACKS_ARRAY[@]}"
-  do 
+  do
     echo "Checking if stack $i has open pull request"
     PULL_REQUEST=${i//${PULL_REQUEST_STACK_REGEX}/}
     PULL_REQUEST=${PULL_REQUEST//-sandbox/}
     echo "Checking pull request id ${PULL_REQUEST}"
     URL="https://api.github.com/repos/NHSDigital/${REPO_NAME}/pulls/${PULL_REQUEST}"
     RESPONSE=$(curl --header "authorization: Bearer ${GITHUB_TOKEN}" "${URL}" 2>/dev/null)
-    STATE=$(echo "${RESPONSE}" | jq -r .state)
-    if [ "$STATE" == "closed" ]; then
-      echo "** going to delete stack $i as state is ${STATE} **"
+    if should_delete_resources_for_pr "${RESPONSE}"; then
+      echo "** going to delete stack $i as ${DELETE_REASON} **"
       aws cloudformation delete-stack --stack-name "${i}"
       echo "** Sleeping for 60 seconds to avoid 429 on delete stack **"
       sleep 60
     else
-      echo "not going to delete stack $i as state is ${STATE}"
+      STATE=$(echo "${RESPONSE}" | jq -r '.state // "unknown"')
+      AUTHOR=$(echo "${RESPONSE}" | jq -r '.user.login // "unknown"')
+      AUTO_MERGE_ENABLED=$(echo "${RESPONSE}" | jq -r '.auto_merge != null')
+      echo "not going to delete stack $i as state=${STATE}, author=${AUTHOR}, auto_merge_enabled=${AUTO_MERGE_ENABLED}"
     fi
   done
 }
@@ -63,9 +85,8 @@ delete_cname_records() {
     echo "Checking pull request id ${PULL_REQUEST}"
     URL="https://api.github.com/repos/NHSDigital/${REPO_NAME}/pulls/${PULL_REQUEST}"
     RESPONSE=$(curl --url "${URL}" --header "Authorization: Bearer ${GITHUB_TOKEN}" 2>/dev/null)
-    STATE=$(echo "${RESPONSE}" | jq -r .state)
-    if [ "$STATE" == "closed" ]; then
-      echo "** going to delete CNAME record $i as state is ${STATE} **"
+    if should_delete_resources_for_pr "${RESPONSE}"; then
+      echo "** going to delete CNAME record $i as ${DELETE_REASON} **"
       record_set=$(aws route53 list-resource-record-sets --hosted-zone-id "${HOSTED_ZONE_ID}" \
         --query "ResourceRecordSets[?Name == '$i']" --output json | jq .[0])
 
@@ -76,7 +97,10 @@ delete_cname_records() {
 
       echo "CNAME record $i deleted"
       else
-        echo "not going to delete CNAME record $i as state is ${STATE} **"
+        STATE=$(echo "${RESPONSE}" | jq -r '.state // "unknown"')
+        AUTHOR=$(echo "${RESPONSE}" | jq -r '.user.login // "unknown"')
+        AUTO_MERGE_ENABLED=$(echo "${RESPONSE}" | jq -r '.auto_merge != null')
+        echo "not going to delete CNAME record $i as state=${STATE}, author=${AUTHOR}, auto_merge_enabled=${AUTO_MERGE_ENABLED}"
       fi
   done
 }
