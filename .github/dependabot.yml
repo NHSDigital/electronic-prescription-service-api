@@ -19,10 +19,9 @@ updates:
     # default location of `.github/workflows`
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "18:00" # UTC
-    open-pull-requests-limit: 20
+      interval: "daily"
+      time: "02:00" # UTC
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "Upgrade: [dependabot] - "
 
@@ -33,10 +32,9 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "18:00" # UTC
-    open-pull-requests-limit: 20
+      interval: "daily"
+      time: "02:00" # UTC
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "Upgrade: [dependabot] - "
     versioning-strategy: increase
@@ -47,10 +45,9 @@ updates:
     directory: "/packages/coordinator"
     rebase-strategy: "disabled"
     schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "18:00" # UTC
-    open-pull-requests-limit: 20
+      interval: "daily"
+      time: "02:00" # UTC
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "Upgrade: [dependabot] - "
 
@@ -60,10 +57,9 @@ updates:
     directory: "/packages/tool/site"
     rebase-strategy: "disabled"
     schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "18:00" # UTC
-    open-pull-requests-limit: 20
+      interval: "daily"
+      time: "02:00" # UTC
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "Upgrade: [dependabot] - "
 
@@ -74,10 +70,9 @@ updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "friday"
-      time: "18:00" # UTC
-    open-pull-requests-limit: 20
+      interval: "daily"
+      time: "02:00" # UTC
+    open-pull-requests-limit: 2
     commit-message:
       prefix: "Upgrade: [dependabot] - "
     versioning-strategy: increase
