@@ -7,7 +7,8 @@ on:
     branches: [master]
 
 env:
-  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
+  # in merge_queue events, the branch name is not available, and we need to use the ref_name
+  BRANCH_NAME: ${{ github.event.pull_request.head.ref || github.ref_name }}
 
 jobs:
   dependabot-auto-approve-and-merge:
@@ -100,6 +101,7 @@ jobs:
           echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
 
   package_code:
+    if: ${{ github.event_name == 'merge_group' || github.event.pull_request.user.login != 'dependabot[bot]' }}
     needs: [get_issue_number, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_package_code.yml
     with:
@@ -109,6 +111,7 @@ jobs:
       verify_published_from_main_image: false
 
   release_code:
+    if: ${{ github.event_name == 'merge_group' || github.event.pull_request.user.login != 'dependabot[bot]' }}
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
@@ -155,6 +158,7 @@ jobs:
       DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
 
   release_sandbox_code:
+    if: ${{ github.event_name == 'merge_group' || github.event.pull_request.user.login != 'dependabot[bot]' }}
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
     with:
