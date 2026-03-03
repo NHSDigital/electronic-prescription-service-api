@@ -3,6 +3,8 @@ name: deploy_pr
 on:
   pull_request:
     branches: [master]
+  merge_group:
+    branches: [master]
 
 env:
   BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
@@ -32,7 +34,7 @@ jobs:
           DEVCONTAINER_IMAGE=$(jq -r '.build.args.IMAGE_NAME' .devcontainer/devcontainer.json)
           DEVCONTAINER_VERSION=$(jq -r '.build.args.IMAGE_VERSION' .devcontainer/devcontainer.json)
           {
-            echo "TAG_FORMAT=$TAG_FORMAT" 
+            echo "TAG_FORMAT=$TAG_FORMAT"
             echo "DEVCONTAINER_IMAGE=$DEVCONTAINER_IMAGE"
             echo "DEVCONTAINER_VERSION=$DEVCONTAINER_VERSION"
           } >> "$GITHUB_OUTPUT"
