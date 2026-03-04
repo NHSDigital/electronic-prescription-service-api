@@ -102,7 +102,6 @@ def find_workflow(auth_header, run_id, run_date_filter):
     current_attempt = 0
 
     while current_attempt < max_attempts:
-        time.sleep(10)
         current_attempt = current_attempt + 1
         print(f"Attempt {current_attempt}")
 
@@ -133,6 +132,7 @@ def find_workflow(auth_header, run_id, run_date_filter):
         print(
             "Processed all available workflows but no jobs were matching the Unique ID were found!"
         )
+        time.sleep(10)
 
     raise TimeoutError(
         f"Failed to find workflow with run_id '{run_id}' after {max_attempts} attempts. "
