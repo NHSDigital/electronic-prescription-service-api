@@ -255,6 +255,8 @@ def main():
         branch=arguments.branch
     )
 
+    time.sleep(60)
+
     workflow_id = find_workflow(auth_header, run_id, run_date_filter)
     print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details")
     job_status = check_job(auth_header, workflow_id)
