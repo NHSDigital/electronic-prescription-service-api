@@ -157,7 +157,7 @@ def get_upload_result_job(auth_header, workflow_id):
         timeout=120,
     )
 
-    if job_response.status_code != 200:
+    if job_response.status_code >= 400:
         raise RuntimeError(
             f"Failed to get jobs for workflow {workflow_id}. "
             f"Status: {job_response.status_code}, Response: {job_response.text}"
