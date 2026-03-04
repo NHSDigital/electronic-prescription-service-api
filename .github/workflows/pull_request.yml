@@ -50,6 +50,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
   pr_title_format_check:
+    if: github.event_name != 'merge_group'
     uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@d215f841eb18b803e339e4ed597ed1f30e086e17
 
   get_issue_number:
@@ -64,21 +65,41 @@ jobs:
         name: get issue number
         id: get_issue_number
         with:
+          result-encoding: string
           script: |
-            if (context.issue.number) {
-              // Return issue number if present
-              return context.issue.number;
-            } else {
-              // Otherwise return issue number from commit
-              return (
+            // 1. Normal pull_request event
+            if (context.eventName === 'pull_request' && context.payload.pull_request) {
+              return context.payload.pull_request.number;
+            }
+
+            // 2. merge_group event
+            if (context.eventName === 'merge_group') {
+              const queueRef = context.ref; // refs/heads/gh-readonly-queue/main/pr-142-abc
+              const match = queueRef.match(/pr-(\d+)/);
+
+              if (match) {
+                return String(match[1]);
+              }
+
+              // Fallback to commit association using the synthetic SHA
+              const sha = context.payload.merge_group.head_sha;
+
+              const { data } =
                 await github.rest.repos.listPullRequestsAssociatedWithCommit({
-                  commit_sha: context.sha,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
-                })
-              ).data[0].number;
+                  commit_sha: sha,
+                });
+
+              if (!data.length) {
+                core.setFailed(`No PR associated with commit ${sha}`);
+              }
+
+              // Strict match: PR head SHA must match original PR head
+              const pr = data.find(pr => pr.head.sha === data[0].head.sha);
+
+              return String(pr.number);
             }
-          result-encoding: string
 
   get_commit_id:
     runs-on: ubuntu-22.04
