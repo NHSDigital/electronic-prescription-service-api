@@ -118,6 +118,7 @@ vulnerabilities:
     expired_at: 2026-06-01
   - id: CVE-2026-27904
     statement: Vulnerability in minimatch again. We have to accept this until our dependency updates to minimatch v10.2.2
+    expired_at: 2026-06-01
   - id: GHSA-72hv-8253-57qq
     statement: Fixed in v3.0.1. JSON parser that bypasses the maxNumberLength constraint. This is a vulnerability in our Java codebase and only affects async code. Vulnerability is actually in the FHIR validator
     expired_at: 2026-06-01
@@ -129,4 +130,7 @@ vulnerabilities:
     expired_at: 2026-06-01
   - id: CVE-2026-29062
     statement: Transitive dependency vulnerability in fasterxml-core of fhir-validator
+    expired_at: 2026-06-01
+  - id: CVE-2026-27601
+    statement: Transitive dependency vulnerability in underscore of pact-core
     expired_at: 2026-06-01
