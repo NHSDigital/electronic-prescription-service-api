@@ -127,3 +127,6 @@ vulnerabilities:
   - id: GHSA-qffp-2rhf-9h96
     statement: Accept transitive dependency on tar
     expired_at: 2026-06-01
+  - id: CVE-2026-29062
+    statement: Transitive dependency vulnerability in fasterxml-core of fhir-validator
+    expired_at: 2026-06-01
