@@ -98,11 +98,10 @@ def get_jobs_for_workflow(jobs_url, auth_header):
 
 
 def find_workflow(auth_header, run_id, run_date_filter):
-    max_attempts = 5
+    max_attempts = 30
     current_attempt = 0
 
     while current_attempt < max_attempts:
-        time.sleep(10)
         current_attempt = current_attempt + 1
         print(f"Attempt {current_attempt}")
 
@@ -118,18 +117,27 @@ def find_workflow(auth_header, run_id, run_date_filter):
                 job = list_of_jobs[0]  # this is fine to get the first job
                 steps = job["steps"]
 
-                if len(steps) >= 5:
-                    index_step = steps[5]
-                    if index_step["name"] == run_id:
-                        print(f"Workflow Job found! Using ID: {current_workflow_id}")
-                        return current_workflow_id
-                else:
-                    print("Not enough steps have been executed for this run yet...")
+                # Search all steps for the run_id
+                matching_step = next(
+                    (step for step in steps if run_id in step.get("name")),
+                    None
+                )
+                if matching_step:
+                    print(f"Workflow Job found! Using ID: {current_workflow_id}")
+                    return current_workflow_id
             else:
                 print("Jobs for this workflow run haven't populated yet...")
+
+            print(f"Workflow with ID {current_workflow_id} does not match the Unique ID.")
         print(
             "Processed all available workflows but no jobs were matching the Unique ID were found!"
         )
+        time.sleep(10)
+
+    raise TimeoutError(
+        f"Failed to find workflow with run_id '{run_id}' after {max_attempts} attempts. "
+        "The workflow may not have started or the step name pattern has changed."
+    )
 
 
 def get_auth_header(is_called_from_github, token, user):
@@ -148,7 +156,21 @@ def get_upload_result_job(auth_header, workflow_id):
         auth=auth_header,
         timeout=120,
     )
-    jobs = job_response.json()["jobs"]
+
+    if job_response.status_code >= 400:
+        raise RuntimeError(
+            f"Failed to get jobs for workflow {workflow_id}. "
+            f"Status: {job_response.status_code}, Response: {job_response.text}"
+        )
+
+    response_json = job_response.json()
+    if "jobs" not in response_json:
+        raise RuntimeError(
+            f"Unexpected API response for workflow {workflow_id}. "
+            f"'jobs' key not found. Response: {response_json}"
+        )
+
+    jobs = response_json["jobs"]
     upload_result_job = next(
         (job for job in jobs if job["name"] == "run_epsat_tests"),
         {"status": "can not find run_epsat_tests job - tests are likely still starting"},
@@ -232,6 +254,8 @@ def main():
         run_id=run_id,
         branch=arguments.branch
     )
+
+    time.sleep(60)
 
     workflow_id = find_workflow(auth_header, run_id, run_date_filter)
     print(f"See {GITHUB_RUN_URL}/{workflow_id}/ for run details")
