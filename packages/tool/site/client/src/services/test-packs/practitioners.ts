@@ -7,7 +7,7 @@ export function createPractitioner(row: PrescriberRow): fhir.BundleEntry {
   const prescribingCode = row.prescribingCode
   const prescribingCodeType = row.prescribingCodeType
 
-  let professionalCodeSystem = ""
+  let professionalCodeSystem: string
   switch (professionalCodeType) {
     case "GMC":
       professionalCodeSystem = "https://fhir.hl7.org.uk/Id/gmc-number"
