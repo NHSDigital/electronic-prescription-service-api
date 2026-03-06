@@ -191,6 +191,19 @@
             "system": "https://fhir.nhs.uk/CodeSystem/EPS-task-business-status",
             "display": "Dispensed"
           }
+        },
+        {
+          "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
+          "extension": [
+            {
+              "url": "numberOfRepeatsAllowed",
+              "valueInteger": 5
+            },
+            {
+              "url": "numberOfRepeatsIssued",
+              "valueInteger": 0
+            }
+          ]
         }
       ],
       "sequence": 1,
@@ -314,19 +327,6 @@
                       "value": "fd833d33-f128-4fa2-a807-1fc8a7db2658"
                     }
                   }
-                },
-                {
-                  "url": "https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation",
-                  "extension": [
-                    {
-                      "url": "numberOfRepeatsAllowed",
-                      "valueInteger": 5
-                    },
-                    {
-                      "url": "numberOfRepeatsIssued",
-                      "valueInteger": 0
-                    }
-                  ]
                 }
               ],
               "sequence": 1,
