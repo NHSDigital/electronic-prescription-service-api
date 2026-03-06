@@ -26,7 +26,7 @@ on:
         required: true
 jobs:
   verify_attestation:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@91d5906640395bcda81360fb4b78adaf2f09fd2e
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@91d5906640395bcda81360fb4b78adaf2f09fd2e
     with:
       runtime_docker_image: "${{ inputs.runtime_docker_image }}"
       verify_published_from_main_image: false
