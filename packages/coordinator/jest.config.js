@@ -29,4 +29,7 @@ module.exports = {
   // https://github.com/facebook/jest/issues/10144
   // https://jestjs.io/docs/cli#--maxworkersnumstring
   maxWorkers: 2,
+
+  // Increase memory limit for Jest workers to avoid out-of-memory errors
+  workerIdleMemoryLimit: "1GB",
 }

@@ -507,7 +507,7 @@ properties:
                     sequence:
                       type: string
                       description: | 
-                        An intenger to identify a specific instance of a resource within an array.  
+                        An integer to identify a specific instance of a resource within an array.  
 
                         This is a fixed value as there will always only be 1 `subDetail` within a specific instance of the `detail` array. 
                       enum: [1]

@@ -15,7 +15,7 @@
 	docker-build docker-build-fhir-facade docker-build-validator %
 
 SHELL=/bin/bash -euo pipefail
-LATEST_VALIDATOR_VERSION=v1.0.311-alpha
+LATEST_VALIDATOR_VERSION=v1.0.348-alpha
 
 ifeq ($(shell test -e epsat.release && echo -n yes),yes)
 	TEST_TARGET=test-epsat
