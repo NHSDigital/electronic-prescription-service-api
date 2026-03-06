@@ -137,3 +137,6 @@ vulnerabilities:
   - id: CVE-2026-27601
     statement: Transitive dependency vulnerability in underscore of pact-core
     expired_at: 2026-06-01
+  - id: CVE-2026-29786
+    statement: Transitive dependency vulnerability in tar of npm
+    expired_at: 2026-06-01
