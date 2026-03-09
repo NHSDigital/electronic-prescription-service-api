@@ -24,7 +24,7 @@ pre-commit = "^4.5.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.3.0"
-black = "^26.1"
+black = "^26.3"
 
 [tool.poetry.scripts]
 
