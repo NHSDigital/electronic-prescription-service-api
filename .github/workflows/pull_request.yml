@@ -154,6 +154,8 @@ jobs:
       IS_PULL_REQUEST: true
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
+      # TODO: revert to false before merging, currently set to true to allow testing of prescribing signature validation in the PR environment
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: true 
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -200,6 +202,8 @@ jobs:
       IS_PULL_REQUEST: true
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
+      # TODO: revert to false before merging, currently set to true to allow testing of prescribing signature validation in the PR environment
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: true 
       SANDBOX_MODE_ENABLED: 1
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1

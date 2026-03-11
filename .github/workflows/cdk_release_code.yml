@@ -72,6 +72,9 @@ on:
       SHA1_ENABLED_APPLICATION_IDS:
         type: string
         required: true
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION:
+        type: boolean
+        required: true
       SANDBOX_MODE_ENABLED:
         type: string
         required: true
@@ -268,6 +271,7 @@ jobs:
           SANDBOX_MODE_ENABLED: "${{ inputs.SANDBOX_MODE_ENABLED }}"
           ENABLE_MUTUAL_TLS: "${{ inputs.ENABLE_MUTUAL_TLS }}"
           SHA1_ENABLED_APPLICATION_IDS: "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}"
+          ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: "${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}"
           DESIRED_FHIR_FACADE_COUNT: "${{ inputs.DESIRED_FHIR_FACADE_COUNT }}"
           DESIRED_CLAIMS_COUNT: "${{ inputs.DESIRED_CLAIMS_COUNT }}"
           DESIRED_PEAK_CLAIMS_COUNT: "${{ inputs.DESIRED_PEAK_CLAIMS_COUNT }}"

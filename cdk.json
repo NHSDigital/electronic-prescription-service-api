@@ -92,6 +92,7 @@
     "enableMutualTls": false,
     "trustStoreVersion": "foo",
     "SHA1EnabledApplicationIds": "",
+    "enablePrescribingSignatureValidation": false,
     "sandboxModeEnabled": "0",
     "desiredFhirFacadeCount": 1,
     "desiredClaimsCount": 1,

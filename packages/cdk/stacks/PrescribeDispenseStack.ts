@@ -39,11 +39,11 @@ import {
 import {LogGroup} from "aws-cdk-lib/aws-logs"
 
 export interface PrescribeDispenseStackProps extends StackProps {
-    readonly env: Environment
-    readonly serviceName: string
-    readonly stackName: string
-    readonly version: string
-  }
+  readonly env: Environment
+  readonly serviceName: string
+  readonly stackName: string
+  readonly version: string
+}
 
 export class PrescribeDispenseStack extends Stack {
 
@@ -71,6 +71,8 @@ export class PrescribeDispenseStack extends Stack {
     const trustStoreVersion: string = this.node.tryGetContext("trustStoreVersion")
     const SHA1EnabledApplicationIds: string = this.node.tryGetContext("SHA1EnabledApplicationIds")
     const sandboxModeEnabled: string = this.node.tryGetContext("sandboxModeEnabled")
+    const enablePrescribingSignatureValidation: boolean = this.node
+      .tryGetContext("enablePrescribingSignatureValidation")
     const desiredFhirFacadeCount: number = this.node.tryGetContext("desiredFhirFacadeCount")
     const desiredClaimsCount: number = this.node.tryGetContext("desiredClaimsCount")
     const desiredPeakClaimsCount: number = this.node.tryGetContext("desiredPeakClaimsCount")
@@ -164,6 +166,7 @@ export class PrescribeDispenseStack extends Stack {
       coordinatorLogGroup: logGroups.coordinatorLogGroup,
       validatorLogGroup: logGroups.validatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
+      enablePrescribingSignatureValidation: enablePrescribingSignatureValidation,
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
@@ -197,6 +200,7 @@ export class PrescribeDispenseStack extends Stack {
       coordinatorLogGroup: logGroups.claimsCoordinatorLogGroup,
       validatorLogGroup: logGroups.claimsValidatorLogGroup,
       SHA1EnabledApplicationIds: SHA1EnabledApplicationIds,
+      enablePrescribingSignatureValidation: enablePrescribingSignatureValidation,
       sandboxModeEnabled: sandboxModeEnabled,
       cpu: serviceCpu,
       memory: serviceMemory,
