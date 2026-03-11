@@ -114,17 +114,16 @@ def find_workflow(auth_header, run_id, run_date_filter):
             list_of_jobs = get_jobs_for_workflow(jobs_url, auth_header)
 
             if list_of_jobs:
-                job = list_of_jobs[0]  # this is fine to get the first job
-                steps = job["steps"]
+                for job in list_of_jobs:
+                    steps = job.get("steps", [])
 
-                # Search all steps for the run_id
-                matching_step = next(
-                    (step for step in steps if run_id in step.get("name")),
-                    None
-                )
-                if matching_step:
-                    print(f"Workflow Job found! Using ID: {current_workflow_id}")
-                    return current_workflow_id
+                    matching_step = next(
+                        (step for step in steps if run_id in step.get("name", "")),
+                        None
+                    )
+                    if matching_step:
+                        print(f"Workflow Job found! Using ID: {current_workflow_id}")
+                        return current_workflow_id
             else:
                 print("Jobs for this workflow run haven't populated yet...")
 
