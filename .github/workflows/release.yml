@@ -12,7 +12,7 @@ jobs:
     with:
       verify_published_from_main_image: true
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@141907b215220e95e3ed3811d0fe8fa18675dbed
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@dac60c1e29babc62013e7bb9ade002cb381c4c49
     needs: [get_config_values]
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
