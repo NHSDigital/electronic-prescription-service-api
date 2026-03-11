@@ -35,6 +35,8 @@ jobs:
       contents: read
       packages: read
     steps:
+      - name: Workflow identifier ${{ inputs.id }}
+        run: echo "Workflow running"
       - name: copy .tool-versions
         run: |
           cp /home/vscode/.tool-versions "$HOME/.tool-versions"
