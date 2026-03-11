@@ -140,3 +140,6 @@ vulnerabilities:
   - id: CVE-2026-29786
     statement: Transitive dependency vulnerability in tar of npm
     expired_at: 2026-06-01
+  - id: CVE-2026-31802
+    statement: Transitive dependency vulnerability in tar of npm
+    expired_at: 2026-06-01
