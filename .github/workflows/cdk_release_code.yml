@@ -140,7 +140,7 @@ env:
 
 jobs:
   verify_attestation:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
+    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@dac60c1e29babc62013e7bb9ade002cb381c4c49
     with:
       runtime_docker_image: "${{ inputs.runtime_docker_image }}"
       verify_published_from_main_image: ${{ inputs.verify_published_from_main_image }}
