@@ -99,11 +99,8 @@ on:
       FORWARD_CSOC_LOGS:
         type: boolean
         required: true
-      runtime_docker_image:
+      pinned_image:
         type: string
-        required: true
-      verify_published_from_main_image:
-        type: boolean
         required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
@@ -139,17 +136,10 @@ env:
   AWS_MAX_ATTEMPTS: 20
 
 jobs:
-  verify_attestation:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
-    with:
-      runtime_docker_image: "${{ inputs.runtime_docker_image }}"
-      verify_published_from_main_image: ${{ inputs.verify_published_from_main_image }}
-
   release_code_and_api:
     runs-on: ubuntu-22.04
-    needs: verify_attestation
     container:
-      image: ${{ needs.verify_attestation.outputs.pinned_image }}
+      image: ${{ inputs.pinned_image }}
       options: --user 1001:1001 --group-add 128
     defaults:
       run:
@@ -381,7 +371,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-PRESCRIBING
-      runtime_docker_image: ${{ inputs.runtime_docker_image }}
+      pinned_image: ${{ inputs.pinned_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
@@ -394,7 +384,7 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-DISPENSING
-      runtime_docker_image: ${{ inputs.runtime_docker_image }}
+      pinned_image: ${{ inputs.pinned_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
 
@@ -407,7 +397,7 @@ jobs:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
-      runtime_docker_image: ${{ inputs.runtime_docker_image }}
+      pinned_image: ${{ inputs.pinned_image }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
       API_CLIENT_SECRET: ${{ secrets.API_CLIENT_SECRET }}
