@@ -54,7 +54,6 @@ jobs:
       branch_name: master
       tag_format: ${{ needs.get_config_values.outputs.tag_format }}
       main_branch: master
-      verify_published_from_main_image: true
     secrets: inherit
 
   package_code:
