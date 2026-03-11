@@ -35,6 +35,9 @@ jobs:
       contents: read
       packages: read
     steps:
+      - name: Workflow identifier ${{ inputs.id }}
+        run: |
+          echo "EPSAT workflow identifier: ${{ inputs.id }}"
       - name: copy .tool-versions
         run: |
           cp /home/vscode/.tool-versions "$HOME/.tool-versions"
