@@ -3,7 +3,6 @@ import {screen} from "@testing-library/dom"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
-import pretty from "pretty"
 import {readBundleFromFile} from "../messages"
 import {AppContextValue} from "../../src"
 import {renderWithContext} from "../renderWithContext"
@@ -92,7 +91,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should match the snapshot", () => {
-      expect(pretty(container.innerHTML)).toMatchSnapshot()
+      expect(container.innerHTML).toMatchSnapshot()
     })
   })
 
@@ -142,7 +141,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should match the snapshot", () => {
-      expect(pretty(container.innerHTML)).toMatchSnapshot()
+      expect(container.innerHTML).toMatchSnapshot()
     })
   })
 
@@ -179,7 +178,7 @@ describe("Withdraw Page", () => {
     })
 
     it("should match the snapshot", () => {
-      expect(pretty(container.innerHTML)).toMatchSnapshot()
+      expect(container.innerHTML).toMatchSnapshot()
     })
   })
 })

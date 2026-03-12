@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
@@ -28,7 +27,7 @@ test("Displays release form", async () => {
   const container = await renderPage()
 
   expect(screen.getByText("Release prescription(s)")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays release result", async () => {
@@ -52,7 +51,7 @@ test("Displays release result", async () => {
   expect(screen.getByText("XML Request")).toBeTruthy()
   expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays release error response", async () => {
@@ -80,7 +79,7 @@ test("Displays release error response", async () => {
   await waitFor(() => screen.getByText(/Release Result/))
   expect(screen.getByText(/testOdsCode/)).toBeTruthy()
   expect(screen.getByText(/00000/)).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 function createReleaseFormValuesCustom(pharmacyIdentifierCustom: string): ReleaseFormValues{

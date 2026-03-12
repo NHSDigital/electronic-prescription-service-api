@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import ClaimPage, {getInitialValues} from "../../src/pages/claimPage"
@@ -39,7 +38,7 @@ test("Displays loading text while prescription data is being requested", async (
   const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays claim form if prescription details are retrieved successfully", async () => {
@@ -51,7 +50,7 @@ test("Displays claim form if prescription details are retrieved successfully", a
   await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Claim")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error if prescription-order not found", async () => {
@@ -60,7 +59,7 @@ test("Displays an error if prescription-order not found", async () => {
   const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error if dispense-notification not found", async () => {
@@ -70,7 +69,7 @@ test("Displays an error if dispense-notification not found", async () => {
   const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error on invalid response", async () => {
@@ -79,7 +78,7 @@ test("Displays an error on invalid response", async () => {
   const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays loading text while claim is being submitted", async () => {
@@ -98,7 +97,7 @@ test("Displays loading text while claim is being submitted", async () => {
   userEvent.click(screen.getByText("Claim"))
   await waitFor(() => screen.getByText("Sending claim."))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays claim result", async () => {
@@ -120,7 +119,7 @@ test("Displays claim result", async () => {
   expect(screen.getByText("XML Request")).toBeTruthy()
   expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays claim amend form if prescription details are retrieved successfully", async () => {
@@ -133,7 +132,7 @@ test("Displays claim amend form if prescription details are retrieved successful
   await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Claim")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error if previous claim not found for amend", async () => {
@@ -144,7 +143,7 @@ test("Displays an error if previous claim not found for amend", async () => {
   const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} amend/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderClaimPage() {
