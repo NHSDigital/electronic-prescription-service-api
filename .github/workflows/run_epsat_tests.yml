@@ -17,7 +17,7 @@ on:
         default: "Manually Triggered Run"
 jobs:
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@141907b215220e95e3ed3811d0fe8fa18675dbed
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@dac60c1e29babc62013e7bb9ade002cb381c4c49
     with:
       verify_published_from_main_image: false
 
@@ -35,6 +35,8 @@ jobs:
       contents: read
       packages: read
     steps:
+      - name: Workflow identifier ${{ inputs.id }}
+        run: echo "Workflow running"
       - name: copy .tool-versions
         run: |
           cp /home/vscode/.tool-versions "$HOME/.tool-versions"
