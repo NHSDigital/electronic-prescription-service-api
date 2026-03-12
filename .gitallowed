@@ -356,6 +356,7 @@ CONFIG.sessionKey
 ^[a-f0-9]{40}:packages\/tool\/site\/client\/tests\/pages\/sendPage\.spec\.tsx:159
 ^[a-f0-9]{40}:packages\/tool\/site\/client\/tests\/pages\/sendPage\.spec\.tsx:15
 ^[a-f0-9]{40}:packages\/tool\/site\/client\/tests\/pages\/sendPage\.spec\.tsx:212
+^([a-f0-9]{40}:)?packages\/tool\/site\/client\/tests\/pages\/sendPage\.spec\.tsx
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:47
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:59
 ^[a-f0-9]{40}:packages\/tool\/site\/server\/src\/app\.ts:81
