@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
@@ -21,7 +20,7 @@ test("Displays home page", async () => {
   const container = await renderPage()
 
   expect(screen.getByText("I would like to...")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage() {

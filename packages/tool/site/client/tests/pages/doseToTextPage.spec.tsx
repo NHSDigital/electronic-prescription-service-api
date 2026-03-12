@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {fireEvent, screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
@@ -36,7 +35,7 @@ afterEach(() => mock.reset())
 test("Displays dose to text form on render", async () => {
   const container = await renderPage()
   expect(screen.getByText("Dose to Text")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays dose to text result", async () => {
@@ -54,7 +53,7 @@ test("Displays dose to text result", async () => {
   await waitFor(() => screen.getByText("Dose to Text Result"))
   expect(screen.getByText((/JSON Request/))).toBeTruthy()
   expect(screen.getByText((/JSON Response/))).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage() {

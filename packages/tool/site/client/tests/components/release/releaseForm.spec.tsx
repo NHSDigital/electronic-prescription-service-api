@@ -1,6 +1,5 @@
 import {render} from "@testing-library/react"
 import {screen, waitFor} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import {expect} from "@jest/globals"
 import ReleaseForm from "../../../src/components/release/releaseForm"
@@ -36,7 +35,7 @@ test("Fields default to current values for nominated release", async () => {
   expect(pharmacyRadios[2].value).toEqual("custom")
   expect(pharmacyRadios[2].checked).toBeFalsy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Fields default to current values for patient release", async () => {
@@ -66,7 +65,7 @@ test("Fields default to current values for patient release", async () => {
   expect(pharmacyRadios[2].value).toEqual("custom")
   expect(pharmacyRadios[2].checked).toBeFalsy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Prescription Id Field is required when releasing by prescription Id", async () => {
@@ -84,7 +83,7 @@ test("Prescription Id Field is required when releasing by prescription Id", asyn
   await waitFor(() => screen.getByText("You must enter a 'Prescription ID' to release to when releasing a single prescription"))
   expect(screen.getByLabelText("Prescription ID")).toBeTruthy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Fhir Field is required when releasing a custom fhir release message", async () => {
@@ -102,7 +101,7 @@ test("Fhir Field is required when releasing a custom fhir release message", asyn
   await waitFor(() => screen.getByText("You must enter a FHIR release message when selecting 'With a FHIR release message'"))
   expect(screen.getByLabelText("Paste a FHIR release message")).toBeTruthy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Pharmacy to release to is always required", async () => {
@@ -116,5 +115,5 @@ test("Pharmacy to release to is always required", async () => {
 
   await waitFor(() => screen.getByText("You must select a pharmacy to release to"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })

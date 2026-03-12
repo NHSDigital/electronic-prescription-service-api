@@ -2,7 +2,6 @@ import {noPriorClaimInitialValues, priorClaimInitialValues, staticProductInfo} f
 import {render, waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
 import userEvent from "@testing-library/user-event"
-import pretty from "pretty"
 import * as React from "react"
 import ClaimForm, {ClaimFormValues} from "../../../src/components/claim/claimForm"
 import {renderWithContext} from "../../renderWithContext"
@@ -19,7 +18,7 @@ test("Form has no endorsement fields initially", async () => {
   expect(screen.queryAllByLabelText(/Endorsement \d+ Type/)).toHaveLength(0)
   expect(screen.queryAllByLabelText(/Endorsement \d+ Supporting Information/)).toHaveLength(0)
   expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(0)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Clicking Add Endorsement button adds one set of endorsement fields", async () => {
@@ -32,7 +31,7 @@ test("Clicking Add Endorsement button adds one set of endorsement fields", async
   expect(screen.queryByLabelText("Endorsement 2 Type")).toBeFalsy()
   expect(screen.queryByLabelText("Endorsement 2 Supporting Information")).toBeFalsy()
   expect(await screen.findAllByText("Remove Endorsement")).toHaveLength(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Clicking Add Endorsement button twice adds two sets of endorsement fields", async () => {
@@ -44,7 +43,7 @@ test("Clicking Add Endorsement button twice adds two sets of endorsement fields"
   expect(await screen.findByLabelText("Endorsement 2 Type")).toBeTruthy()
   expect(await screen.findByLabelText("Endorsement 2 Supporting Information")).toBeTruthy()
   expect(await screen.findAllByText("Remove Endorsement")).toHaveLength(2)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Clicking Remove Endorsement button removes one set of endorsement fields", async () => {
@@ -57,7 +56,7 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
   expect(screen.queryByLabelText("Endorsement 2 Type")).toBeFalsy()
   expect(screen.queryByLabelText("Endorsement 2 Supporting Information")).toBeFalsy()
   expect(await screen.findAllByText("Remove Endorsement")).toHaveLength(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Clicking Claim button calls the callback with form values", async () => {
@@ -87,7 +86,7 @@ test("Clicking Claim button calls the callback with form values", async () => {
 test("Prepopulated claim info renders properly", async () => {
   const container = await renderClaimForm(priorClaimInitialValues)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function addEndorsement() {

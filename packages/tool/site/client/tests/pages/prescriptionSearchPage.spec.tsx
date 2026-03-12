@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
@@ -48,14 +47,14 @@ afterEach(() => mock.reset())
 
 test("Displays search form", async () => {
   const container = await renderPage()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Form values are populated from query string", async () => {
   const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   expect(screen.getByLabelText<HTMLInputElement>("Prescription ID").value).toEqual(prescriptionId)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays error if mandatory field missing", async () => {
@@ -65,7 +64,7 @@ test("Displays error if mandatory field missing", async () => {
     expect(screen.getAllByText("One of Prescription ID or NHS Number is required")).toHaveLength(2)
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays error if creation date field partially completed", async () => {
@@ -78,7 +77,7 @@ test("Displays error if creation date field partially completed", async () => {
     expect(screen.getByText("All fields are required for a date search")).toBeTruthy()
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays error if creation date field invalid", async () => {
@@ -92,7 +91,7 @@ test("Displays error if creation date field invalid", async () => {
     expect(screen.getByText("Invalid date")).toBeTruthy()
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays loading text while performing a summary search", async () => {
@@ -101,7 +100,7 @@ test("Displays loading text while performing a summary search", async () => {
   userEvent.click(screen.getByText("Search"))
   await waitFor(() => expect(screen.getByText("Searching for prescriptions.")).toBeTruthy())
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays results if summary search completes successfully - NHS number field populated", async () => {
@@ -113,7 +112,7 @@ test("Displays results if summary search completes successfully - NHS number fie
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays results if summary search completes successfully - all fields populated", async () => {
@@ -128,7 +127,7 @@ test("Displays results if summary search completes successfully - all fields pop
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays a message if summary search returns no results", async () => {
@@ -145,7 +144,7 @@ test("Displays a message if summary search returns no results", async () => {
   await clickSearchButton()
   expect(screen.getByText("No results found.")).toBeTruthy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error message if summary search returns an error", async () => {
@@ -167,7 +166,7 @@ test("Displays an error message if summary search returns an error", async () =>
   userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error message if summary search returns invalid response", async () => {
@@ -178,7 +177,7 @@ test("Displays an error message if summary search returns invalid response", asy
   userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Clicking back from the summary search results returns to the form", async () => {
@@ -190,7 +189,7 @@ test("Clicking back from the summary search results returns to the form", async 
   userEvent.click(screen.getByText("Back"))
   await waitFor(() => screen.getByText("Search for a Prescription"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays loading text while performing a detail search", async () => {
@@ -202,7 +201,7 @@ test("Displays loading text while performing a detail search", async () => {
   userEvent.click(screen.getAllByText("View Details")[0])
   await waitFor(() => screen.getByText("Retrieving full prescription details."))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays results if detail search completes successfully without previous dispenses", async () => {
@@ -222,7 +221,7 @@ test("Displays results if detail search completes successfully without previous 
   expect(screen.getByText("SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)")).toBeTruthy()
   expect(screen.getByText("NHS BUSINESS SERVICES AUTHORITY (T1450)")).toBeTruthy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays results if detail search completes successfully with previous dispenses", async () => {
@@ -242,7 +241,7 @@ test("Displays results if detail search completes successfully with previous dis
   expect(screen.getByText("SOMERSET BOWEL CANCER SCREENING CENTRE (A99968)")).toBeTruthy()
   expect(screen.getByText("NHS BUSINESS SERVICES AUTHORITY (T1450)")).toBeTruthy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Clicking back from the detail search results returns to the summary search", async () => {
@@ -261,7 +260,7 @@ test("Clicking back from the detail search results returns to the summary search
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage() {
