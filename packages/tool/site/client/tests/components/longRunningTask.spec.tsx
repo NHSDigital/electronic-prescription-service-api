@@ -1,7 +1,6 @@
 import LongRunningTask from "../../src/components/common/longRunningTask"
 import {render, screen} from "@testing-library/react"
 import React from "react"
-import pretty from "pretty"
 import userEvent from "@testing-library/user-event"
 import {MemoryRouter} from "react-router-dom"
 
@@ -16,7 +15,7 @@ test("Shows loading message while task runs", async () => {
 
   await screen.findByText("Some loading message")
   expect(mockTask).toHaveBeenCalledTimes(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Renders children if task resolves", async () => {
@@ -30,7 +29,7 @@ test("Renders children if task resolves", async () => {
 
   await screen.findByText("Some data from the backend")
   expect(mockTask).toHaveBeenCalledTimes(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test.each([
@@ -51,7 +50,7 @@ test.each([
 
   await screen.findByText(expectedText)
   expect(mockTask).toHaveBeenCalledTimes(1)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Error page includes a back button with the provided onclick handler", async () => {
@@ -69,7 +68,7 @@ test("Error page includes a back button with the provided onclick handler", asyn
   const {container} = render(ui)
 
   await screen.findByText("Some error message")
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
   const button = await screen.findByText<HTMLButtonElement>("Back")
   await userEvent.click(button)
   expect(mockTask).toHaveBeenCalledTimes(1)

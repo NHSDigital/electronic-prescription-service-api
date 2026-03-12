@@ -65,6 +65,10 @@ info:
     * [Simplifier implementation guide for EPS](https://simplifier.net/guide/nhsengland-eps?version=current) - the implementation guide contains detailed information and example messages, error codes and processes. This is for technical audiences like developers.
     * [Building healthcare software - prescriptions](https://digital.nhs.uk/developer/guides-and-documentation/building-healthcare-software/prescriptions) - this explains how to build software that deals with prescriptions. This is for non-technical audiences like product owners.
 
+    The APIs that are replacing this one are:
+    * [EPS FHIR Prescribing API](https://digital.nhs.uk/developer/api-catalogue/eps-fhir-prescribing-api) - use this API to create prescriptions, cancel prescriptions and encode data so prescriptions are ready to sign.
+    * [EPS FHIR Dispensing API](https://digital.nhs.uk/developer/api-catalogue/eps-fhir-dispensing-api) - use this API to get dispensing information about prescriptions and return prescriptions to EPS.
+
     ## API status and roadmap
     The immediate priority of EPS development is to support the rollout of the next-gen FHIR APIs for primary care and secondary care prescribing and dispensing.
 
@@ -148,9 +152,7 @@ info:
     For more details see [integration testing with our RESTful APIs](https://digital.nhs.uk/developer/guides-and-documentation/testing#integration-testing-with-our-restful-apis).
 
     ## Onboarding
-    Your software must be approved by us before you can begin the EPS onboarding process and go live with this FHIR API. EPS 'onboarding' is the term used for the development and assurance required before IT suppliers can offer EPS to NHS organisations.
-
-    Details of the onboarding process can be found on our [EPS onboarding and assurance for IT suppliers](https://digital.nhs.uk/services/electronic-prescription-service/guidance-for-suppliers) page.
+    Suppliers cannot onboard to this API because it is deprecated. Suppliers should onboard to the EPS FHIR Dispensing API and the EPS FHIR Prescribing API instead.
 
     ## Resources
     Use the [Digital Medicines Implementation Guide](https://simplifier.net/guide/NHSDigital-Medicines) to assist with your integration.

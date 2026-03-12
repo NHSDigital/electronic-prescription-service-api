@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
@@ -29,7 +28,7 @@ test("Displays config form correctly in internal dev", async () => {
   expect(screen.getByText("Use Proxygen deployed APIs")).toBeTruthy()
   expect(screen.getByText("Use Signing Mock")).toBeTruthy()
   expect(screen.getByText("Signing PR Number")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays config form correctly in int", async () => {
@@ -41,7 +40,7 @@ test("Displays config form correctly in int", async () => {
   expect(screen.getByText("Use Proxygen deployed APIs")).toBeTruthy()
   expect(screen.queryByText("Use Signing Mock")).toBeNull()
   expect(screen.queryByText("Signing PR Number")).toBeNull()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays config update result", async () => {
@@ -53,7 +52,7 @@ test("Displays config update result", async () => {
   const container = await renderPage(context)
   userEvent.click(screen.getByText("Save"))
   await waitFor(() => screen.getByText(/Config Saved/))
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage(context) {

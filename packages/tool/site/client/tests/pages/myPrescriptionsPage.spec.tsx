@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
@@ -30,7 +29,7 @@ test("Displays my prescriptions page", async () => {
   const container = await renderPage()
 
   expect(screen.getByText("My Prescriptions")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays sent prescriptions from session", async () => {
@@ -44,7 +43,7 @@ test("Displays sent prescriptions from session", async () => {
   const container = await renderPage()
   await waitFor(() => screen.getByText(/Sent Prescriptions/))
   expect(screen.getByText("FC6D78-A83008-EDF7BI")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays released prescriptions from session", async () => {
@@ -58,7 +57,7 @@ test("Displays released prescriptions from session", async () => {
   const container = await renderPage()
   await waitFor(() => screen.getByText(/Released Prescriptions/))
   expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays dispensed prescriptions from session", async () => {
@@ -72,7 +71,7 @@ test("Displays dispensed prescriptions from session", async () => {
   const container = await renderPage()
   await waitFor(() => screen.getByText(/Dispensed Prescriptions/))
   expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays claimed prescriptions from session", async () => {
@@ -86,7 +85,7 @@ test("Displays claimed prescriptions from session", async () => {
   const container = await renderPage()
   await waitFor(() => screen.getByText(/Claimed Prescriptions/))
   expect(screen.getByText("FC6D78-A83008-EDF7BF")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays sent, released, dispensed and claimed prescriptions from session", async () => {
@@ -106,7 +105,7 @@ test("Displays sent, released, dispensed and claimed prescriptions from session"
   expect(screen.getByText("FC6D78-A83008-EDF7BB")).toBeTruthy()
   expect(screen.getByText("FC6D78-A83008-EDF7BC")).toBeTruthy()
   expect(screen.getByText("FC6D78-A83008-EDF7BD")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage() {

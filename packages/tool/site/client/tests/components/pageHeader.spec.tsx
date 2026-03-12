@@ -1,6 +1,5 @@
 import {render} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import {PageHeader} from "../../src/components/pageHeader"
 import {expect} from "@jest/globals"
@@ -15,7 +14,7 @@ test("Header renders when logged in", async () => {
 
   expect(screen.getByText("My Prescriptions")).toBeTruthy()
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Header renders when not logged in", async () => {
@@ -27,6 +26,6 @@ test("Header renders when not logged in", async () => {
   
     expect(screen.queryByText("My Prescriptions")).toBeNull()
   
-    expect(pretty(container.innerHTML)).toMatchSnapshot()
+    expect(container.innerHTML).toMatchSnapshot()
 })
   

@@ -12,7 +12,7 @@ on:
       IS_PULL_REQUEST:
         type: boolean
         default: false
-      runtime_docker_image:
+      pinned_image:
         type: string
         required: true
     secrets:
@@ -25,16 +25,10 @@ on:
       SIGNING_CERT:
         required: true
 jobs:
-  verify_attestation:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
-    with:
-      runtime_docker_image: "${{ inputs.runtime_docker_image }}"
-      verify_published_from_main_image: false
   run_pact_tests:
     runs-on: ubuntu-22.04
-    needs: verify_attestation
     container:
-      image: ${{ needs.verify_attestation.outputs.pinned_image }}
+      image: ${{ inputs.pinned_image }}
       options: --user 1001:1001 --group-add 128
     defaults:
       run:
@@ -122,7 +116,7 @@ jobs:
           API_DEPLOYMENT_METHOD: proxygen
           API_MODE: live
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         name: Upload pact_tests
         if: success() || failure()
         with:

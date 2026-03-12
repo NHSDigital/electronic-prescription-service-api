@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
@@ -55,7 +54,7 @@ test("Displays loading text while prescription data is being requested", async (
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays prescription summary if prescription details are retrieved successfully", async () => {
@@ -64,7 +63,7 @@ test("Displays prescription summary if prescription details are retrieved succes
   const container = await renderPage()
 
   expect(screen.getByText("Sign & Send")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays loading text while prescription is being sent", async () => {
@@ -74,7 +73,7 @@ test("Displays loading text while prescription is being sent", async () => {
   userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Sending signature request."))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Redirects and displays link if signature request upload is successful", async () => {
@@ -95,7 +94,7 @@ test("Redirects and displays link if signature request upload is successful", as
   const link = screen.getByRole<HTMLAnchorElement>("link")
   expect(link.text).toEqual("Proceed to the Signing Service")
   expect(link.href).toEqual("https://example.com/")
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays error message if prepare errors present", async () => {
@@ -119,7 +118,7 @@ test("Displays error message if prepare errors present", async () => {
   userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays error message if redirect URI not present", async () => {
@@ -144,7 +143,7 @@ test("Displays error message if redirect URI not present", async () => {
   userEvent.click(screen.getByText("Sign & Send"))
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage() {

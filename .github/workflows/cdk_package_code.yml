@@ -9,24 +9,14 @@ on:
       COMMIT_ID:
         required: true
         type: string
-      runtime_docker_image:
+      pinned_image:
         type: string
         required: true
-      verify_published_from_main_image:
-        type: boolean
-        required: true
 jobs:
-  verify_attestation:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/verify-attestation.yml@36677e1d6bfaa010d7b78942a1ade12fbefecb80
-    with:
-      runtime_docker_image: "${{ inputs.runtime_docker_image }}"
-      verify_published_from_main_image: ${{ inputs.verify_published_from_main_image }}
-
   package_code:
     runs-on: ubuntu-22.04
-    needs: verify_attestation
     container:
-      image: ${{ needs.verify_attestation.outputs.pinned_image }}
+      image: ${{ inputs.pinned_image }}
       options: --user 1001:1001 --group-add 128
     defaults:
       run:
@@ -57,7 +47,7 @@ jobs:
       - name: get latest validator release
         id: get_latest_validator_release
         run: |
-          LATEST_VALIDATOR_VERSION=v1.0.311-alpha
+          LATEST_VALIDATOR_VERSION=v1.0.348-alpha
           echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_ENV"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
@@ -84,13 +74,13 @@ jobs:
             Makefile \
             cdk.json
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f
+      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         name: Upload docker images
         with:
           name: docker_artifact

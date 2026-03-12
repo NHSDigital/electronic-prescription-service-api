@@ -1,6 +1,5 @@
 import * as React from "react"
 import {render} from "@testing-library/react"
-import pretty from "pretty"
 import SelectField from "../../src/components/common/selectField"
 import {Formik, Form} from "formik"
 
@@ -16,7 +15,7 @@ test("Renders correctly", () => {
 
   const {container} = render(testForm)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Renders correctly with many field options", () => {
@@ -36,5 +35,5 @@ test("Renders correctly with many field options", () => {
 
   const {container} = render(testForm)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
