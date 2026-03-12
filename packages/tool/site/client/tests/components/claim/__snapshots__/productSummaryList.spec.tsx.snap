@@ -1,14 +1,3 @@
 // Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
-exports[`Renders correctly 1`] = `
-"<dl class="nhsuk-summary-list nhsuk-summary-list--no-border">
-  <div class="nhsuk-summary-list__row">
-    <dt class="nhsuk-summary-list__key">Status</dt>
-    <dd class="nhsuk-summary-list__value">Dispensed</dd>
-  </div>
-  <div class="nhsuk-summary-list__row">
-    <dt class="nhsuk-summary-list__key">Quantity Dispensed</dt>
-    <dd class="nhsuk-summary-list__value">1 pre-filled disposable injection</dd>
-  </div>
-</dl>"
-`;
+exports[`Renders correctly 1`] = `"<dl class="nhsuk-summary-list nhsuk-summary-list--no-border"><div class="nhsuk-summary-list__row"><dt class="nhsuk-summary-list__key">Status</dt><dd class="nhsuk-summary-list__value">Dispensed</dd></div><div class="nhsuk-summary-list__row"><dt class="nhsuk-summary-list__key">Quantity Dispensed</dt><dd class="nhsuk-summary-list__value">1 pre-filled disposable injection</dd></div></dl>"`;

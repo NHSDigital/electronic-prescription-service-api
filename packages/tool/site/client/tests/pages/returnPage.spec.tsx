@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import {AppContextValue} from "../../src"
@@ -26,7 +25,7 @@ test("Displays return form", async () => {
   const container = await renderPage()
 
   expect(screen.getByText("Return prescription")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays return result", async () => {
@@ -47,7 +46,7 @@ test("Displays return result", async () => {
   expect(screen.getByText("XML Request")).toBeTruthy()
   expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderPage() {
