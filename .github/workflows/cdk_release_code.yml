@@ -162,28 +162,6 @@ jobs:
           sparse-checkout: |
             .github
 
-      - name: Configure AWS Credentials
-        id: connect-aws-pull-image
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          aws-region: eu-west-2
-          role-to-assume: ${{ secrets.CDK_PULL_IMAGE_ROLE }}
-          role-session-name: prescription-clinical-tracker-ui-pull-image
-
-      - name: Retrieve AWS Account ID
-        id: retrieve-pull-image-account-id
-        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
-
-      - name: Login to Amazon ECR
-        id: login-ecr-pull-image
-        run: |
-          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
-
-      - name: Pull cdk-utils-build from Amazon ECR
-        run: |
-          docker pull "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest"
-          docker tag "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/cdk-utils-build-repo:latest" cdk-utils-build-repo:latest
-
       - name: build_artifact download
         uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3
         with:
