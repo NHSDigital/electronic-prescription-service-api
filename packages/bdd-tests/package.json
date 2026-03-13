@@ -25,7 +25,7 @@
     "babel-jest": "^30.3.0",
     "dom-parser": "^1.1.5",
     "dotenv": "^17.3.1",
-    "expect": "^30.2.0",
+    "expect": "^30.3.0",
     "qs": "^6.15.0"
   },
   "dependencies": {
