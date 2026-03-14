@@ -45,6 +45,7 @@ export interface ECSTasksProps {
   readonly coordinatorLogGroup: ILogGroup
   readonly validatorLogGroup: ILogGroup
   readonly SHA1EnabledApplicationIds: string
+  readonly enablePrescribingSignatureValidation: boolean
   readonly sandboxModeEnabled: string
   readonly cpu: number
   readonly memory: number
@@ -141,7 +142,7 @@ export class ECSTasks extends Construct {
       ],
       environment: {
         VALIDATOR_HOST: `${props.containerNamePrefix}-validator`,
-        TARGET_SPINE_SERVER:  props.targetSpineServer,
+        TARGET_SPINE_SERVER: props.targetSpineServer,
         MTLS_SPINE_CLIENT: "true",
         PRESCRIBE_ENABLED: "true",
         DISPENSE_ENABLED: "true",
@@ -160,6 +161,7 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_ASID: props.defaultPTLAsid,
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SANDBOX: props.sandboxModeEnabled,
+        ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: String(props.enablePrescribingSignatureValidation),
         POLLING_DELAY: props.pollingDelay.toString()
       },
       secrets: {
