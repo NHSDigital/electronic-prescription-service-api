@@ -143,3 +143,15 @@ vulnerabilities:
   - id: CVE-2026-31802
     statement: Transitive dependency vulnerability in tar of npm
     expired_at: 2026-06-01
+  - id: CVE-2026-32141
+    statement: Transitive dependency vulnerability in flatted
+    expired_at: 2026-06-01
+  - id: CVE-2026-1526 
+    statement: Transitive dependency vulnerability in undici of npm
+    expired_at: 2026-06-01
+  - id: CVE-2026-1528
+    statement: Transitive dependency vulnerability in undici of npm
+    expired_at: 2026-06-01
+  - id: CVE-2026-2229
+    statement: Transitive dependency vulnerability in undici of npm
+    expired_at: 2026-06-01
