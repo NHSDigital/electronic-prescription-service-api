@@ -10,6 +10,8 @@ import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {PayloadContent, SendMessagePayloadFactory} from "../../../../src/services/translation/request/payload/factory"
+import {verifySignatureForPrescriptionCreation} from "../../../../src/services/translation/request"
+import * as signatureVerification from "../../../../src/services/verification/signature-verification"
 
 const logger = pino()
 
@@ -134,3 +136,51 @@ function getAllUUIDsNotUpperCase(translatedMessage: string) {
   const allUpperUUIDS = translatedMessage.match(uppercaseUUIDRe)
   return allUUIDS.filter((uuid) => !allUpperUUIDS.includes(uuid))
 }
+
+describe("verifySignatureForPrescriptionCreation", () => {
+  const mockBundle = TestResources.specification[0].fhirMessageUnsigned
+
+  beforeEach(() => {
+    jest.clearAllMocks()
+    jest.restoreAllMocks()
+  })
+
+  test("returns empty array if signature is valid", async () => {
+    jest.spyOn(signatureVerification, "verifyPrescriptionSignature").mockResolvedValue([])
+
+    const issues = await verifySignatureForPrescriptionCreation(mockBundle, logger)
+    expect(issues).toEqual([])
+  })
+
+  test("returns mapped OperationOutcome issues if signature is invalid", async () => {
+    const mockErrors = ["Signature is invalid", "Certificate is revoked"]
+    jest.spyOn(signatureVerification, "verifyPrescriptionSignature").mockResolvedValue(mockErrors)
+
+    const issues = await verifySignatureForPrescriptionCreation(mockBundle, logger)
+
+    expect(issues.length).toBe(2)
+
+    expect(issues[0].severity).toBe("error")
+    expect(issues[0].code).toBe(fhir.IssueCodes.INVALID)
+    expect(issues[0].details.coding[0].code).toBe("INVALID_VALUE")
+    expect(issues[0].diagnostics).toBe("Signature is invalid")
+
+    expect(issues[1].severity).toBe("error")
+    expect(issues[1].code).toBe(fhir.IssueCodes.INVALID)
+    expect(issues[1].details.coding[0].code).toBe("INVALID_VALUE")
+    expect(issues[1].diagnostics).toBe("Certificate is revoked")
+  })
+
+  test("returns mapped OperationOutcome issue if uncaught error occurs", async () => {
+    jest.spyOn(signatureVerification, "verifyPrescriptionSignature").mockRejectedValue(new Error("Test error"))
+
+    const issues = await verifySignatureForPrescriptionCreation(mockBundle, logger)
+
+    expect(issues.length).toBe(1)
+
+    expect(issues[0].severity).toBe("error")
+    expect(issues[0].code).toBe(fhir.IssueCodes.INVALID)
+    expect(issues[0].details.coding[0].code).toBe("INVALID_VALUE")
+    expect(issues[0].diagnostics).toBe("Uncaught error during signature verification")
+  })
+})

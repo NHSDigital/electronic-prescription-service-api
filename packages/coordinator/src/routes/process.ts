@@ -19,6 +19,8 @@ import {
 } from "../utils/headers"
 import {getStatusCode} from "../utils/status-code"
 import {HashingAlgorithm} from "../services/translation/common/hashingAlgorithm"
+import {isSignatureValidationEnabled} from "../utils/feature-flags"
+import {identifyMessageType} from "../services/translation/common"
 
 export default [
   /*
@@ -46,6 +48,14 @@ export default [
         const response = fhir.createOperationOutcome(issues, bundle.meta?.lastUpdated)
         const statusCode = getStatusCode(issues)
         return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
+      }
+
+      if (isSignatureValidationEnabled() && identifyMessageType(bundle) === fhir.EventCodingCode.PRESCRIPTION) {
+        const signatureIssues = await translator.verifySignatureForPrescriptionCreation(bundle, request.logger)
+        if (signatureIssues.length) {
+          const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
+          return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
+        }
       }
 
       request.logger.info("Building Spine request")

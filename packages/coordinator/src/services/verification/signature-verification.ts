@@ -1,6 +1,6 @@
 import pino from "pino"
 import {ElementCompact} from "xml-js"
-import {hl7V3} from "@models"
+import {fhir, hl7V3} from "@models"
 import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertFragmentsToHashableFormat, extractFragments} from "../translation/request/signature"
 import {createParametersDigest} from "../translation/request"
@@ -70,6 +70,51 @@ export const verifyPrescriptionSignature = async (
   return errors
 }
 
+export const verifyAndFormatPrescriptionSignature = async (
+  parentPrescription: hl7V3.ParentPrescription,
+  logger: pino.Logger,
+  action: "creation" | "release"
+): Promise<Array<fhir.OperationOutcomeIssue>> => {
+  try {
+    const errors = await verifyPrescriptionSignature(parentPrescription, logger)
+    if (errors.length === 0) {
+      return []
+    }
+
+    const prescriptionId = parentPrescription.id._attributes.root.toLowerCase()
+    logger.error(`[Verifying signature for prescription ${prescriptionId} on ${action}]: ${errors.join(", ")}`)
+
+    return errors.map(error => ({
+      severity: "error",
+      code: fhir.IssueCodes.INVALID,
+      details: {
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+          code: "INVALID_VALUE",
+          display: "Signature is invalid."
+        }]
+      },
+      diagnostics: error,
+      expression: ["Provenance.signature.data"]
+    }))
+  } catch (e) {
+    logger.error(e, `Uncaught error during signature verification for ${action}`)
+    return [{
+      severity: "error",
+      code: fhir.IssueCodes.INVALID,
+      details: {
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+          code: "INVALID_VALUE",
+          display: "Signature is invalid."
+        }]
+      },
+      diagnostics: "Uncaught error during signature verification",
+      expression: ["Provenance.signature.data"]
+    }]
+  }
+}
+
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {
   const subCACerts = getSubCaCerts()
   return subCACerts.some((subCa) => isCertTrusted(x509Certificate, subCa))
@@ -132,9 +177,9 @@ function extractSignatureMethodFromSignatureRoot(signatureRoot: ElementCompact) 
     return signatureMethod[0] === "rsa-sha256" ? signatureMethod[0] : "rsa-sha1"
   } else {
     signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
-    "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+      "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
     signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
-    "http://www.w3.org/2000/09/xmldsig#sha1"
+      "http://www.w3.org/2000/09/xmldsig#sha1"
     return "rsa-sha1"
   }
 }

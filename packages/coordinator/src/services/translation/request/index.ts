@@ -10,6 +10,7 @@ import {identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {createHash} from "../../../../src/routes/create-hash"
 import {HashingAlgorithm, getPrepareHashingAlgorithmFromEnvVar} from "../common/hashingAlgorithm"
+import {verifyAndFormatPrescriptionSignature} from "../../verification/signature-verification"
 
 export async function convertFhirMessageToSignedInfoMessage(
   bundle: fhir.Bundle,
@@ -117,6 +118,14 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
 export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+}
+
+export async function verifySignatureForPrescriptionCreation(
+  bundle: fhir.Bundle,
+  logger: pino.Logger
+): Promise<Array<fhir.OperationOutcomeIssue>> {
+  const parentPrescription = convertParentPrescription(bundle, logger)
+  return verifyAndFormatPrescriptionSignature(parentPrescription, logger, "creation")
 }
 
 export {

@@ -3,11 +3,13 @@ import pino from "pino"
 const actualVerification = jest.requireActual("../../../../../src/services/verification/signature-verification")
 let throwOnVerification = false
 jest.mock("../../../../../src/services/verification/signature-verification", () => ({
-  verifyPrescriptionSignature: (parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger) => {
+  verifyAndFormatPrescriptionSignature: async (
+    parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger, action: "creation" | "release"
+  ) => {
     if (throwOnVerification) {
       throw new Error("Verification error")
     } else {
-      return actualVerification.verifyPrescriptionSignature(parentPrescription, logger)
+      return actualVerification.verifyAndFormatPrescriptionSignature(parentPrescription, logger, action)
     }
   }
 }))
@@ -166,7 +168,7 @@ describe("outer bundle", () => {
 
     test("logs an error", () => {
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid"
+        "[Verifying signature for prescription 93041e69-2017-4242-b325-cbc9a84d5ef1 on release]: Signature is invalid"
       )
     })
 
@@ -211,6 +213,7 @@ describe("outer bundle", () => {
                 }
               ]
             },
+            diagnostics: "Signature is invalid",
             expression: ["Provenance.signature.data"]
           }
         ])
