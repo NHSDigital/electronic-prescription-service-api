@@ -1,5 +1,6 @@
 import {
   App,
+  CfnOutput,
   Duration,
   Environment,
   Fn,
@@ -398,6 +399,12 @@ export class PrescribeDispenseStack extends Stack {
       Port.tcp(containerPort),
       "Allow traffic to Claims Service from FHIR Facade load balancer"
     )
+
+    new CfnOutput(this, "EnablePrescribingSignatureValidation", {
+      value: String(enablePrescribingSignatureValidation),
+      exportName: `${props.stackName}:enablePrescribingSignatureValidation`
+    })
+
     nagSuppressions(this)
   }
 }
