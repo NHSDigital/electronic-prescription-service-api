@@ -63,11 +63,11 @@ jobs:
         run: |
           if [[ "$TARGET_ENVIRONMENT" != "prod" && "$TARGET_ENVIRONMENT" != "ref" ]]; then
             # this should be the tag of the tests you want to run
-            REGRESSION_TEST_REPO_TAG=v3.9.9
+            REGRESSION_TEST_REPO_TAG=AEA-4652-add-prescription-order-endpoint-signature-validation
 
             # this should be the tag of the regression test workflow you want to run
             # This will normally be the same as REGRESSION_TEST_REPO_TAG
-            REGRESSION_TEST_WORKFLOW_TAG=v3.9.9
+            REGRESSION_TEST_WORKFLOW_TAG=AEA-4652-add-prescription-order-endpoint-signature-validation
 
             # If the workflow tag doesn't start with `v`, it's a PR and we need to use the path heads, instead of refs
             # e.g. refs/heads/aea-0000-test-pr/scripts/run_regression_tests.py
