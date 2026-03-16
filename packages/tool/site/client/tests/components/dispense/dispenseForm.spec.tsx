@@ -1,6 +1,5 @@
 import {render, waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import DispenseForm from "../../../src/components/dispense/dispenseForm"
 import {staticLineItemInfoArray, staticPrescriptionInfo} from "./props"
@@ -29,7 +28,7 @@ test("Fields default to current values", async () => {
   const itemWithoutDispenses = screen.getAllByText<HTMLSelectElement>("Quantity Currently Dispensed")
   expect(itemWithoutDispenses).toHaveLength(1)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Reason field is shown when status is set to not dispensed", async () => {
@@ -48,7 +47,7 @@ test("Reason field is shown when status is set to not dispensed", async () => {
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount + 1)
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Reason field is hidden when status is not set to not dispensed", async () => {
@@ -67,7 +66,7 @@ test("Reason field is hidden when status is not set to not dispensed", async () 
     expect(screen.queryAllByLabelText("Reason")).toHaveLength(initialCount - 1)
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Quantity field is shown when status is set to partial dispensed", async () => {
@@ -85,7 +84,7 @@ test("Quantity field is shown when status is set to partial dispensed", async ()
     expect(quantityField).toHaveLength(1)
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Quantity field is hidden when status is not set to partial dispensed", async () => {
@@ -102,7 +101,7 @@ test("Quantity field is hidden when status is not set to partial dispensed", asy
     expect(screen.queryAllByLabelText("Quantity Dispensed")).toHaveLength(0)
   )
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Reason field value is reset when hidden", async () => {
@@ -137,7 +136,7 @@ test("Reason field value is reset when hidden", async () => {
   )
   expect(screen.getByLabelText<HTMLSelectElement>("Reason").value).toEqual(initialValue)
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Prescription status updates to suggested value when line item status is changed", async () => {
@@ -158,7 +157,7 @@ test("Prescription status updates to suggested value when line item status is ch
     expect(statusFields[2].value).toEqual(PrescriptionStatus.PARTIALLY_DISPENSED)
   })
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Prescription status is not updated automatically if field has been touched", async () => {
@@ -177,7 +176,7 @@ test("Prescription status is not updated automatically if field has been touched
     expect(statusFields[2].value).toEqual(PrescriptionStatus.DISPENSED)
   })
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Dispense Different Medication checkbox is present for paracetamol 500 (60)", async () => {
@@ -191,5 +190,5 @@ test("Dispense Different Medication checkbox is present for paracetamol 500 (60)
     expect(screen.queryAllByText("Dispense Different Medication")).toHaveLength(1)
   })
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })

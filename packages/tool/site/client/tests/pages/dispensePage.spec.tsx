@@ -1,6 +1,5 @@
 import {waitFor} from "@testing-library/react"
 import {screen} from "@testing-library/dom"
-import pretty from "pretty"
 import * as React from "react"
 import MockAdapter from "axios-mock-adapter"
 import userEvent from "@testing-library/user-event"
@@ -35,7 +34,7 @@ test("Displays loading text while prescription data is being requested", async (
   const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
   await waitFor(() => screen.getByText("Loading"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays dispense form if prescription details are retrieved successfully (no previous dispense notification)", async () => {
@@ -47,7 +46,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
   await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Dispense")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays dispense form if prescription details are retrieved successfully (previous dispense notifications)", async () => {
@@ -59,7 +58,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
   await new Promise(r => setTimeout(r, 2000))
 
   expect(screen.getByText("Dispense")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error if prescription-order not found", async () => {
@@ -68,7 +67,7 @@ test("Displays an error if prescription-order not found", async () => {
   const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays an error on invalid response", async () => {
@@ -77,7 +76,7 @@ test("Displays an error on invalid response", async () => {
   const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays loading text while dispense notification is being submitted", async () => {
@@ -88,7 +87,7 @@ test("Displays loading text while dispense notification is being submitted", asy
   userEvent.click(screen.getByText("Dispense"))
   await waitFor(() => screen.getByText("Sending dispense notification."))
 
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays dispense result", async () => {
@@ -110,7 +109,7 @@ test("Displays dispense result", async () => {
   expect(screen.getByText("XML Request")).toBeTruthy()
   expect(screen.getByText((/JSON Response/))).toBeTruthy()
   expect(screen.getByText("XML Response")).toBeTruthy()
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
 
 test("Displays the amend id when amending a dispense notification", async () => {

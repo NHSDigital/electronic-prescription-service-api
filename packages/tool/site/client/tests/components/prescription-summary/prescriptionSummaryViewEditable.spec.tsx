@@ -1,7 +1,6 @@
 import * as React from "react"
 import {PrescriptionSummaryView} from "../../../src/components/prescription-summary/PrescriptionSummaryView"
 import {editableSummaryPrescription} from "./props"
-import pretty from "pretty"
 import {render} from "@testing-library/react"
 import {Form, Formik} from "formik"
 
@@ -44,5 +43,5 @@ const prescriptionForm = () => {
 test("Renders correctly", async () => {
   const component = prescriptionForm()
   const {container} = render(component)
-  expect(pretty(container.innerHTML)).toMatchSnapshot()
+  expect(container.innerHTML).toMatchSnapshot()
 })
