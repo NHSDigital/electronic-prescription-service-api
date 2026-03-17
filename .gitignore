@@ -42,3 +42,6 @@ _site/
 vendor
 .cfn_guard_out/
 .trivy_out/
+
+# Fhir Schema Generation
+packages/fhir-schema-generation/.output

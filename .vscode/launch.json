@@ -33,6 +33,21 @@
         "SIGNING_PRIVATE_KEY_PATH": "/workspaces/electronic-prescription-service-api/sign/eps_int_test_private.key",
         "SIGNING_CERT_PATH": "/workspaces/electronic-prescription-service-api/sign/eps_int_test_certificate.crt"
       }
+    },
+    {
+      "name": "Debug FHIR-Schema-Generation with tsx",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/packages/fhir-schema-generation",
+      "runtimeArgs": [
+        "--import",
+        "tsx"
+      ],
+      "program": "src/index.ts",
+      "skipFiles": [
+        "<node_internals>/**"
+      ],
+      "console": "integratedTerminal"
     }
   ]
 }
