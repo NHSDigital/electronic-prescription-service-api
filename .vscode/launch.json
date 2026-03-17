@@ -35,7 +35,7 @@
       }
     },
     {
-      "name": "Debug FHIR-Schema-Generation with tsx",
+      "name": "Debug Package - FHIR-Schema-Generation with tsx",
       "type": "node",
       "request": "launch",
       "cwd": "${workspaceFolder}/packages/fhir-schema-generation",

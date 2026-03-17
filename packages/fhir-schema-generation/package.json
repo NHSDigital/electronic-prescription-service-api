@@ -6,7 +6,9 @@
   "scripts": {
     "build": "tsc",
     "dev": "tsx watch src/index.ts",
+    "dev:new": "rm -rf .output && npm run dev",
     "start": "node dist/index.js",
+    "start:new": "rm -rf .output && npm run start",
     "test": "jest",
     "test:watch": "jest --watch"
   },

@@ -13,6 +13,8 @@ async function main() {
         console.error('Application failed to start:', error);
         process.exit(1);
     }
+
+    console.log("Generation complete");
 }
 
 // Execute the entry point

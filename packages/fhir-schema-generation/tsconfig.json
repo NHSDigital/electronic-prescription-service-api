@@ -13,6 +13,6 @@
     "types": ["node", "jest"] 
   },
   "include": [
-    "src/**/*", "tests/**/*", 
+    "src/**/*"
   ]
 }

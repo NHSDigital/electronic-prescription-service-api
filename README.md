@@ -19,6 +19,7 @@ This is a RESTful HL7® FHIR® API specification for the _Electronic Prescriptio
 - `packages/tool/site` Code for EPSAT - split into client and server
 - `packages/tool/specification` API spec for EPSAT - needed for Apigee deployment
 - `packages/cdk` CDK code to deploy the stack in EPS AWS account
+- `packages/fhir-schema-generation` Script to Generate FHIR Schema from Simplify
 - `proxies/` Apigee API Proxies for the API
 - `scripts/` Utilities helpful to developers of this specification
 - `.devcontainer` Contains a dockerfile and vscode devcontainer definition

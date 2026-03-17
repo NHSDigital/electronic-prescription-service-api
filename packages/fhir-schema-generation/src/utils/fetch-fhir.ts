@@ -120,7 +120,7 @@ export async function downloadSimplifierPackage(registry: string, name: string, 
     }
     else if (fs.existsSync(outputFile)) {
         console.log(`File "${targetPath}" already exists locally. Skipping download.`);
-        return;
+        return
     }
 
     console.log(`Downloading ${name}:${metadata.version} from ${registry}`)
