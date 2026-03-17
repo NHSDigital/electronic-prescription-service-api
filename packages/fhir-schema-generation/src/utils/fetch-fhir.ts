@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as tar from 'tar';
 import { Readable } from 'stream';
 import { finished } from 'stream/promises';
-import { FhirPackageVersion, FhirPackageMetadata } from '../fhir/fhir-package-metadata.js'
+import { FhirPackageVersion, FhirPackageMetadata } from '../models/fhir/fhir-package-metadata.js'
 
 /** * Queries the package registry to validate if a specific target version exists and returns its metadata.
  * If "latest" is provided as the version, it resolves and returns the most recent version.
@@ -65,7 +65,7 @@ async function downloadTarballPackage(url: string, target: string): Promise<any>
  * @param {string} target - The directory path where the tarball contents should be extracted.
  * @returns {Promise<any | null>} A promise resolving to the parsed package.json manifest object, or null if the manifest is missing.
  */
-export async function extractAndReadPackage(source: string, target: string): Promise<any | null> {
+export async function extractAndReadPackage(source: string, target: string): Promise<unknown | null> {
     console.log(`Extracting: ${source} to ${target}...`);
 
     if (!fs.existsSync(target)) {
@@ -88,7 +88,7 @@ export async function extractAndReadPackage(source: string, target: string): Pro
 
         return packageManifest;
     } else {
-        console.warn(`Could not find expected 'package/package.json' inside ${target}`);
+        throw new Error(`Could not find expected 'package/package.json' inside ${target}`);
     }
 
     return null;
@@ -118,7 +118,7 @@ export async function downloadSimplifierPackage(registry: string, name: string, 
         console.log(`Creating directory "${outputDir}"`)
         fs.mkdirSync(outputDir, { recursive: true });
     }
-    else if (fs.existsSync(targetPath)) {
+    else if (fs.existsSync(outputFile)) {
         console.log(`File "${targetPath}" already exists locally. Skipping download.`);
         return;
     }
