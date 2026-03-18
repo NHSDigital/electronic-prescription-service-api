@@ -264,7 +264,7 @@ describe("outer bundle", () => {
     })
   })
 
-  test("marks prescription as failed if verification throws an error", async () => {
+  test("marks prescription as failed if verification returns errors", async () => {
     try {
       throwOnVerification = true
       const result = await translateReleaseResponse(
