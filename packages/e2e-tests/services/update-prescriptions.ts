@@ -357,7 +357,7 @@ async function signPrescription(
   originalShortFormId: string,
   logger: pino.Logger
 ) {
-  if (!processCase.isSuccess) {
+  if (!processCase.isSuccess && processCase.statusText !== "400-INVALID-CHECKSUM") {
     return
   }
 
