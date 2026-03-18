@@ -24,7 +24,10 @@ beforeAll(async () => {
   }
   if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
     await updatePrescriptions(
-      fetcher.prescriptionOrderExamples.filter((e) => !e.isSuccess),
+      [
+        ...fetcher.prescriptionOrderExamples.filter((e) => !e.isSuccess),
+        ...fetcher.processExamples.filter((e) => !e.isSuccess)
+      ],
       [],
       [],
       [],
@@ -94,17 +97,18 @@ describe("ensure errors are translated", () => {
           },
           issue: [
             {
-              code: "business-rule",
+              code: "invalid",
               severity: "error",
               details: {
                 coding: [
                   {
-                    system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-                    code: "MISSING_DIGITAL_SIGNATURE",
-                    display: "Digital signature not found"
+                    system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+                    code: "INVALID_VALUE",
+                    display: "Signature is invalid."
                   }
                 ]
-              }
+              },
+              expression: ["Provenance.signature.data"]
             }
           ]
         },
