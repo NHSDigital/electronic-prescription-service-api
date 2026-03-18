@@ -94,6 +94,7 @@ install-node:
 		--workspace packages/e2e-tests \
 		--workspace packages/bdd-tests \
 		--workspace packages/cdk \
+		--workspace packages/fhir-schema-generation
 		--include-workspace-root
 
 install-python:
@@ -118,6 +119,9 @@ build-api: build-specification build-coordinator build-proxies
 build-epsat:
 	cd packages/tool && docker-compose build
 	npm run build --workspace packages/tool/site/client
+
+build-fhir-schema-generation:
+	npm run build --workspace packages/fhir-schema-generation
 
 build-all: build-api build-epsat
 
@@ -160,7 +164,10 @@ test-api: check-licenses-api generate-mock-certs test-coordinator
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
 
-test-all: test-api test-epsat
+test-fhir-schema-generation:
+	npm run test --workspace packages/fhir-schema-generation
+
+test-all: test-api test-epsat test-fhir-schema-generation
 	npm run test --workspace packages/cdk
 
 test-coordinator:
@@ -304,6 +311,10 @@ run-validator:
 run-epsat: build-epsat
 	npm run watch --workspace packages/tool/site/client/ &
 	cd packages/tool && docker-compose up
+
+run-fhir-schema-generation:
+	build-fhir-schema-generation
+	npm run start --workspace packages/fhir-schema-generation
 
 
 ## Quality Checks

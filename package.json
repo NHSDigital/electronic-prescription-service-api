@@ -26,7 +26,8 @@
     "packages/tool/site/client",
     "packages/tool/site/server",
     "packages/bdd-tests",
-    "packages/cdk"
+    "packages/cdk",
+    "packages/fhir-schema-generation"
   ],
   "private": true,
   "devDependencies": {
