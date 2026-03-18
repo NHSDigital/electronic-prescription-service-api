@@ -108,6 +108,7 @@ describe("ensure errors are translated", () => {
                   }
                 ]
               },
+              diagnostics: "Invalid signature format",
               expression: ["Provenance.signature.data"]
             }
           ]
