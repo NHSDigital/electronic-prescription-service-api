@@ -47,13 +47,18 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_config_values]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@e208462679dedaded1e066c25c9830b9c0bf1930
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@6713f00b9a29ae0ffc42b50dc610cb252d601181
+    permissions:
+      id-token: write
+      contents: write
     with:
       dry_run: false
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       branch_name: master
       tag_format: ${{ needs.get_config_values.outputs.tag_format }}
       main_branch: master
+      update_jira: true
+      jira_release_prefix: "fhir-facade"
     secrets: inherit
 
   package_code:
