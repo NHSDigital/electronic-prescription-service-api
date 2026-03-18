@@ -1,78 +1,73 @@
 #########################################################################
 # Dependabot configuration file
-# -----------------------------
-# Checks for updates for the following components:
-# - API Specification (OAS): npm
-# - E2E Tests (Pact tests): npm
-# - EPS API (Coordinator): npm + Docker
-# - EPS API Tool (EPSAT): npm + Docker
-#
-# rebase-strategy is set to 'disabled', as automated rebasing was causing
-# too many CI environments to be created, reducing available capacity for
-# us and other teams as well.
 #########################################################################
 
 version: 2
+registries:
+  npm-github:
+    type: npm-registry
+    url: https://npm.pkg.github.com
+    token: ${{secrets.DEPENDABOT_TOKEN}}
+
 updates:
-  - package-ecosystem: "github-actions"
-    # Workflow files stored in the
-    # default location of `.github/workflows`
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "02:00" # UTC
-    open-pull-requests-limit: 2
-    commit-message:
-      prefix: "Upgrade: [dependabot] - "
-
-
-  ###################################
-  # NPM workspace  ##################
-  ###################################
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-      time: "02:00" # UTC
-    open-pull-requests-limit: 2
-    commit-message:
-      prefix: "Upgrade: [dependabot] - "
-    versioning-strategy: increase
-
-
-  # Coordinator Container
-  - package-ecosystem: "docker"
-    directory: "/packages/coordinator"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "daily"
-      time: "02:00" # UTC
-    open-pull-requests-limit: 2
-    commit-message:
-      prefix: "Upgrade: [dependabot] - "
-
-
-  # EPSAT Container
-  - package-ecosystem: "docker"
-    directory: "/packages/tool/site"
-    rebase-strategy: "disabled"
-    schedule:
-      interval: "daily"
-      time: "02:00" # UTC
-    open-pull-requests-limit: 2
-    commit-message:
-      prefix: "Upgrade: [dependabot] - "
-
-
   ###################################
   # Poetry  #########################
   ###################################
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "daily"
-      time: "02:00" # UTC
-    open-pull-requests-limit: 2
+      interval: "weekly"
+      day: "friday"
+      time: "18:00" #UTC
+    open-pull-requests-limit: 20
     commit-message:
       prefix: "Upgrade: [dependabot] - "
     versioning-strategy: increase
+  # Coordinator Container
+  - package-ecosystem: "docker"
+    directory: "/packages/coordinator"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "20:00" #UTC
+    open-pull-requests-limit: 20
+    commit-message:
+      prefix: "Upgrade: [dependabot] - "
+  # EPSAT Container
+  - package-ecosystem: "docker"
+    directory: "/packages/tool/site"
+    rebase-strategy: "disabled"
+    schedule:
+      interval: "weekly"
+      day: "friday"
+      time: "22:00" #UTC
+    open-pull-requests-limit: 20
+    commit-message:
+      prefix: "Upgrade: [dependabot] - "
+  - package-ecosystem: "github-actions"
+    # Workflow files stored in the
+    # default location of `.github/workflows`
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "01:00" #UTC
+    open-pull-requests-limit: 20
+    commit-message:
+      prefix: "Upgrade: [dependabot] - "
+  ###################################
+  # NPM workspace  ##################
+  ###################################
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "saturday"
+      time: "03:00" #UTC
+    open-pull-requests-limit: 20
+    commit-message:
+      prefix: "Upgrade: [dependabot] - "
+    versioning-strategy: increase
+    registries:
+      - npm-github
