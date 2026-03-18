@@ -357,6 +357,9 @@ async function signPrescription(
   originalShortFormId: string,
   logger: pino.Logger
 ) {
+  // 400-INVALID-CHECKSUM cases must still be signed so the request passes signature validation
+  // and reaches Spine, which then rejects it for the bad checksum. without a valid signature,
+  // the API would reject it first with INVALID_VALUE instead of the expected FAILURE_TO_PROCESS_MESSAGE
   if (!processCase.isSuccess && processCase.statusText !== "400-INVALID-CHECKSUM") {
     return
   }
