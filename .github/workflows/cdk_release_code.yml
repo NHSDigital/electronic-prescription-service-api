@@ -102,10 +102,6 @@ on:
       FORWARD_CSOC_LOGS:
         type: boolean
         required: true
-      pull_request_id:
-        type: string
-        required: false
-        default: ""
       pinned_image:
         type: string
         required: true
@@ -357,7 +353,6 @@ jobs:
       ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       PRODUCT: EPS-FHIR-PRESCRIBING
-      pull_request_id: ${{ inputs.pull_request_id }}
       pinned_image: ${{ inputs.pinned_image }}
     secrets:
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}

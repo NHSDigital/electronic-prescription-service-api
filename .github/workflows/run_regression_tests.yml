@@ -13,10 +13,6 @@ on:
         type: string
       PRODUCT:
         type: string
-      pull_request_id:
-        type: string
-        required: false
-        default: ""
       pinned_image:
         type: string
         required: true
@@ -64,7 +60,6 @@ jobs:
           TARGET_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
           GITHUB-TOKEN: ${{ steps.generate-token.outputs.token }}
-          PULL_REQUEST_ID: ${{ inputs.pull_request_id }}
         run: |
           if [[ "$TARGET_ENVIRONMENT" != "prod" && "$TARGET_ENVIRONMENT" != "ref" ]]; then
             # this should be the tag of the tests you want to run
@@ -93,6 +88,5 @@ jobs:
             --is_called_from_github=true \
             --product=${{ inputs.PRODUCT }} \
             --regression_test_repo_tag "${REGRESSION_TEST_REPO_TAG}" \
-            --regression_test_workflow_tag "${REGRESSION_TEST_WORKFLOW_TAG}" \
-            --pull_request_id="${PULL_REQUEST_ID}"
+            --regression_test_workflow_tag "${REGRESSION_TEST_WORKFLOW_TAG}"
           fi
