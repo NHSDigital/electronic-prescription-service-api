@@ -82,25 +82,7 @@ export async function translateReleaseResponse(
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
     const bundle = await createBundle(ParentPrescription, releaseRequestId, logger)
-    let signatureIssues: Array<fhir.OperationOutcomeIssue>
-    try {
-      signatureIssues = await verifyAndFormatPrescriptionSignature(ParentPrescription, logger, "release")
-    } catch (e) {
-      logger.error(e, "Uncaught error during signature verification")
-      signatureIssues = [{
-        severity: "error",
-        code: fhir.IssueCodes.INVALID,
-        details: {
-          coding: [{
-            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "INVALID_VALUE",
-            display: "Signature is invalid."
-          }]
-        },
-        diagnostics: "Uncaught error during signature verification",
-        expression: ["Provenance.signature.data"]
-      }]
-    }
+    const signatureIssues = await verifyAndFormatPrescriptionSignature(ParentPrescription, logger, "release")
 
     if (signatureIssues.length === 0) {
       passedPrescriptions.push(bundle)
