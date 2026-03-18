@@ -24,10 +24,7 @@ beforeAll(async () => {
   }
   if (process.env.UPDATE_PRESCRIPTIONS !== "false") {
     await updatePrescriptions(
-      [
-        ...fetcher.prescriptionOrderExamples.filter((e) => !e.isSuccess),
-        ...fetcher.processExamples.filter((e) => !e.isSuccess)
-      ],
+      fetcher.prescriptionOrderExamples.filter((e) => !e.isSuccess),
       [],
       [],
       [],
