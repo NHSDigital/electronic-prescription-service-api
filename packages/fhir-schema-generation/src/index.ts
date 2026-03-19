@@ -1,4 +1,7 @@
-import {downloadSimplifierPackage} from "./utils/fetch-fhir.js"
+import path from "path"
+import {normalizeFileName} from "./utils/common.js"
+import {downloadSimplifierPackage} from "./utils/download-simplifier-package.js"
+import {generateSchema} from "./utils/generate-schema.js"
 
 async function main() {
   try {
@@ -8,7 +11,10 @@ async function main() {
     const packageName: string = "hl7.fhir.r4.core"
     const version = "latest"
 
-    await downloadSimplifierPackage(registryUrl, packageName, version)
+    const outputPath = path.join(process.cwd(), ".output", "parsed", normalizeFileName(`${packageName}-${version}`))
+
+    await downloadSimplifierPackage(registryUrl, packageName, outputPath, version)
+    await generateSchema(outputPath)
   } catch (error) {
     console.error("Application failed to start:", error)
     process.exit(1)

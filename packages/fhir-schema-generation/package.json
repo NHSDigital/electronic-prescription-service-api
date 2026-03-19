@@ -30,6 +30,8 @@
     "typescript-eslint": "^8.57.1"
   },
   "dependencies": {
+    "@types/fhir": "^0.0.41",
+    "json-schema-to-ts": "^3.1.1",
     "tar": "^7.5.11"
   }
 }

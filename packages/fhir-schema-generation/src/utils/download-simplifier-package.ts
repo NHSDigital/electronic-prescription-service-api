@@ -3,7 +3,9 @@ import * as path from "path"
 import * as tar from "tar"
 import {Readable} from "stream"
 import {finished} from "stream/promises"
-import {FhirPackageVersion, FhirPackageMetadata} from "../models/fhir/fhir-package-metadata.js"
+import {PackageMetadata} from "../models/fhir-package/package-metadata.interface"
+import {normalizeFileName} from "./common.js"
+import {FhirPackageVersion} from "../models/fhir-package/package-version.interface"
 
 /** * Queries the package registry to validate if a specific target version exists and returns its metadata.
  * If "latest" is provided as the version, it resolves and returns the most recent version.
@@ -24,14 +26,14 @@ async function queryPackageVersion(
     throw new Error(`Failed to fetch metadata: ${metaResponse.statusText}`)
   }
 
-  const metadata: FhirPackageMetadata = await metaResponse.json()
+  const metadata: PackageMetadata = await metaResponse.json()
   const targetVersion: string | undefined = version === "latest" ? metadata["dist-tags"].latest : version
 
   if (targetVersion === null || targetVersion === undefined) {
     throw new Error(`Cannot find valid version in metadata`)
   } else if (!metadata.versions[targetVersion]) {
     throw new Error(`Version ${targetVersion} not found in registry.`)
-  } else if (version !== metadata["dist-tags"].latest) {
+  } else if (targetVersion !== metadata["dist-tags"].latest) {
     console.warn("A later version of this package is available", metadata["dist-tags"].latest)
   }
 
@@ -111,22 +113,21 @@ export async function extractAndReadPackage(source: string, target: string): Pro
 export async function downloadSimplifierPackage(
   registry: string,
   name: string,
+  outputDir: string,
   version?: string | "latest"
-
 ): Promise<any | null> {
 
   // Check simplifier to fetch latest version or check if specified version is latest
   const metadata = await queryPackageVersion(registry, name, version)
 
-  const targetDir = `${name.replace(/\//g, "-")}-${version}`
+  const targetDir = normalizeFileName(`${name}-${version}`)
   const targetPath = `${targetDir}.tgz`
-  const outputDir = path.join(process.cwd(), ".output", "raw")
-  const outputFile = path.join(outputDir, targetPath)
+  const rawOutputFile = path.join(outputDir, targetPath)
 
   if (!fs.existsSync(outputDir)) {
     console.log(`Creating directory "${outputDir}"`)
     fs.mkdirSync(outputDir, {recursive: true})
-  } else if (fs.existsSync(outputFile)) {
+  } else if (fs.existsSync(rawOutputFile)) {
     console.log(`File "${targetPath}" already exists locally. Skipping download.`)
     return
   }
@@ -138,8 +139,7 @@ export async function downloadSimplifierPackage(
     throw new Error(`Failed to find valid URL for Tarball`)
   }
 
-  await downloadTarballPackage(tarballPath, outputFile)
+  await downloadTarballPackage(tarballPath, rawOutputFile)
 
-  const extractDir = path.join(process.cwd(), ".output", "parsed", targetDir)
-  return await extractAndReadPackage(outputFile, extractDir)
+  return await extractAndReadPackage(rawOutputFile, outputDir)
 }
