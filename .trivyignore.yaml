@@ -155,3 +155,6 @@ vulnerabilities:
   - id: CVE-2026-2229
     statement: Transitive dependency vulnerability in undici of npm
     expired_at: 2026-06-01
+  - id: CVE-2026-33036 
+    statement: fast-xml-parser vulnerability accepted as risk
+    expired_at: 2026-06-01
