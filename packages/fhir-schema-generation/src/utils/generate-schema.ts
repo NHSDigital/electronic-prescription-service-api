@@ -1,5 +1,5 @@
 import * as fs from "fs"
-import {z, ZodError} from "zod"
+import {z} from "zod"
 import {SchemaNode, SchemaBody, SchemaReference} from "../models/schema/schema-node"
 import {
   schemaPropertyBool,
@@ -10,69 +10,80 @@ import {
   schemaPropertyPattern
 } from "../models/schema/schema-property"
 
-async function getPropertyType(item: SchemaPropertyItem): Promise<z.ZodTypeAny> {
+function updateZodObject(
+  propertyName: string,
+  property: SchemaPropertyItem,
+  item: z.ZodObject<any>,
+  required: boolean
+): z.ZodObject<any> {
   // 1. Check for the unique "$ref" key
-  if ("$ref" in item) {
-    console.log("It's a Reference:", item.$ref)
-    return z.any() // Don't handle references
+  if ("$ref" in property) {
+    console.log(`Skip Reference for ${propertyName}:`, property.$ref)
+    return item
   }
 
-  // 2. Switch on the "type" literal
-  switch (item.type) {
+  let validator: z.ZodTypeAny = z.any()
+
+  switch (property.type) {
     case "array": {
-      return z.string() // Don't handle arrays
+      let innerValidator: z.ZodTypeAny = z.any()
+      validator = z.array(innerValidator)
+      break
     }
+
     case "boolean": {
-      const boolProperty = await schemaPropertyBool.safeParseAsync(item)
+      const boolProperty = schemaPropertyBool.safeParse(property)
       if (boolProperty.success) {
-        return z.boolean()
+        validator = z.boolean()
       }
       break
     }
-    case "number":{
-      const numberType = await schemaPropertyInteger.safeParseAsync(item)
+
+    case "number": {
+      const numberType = schemaPropertyInteger.safeParse(property)
       if (numberType.success) {
-        return z.number().refine(
-          (val) => !!numberType.data.pattern && RegExp(numberType.data.pattern).test(String(val)),
-          {
-            message: `Number must match the pattern ${numberType.data.pattern}`
-          }
-        )
+        const {pattern} = numberType.data
+
+        validator = pattern
+          ? z.number().refine(
+            (val) => new RegExp(pattern).test(String(val)),
+            {message: `Number must match the pattern ${pattern}`}
+          )
+          : z.number()
       }
       break
     }
-    case "string":
-      // Both Enum and Pattern share type: "string", so check unique keys
-      if ("enum" in item) {
-        const enumProperty = await schemaPropertyEnum.safeParseAsync(item)
+
+    case "string": {
+      if ("enum" in property) {
+        const enumProperty = schemaPropertyEnum.safeParse(property)
         if (enumProperty.success) {
-          return z.enum(enumProperty.data.enum)
+          validator = z.enum(enumProperty.data.enum as [string, ...Array<string>])
         }
-        break
-      } else if ("pattern" in item) {
-        const patternProperty = await schemaPropertyPattern.safeParseAsync(item)
+      } else if ("pattern" in property) {
+        const patternProperty = schemaPropertyPattern.safeParse(property)
         if (patternProperty.success) {
-          return z.string().regex(RegExp(patternProperty.data.pattern))
+          validator = z.string().regex(new RegExp(patternProperty.data.pattern))
         }
+      } else {
+        validator = z.string()
       }
       break
+    }
   }
 
-  throw new ZodError([
-    {
-      code: "custom",
-      message: `Unable to parse SchemaPropertyItem. Unrecognized type or missing fields.`,
-      path: []
-    }
-  ])
+  if (!required) {
+    validator = validator.optional()
+  }
+
+  return item.extend({[propertyName]: validator})
 }
 
-async function getProperties(schema: Record<string, any>): Promise<Array<z.ZodObject>> {
-  const definitions: Array<z.ZodObject> = []
+async function getProperties(schema: Record<string, any>): Promise<Record<string, z.ZodObject>> {
+  const definitions: Record<string, z.ZodObject> = {}
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [definitionTitle, definitionBody] of Object.entries<any>(schema.definitions)) {
-    const properties: Record<string, z.ZodTypeAny> = {}
+    let schemaItem: z.ZodObject = z.object({})
     const required = await z.safeParseAsync(z.array(z.string()), definitionBody["required"])
 
     const allOf = await z.safeParseAsync(SchemaNode, definitionBody["allOf"])
@@ -109,16 +120,12 @@ async function getProperties(schema: Record<string, any>): Promise<Array<z.ZodOb
           continue
         }
 
-        let propertyType = await getPropertyType(item.data)
-        if (!required.success || !required.data.includes(propertyName)) {
-          propertyType = propertyType.optional()
-        }
-
-        properties[propertyName] = propertyType
+        const isRequired = required.success && required.data.includes(propertyName)
+        schemaItem = await updateZodObject(propertyName, item.data, schemaItem, isRequired)
       }
     }
 
-    definitions.push(z.object(properties))
+    definitions[definitionTitle] = schemaItem
   }
 
   return definitions
@@ -132,7 +139,10 @@ export async function generateSchema(directory: string): Promise<void> {
 
     // For now, pulls out only
     const medicationType = (await getProperties(medicationRequestSchema))
-    console.log(medicationType.map((type) => type.toJSONSchema()))
+
+    for (const record of Object.entries(medicationType)) {
+      console.log(record[0], record[1]?.toJSONSchema())
+    }
 
   } catch (e) {
     console.error("Fail", e)
