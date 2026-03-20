@@ -272,6 +272,9 @@ clean:
 	rm -rf packages/tool/static
 	rm -rf packages/e2e-tests/pact/pacts
 	rm -rf packages/tool/e2e-tests/test_results
+	rm -rf packages/fhir-schema-generation/coverage
+	rm -rf packages/fhir-schema-generation/dist
+	rm -rf packages/fhir-schema-generation/.output
 	cd packages/tool && docker-compose down
 	rm -f ecs-*.yml
 	rm -f manifest_template.yml
