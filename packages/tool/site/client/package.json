@@ -47,7 +47,7 @@
     "style-loader": "^4.0.0",
     "styled-components": "^6.3.11",
     "webpack": "^5.105.4",
-    "webpack-cli": "^7.0.0",
+    "webpack-cli": "^7.0.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
   "engines": {
