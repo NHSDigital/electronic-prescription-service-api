@@ -315,8 +315,7 @@ run-epsat: build-epsat
 	npm run watch --workspace packages/tool/site/client/ &
 	cd packages/tool && docker-compose up
 
-run-fhir-schema-generation:
-	build-fhir-schema-generation
+run-fhir-schema-generation: build-fhir-schema-generation
 	npm run start --workspace packages/fhir-schema-generation
 
 
