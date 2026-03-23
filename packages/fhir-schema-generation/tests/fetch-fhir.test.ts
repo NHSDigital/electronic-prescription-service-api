@@ -180,7 +180,7 @@ describe("FHIR Package Downloader", () => {
         version: "2.0.0",
         "dist-tags": {latest: "2.0.0"},
         versions: {
-          "2.0.0": {version: "2.0.0", dist: {tarball: "http://tarball.url"}}
+          "2.0.0": {version: "2.0.0", dist: {tarball: "https://tarball.url"}}
         }
       };
 
@@ -212,7 +212,7 @@ describe("FHIR Package Downloader", () => {
         version: "2.0.0",
         "dist-tags": {latest: "2.0.0"},
         versions: {
-          "2.0.0": {version: "2.0.0", dist: {tarball: "http://tarball.url"}}
+          "2.0.0": {version: "2.0.0", dist: {tarball: "https://tarball.url"}}
         }
       };
 

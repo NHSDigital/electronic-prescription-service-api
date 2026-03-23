@@ -75,9 +75,15 @@ export async function extractAndReadPackage(source: string, target: string): Pro
     fs.mkdirSync(target, {recursive: true})
   }
 
+  const resolvedTarget = path.resolve(target)
   await tar.x({
     file: source,
-    cwd: target
+    cwd: target,
+    // zip-slip validation: only allow entries that resolve within the target directory
+    filter: (entryPath: string) => {
+      const resolvedEntry = path.resolve(resolvedTarget, entryPath)
+      return resolvedEntry.startsWith(resolvedTarget + path.sep) || resolvedEntry === resolvedTarget
+    }
   })
   console.log(`Extraction complete.`)
 
