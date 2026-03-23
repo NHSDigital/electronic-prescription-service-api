@@ -59,7 +59,8 @@ jobs:
       main_branch: master
       update_jira: true
       jira_release_prefix: "fhir-facade"
-    secrets: inherit
+    secrets:
+      EXECUTE_JIRA_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
 
   package_code:
     needs: [get_version, get_commit_id, tag_release, get_config_values]
