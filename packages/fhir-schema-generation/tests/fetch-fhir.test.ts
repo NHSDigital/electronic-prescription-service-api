@@ -1,4 +1,4 @@
-import * as fs from "fs"
+import * as fs from "node:fs"
 import * as tar from "tar"
 
 import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/fetch-fhir.js"

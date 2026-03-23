@@ -1,8 +1,8 @@
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from "node:fs"
+import * as path from "node:path"
 import * as tar from "tar"
-import {Readable} from "stream"
-import {finished} from "stream/promises"
+import {Readable} from "node:stream"
+import {finished} from "node:stream/promises"
 import {FhirPackageVersion, FhirPackageMetadata} from "../models/fhir/fhir-package-metadata.js"
 
 /** * Queries the package registry to validate if a specific target version exists and returns its metadata.
@@ -68,7 +68,7 @@ async function downloadTarballPackage(url: string, target: string): Promise<void
  * @returns {Promise<any | null>} A promise resolving to the parsed package.json
  * manifest object, or null if the manifest is missing.
  */
-export async function extractAndReadPackage(source: string, target: string): Promise<unknown | null> {
+export async function extractAndReadPackage(source: string, target: string): Promise<unknown> {
   console.log(`Extracting: ${source} to ${target}...`)
 
   if (!fs.existsSync(target)) {
@@ -117,14 +117,13 @@ export async function extractAndReadPackage(source: string, target: string): Pro
 export async function downloadSimplifierPackage(
   registry: string,
   name: string,
-  version?: string | "latest"
-
-): Promise<any | null> {
+  version?: string
+): Promise<unknown> {
 
   // Check simplifier to fetch latest version or check if specified version is latest
   const metadata = await queryPackageVersion(registry, name, version)
 
-  const targetDir = `${name.replace(/\//g, "-")}-${version}`
+  const targetDir = `${name.replaceAll("/", "-")}-${version}`
   const targetPath = `${targetDir}.tgz`
   const outputDir = path.join(process.cwd(), ".output", "raw")
   const outputFile = path.join(outputDir, targetPath)
