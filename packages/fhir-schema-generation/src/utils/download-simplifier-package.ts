@@ -3,9 +3,9 @@ import * as path from "node:path"
 import * as tar from "tar"
 import {Readable} from "node:stream"
 import {finished} from "node:stream/promises"
-import {PackageMetadata} from "../models/fhir-package/package-metadata.interface"
+import type {PackageMetadata} from "../models/fhir-package/package-metadata.interface.js"
 import {normalizeFileName} from "./common.js"
-import {FhirPackageVersion} from "../models/fhir-package/package-version.interface"
+import type {FhirPackageVersion} from "../models/fhir-package/package-version.interface.js"
 
 /** * Queries the package registry to validate if a specific target version exists and returns its metadata.
  * If "latest" is provided as the version, it resolves and returns the most recent version.
@@ -112,8 +112,7 @@ export async function extractAndReadPackage(source: string, target: string): Pro
  * @param {string} registry - The base URL of the package registry (e.g., Simplifier).
  * @param {string} name - The name of the package to download.
  * @param {string | "latest"} [version] - The specific version of the package to download, or "latest".
- * @returns {Promise<any | null>} A promise resolving to the extracted package manifest, or null if it fails
- *  to read the extracted manifest.
+ * @returns {Promise<void>} A promise that resolves when the package has been downloaded and extracted.
  * @throws {Error} If a valid tarball URL cannot be found in the registry metadata.
  */
 export async function downloadSimplifierPackage(
@@ -121,7 +120,7 @@ export async function downloadSimplifierPackage(
   name: string,
   outputDir: string,
   version?: string
-): Promise<unknown> {
+): Promise<void> {
 
   // Check simplifier to fetch latest version or check if specified version is latest
   const metadata = await queryPackageVersion(registry, name, version)
@@ -147,5 +146,5 @@ export async function downloadSimplifierPackage(
 
   await downloadTarballPackage(tarballPath, rawOutputFile)
 
-  return await extractAndReadPackage(rawOutputFile, outputDir)
+  await extractAndReadPackage(rawOutputFile, outputDir)
 }
