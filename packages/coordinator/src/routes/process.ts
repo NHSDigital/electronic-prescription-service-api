@@ -50,15 +50,25 @@ export default [
         return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
       }
 
-      if (isSignatureValidationEnabled() && identifyMessageType(bundle) === fhir.EventCodingCode.PRESCRIPTION) {
-        const signatureIssues = await translator.verifySignatureForPrescriptionCreation(bundle, request.logger)
-        if (signatureIssues.length) {
-          const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
-          return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
+      request.logger.info("Building Spine request")
+
+      if (identifyMessageType(bundle) === fhir.EventCodingCode.PRESCRIPTION) {
+        const {spineRequest, parentPrescription} = await translator.convertPrescriptionBundleToSpineRequest(
+          bundle, request.headers, request.logger
+        )
+
+        if (isSignatureValidationEnabled()) {
+          const signatureIssues = await translator.verifyPrescriptionSignature(parentPrescription, request.logger)
+          if (signatureIssues.length) {
+            const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
+            return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
+          }
         }
+
+        const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
+        return await handleResponse(request, spineResponse, responseToolkit)
       }
 
-      request.logger.info("Building Spine request")
       const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
       return await handleResponse(request, spineResponse, responseToolkit)
