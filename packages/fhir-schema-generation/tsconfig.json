@@ -1,14 +1,14 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "isolatedModules": true, 
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "outDir": "dist",
+    "isolatedModules": true,
     "resolveJsonModule": true,
     "erasableSyntaxOnly": true,
     "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true 
+    "skipLibCheck": true
   },
   "include": ["src/**/*"]
 }

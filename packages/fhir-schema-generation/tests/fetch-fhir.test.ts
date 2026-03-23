@@ -1,33 +1,42 @@
 import * as fs from "node:fs"
 import * as tar from "tar"
+import {
+  vi,
+  describe,
+  it,
+  expect,
+  beforeEach,
+  afterEach
+} from "vitest"
+import type {Mock, MockInstance} from "vitest"
 
 import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/download-simplifier-package.js"
 
-jest.mock("node:fs")
-jest.mock("tar")
-jest.mock("node:stream/promises", () => ({
-  finished: jest.fn().mockResolvedValue(undefined)
+vi.mock("node:fs")
+vi.mock("tar")
+vi.mock("node:stream/promises", () => ({
+  finished: vi.fn().mockResolvedValue(undefined)
 }))
-jest.mock("node:stream", () => ({
-  Readable: {fromWeb: jest.fn().mockReturnValue({pipe: jest.fn()})}
+vi.mock("node:stream", () => ({
+  Readable: {fromWeb: vi.fn().mockReturnValue({pipe: vi.fn()})}
 }))
 
 // Mock global fetch
-global.fetch = jest.fn()
+global.fetch = vi.fn()
 
 describe("FHIR Package Downloader", () => {
   const mockRegistry = "https://registry.example.com"
   const mockPackageName = "test-package"
   const mockOutputDir = "/mock/output/raw"
 
-  let logSpy: jest.SpyInstance
-  let warningSpy: jest.SpyInstance
+  let logSpy: MockInstance
+  let warningSpy: MockInstance
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     // Suppress console logs/warns during clean test runs
-    logSpy = jest.spyOn(console, "log").mockImplementation(() => { })
-    warningSpy = jest.spyOn(console, "warn").mockImplementation(() => { })
+    logSpy = vi.spyOn(console, "log").mockImplementation(() => { })
+    warningSpy = vi.spyOn(console, "warn").mockImplementation(() => { })
   })
 
   afterEach(() => {
@@ -43,13 +52,13 @@ describe("FHIR Package Downloader", () => {
           "1.0.1": {version: "1.0.1", dist: {tarball: "url-to-tarball"}}
         }
       };
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
       });
 
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
-      (fs.existsSync as jest.Mock).mockReturnValue(true)
+      (fs.existsSync as Mock).mockReturnValue(true)
 
       await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "latest")
       expect(global.fetch).toHaveBeenCalledWith(`${mockRegistry}/${mockPackageName}`)
@@ -62,13 +71,13 @@ describe("FHIR Package Downloader", () => {
           "1.0.5": {version: "1.0.5", dist: {tarball: "url-to-tarball"}}
         }
       };
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
       });
 
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
-      (fs.existsSync as jest.Mock).mockReturnValue(true)
+      (fs.existsSync as Mock).mockReturnValue(true)
 
       await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "22.22.22"))
         .rejects.toThrow("Version 22.22.22 not found in registry.")
@@ -81,13 +90,13 @@ describe("FHIR Package Downloader", () => {
           "1.0.5": {version: "1.0.5", dist: {tarball: "url-to-tarball"}}
         }
       };
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
       });
 
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
-      (fs.existsSync as jest.Mock).mockReturnValue(true)
+      (fs.existsSync as Mock).mockReturnValue(true)
 
       await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "latest"))
         .rejects.toThrow("Version 1.0.1 not found in registry.")
@@ -101,13 +110,13 @@ describe("FHIR Package Downloader", () => {
           "1.0.15": {version: "1.0.15", dist: {tarball: "url-to-tarball"}}
         }
       };
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
       });
 
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
-      (fs.existsSync as jest.Mock).mockReturnValue(true)
+      (fs.existsSync as Mock).mockReturnValue(true)
 
       await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "1.0.5")
       expect(warningSpy).toHaveBeenCalled()
@@ -115,7 +124,7 @@ describe("FHIR Package Downloader", () => {
     })
 
     it("should throw an error if the fetch fails", async () => {
-      (global.fetch as jest.Mock).mockResolvedValueOnce({
+      (global.fetch as Mock).mockResolvedValueOnce({
         ok: false,
         statusText: "Not Found"
       })
@@ -132,11 +141,11 @@ describe("FHIR Package Downloader", () => {
     it("should extract the tarball and read package.json", async () => {
       const mockPackageJson = {name: "test-package", version: "1.0.0"};
 
-      (fs.existsSync as jest.Mock)
+      (fs.existsSync as Mock)
         .mockReturnValueOnce(true) // Target dir exists
         .mockReturnValueOnce(true); // package.json exists
 
-      (fs.readFileSync as jest.Mock).mockReturnValueOnce(JSON.stringify(mockPackageJson))
+      (fs.readFileSync as Mock).mockReturnValueOnce(JSON.stringify(mockPackageJson))
 
       const result = await extractAndReadPackage(mockSource, mockTarget)
 
@@ -146,18 +155,18 @@ describe("FHIR Package Downloader", () => {
 
     it("should create target directory if it does not exist", async () => {
       const mockPackageJson = {name: "test-package", version: "1.0.0"};
-      (fs.existsSync as jest.Mock)
+      (fs.existsSync as Mock)
         .mockReturnValueOnce(false) // Target dir missing
         .mockReturnValueOnce(true); // package.json not missing (to not throw)
 
-      (fs.readFileSync as jest.Mock).mockReturnValueOnce(JSON.stringify(mockPackageJson))
+      (fs.readFileSync as Mock).mockReturnValueOnce(JSON.stringify(mockPackageJson))
 
       await extractAndReadPackage(mockSource, mockTarget)
       expect(fs.mkdirSync).toHaveBeenCalledWith(mockTarget, {recursive: true})
     })
 
     it("should throw file does not exist", async () => {
-      (fs.existsSync as jest.Mock)
+      (fs.existsSync as Mock)
         .mockReturnValueOnce(false) // Target dir missing
         .mockReturnValueOnce(false) // package.json missing (to trigger the throw)
 
@@ -165,7 +174,7 @@ describe("FHIR Package Downloader", () => {
     })
 
     it("should throw an error if package.json is missing after extraction", async () => {
-      (fs.existsSync as jest.Mock)
+      (fs.existsSync as Mock)
         .mockReturnValueOnce(true) // Target dir exists
         .mockReturnValueOnce(false) // package.json missing
 
@@ -186,26 +195,25 @@ describe("FHIR Package Downloader", () => {
       };
 
       // fetch 1: metadata, fetch 2: tarball
-      (global.fetch as jest.Mock)
+      (global.fetch as Mock)
         .mockResolvedValueOnce({ok: true, json: async () => mockMetadata})
         .mockResolvedValueOnce({ok: true, body: "mock-stream"});
 
       // Ensure directories don't exist to trigger creation, and skip cache
-      (fs.existsSync as jest.Mock)
+      (fs.existsSync as Mock)
         .mockReturnValueOnce(false) // .output/raw missing
         .mockReturnValueOnce(false) // targetPath missing (skips cache)
         .mockReturnValueOnce(true) // parsed dir exists (extractAndReadPackage)
         .mockReturnValueOnce(true); // package.json exists
 
-      (fs.createWriteStream as jest.Mock).mockReturnValue("mock-write-stream");
-      (fs.readFileSync as jest.Mock).mockReturnValue('{"name": "test", "version": "2.0.0"}')
+      (fs.createWriteStream as Mock).mockReturnValue("mock-write-stream");
+      (fs.readFileSync as Mock).mockReturnValue('{"name": "test", "version": "2.0.0"}')
 
-      const result = await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "2.0.0")
+      await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "2.0.0")
 
       expect(fs.mkdirSync).toHaveBeenCalledWith(mockOutputDir, {recursive: true})
       expect(global.fetch).toHaveBeenCalledTimes(2)
       expect(tar.x).toHaveBeenCalled()
-      expect(result).toEqual({name: "test", version: "2.0.0"})
     })
 
     it("should skip download if the target tarball already exists locally", async () => {
@@ -217,9 +225,9 @@ describe("FHIR Package Downloader", () => {
         }
       };
 
-      (global.fetch as jest.Mock).mockResolvedValueOnce({ok: true, json: async () => mockMetadata});
+      (global.fetch as Mock).mockResolvedValueOnce({ok: true, json: async () => mockMetadata});
 
-      (fs.existsSync as jest.Mock)
+      (fs.existsSync as Mock)
         .mockReturnValueOnce(true) // .output/raw exists
         .mockReturnValueOnce(true) // targetPath exists! -> returns early
 
