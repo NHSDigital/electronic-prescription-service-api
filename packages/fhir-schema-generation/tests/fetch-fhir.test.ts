@@ -1,14 +1,14 @@
 import * as fs from "node:fs"
 import * as tar from "tar"
 
-import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/fetch-fhir.js"
+import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/download-simplifier-package.js"
 
-jest.mock("fs")
+jest.mock("node:fs")
 jest.mock("tar")
-jest.mock("stream/promises", () => ({
+jest.mock("node:stream/promises", () => ({
   finished: jest.fn().mockResolvedValue(undefined)
 }))
-jest.mock("stream", () => ({
+jest.mock("node:stream", () => ({
   Readable: {fromWeb: jest.fn().mockReturnValue({pipe: jest.fn()})}
 }))
 
@@ -18,6 +18,7 @@ global.fetch = jest.fn()
 describe("FHIR Package Downloader", () => {
   const mockRegistry = "https://registry.example.com"
   const mockPackageName = "test-package"
+  const mockOutputDir = "/mock/output/raw"
 
   let logSpy: jest.SpyInstance
   let warningSpy: jest.SpyInstance
@@ -50,7 +51,7 @@ describe("FHIR Package Downloader", () => {
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
       (fs.existsSync as jest.Mock).mockReturnValue(true)
 
-      await downloadSimplifierPackage(mockRegistry, mockPackageName, "latest")
+      await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "latest")
       expect(global.fetch).toHaveBeenCalledWith(`${mockRegistry}/${mockPackageName}`)
     })
 
@@ -69,7 +70,7 @@ describe("FHIR Package Downloader", () => {
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
       (fs.existsSync as jest.Mock).mockReturnValue(true)
 
-      await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, "22.22.22"))
+      await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "22.22.22"))
         .rejects.toThrow("Version 22.22.22 not found in registry.")
     })
 
@@ -88,7 +89,7 @@ describe("FHIR Package Downloader", () => {
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
       (fs.existsSync as jest.Mock).mockReturnValue(true)
 
-      await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, "latest"))
+      await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "latest"))
         .rejects.toThrow("Version 1.0.1 not found in registry.")
     })
 
@@ -108,7 +109,7 @@ describe("FHIR Package Downloader", () => {
       // Mocking fs to trigger the "skip download" branch just to test version resolution quickly
       (fs.existsSync as jest.Mock).mockReturnValue(true)
 
-      await downloadSimplifierPackage(mockRegistry, mockPackageName, "1.0.5")
+      await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "1.0.5")
       expect(warningSpy).toHaveBeenCalled()
       expect(warningSpy).toHaveBeenCalledWith("A later version of this package is available", "1.0.15")
     })
@@ -119,7 +120,7 @@ describe("FHIR Package Downloader", () => {
         statusText: "Not Found"
       })
 
-      await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, "latest"))
+      await expect(downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "latest"))
         .rejects.toThrow("Failed to fetch metadata: Not Found")
     })
   })
@@ -199,9 +200,9 @@ describe("FHIR Package Downloader", () => {
       (fs.createWriteStream as jest.Mock).mockReturnValue("mock-write-stream");
       (fs.readFileSync as jest.Mock).mockReturnValue('{"name": "test", "version": "2.0.0"}')
 
-      const result = await downloadSimplifierPackage(mockRegistry, mockPackageName, "2.0.0")
+      const result = await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "2.0.0")
 
-      expect(fs.mkdirSync).toHaveBeenCalledWith(expect.stringContaining("raw"), {recursive: true})
+      expect(fs.mkdirSync).toHaveBeenCalledWith(mockOutputDir, {recursive: true})
       expect(global.fetch).toHaveBeenCalledTimes(2)
       expect(tar.x).toHaveBeenCalled()
       expect(result).toEqual({name: "test", version: "2.0.0"})
@@ -222,7 +223,7 @@ describe("FHIR Package Downloader", () => {
         .mockReturnValueOnce(true) // .output/raw exists
         .mockReturnValueOnce(true) // targetPath exists! -> returns early
 
-      await downloadSimplifierPackage(mockRegistry, mockPackageName, "2.0.0")
+      await downloadSimplifierPackage(mockRegistry, mockPackageName, mockOutputDir, "2.0.0")
 
       // Fetch should only be called once (for metadata), tarball download is skipped
       expect(global.fetch).toHaveBeenCalledTimes(1)
