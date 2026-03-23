@@ -153,6 +153,9 @@ build-proxies:
 	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
+build-lambdas:
+	cd lambdas && $(MAKE) build
+
 ## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
@@ -160,7 +163,10 @@ test-api: check-licenses-api generate-mock-certs test-coordinator
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
 
-test-all: test-api test-epsat
+test-lambdas:
+	cd lambdas && $(MAKE) test
+
+test-all: test-api test-epsat test-lambdas
 	npm run test --workspace packages/cdk
 
 test-coordinator:
