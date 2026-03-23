@@ -1,8 +1,8 @@
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from "node:fs"
+import * as path from "node:path"
 import * as tar from "tar"
-import {Readable} from "stream"
-import {finished} from "stream/promises"
+import {Readable} from "node:stream"
+import {finished} from "node:stream/promises"
 import {PackageMetadata} from "../models/fhir-package/package-metadata.interface"
 import {normalizeFileName} from "./common.js"
 import {FhirPackageVersion} from "../models/fhir-package/package-version.interface"
@@ -70,16 +70,22 @@ async function downloadTarballPackage(url: string, target: string): Promise<void
  * @returns {Promise<any | null>} A promise resolving to the parsed package.json
  * manifest object, or null if the manifest is missing.
  */
-export async function extractAndReadPackage(source: string, target: string): Promise<unknown | null> {
+export async function extractAndReadPackage(source: string, target: string): Promise<unknown> {
   console.log(`Extracting: ${source} to ${target}...`)
 
   if (!fs.existsSync(target)) {
     fs.mkdirSync(target, {recursive: true})
   }
 
+  const resolvedTarget = path.resolve(target)
   await tar.x({
     file: source,
-    cwd: target
+    cwd: target,
+    // zip-slip validation: only allow entries that resolve within the target directory
+    filter: (entryPath: string) => {
+      const resolvedEntry = path.resolve(resolvedTarget, entryPath)
+      return resolvedEntry.startsWith(resolvedTarget + path.sep) || resolvedEntry === resolvedTarget
+    }
   })
   console.log(`Extraction complete.`)
 
@@ -114,8 +120,8 @@ export async function downloadSimplifierPackage(
   registry: string,
   name: string,
   outputDir: string,
-  version?: string | "latest"
-): Promise<any | null> {
+  version?: string
+): Promise<unknown> {
 
   // Check simplifier to fetch latest version or check if specified version is latest
   const metadata = await queryPackageVersion(registry, name, version)

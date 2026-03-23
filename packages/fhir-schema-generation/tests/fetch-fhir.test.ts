@@ -1,4 +1,4 @@
-import * as fs from "fs"
+import * as fs from "node:fs"
 import * as tar from "tar"
 
 import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/fetch-fhir.js"
@@ -139,7 +139,7 @@ describe("FHIR Package Downloader", () => {
 
       const result = await extractAndReadPackage(mockSource, mockTarget)
 
-      expect(tar.x).toHaveBeenCalledWith({file: mockSource, cwd: mockTarget})
+      expect(tar.x).toHaveBeenCalledWith(expect.objectContaining({file: mockSource, cwd: mockTarget}))
       expect(result).toEqual(mockPackageJson)
     })
 
@@ -180,7 +180,7 @@ describe("FHIR Package Downloader", () => {
         version: "2.0.0",
         "dist-tags": {latest: "2.0.0"},
         versions: {
-          "2.0.0": {version: "2.0.0", dist: {tarball: "http://tarball.url"}}
+          "2.0.0": {version: "2.0.0", dist: {tarball: "https://tarball.url"}}
         }
       };
 
@@ -212,7 +212,7 @@ describe("FHIR Package Downloader", () => {
         version: "2.0.0",
         "dist-tags": {latest: "2.0.0"},
         versions: {
-          "2.0.0": {version: "2.0.0", dist: {tarball: "http://tarball.url"}}
+          "2.0.0": {version: "2.0.0", dist: {tarball: "https://tarball.url"}}
         }
       };
 

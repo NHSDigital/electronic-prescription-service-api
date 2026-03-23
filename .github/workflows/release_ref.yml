@@ -45,7 +45,7 @@ jobs:
             FHIR_facade_docker.img
             validator_docker.img
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@e208462679dedaded1e066c25c9830b9c0bf1930
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@5ac2707dd9cd60ad127275179495b9c890d74711
     with:
       verify_published_from_main_image: false
 

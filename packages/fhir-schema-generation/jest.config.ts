@@ -19,6 +19,7 @@ const jestConfig: JestConfigWithTsJest = {
   collectCoverage: true,
   coverageDirectory: "coverage",
   coverageProvider: "v8",
+  coverageReporters: ["lcov", "text", "clover"],
   testMatch: ["**/tests/**/*.test.ts", "**/__tests__/**/*.test.js?(x)", "**/__tests__/**/*.test.ts?(x)"],
   testEnvironment: "node",
   extensionsToTreatAsEsm: [".ts", ".tsx"],

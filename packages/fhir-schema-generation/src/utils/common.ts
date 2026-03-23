@@ -1,3 +1,3 @@
 export function normalizeFileName(fileName: string): string {
-  return fileName.replace(/\//g, "-")
+  return fileName.replaceAll("/", "-")
 }
