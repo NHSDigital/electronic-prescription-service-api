@@ -5,7 +5,8 @@ import {Readable} from "node:stream"
 import {finished} from "node:stream/promises"
 import {FhirPackageVersion, FhirPackageMetadata} from "../models/fhir/fhir-package-metadata.js"
 
-/** * Queries the package registry to validate if a specific target version exists and returns its metadata.
+/**
+ * Queries the package registry to validate if a specific target version exists and returns its metadata.
  * If "latest" is provided as the version, it resolves and returns the most recent version.
  * Logs a warning if the requested version is older than the latest available version.
  *
@@ -25,13 +26,13 @@ async function queryPackageVersion(
   }
 
   const metadata: FhirPackageMetadata = await metaResponse.json()
-  const targetVersion: string | undefined = version === "latest" ? metadata["dist-tags"].latest : version
+  const targetVersion: string | undefined = (!version || version === "latest") ? metadata["dist-tags"].latest : version
 
   if (targetVersion === null || targetVersion === undefined) {
     throw new Error(`Cannot find valid version in metadata`)
   } else if (!metadata.versions[targetVersion]) {
     throw new Error(`Version ${targetVersion} not found in registry.`)
-  } else if (version !== metadata["dist-tags"].latest) {
+  } else if (version && version !== "latest" && targetVersion !== metadata["dist-tags"].latest) {
     console.warn("A later version of this package is available", metadata["dist-tags"].latest)
   }
 
@@ -123,7 +124,7 @@ export async function downloadSimplifierPackage(
   // Check simplifier to fetch latest version or check if specified version is latest
   const metadata = await queryPackageVersion(registry, name, version)
 
-  const targetDir = `${name.replaceAll("/", "-")}-${version}`
+  const targetDir = `${name.replaceAll("/", "-")}-${metadata.version}`
   const targetPath = `${targetDir}.tgz`
   const outputDir = path.join(process.cwd(), ".output", "raw")
   const outputFile = path.join(outputDir, targetPath)

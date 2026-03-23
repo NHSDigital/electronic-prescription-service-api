@@ -3,12 +3,12 @@ import * as tar from "tar"
 
 import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/fetch-fhir.js"
 
-jest.mock("fs")
+jest.mock("node:fs")
 jest.mock("tar")
-jest.mock("stream/promises", () => ({
+jest.mock("node:stream/promises", () => ({
   finished: jest.fn().mockResolvedValue(undefined)
 }))
-jest.mock("stream", () => ({
+jest.mock("node:stream", () => ({
   Readable: {fromWeb: jest.fn().mockReturnValue({pipe: jest.fn()})}
 }))
 
@@ -227,6 +227,64 @@ describe("FHIR Package Downloader", () => {
       // Fetch should only be called once (for metadata), tarball download is skipped
       expect(global.fetch).toHaveBeenCalledTimes(1)
       expect(tar.x).not.toHaveBeenCalled()
+    })
+
+    it("should use the resolved version number in the cache path when 'latest' is requested", async () => {
+      const mockMetadata = {
+        version: "3.0.0",
+        "dist-tags": {latest: "3.0.0"},
+        versions: {
+          "3.0.0": {version: "3.0.0", dist: {tarball: "https://tarball.url"}}
+        }
+      };
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({ok: true, json: async () => mockMetadata})
+        .mockResolvedValueOnce({ok: true, body: "mock-stream"});
+
+      (fs.existsSync as jest.Mock)
+        .mockReturnValueOnce(false) // outputDir missing
+        .mockReturnValueOnce(false) // targetPath missing
+        .mockReturnValueOnce(true) // parsed dir exists
+        .mockReturnValueOnce(true); // package.json exists
+
+      (fs.createWriteStream as jest.Mock).mockReturnValue("mock-write-stream");
+      (fs.readFileSync as jest.Mock).mockReturnValue('{"name": "test", "version": "3.0.0"}')
+
+      await downloadSimplifierPackage(mockRegistry, mockPackageName, "latest")
+
+      // Cache file must be named after the resolved version, not "latest"
+      expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining(`${mockPackageName}-3.0.0.tgz`))
+      expect(fs.createWriteStream).not.toHaveBeenCalledWith(expect.stringContaining("latest"))
+    })
+
+    it("should use the resolved version number in the cache path when version is undefined", async () => {
+      const mockMetadata = {
+        version: "3.0.0",
+        "dist-tags": {latest: "3.0.0"},
+        versions: {
+          "3.0.0": {version: "3.0.0", dist: {tarball: "https://tarball.url"}}
+        }
+      };
+
+      (global.fetch as jest.Mock)
+        .mockResolvedValueOnce({ok: true, json: async () => mockMetadata})
+        .mockResolvedValueOnce({ok: true, body: "mock-stream"});
+
+      (fs.existsSync as jest.Mock)
+        .mockReturnValueOnce(false) // outputDir missing
+        .mockReturnValueOnce(false) // targetPath missing
+        .mockReturnValueOnce(true) // parsed dir exists
+        .mockReturnValueOnce(true); // package.json exists
+
+      (fs.createWriteStream as jest.Mock).mockReturnValue("mock-write-stream");
+      (fs.readFileSync as jest.Mock).mockReturnValue('{"name": "test", "version": "3.0.0"}')
+
+      await downloadSimplifierPackage(mockRegistry, mockPackageName, undefined)
+
+      // Cache file must be named after the resolved version, not "undefined"
+      expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining(`${mockPackageName}-3.0.0.tgz`))
+      expect(fs.createWriteStream).not.toHaveBeenCalledWith(expect.stringContaining("undefined"))
     })
   })
 })

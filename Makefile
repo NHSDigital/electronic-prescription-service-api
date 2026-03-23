@@ -94,7 +94,7 @@ install-node:
 		--workspace packages/e2e-tests \
 		--workspace packages/bdd-tests \
 		--workspace packages/cdk \
-		--workspace packages/fhir-schema-generation
+		--workspace packages/fhir-schema-generation \
 		--include-workspace-root
 
 install-python:
