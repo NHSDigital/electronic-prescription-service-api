@@ -21,10 +21,10 @@ describe("feature-flags", () => {
     ])(
       "ENABLE_PRESCRIBING_SIGNATURE_VALIDATION is %p, returns %p",
       (enabled: string | undefined, expectedValue: boolean) => {
-        if (enabled !== undefined) {
-          process.env.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION = enabled
-        } else {
+        if (enabled === undefined) {
           delete process.env.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION
+        } else {
+          process.env.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION = enabled
         }
 
         expect(isSignatureValidationEnabled()).toBe(expectedValue)

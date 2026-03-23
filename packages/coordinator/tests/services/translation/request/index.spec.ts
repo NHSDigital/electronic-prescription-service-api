@@ -1,6 +1,10 @@
 import pino from "pino"
 import * as translator from "../../../../src/services/translation/request"
-import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
+import {
+  convertFhirMessageToSignedInfoMessage,
+  verifyPrescriptionSignature,
+  convertPrescriptionBundleToSpineRequest
+} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {getStringParameterByName, isTruthy} from "../../../../src/services/translation/common"
@@ -10,10 +14,6 @@ import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {PayloadContent, SendMessagePayloadFactory} from "../../../../src/services/translation/request/payload/factory"
-import {
-  verifyPrescriptionSignature,
-  convertPrescriptionBundleToSpineRequest
-} from "../../../../src/services/translation/request"
 import * as signatureVerification from "../../../../src/services/verification/signature-verification"
 
 const logger = pino()
