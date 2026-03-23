@@ -280,7 +280,7 @@ describe("FHIR Package Downloader", () => {
       (fs.createWriteStream as jest.Mock).mockReturnValue("mock-write-stream");
       (fs.readFileSync as jest.Mock).mockReturnValue('{"name": "test", "version": "3.0.0"}')
 
-      await downloadSimplifierPackage(mockRegistry, mockPackageName, undefined)
+      await downloadSimplifierPackage(mockRegistry, mockPackageName)
 
       // Cache file must be named after the resolved version, not "undefined"
       expect(fs.createWriteStream).toHaveBeenCalledWith(expect.stringContaining(`${mockPackageName}-3.0.0.tgz`))
