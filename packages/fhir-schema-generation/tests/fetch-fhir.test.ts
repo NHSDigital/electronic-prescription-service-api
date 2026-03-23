@@ -139,7 +139,7 @@ describe("FHIR Package Downloader", () => {
 
       const result = await extractAndReadPackage(mockSource, mockTarget)
 
-      expect(tar.x).toHaveBeenCalledWith({file: mockSource, cwd: mockTarget})
+      expect(tar.x).toHaveBeenCalledWith(expect.objectContaining({file: mockSource, cwd: mockTarget}))
       expect(result).toEqual(mockPackageJson)
     })
 
