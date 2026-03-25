@@ -13,7 +13,6 @@ __pycache__/
 .envrc
 envrc.ps1
 .idea
-.vscode
 ./sign/
 *.key
 packages/coordinator/tests/debug/__snapshots__
@@ -42,3 +41,5 @@ _site/
 vendor
 .cfn_guard_out/
 .trivy_out/
+.coverage
+.pytest_cache

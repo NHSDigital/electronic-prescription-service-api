@@ -26,6 +26,11 @@ pre-commit = "^4.5.1"
 flake8 = "^7.3.0"
 black = "^26.3"
 pytest = "^9.0.2"
+pytest-cov = "^7.1.0"
+
+[tool.poetry.group.create_prescription.dependencies]
+boto3 = "^1.42.74"
+aws-lambda-powertools = "^3.26.0"
 
 [tool.pytest.ini_options]
 pythonpath = ["lambdas/python"]

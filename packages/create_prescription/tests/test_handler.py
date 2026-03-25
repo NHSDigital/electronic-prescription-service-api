@@ -1,4 +1,4 @@
-from create import handler
+from app import handler
 
 
 def test_hello_world(capfd):
