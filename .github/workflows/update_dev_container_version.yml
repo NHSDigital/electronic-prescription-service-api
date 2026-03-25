@@ -1,0 +1,19 @@
+name: Update Devcontainer Version
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 18 * * 4"
+
+jobs:
+  update_devcontainer_version:
+    uses: NHSDigital/eps-common-workflows/.github/workflows/update-dev-container-version.yml@d2a4595b1bfa59f04c7cecb080a126321d42a333
+    permissions:
+        contents: read
+        packages: read
+        pull-requests: write
+    with:
+      base_branch: main
+    secrets:
+      AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
+      AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
