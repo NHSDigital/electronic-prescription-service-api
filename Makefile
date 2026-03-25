@@ -164,7 +164,7 @@ test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
 
 test-lambdas:
-	cd lambdas && $(MAKE) test
+	cd packages/create_prescription && poetry run pytest
 
 test-all: test-api test-epsat test-lambdas
 	npm run test --workspace packages/cdk
