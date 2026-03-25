@@ -22,7 +22,6 @@ import itertools
 import git
 import semver
 
-
 SCRIPT_LOCATION = os.path.join(os.path.dirname(os.path.abspath(__file__)))
 REPO_ROOT = os.path.abspath(os.path.join(SCRIPT_LOCATION, ".."))
 REPO = git.Repo(REPO_ROOT)

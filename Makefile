@@ -97,7 +97,7 @@ install-node:
 		--include-workspace-root
 
 install-python:
-	poetry install
+	poetry sync --all-groups
 
 install-hooks: install-python
 	poetry run pre-commit install --install-hooks --overwrite
@@ -332,7 +332,10 @@ lint-epsat:
 lint-githubactions:
 	actionlint
 
-lint-all: lint-api lint-epsat lint-githubactions
+lint-python:
+	poetry run black .
+
+lint-all: lint-api lint-epsat lint-githubactions lint-python
 
 ## check licenses
 
