@@ -261,6 +261,9 @@ clean:
 	rm -rf packages/specification/build
 	rm -rf packages/coordinator/dist
 	rm -rf packages/coordinator/coverage
+	rm -rf packages/create_prescription/coverage
+	rm -rf packages/create_prescription/.coverage
+	rm -rf packages/create_prescription/**/*cache*
 	rm -rf packages/tool/site/server/dist
 	rm -rf packages/tool/site/client/dist
 	rm -rf packages/tool/site/client/coverage

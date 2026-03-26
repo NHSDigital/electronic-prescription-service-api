@@ -37,6 +37,9 @@ pythonpath = ["lambdas/python"]
 
 [tool.poetry.scripts]
 
+[tool.poetry.requires-plugins]
+poetry-plugin-export = ">=1.8"
+
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"

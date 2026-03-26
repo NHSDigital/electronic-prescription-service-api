@@ -43,3 +43,4 @@ vendor
 .trivy_out/
 .coverage
 .pytest_cache
+.dependencies

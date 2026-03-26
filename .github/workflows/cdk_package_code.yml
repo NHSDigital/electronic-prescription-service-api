@@ -63,6 +63,12 @@ jobs:
           docker images
           docker save "validator-repo:${{ inputs.VERSION_NUMBER }}" -o validator_docker.img
 
+      - name: Build python lambda dependencies
+        run: |
+          poetry export --only create_prescription -o requirements_create_prescription
+          mkdir -p .dependencies/create_prescription/python
+          pip3 install -r requirements_create_prescription -t .dependencies/create_prescription/python
+
       - name: "package cdk"
         run: |
           tar -rf artifact.tar \
@@ -72,7 +78,8 @@ jobs:
             package.json \
             package-lock.json \
             Makefile \
-            cdk.json
+            cdk.json \
+            .dependencies
 
       - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
         name: upload build artifact
