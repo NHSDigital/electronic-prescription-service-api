@@ -18,7 +18,7 @@ package-mode = false
 python = "^3.13"
 semver = "^3.0.4"
 gitpython = "^3.1.46"
-requests = "^2.32.4"
+requests = "^2.33.0"
 argparse = "^1.4.0"
 pre-commit = "^4.5.1"
 

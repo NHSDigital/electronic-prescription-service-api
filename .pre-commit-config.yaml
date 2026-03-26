@@ -97,6 +97,15 @@ repos:
         files: ^packages\/(models|coordinator)
         types_or: [ts, tsx, javascript, jsx, json]
 
+      - id: fhir-schema-generation
+        name: FHIR Schema Generation
+        entry: npm
+        args: ["run", "--prefix=packages/fhir-schema-generation", "lint"]
+        language: system
+        files: ^packages\/fhir-schema-generation
+        types_or: [ts, tsx, javascript, jsx, json]
+        pass_filenames: false
+
       - id: build-proxies
         name: Build Apigee proxies configuration
         entry: make
