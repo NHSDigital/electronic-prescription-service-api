@@ -157,9 +157,6 @@ build-proxies:
 	cp -Rv proxies/sandbox/apiproxy dist/proxies/sandbox
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
-build-lambdas:
-	cd lambdas && $(MAKE) build
-
 ## test stuff
 
 test-api: check-licenses-api generate-mock-certs test-coordinator
