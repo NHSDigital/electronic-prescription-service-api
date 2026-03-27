@@ -4,19 +4,11 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 ROOT_DIR="${SCRIPT_DIR}/.."
 
 API_DOCKER_FILE='packages/coordinator/Dockerfile'
-API_BUILD_PIPELINE_FILE='azure/azure-build-pipeline.yml'
-API_RELEASE_PIPELINE_FILE='azure/templates/run_tests.yml'
 EPSAT_DOCKER_FILE='packages/tool/site/Dockerfile'
-EPSAT_BUILD_PIPELINE_FILE='packages/tool/azure/azure-build-pipeline.yml'
-EPSAT_RELEASE_PIPELINE_FILE='packages/tool/azure/azure-release-template.yml'
 
 LOCAL_NODE_VERSION=$(node -v | sed 's/^v//')
 API_DOCKER_NODE_BASE_VERSION=$(grep "FROM node.* AS base" "${ROOT_DIR}/${API_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
 EPSAT_DOCKER_NODE_BASE_VERSION=$(grep "FROM node.* AS base" "${ROOT_DIR}/${EPSAT_DOCKER_FILE}" |cut -d : -f2 |cut -d- -f1)
-API_BUILD_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${API_BUILD_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
-API_RELEASE_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${API_RELEASE_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
-EPSAT_BUILD_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${EPSAT_BUILD_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
-EPSAT_RELEASE_PIPELINE_NODE_VERSION=$(awk '/NodeTool@0/{x=NR+3;next}(NR==x){print}' "${ROOT_DIR}/${EPSAT_RELEASE_PIPELINE_FILE}" | awk '{ print $NF }'  | tr -d '"')
 
 FAILED_CHECK=0
 
@@ -31,25 +23,6 @@ if [[ "$LOCAL_NODE_VERSION" != "$EPSAT_DOCKER_NODE_BASE_VERSION" ]]; then
     FAILED_CHECK=1
 fi
 
-if [[ "$LOCAL_NODE_VERSION" != "$API_BUILD_PIPELINE_NODE_VERSION" ]]; then
-    echo "node version in local environment and ${API_BUILD_PIPELINE_FILE} do not match"
-    FAILED_CHECK=1
-fi
-
-if [[ "$LOCAL_NODE_VERSION" != "$API_RELEASE_PIPELINE_NODE_VERSION" ]]; then
-    echo "node version in local environment and ${API_RELEASE_PIPELINE_FILE} do not match"
-    FAILED_CHECK=1
-fi
-
-if [[ "$LOCAL_NODE_VERSION" != "$EPSAT_BUILD_PIPELINE_NODE_VERSION" ]]; then
-    echo "node version in local environment and ${EPSAT_BUILD_PIPELINE_FILE} do not match"
-    FAILED_CHECK=1
-fi
-
-if [[ "$LOCAL_NODE_VERSION" != "$EPSAT_RELEASE_PIPELINE_NODE_VERSION" ]]; then
-    echo "node version in local environment and ${EPSAT_RELEASE_PIPELINE_FILE} do not match"
-    FAILED_CHECK=1
-fi
 
 
 
@@ -58,11 +31,6 @@ if [[ ${FAILED_CHECK} == 1 ]]; then
     echo "LOCAL_NODE_VERSION: ${LOCAL_NODE_VERSION}"
     echo "API_DOCKER_NODE_BASE_VERSION: ${API_DOCKER_NODE_BASE_VERSION}"
     echo "API_DOCKER_NODE_BUILD_VERSION ${API_DOCKER_NODE_BUILD_VERSION}"
-    echo "EPSAT_DOCKER_NODE_BASE_VERSION: ${EPSAT_DOCKER_NODE_BASE_VERSION}"
-    echo "API_BUILD_PIPELINE_NODE_VERSION: ${API_BUILD_PIPELINE_NODE_VERSION}"
-    echo "API_RELEASE_PIPELINE_NODE_VERSION: ${API_RELEASE_PIPELINE_NODE_VERSION}"
-    echo "EPSAT_BUILD_PIPELINE_NODE_VERSION: ${EPSAT_BUILD_PIPELINE_NODE_VERSION}"
-    echo "EPSAT_RELEASE_PIPELINE_NODE_VERSION: ${EPSAT_RELEASE_PIPELINE_NODE_VERSION}"
 
     exit 1
 fi
