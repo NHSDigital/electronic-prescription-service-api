@@ -11,6 +11,7 @@ import {
 import type {Mock, MockInstance} from "vitest"
 
 import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/download-simplifier-package.js"
+import {buildMockMetadata, buildVersionEntry} from "./helpers/package-metadata.js"
 
 vi.mock("node:fs")
 vi.mock("tar")
@@ -23,17 +24,6 @@ vi.mock("node:stream", () => ({
 
 // Mock global fetch
 global.fetch = vi.fn()
-
-function buildMockMetadata(
-  latest: string,
-  versions: Record<string, {version: string, dist: {tarball?: string}}>
-) {
-  return {"dist-tags": {latest}, versions}
-}
-
-function buildVersionEntry(version: string, tarball = "url-to-tarball") {
-  return {version, dist: {tarball}}
-}
 
 describe("FHIR Package Downloader", () => {
   const mockRegistry = "https://registry.example.com"
