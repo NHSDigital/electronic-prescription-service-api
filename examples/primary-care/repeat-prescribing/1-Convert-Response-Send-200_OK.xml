@@ -98,25 +98,17 @@
             <author contextControlCode="OP" typeCode="AUT">
               <time value="20260210104333"/>
               <signatureText>
-                <Signature xmlns="http://www.w3.org/2000/09/xmldsig#">
-                  <SignedInfo>
-                    <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-                    <SignatureMethod Algorithm="http://www.w3.org/2001/04/xmldsig-more#rsa-sha256"/>
-                    <Reference>
-                      <Transforms>
-                        <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
-                      </Transforms>
-                      <DigestMethod Algorithm="http://www.w3.org/2001/04/xmlenc#sha256"/>
-                      <DigestValue>g7y0BTfGZ/dVkzxlWUdlXVqWtR05D3t7VEXwKxMBUHY=</DigestValue>
-                    </Reference>
-                  </SignedInfo>
-                  <SignatureValue/>
-                  <KeyInfo>
-                    <X509Data>
-                      <X509Certificate/>
-                    </X509Data>
-                  </KeyInfo>
-                </Signature>
+                <SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#">
+                  <CanonicalizationMethod Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                  <SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"/>
+                  <Reference>
+                    <Transforms>
+                      <Transform Algorithm="http://www.w3.org/2001/10/xml-exc-c14n#"/>
+                    </Transforms>
+                    <DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"/>
+                    <DigestValue>qHicO2rTX4KEE6W057Hia2TqgQQ=</DigestValue>
+                  </Reference>
+                </SignedInfo>
               </signatureText>
               <AgentPerson classCode="AGNT">
                 <id extension="200102238987" root="1.2.826.0.1285.0.2.0.67"/>
