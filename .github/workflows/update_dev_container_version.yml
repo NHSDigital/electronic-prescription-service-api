@@ -7,13 +7,13 @@ on:
 
 jobs:
   update_devcontainer_version:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/update-dev-container-version.yml@d2a4595b1bfa59f04c7cecb080a126321d42a333
+    uses: NHSDigital/eps-common-workflows/.github/workflows/update-dev-container-version.yml@23342d86a245c076937abd6aecdd0ce06446b1e6
     permissions:
-      contents: read
-      packages: read
-      pull-requests: write
+        contents: read
+        packages: read
+        pull-requests: write
     with:
-      base_branch: master
+      base_branch: main
     secrets:
-      AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
-      AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
+      CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
+      CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
