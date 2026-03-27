@@ -13,7 +13,7 @@ jobs:
         packages: read
         pull-requests: write
     with:
-      base_branch: main
+      base_branch: master
     secrets:
       CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
       CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
