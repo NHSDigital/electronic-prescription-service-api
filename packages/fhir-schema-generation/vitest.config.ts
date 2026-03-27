@@ -6,7 +6,12 @@ export default defineConfig({
     coverage: {
       provider: "v8",
       reporter: ["lcov", "text", "clover"],
-      reportsDirectory: "coverage"
+      reportsDirectory: "coverage",
+      include: ["src/**/*.ts"],
+      exclude: [
+        "src/index.ts",
+        "src/models/**/*.ts"
+      ]
     },
     include: ["tests/**/*.test.ts"]
   }

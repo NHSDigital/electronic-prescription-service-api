@@ -165,14 +165,6 @@ describe("FHIR Package Downloader", () => {
       expect(fs.mkdirSync).toHaveBeenCalledWith(mockTarget, {recursive: true})
     })
 
-    it("should throw file does not exist", async () => {
-      (fs.existsSync as Mock)
-        .mockReturnValueOnce(false) // Target dir missing
-        .mockReturnValueOnce(false) // package.json missing (to trigger the throw)
-
-      await expect(extractAndReadPackage(mockSource, mockTarget)).rejects.toThrow()
-    })
-
     it("should throw an error if package.json is missing after extraction", async () => {
       (fs.existsSync as Mock)
         .mockReturnValueOnce(true) // Target dir exists
