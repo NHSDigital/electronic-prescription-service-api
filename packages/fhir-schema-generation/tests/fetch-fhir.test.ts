@@ -24,6 +24,17 @@ vi.mock("node:stream", () => ({
 // Mock global fetch
 global.fetch = vi.fn()
 
+function buildMockMetadata(
+  latest: string,
+  versions: Record<string, {version: string, dist: {tarball?: string}}>
+) {
+  return {"dist-tags": {latest}, versions}
+}
+
+function buildVersionEntry(version: string, tarball = "url-to-tarball") {
+  return {version, dist: {tarball}}
+}
+
 describe("FHIR Package Downloader", () => {
   const mockRegistry = "https://registry.example.com"
   const mockPackageName = "test-package"
@@ -46,12 +57,7 @@ describe("FHIR Package Downloader", () => {
 
   describe("queryPackageVersion (via downloadSimplifierPackage)", () => {
     it("should resolve the latest version correctly", async () => {
-      const mockMetadata = {
-        "dist-tags": {latest: "1.0.1"},
-        versions: {
-          "1.0.1": {version: "1.0.1", dist: {tarball: "url-to-tarball"}}
-        }
-      };
+      const mockMetadata = buildMockMetadata("1.0.1", {"1.0.1": buildVersionEntry("1.0.1")});
       (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
@@ -65,12 +71,7 @@ describe("FHIR Package Downloader", () => {
     })
 
     it("should throw an error if the version does not exist", async () => {
-      const mockMetadata = {
-        "dist-tags": {latest: "1.0.1"},
-        versions: {
-          "1.0.5": {version: "1.0.5", dist: {tarball: "url-to-tarball"}}
-        }
-      };
+      const mockMetadata = buildMockMetadata("1.0.1", {"1.0.5": buildVersionEntry("1.0.5")});
       (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
@@ -84,12 +85,7 @@ describe("FHIR Package Downloader", () => {
     })
 
     it("should throw an error if latest version does not exist", async () => {
-      const mockMetadata = {
-        "dist-tags": {latest: "1.0.1"},
-        versions: {
-          "1.0.5": {version: "1.0.5", dist: {tarball: "url-to-tarball"}}
-        }
-      };
+      const mockMetadata = buildMockMetadata("1.0.1", {"1.0.5": buildVersionEntry("1.0.5")});
       (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
@@ -103,13 +99,10 @@ describe("FHIR Package Downloader", () => {
     })
 
     it("should throw a warning if a later version is available", async () => {
-      const mockMetadata = {
-        "dist-tags": {latest: "1.0.15"},
-        versions: {
-          "1.0.5": {version: "1.0.5", dist: {tarball: "url-to-tarball"}},
-          "1.0.15": {version: "1.0.15", dist: {tarball: "url-to-tarball"}}
-        }
-      };
+      const mockMetadata = buildMockMetadata("1.0.15", {
+        "1.0.5": buildVersionEntry("1.0.5"),
+        "1.0.15": buildVersionEntry("1.0.15")
+      });
       (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
         json: async () => mockMetadata
@@ -177,14 +170,7 @@ describe("FHIR Package Downloader", () => {
 
   describe("downloadSimplifierPackage (Orchestration)", () => {
     it("should successfully orchestrate download and extraction", async () => {
-      // Mock metadata response
-      const mockMetadata = {
-        version: "2.0.0",
-        "dist-tags": {latest: "2.0.0"},
-        versions: {
-          "2.0.0": {version: "2.0.0", dist: {tarball: "https://tarball.url"}}
-        }
-      };
+      const mockMetadata = buildMockMetadata("2.0.0", {"2.0.0": buildVersionEntry("2.0.0", "https://tarball.url")});
 
       // fetch 1: metadata, fetch 2: tarball
       (global.fetch as Mock)
@@ -209,13 +195,7 @@ describe("FHIR Package Downloader", () => {
     })
 
     it("should skip download if the target tarball already exists locally", async () => {
-      const mockMetadata = {
-        version: "2.0.0",
-        "dist-tags": {latest: "2.0.0"},
-        versions: {
-          "2.0.0": {version: "2.0.0", dist: {tarball: "https://tarball.url"}}
-        }
-      };
+      const mockMetadata = buildMockMetadata("2.0.0", {"2.0.0": buildVersionEntry("2.0.0", "https://tarball.url")});
 
       (global.fetch as Mock).mockResolvedValueOnce({ok: true, json: async () => mockMetadata});
 
