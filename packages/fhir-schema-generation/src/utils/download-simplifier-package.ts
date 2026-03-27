@@ -125,7 +125,7 @@ export async function downloadSimplifierPackage(
   // Check simplifier to fetch latest version or check if specified version is latest
   const metadata = await queryPackageVersion(registry, name, version)
 
-  const targetDir = normalizeFileName(`${name}-${version}`)
+  const targetDir = normalizeFileName(`${name}-${metadata.version}`)
   const targetPath = `${targetDir}.tgz`
   const rawOutputFile = path.join(outputDir, targetPath)
 

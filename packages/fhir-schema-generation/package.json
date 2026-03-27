@@ -19,6 +19,7 @@
   "type": "module",
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/fhir": "^0.0.41",
     "@types/node": "^25.5.0",
     "@types/tar": "^6.1.13",
     "@vitest/coverage-v8": "^4.1.0",
@@ -29,7 +30,6 @@
     "vitest": "^4.1.0"
   },
   "dependencies": {
-    "@types/fhir": "^0.0.41",
     "json-schema-to-ts": "^3.1.1",
     "tar": "^7.5.11"
   }
