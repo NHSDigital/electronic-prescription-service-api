@@ -1,0 +1,22 @@
+name: Sync Copilot Instructions
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 * * 1'
+
+jobs:
+  sync-copilot-instructions:
+    runs-on: ubuntu-22.04
+    environment: create_pull_request
+    permissions:
+      contents: read
+
+    steps:
+      - name: Sync shared instructions
+        uses: NHSDigital/eps-copilot-instructions@a7849a16aabd5c1edef13e29467a480fa08555f8
+        with:
+          copilot_instructions_ref: main
+          calling_repo_base_branch: main
+          CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
+          CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
