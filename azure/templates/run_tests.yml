@@ -141,6 +141,7 @@ steps:
       echo "##vso[task.setvariable variable=API_MODE]$API_MODE"
       echo "##vso[task.setvariable variable=CREATE_PACT_MAKEFILE_TARGET]$CREATE_PACT_MAKEFILE_TARGET"
       echo "##vso[task.setvariable variable=API_DEPLOYMENT_METHOD]$API_DEPLOYMENT_METHOD"
+      echo "##vso[task.setvariable variable=ENABLE_PRESCRIBING_SIGNATURE_VALIDATION]${ENABLE_PRESCRIBING_SIGNATURE_VALIDATION:-false}"
     displayName: Set PACT variables and install node dependencies
     name: setPactVariables
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
@@ -166,6 +167,7 @@ steps:
       export API_MODE=$(API_MODE)
       export CREATE_PACT_MAKEFILE_TARGET=$(CREATE_PACT_MAKEFILE_TARGET)
       export API_DEPLOYMENT_METHOD=$(API_DEPLOYMENT_METHOD)
+      export ENABLE_PRESCRIBING_SIGNATURE_VALIDATION=$(ENABLE_PRESCRIBING_SIGNATURE_VALIDATION)
 
       echo "SERVICE_ARTIFACT_NAME: ${SERVICE_ARTIFACT_NAME}"
       echo "SERVICE_BASE_PATH: ${SERVICE_BASE_PATH}"
@@ -209,6 +211,7 @@ steps:
       export API_MODE=$(API_MODE)
       export CREATE_PACT_MAKEFILE_TARGET=$(CREATE_PACT_MAKEFILE_TARGET)
       export API_DEPLOYMENT_METHOD=$(API_DEPLOYMENT_METHOD)
+      export ENABLE_PRESCRIBING_SIGNATURE_VALIDATION=$(ENABLE_PRESCRIBING_SIGNATURE_VALIDATION)
 
       make ${CREATE_PACT_MAKEFILE_TARGET}
     displayName: Create PACT tests

@@ -379,6 +379,7 @@ jobs:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: ${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}
       pinned_image: ${{ inputs.pinned_image }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}
