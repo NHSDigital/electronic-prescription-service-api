@@ -64,6 +64,62 @@ function buildPropertySchema(
   return null
 }
 
+function generateSchemaProperties(
+  node: any,
+  definition: any,
+  properties: Record<string, JsonSchemaProperty>,
+  requiredProps: Array<string>
+) {
+  for (const [propName, propBody] of Object.entries(
+        node.properties as Record<string, unknown>
+  )) {
+    if (isPropertyReference(propBody)) {
+      console.log(`Skipping reference item: ${propBody.$ref}`)
+      continue
+    }
+
+    const schema = buildPropertySchema(propName, propBody as SchemaPropertyItem)
+    if (schema) {
+      properties[propName] = schema
+      if (definition.required.includes(propName)) {
+        requiredProps.push(propName)
+      }
+    }
+  }
+
+  return { }
+}
+
+function generateSchemaNodes(
+  definition: any,
+  definitionTitle: string,
+  output: Record<string, any>
+): Record<string, JsonSchemaDefinition> {
+  const properties: Record<string, JsonSchemaProperty> = {}
+  const requiredProps: Array<string> = []
+
+  for (const node of definition.allOf) {
+    if (isSchemaReference(node)) {
+      console.info(`Skipping reference node: ${node.$ref}`)
+      continue
+    }
+
+    if (!isSchemaBody(node)) {
+      continue
+    }
+
+    generateSchemaProperties(node, definition, properties, requiredProps)
+  }
+
+  output[definitionTitle] = {
+    type: "object",
+    properties,
+    required: requiredProps
+  }
+
+  return output
+}
+
 /**
  * Walks the parsed FHIR schema definitions and produces a simplified JSON
  * Schema for each definition.
@@ -73,45 +129,10 @@ export function generateSchema(
 ): Record<string, JsonSchemaDefinition> {
   console.log("Generating schema…")
 
-  const output: Record<string, JsonSchemaDefinition> = {}
+  let output: Record<string, JsonSchemaDefinition> = {}
 
   for (const [definitionTitle, definition] of Object.entries(parsedSchema.definitions)) {
-    const properties: Record<string, JsonSchemaProperty> = {}
-    const requiredProps: Array<string> = []
-
-    for (const node of definition.allOf) {
-      if (isSchemaReference(node)) {
-        console.info(`Skipping reference node: ${node.$ref}`)
-        continue
-      }
-
-      if (!isSchemaBody(node)) {
-        continue
-      }
-
-      for (const [propName, propBody] of Object.entries(
-        node.properties as Record<string, unknown>
-      )) {
-        if (isPropertyReference(propBody)) {
-          console.log(`Skipping reference item: ${propBody.$ref}`)
-          continue
-        }
-
-        const schema = buildPropertySchema(propName, propBody as SchemaPropertyItem)
-        if (schema) {
-          properties[propName] = schema
-          if (definition.required.includes(propName)) {
-            requiredProps.push(propName)
-          }
-        }
-      }
-    }
-
-    output[definitionTitle] = {
-      type: "object",
-      properties,
-      required: requiredProps
-    }
+    output = generateSchemaNodes(definition, definitionTitle, output)
   }
 
   return output

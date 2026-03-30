@@ -1,4 +1,4 @@
-import {DistTags as DistTags} from "./dist-tags.interface.js"
+import {DistTags} from "./dist-tags.interface.js"
 import type {FhirPackageVersion} from "./package-version.interface.js"
 
 export interface PackageMetadata {

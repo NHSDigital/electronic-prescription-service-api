@@ -1,4 +1,4 @@
-import path from "path"
+import * as path from "node:path"
 import {normalizeFileName} from "./utils/common.js"
 import {downloadSimplifierPackage} from "./utils/download-simplifier-package.js"
 import {parseFhirSchema} from "./utils/parse-fhir-schema.js"
@@ -42,11 +42,13 @@ async function runSchemaGenerationPipeline() {
     console.log(JSON.stringify(schema, null, 2))
   }
 
-  console.log("\nGeneration complete")
+  console.log("\n=== Generation complete ===")
 }
 
-runSchemaGenerationPipeline().catch((error) => {
-  console.error("\nSchema generation pipeline failed")
+try {
+  await runSchemaGenerationPipeline()
+} catch (error) {
+  console.error("\n=== Schema generation pipeline failed ===")
   console.error(error)
   process.exit(1)
-})
+}

@@ -1,5 +1,5 @@
-import * as fs from "fs"
-import * as path from "path"
+import * as fs from "node:fs"
+import * as path from "node:path"
 
 import type {SchemaBody, SchemaReference} from "./schema-types.js"
 import {isSchemaBody, isSchemaReference} from "./schema-types.js"
