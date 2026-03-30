@@ -6,7 +6,6 @@ import {isSchemaBody, isSchemaReference} from "./schema-types.js"
 
 export interface FhirDefinition {
   allOf: Array<SchemaReference | SchemaBody>
-  required: Array<string>
 }
 
 export interface ParsedFhirSchema {
@@ -19,14 +18,6 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 
 function getSchemaFilePath(directory: string, schemaFile: string): string {
   return path.join(directory, "openapi", schemaFile)
-}
-
-function parseRequiredFields(value: unknown): Array<string> {
-  if (!Array.isArray(value)) {
-    return []
-  }
-
-  return value.filter((field): field is string => typeof field === "string")
 }
 
 function parseAllOfNodes(
@@ -85,8 +76,7 @@ export function parseFhirSchema(
     }
 
     definitions[definitionName] = {
-      allOf: parseAllOfNodes(definitionName, definitionValue.allOf),
-      required: parseRequiredFields(definitionValue.required)
+      allOf: parseAllOfNodes(definitionName, definitionValue.allOf)
     }
   }
 

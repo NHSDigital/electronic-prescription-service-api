@@ -36,12 +36,11 @@ describe("parseFhirSchema", () => {
             {
               description: "MedicationRequest body",
               properties: {
-                status: {type: "string", description: "status field"}
+                "status": {type: "string", description: "status field"}
               },
-              required: ["status"]
+              required: ["resourceType", "status"]
             }
-          ],
-          required: ["resourceType", "status"]
+          ]
         }
       }
     }
@@ -53,7 +52,7 @@ describe("parseFhirSchema", () => {
     expect(result.definitions).toBeDefined()
     expect(result.definitions["MedicationRequest"]).toBeDefined()
     expect(result.definitions["MedicationRequest"].allOf).toHaveLength(2)
-    expect(result.definitions["MedicationRequest"].required).toEqual(["resourceType", "status"])
+    expect(result.definitions["MedicationRequest"].allOf[1].required).toEqual(["resourceType", "status"])
   })
 
   it("should skip unrecognised allOf nodes and log a warning", () => {
@@ -80,7 +79,17 @@ describe("parseFhirSchema", () => {
     const schemaJson = {
       definitions: {
         TestDef: {
-          allOf: [],
+          allOf: [
+            {
+              description: "A body node without required array",
+              properties: {
+                test: {
+                  type: "string",
+                  description: "a test property"
+                }
+              }
+            }
+          ],
           required: "not-an-array"
         }
       }
@@ -90,24 +99,7 @@ describe("parseFhirSchema", () => {
 
     const result = parseFhirSchema("/dir", "test.schema.json")
 
-    expect(result.definitions["TestDef"].required).toEqual([])
-  })
-
-  it("should filter non-string items from required array", () => {
-    const schemaJson = {
-      definitions: {
-        TestDef: {
-          allOf: [],
-          required: ["valid", 123, "alsoValid", null]
-        }
-      }
-    }
-
-    vi.mocked(fs.readFileSync).mockReturnValue(JSON.stringify(schemaJson))
-
-    const result = parseFhirSchema("/dir", "test.schema.json")
-
-    expect(result.definitions["TestDef"].required).toEqual(["valid", "alsoValid"])
+    expect(result.definitions["TestDef"].allOf[0].required).toEqual(undefined)
   })
 
   it("should throw when schema file does not parse into an object", () => {
@@ -129,8 +121,7 @@ describe("parseFhirSchema", () => {
       definitions: {
         InvalidDef: "not an object",
         ValidDef: {
-          allOf: [],
-          required: []
+          allOf: []
         }
       }
     }
@@ -148,7 +139,6 @@ describe("parseFhirSchema", () => {
     const schemaJson = {
       definitions: {
         EmptyDef: {
-          required: ["id"]
         }
       }
     }
@@ -158,6 +148,5 @@ describe("parseFhirSchema", () => {
     const result = parseFhirSchema("/dir", "empty-allof.schema.json")
 
     expect(result.definitions["EmptyDef"].allOf).toEqual([])
-    expect(result.definitions["EmptyDef"].required).toEqual(["id"])
   })
 })

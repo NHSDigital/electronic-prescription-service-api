@@ -22,7 +22,7 @@ interface JsonSchemaProperty {
 interface JsonSchemaDefinition {
   type: "object"
   properties: Record<string, JsonSchemaProperty>
-  required: Array<string>
+  required: []
 }
 
 /**
@@ -66,7 +66,6 @@ function buildPropertySchema(
 
 function generateSchemaProperties(
   node: any,
-  definition: any,
   properties: Record<string, JsonSchemaProperty>,
   requiredProps: Array<string>
 ) {
@@ -81,7 +80,7 @@ function generateSchemaProperties(
     const schema = buildPropertySchema(propName, propBody as SchemaPropertyItem)
     if (schema) {
       properties[propName] = schema
-      if (definition.required.includes(propName)) {
+      if (node.required?.includes(propName)) {
         requiredProps.push(propName)
       }
     }
@@ -108,7 +107,7 @@ function generateSchemaNodes(
       continue
     }
 
-    generateSchemaProperties(node, definition, properties, requiredProps)
+    generateSchemaProperties(node, properties, requiredProps)
   }
 
   output[definitionTitle] = {

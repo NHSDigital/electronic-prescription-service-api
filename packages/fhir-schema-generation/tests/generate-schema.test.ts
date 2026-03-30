@@ -36,8 +36,7 @@ describe("generateSchema", () => {
         TestDef: {
           allOf: [
             {$ref: "#/definitions/Base"}
-          ],
-          required: []
+          ]
         }
       }
     }
@@ -58,8 +57,7 @@ describe("generateSchema", () => {
         TestDef: {
           allOf: [
             {unknownKey: "value"} as any
-          ],
-          required: []
+          ]
         }
       }
     }
@@ -79,8 +77,7 @@ describe("generateSchema", () => {
                 refProp: {$ref: "#/definitions/Other"}
               }
             }
-          ],
-          required: []
+          ]
         }
       }
     }
@@ -101,8 +98,7 @@ describe("generateSchema", () => {
                 items: {type: "array", items: {type: "string"}, description: "list"}
               }
             }
-          ],
-          required: []
+          ]
         }
       }
     }
@@ -120,8 +116,7 @@ describe("generateSchema", () => {
             properties: {
               active: {type: "boolean", description: "Is active"}
             }
-          }],
-          required: []
+          }]
         }
       }
     }
@@ -139,8 +134,7 @@ describe("generateSchema", () => {
             properties: {
               count: {type: "number", pattern: "^[0-9]+$", description: "A count"}
             }
-          }],
-          required: []
+          }]
         }
       }
     }
@@ -161,8 +155,7 @@ describe("generateSchema", () => {
             properties: {
               status: {type: "string", enum: ["active", "inactive"], description: "Status"}
             }
-          }],
-          required: []
+          }]
         }
       }
     }
@@ -183,8 +176,7 @@ describe("generateSchema", () => {
             properties: {
               code: {type: "string", pattern: "^[A-Z]+$", description: "Code"}
             }
-          }],
-          required: []
+          }]
         }
       }
     }
@@ -205,9 +197,9 @@ describe("generateSchema", () => {
             properties: {
               active: {type: "boolean", description: "active flag"},
               optional: {type: "boolean", description: "optional flag"}
-            }
-          }],
-          required: ["active"]
+            },
+            required: ["active"]
+          }]
         }
       }
     }
@@ -224,18 +216,18 @@ describe("generateSchema", () => {
             description: "body1",
             properties: {
               field1: {type: "boolean", description: "f1"}
-            }
-          }],
-          required: ["field1"]
+            },
+            required: ["field1"]
+          }]
         },
         Def2: {
           allOf: [{
             description: "body2",
             properties: {
               field2: {type: "string", enum: ["a"], description: "f2"}
-            }
-          }],
-          required: []
+            },
+            required: []
+          }]
         }
       }
     }
@@ -255,8 +247,7 @@ describe("generateSchema", () => {
             properties: {
               weird: {someUnknownKey: true}
             }
-          }],
-          required: []
+          }]
         }
       }
     }
