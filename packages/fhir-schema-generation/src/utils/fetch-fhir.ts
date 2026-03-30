@@ -80,7 +80,6 @@ export async function extractAndReadPackage(source: string, target: string): Pro
   await tar.x({
     file: source,
     cwd: target,
-    // zip-slip validation: only allow entries that resolve within the target directory
     filter: (entryPath: string) => {
       const resolvedEntry = path.resolve(resolvedTarget, entryPath)
       return resolvedEntry.startsWith(resolvedTarget + path.sep) || resolvedEntry === resolvedTarget
