@@ -26,10 +26,14 @@ async function queryPackageVersion(
     throw new Error(`Failed to fetch metadata: ${metaResponse.statusText}`)
   }
 
+  if (!version) {
+    throw new Error("Version not provided")
+  }
+
   const metadata: PackageMetadata = await metaResponse.json()
   const targetVersion: string | undefined = version === "latest" ? metadata["dist-tags"].latest : version
 
-  if (!targetVersion) {
+  if (targetVersion === null || targetVersion === undefined) {
     throw new Error(`Cannot find valid version in metadata`)
   } else if (!metadata.versions[targetVersion]) {
     throw new Error(`Version ${targetVersion} not found in registry.`)

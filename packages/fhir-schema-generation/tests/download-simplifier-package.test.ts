@@ -10,7 +10,7 @@ import {
 } from "vitest"
 import type {Mock, MockInstance} from "vitest"
 
-import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/fetch-fhir.js"
+import {extractAndReadPackage, downloadSimplifierPackage} from "../src/utils/download-simplifier-package.js"
 import {buildMockMetadata, buildVersionEntry} from "./helpers/package-metadata.js"
 
 vi.mock("node:fs")
@@ -49,11 +49,11 @@ describe("fetch-fhir", () => {
 
       (fs.existsSync as Mock).mockReturnValue(true)
 
-      await downloadSimplifierPackage("https://registry.example.com", "test-pkg", "latest")
+      await downloadSimplifierPackage("https://registry.example.com", "test-pkg", ".", "latest")
       expect(global.fetch).toHaveBeenCalledWith("https://registry.example.com/test-pkg")
     })
 
-    it("should resolve latest version when version is undefined", async () => {
+    it("should throw an error if version is undefined", async () => {
       const mockMetadata = buildMockMetadata("2.0.0", {"2.0.0": buildVersionEntry("2.0.0")});
       (global.fetch as Mock).mockResolvedValueOnce({
         ok: true,
@@ -62,8 +62,8 @@ describe("fetch-fhir", () => {
 
       (fs.existsSync as Mock).mockReturnValue(true)
 
-      await downloadSimplifierPackage("https://registry.example.com", "test-pkg")
-      expect(global.fetch).toHaveBeenCalledWith("https://registry.example.com/test-pkg")
+      await expect(downloadSimplifierPackage("https://registry.example.com", "test-pkg", "."))
+        .rejects.toThrow("Version not provided")
     })
 
     it("should throw an error if the version does not exist", async () => {
@@ -73,7 +73,7 @@ describe("fetch-fhir", () => {
         json: async () => mockMetadata
       })
 
-      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", "9.9.9"))
+      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "9.9.9"))
         .rejects.toThrow("Version 9.9.9 not found in registry.")
     })
 
@@ -89,7 +89,7 @@ describe("fetch-fhir", () => {
 
       (fs.existsSync as Mock).mockReturnValue(true)
 
-      await downloadSimplifierPackage("https://reg.example.com", "pkg", "1.0.0")
+      await downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "1.0.0")
       expect(warnSpy).toHaveBeenCalledWith("A later version of this package is available", "2.0.0")
     })
 
@@ -105,7 +105,7 @@ describe("fetch-fhir", () => {
 
       (fs.existsSync as Mock).mockReturnValue(true)
 
-      await downloadSimplifierPackage("https://reg.example.com", "pkg", "latest")
+      await downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "latest")
       expect(warnSpy).not.toHaveBeenCalled()
     })
 
@@ -115,7 +115,7 @@ describe("fetch-fhir", () => {
         statusText: "Not Found"
       })
 
-      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", "latest"))
+      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "latest"))
         .rejects.toThrow("Failed to fetch metadata: Not Found")
     })
 
@@ -129,7 +129,7 @@ describe("fetch-fhir", () => {
         json: async () => mockMetadata
       })
 
-      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", "latest"))
+      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "latest"))
         .rejects.toThrow("Cannot find valid version in metadata")
     })
   })
@@ -188,7 +188,7 @@ describe("fetch-fhir", () => {
       (fs.createWriteStream as Mock).mockReturnValue("mock-stream");
       (fs.readFileSync as Mock).mockReturnValue('{"name": "test", "version": "3.0.0"}')
 
-      await downloadSimplifierPackage("https://reg.example.com", "pkg", "3.0.0")
+      await downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "3.0.0")
 
       expect(fs.mkdirSync).toHaveBeenCalled()
       expect(global.fetch).toHaveBeenCalledTimes(2)
@@ -203,7 +203,7 @@ describe("fetch-fhir", () => {
         .mockReturnValueOnce(true) // outputDir exists
         .mockReturnValueOnce(true) // outputFile exists
 
-      await downloadSimplifierPackage("https://reg.example.com", "pkg", "3.0.0")
+      await downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "3.0.0")
 
       expect(global.fetch).toHaveBeenCalledTimes(1) // only metadata fetch
       expect(tar.x).not.toHaveBeenCalled()
@@ -218,7 +218,7 @@ describe("fetch-fhir", () => {
         .mockReturnValueOnce(true) // outputDir exists
         .mockReturnValueOnce(false) // no local file
 
-      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", "3.0.0"))
+      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "3.0.0"))
         .rejects.toThrow("Failed to find valid URL for Tarball")
     })
 
@@ -233,7 +233,7 @@ describe("fetch-fhir", () => {
         .mockReturnValueOnce(true) // outputDir exists
         .mockReturnValueOnce(false) // no local file
 
-      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", "3.0.0"))
+      await expect(downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "3.0.0"))
         .rejects.toThrow("Failed to download tarball: Server Error")
     })
 
@@ -254,7 +254,7 @@ describe("fetch-fhir", () => {
       (fs.createWriteStream as Mock).mockReturnValue("mock-stream");
       (fs.readFileSync as Mock).mockReturnValue('{"name": "test", "version": "3.0.0"}')
 
-      await downloadSimplifierPackage("https://reg.example.com", "pkg", "3.0.0")
+      await downloadSimplifierPackage("https://reg.example.com", "pkg", ".", "3.0.0")
 
       expect(global.fetch).toHaveBeenCalledTimes(2)
       expect((global.fetch as Mock).mock.calls[1][0]).toBe("https://fallback.url/tarball.tgz")
