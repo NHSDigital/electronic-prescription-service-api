@@ -9,7 +9,7 @@ import pino from "pino"
 import {identifyMessageType} from "../common"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {createHash} from "../../../../src/routes/create-hash"
-import {HashingAlgorithm, getPrepareHashingAlgorithmFromEnvVar} from "../common/hashingAlgorithm"
+import {HashingAlgorithm} from "../common/hashingAlgorithm"
 
 export async function convertFhirMessageToSignedInfoMessage(
   bundle: fhir.Bundle,
@@ -24,7 +24,8 @@ export async function convertFhirMessageToSignedInfoMessage(
     )
   }
 
-  const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar(applicationId)
+  // const hashingAlgorithm = getPrepareHashingAlgorithmFromEnvVar(applicationId)
+  const hashingAlgorithm = HashingAlgorithm.SHA1
   logger.info({
     hashingAlgorithm: HashingAlgorithm[hashingAlgorithm]
   }, `Using hashing algorithm ${HashingAlgorithm[hashingAlgorithm]}`)
