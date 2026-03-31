@@ -98,7 +98,7 @@ install-node:
 		--include-workspace-root
 
 install-python:
-	poetry sync --all-groups
+	poetry install
 
 install-hooks: install-python
 	poetry run pre-commit install --install-hooks --overwrite
