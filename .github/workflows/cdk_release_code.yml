@@ -389,6 +389,10 @@ jobs:
   pact_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Pact Tests
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
     uses: ./.github/workflows/run_pact_tests.yml
     needs: release_code_and_api
     with:
