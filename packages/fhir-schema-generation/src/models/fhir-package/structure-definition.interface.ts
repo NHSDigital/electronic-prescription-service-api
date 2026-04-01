@@ -1,4 +1,3 @@
-import {FhirKind} from "../../types/fhir-kind.type.js"
 import {StructureDefinitionDifferential} from "../structure-definition/differential-element.interface.js"
 import {StructureDefinitionSnapshot} from "../structure-definition/snapshot.interface.js"
 
@@ -22,7 +21,7 @@ export interface StructureDefinition {
     description: string
     fhirVersion: string
     mapping: string
-    kind: FhirKind
+    kind: "primitive-type" | "complex-type" | "resource" | "logical"
     abstract: string
     type: string
     baseDefinition: string

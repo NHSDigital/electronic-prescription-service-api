@@ -128,8 +128,13 @@ function processSimplifierPackageSpecification(
 ): JSONSchema | undefined {
   switch (simplifierSchema.kind) {
     case ("primitive-type"):
+      // string, integer, etc
       return processSimplifierPackageSpecification_Primitive(simplifierSchema, existingSpecifications)
+    // case ("complex-resource"):
+    //   // Like "resource" (see below) but with possible looping references
+    //   return processSimplifierPackageSpecification_Resource(simplifierSchema, existingSpecifications)
     case ("resource"):
+      // objects
       return processSimplifierPackageSpecification_Resource(simplifierSchema, existingSpecifications)
     default:
       return undefined
