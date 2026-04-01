@@ -75,6 +75,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
@@ -129,6 +130,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandbox
@@ -185,6 +187,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
@@ -237,6 +240,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
