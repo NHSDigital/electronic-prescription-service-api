@@ -25,7 +25,18 @@ function processSimplifierPackageProperty(
 
   const code = extension ?? types[0].code
   processSimplifierPackageFile(`${rootDir}-${code}.json`, existingSpecifications)
-  return existingSpecifications.get(code)
+  const found = existingSpecifications.get(code) as Exclude<JSONSchema, boolean>
+
+  if (found && element.max === "*") {
+    const array: JSONSchema = {
+      type: "array",
+      items: found
+    }
+
+    return array
+  }
+
+  return found
 }
 
 function processSimplifierPackageProperties(
@@ -79,12 +90,12 @@ function processSimplifierPackageSpecification_Primitive(
   }
 
   const schema: JSONSchema = {
-    $id: simplifierSchema.id,
-    $ref: `#definitions/${simplifierSchema.name}`,
+    // $id: simplifierSchema.id,
+    // $ref: `#definitions/${simplifierSchema.name}`,
+    // title: simplifierSchema.name,
+    // description: simplifierSchema.description
     type: type,
-    pattern: pattern,
-    title: simplifierSchema.name,
-    description: simplifierSchema.description
+    pattern: pattern
   }
 
   existingSpecifications.set(simplifierSchema.id, schema)
@@ -98,11 +109,11 @@ function processSimplifierPackageSpecification_Resource(
   // Capture base information straight from schema
   const {properties, required} = processSimplifierPackageProperties(simplifierSchema, existingSpecifications)
   const schema: JSONSchema = {
-    $id: simplifierSchema.url,
-    $ref: `#definitions/${simplifierSchema.name}`,
-    type: "object",
+    // $id: simplifierSchema.url,
+    // $ref: `#definitions/${simplifierSchema.name}`,
     title: simplifierSchema.name,
-    description: simplifierSchema.description,
+    // description: simplifierSchema.description,
+    type: "object",
     properties: properties,
     required: required
   }
