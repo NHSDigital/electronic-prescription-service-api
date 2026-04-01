@@ -15,7 +15,7 @@ export default [
   // ─── coordinator ────────────────────────────────────────────────────────────
   // Node environment, CommonJS TypeScript, path alias for @models,
   // environment variables injected via setEnvVars.js, custom matcher extension
-  // via jest.setup.ts. Thread pool capped at 2 to avoid OOM errors (matching
+  // via vitest setup file. Thread pool capped at 2 to avoid OOM errors (matching
   // the previous maxWorkers/workerIdleMemoryLimit settings).
   // The --max-old-space-size=4096 flag previously set via NODE_OPTIONS must
   // still be passed in the test script; it cannot live in the Vitest config.
@@ -148,7 +148,6 @@ export default [
       globals: true,
       environment: "node",
       include: ["tests/**/*.{test,spec}.{ts,tsx}"],
-      setupFiles: ["./tests/vitest.setup.ts"],
       clearMocks: true
     }
   }

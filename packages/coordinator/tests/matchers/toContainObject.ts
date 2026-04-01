@@ -1,5 +1,3 @@
-// Vitest version of matcher for objects within arrays
-// https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
 type MatcherContext = {
   equals: (received: unknown, expected: unknown) => boolean
   printReceived: (received: unknown) => string
