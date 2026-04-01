@@ -11,7 +11,6 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
-import {isApplicationRestrictedScope} from "../../services/validation/scope-validator"
 import {
   getAsid,
   getScope,
@@ -22,7 +21,9 @@ import {getStatusCode} from "../../utils/status-code"
 import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
 import {RouteDefMethods} from "@hapi/hapi"
 
-const createReleaseHandler = (allowApplicationRestricted: boolean) => externalValidator(
+const createReleaseHandler = (
+  verifyReleaseParameters: typeof parametersValidator.verifyAttendedParameters
+) => externalValidator(
   async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
     const logger = request.logger
     const parameters = await getPayload(request) as fhir.Parameters
@@ -31,24 +32,12 @@ const createReleaseHandler = (allowApplicationRestricted: boolean) => externalVa
     const scope = getScope(request.headers)
     const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
     const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-    const appRestricted = allowApplicationRestricted && isApplicationRestrictedScope(scope)
 
-    if (allowApplicationRestricted) {
-      logger.info(
-        {appRestricted, scope},
-        "Application restricted state for incoming request"
-      )
-    }
-
-    const issues = parametersValidator.verifyParameters(
+    const issues = verifyReleaseParameters(
       parameters,
       scope,
       accessTokenSDSUserID,
-      accessTokenSDSRoleID,
-      {
-        allowApplicationRestricted,
-        checkAccessTokenSDSRoleID: !appRestricted
-      }
+      accessTokenSDSRoleID
     )
 
     if (issues.length) {
@@ -64,18 +53,16 @@ const createReleaseHandler = (allowApplicationRestricted: boolean) => externalVa
   }
 )
 
+// Export the two routes
 export default [
-  /*
-    Send a dispense release request to SPINE
-  */
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Task/$release`,
-    handler: createReleaseHandler(false)
+    handler: createReleaseHandler(parametersValidator.verifyAttendedParameters)
   },
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Task/$release-unattended`,
-    handler: createReleaseHandler(true)
+    handler: createReleaseHandler(parametersValidator.verifyUnattendedParameters)
   }
 ]

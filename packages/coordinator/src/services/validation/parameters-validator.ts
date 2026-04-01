@@ -1,38 +1,53 @@
 import {fhir, validationErrors as errors} from "@models"
-import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
 import {
-  getIdentifierParameterOrNullByName,
-  getAgentParameter,
-  getOwnerParameterOrNull,
-  getIdentifierValueForSystem
-} from "../translation/common"
+  isApplicationRestrictedScope,
+  validatePermittedAttendedDispenseMessage,
+  validatePermittedUnattendedDispenseMessage
+} from "./scope-validator"
+import {getAgentParameter, getOwnerParameterOrNull, getIdentifierValueForSystem} from "../translation/common"
 import {isReference} from "../../utils/type-guards"
 
-type VerifyParametersOptions = {
-  allowApplicationRestricted?: boolean
-  checkAccessTokenSDSRoleID?: boolean
-}
-
-export function verifyParameters(
+export function verifyAttendedParameters(
   parameters: fhir.Parameters,
   scope: string,
   accessTokenSDSUserID: string,
-  accessTokenSDSRoleID: string,
-  options: VerifyParametersOptions = {}
+  accessTokenSDSRoleID: string
 ): Array<fhir.OperationOutcomeIssue> {
-  const {
-    allowApplicationRestricted = false,
-    checkAccessTokenSDSRoleID = true
-  } = options
+  return verifyParameters(
+    parameters,
+    validatePermittedAttendedDispenseMessage(scope),
+    accessTokenSDSUserID,
+    accessTokenSDSRoleID,
+    false
+  )
+}
 
+export function verifyUnattendedParameters(
+  parameters: fhir.Parameters,
+  scope: string,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string
+): Array<fhir.OperationOutcomeIssue> {
+  return verifyParameters(
+    parameters,
+    validatePermittedUnattendedDispenseMessage(scope),
+    accessTokenSDSUserID,
+    accessTokenSDSRoleID,
+    isApplicationRestrictedScope(scope)
+  )
+}
+
+function verifyParameters(
+  parameters: fhir.Parameters,
+  permissionErrors: Array<fhir.OperationOutcomeIssue>,
+  accessTokenSDSUserID: string,
+  accessTokenSDSRoleID: string,
+  isApplicationRestricted: boolean
+): Array<fhir.OperationOutcomeIssue> {
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
   }
 
-  const prescriptionIdParameter = getIdentifierParameterOrNullByName(parameters.parameter, "group-identifier")
-  const permissionErrors = !prescriptionIdParameter && allowApplicationRestricted
-    ? validatePermittedUnattendedDispenseMessage(scope)
-    : validatePermittedAttendedDispenseMessage(scope)
   if (permissionErrors.length) {
     return permissionErrors
   }
@@ -74,8 +89,8 @@ export function verifyParameters(
     }
   }
 
-  // Only gets checked in the user-restricted case, since application-restricted tokens won't have an SDS Role ID.
-  if (practitionerRole.identifier && checkAccessTokenSDSRoleID) {
+  // Only enforce practitioner roles if we are user-restricted
+  if (practitionerRole.identifier && !isApplicationRestricted) {
     const bodySDSRoleID = getIdentifierValueForSystem(
       practitionerRole.identifier,
       "https://fhir.nhs.uk/Id/sds-role-profile-id",

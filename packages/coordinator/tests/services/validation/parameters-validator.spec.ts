@@ -1,6 +1,9 @@
 import {fhir, validationErrors as errors} from "@models"
 import {ownerParameter, groupIdentifierParameter, agentParameter} from "../../resources/test-data/parameters"
-import {verifyParameters} from "../../../src/services/validation/parameters-validator"
+import {
+  verifyAttendedParameters,
+  verifyUnattendedParameters
+} from "../../../src/services/validation/parameters-validator"
 import {
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,
@@ -89,7 +92,7 @@ describe("verifyParameters returns errors", () => {
 
   test('rejects when resourceType not "Parameters"', () => {
     const invalidParameters = {...validSinglePrescriptionParameters, resourceType: "bluh"}
-    const returnedErrors = verifyParameters(
+    const returnedErrors = verifyAttendedParameters(
       invalidParameters as fhir.Parameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -100,7 +103,7 @@ describe("verifyParameters returns errors", () => {
 
   test("verifyParameters rejects a message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -110,7 +113,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects single prescription release when only prescribing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
@@ -120,7 +123,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects single prescription release when only prescribing app scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       PRESCRIBING_APP_SCOPE,
       "test_sds_user_id",
@@ -130,7 +133,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("accepts single prescription release when only dispensing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
@@ -140,7 +143,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects single prescription release when only dispensing app scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -150,7 +153,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects nominated release when only prescribing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
@@ -160,7 +163,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects nominated release when only prescribing app scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       PRESCRIBING_APP_SCOPE,
       "test_sds_user_id",
@@ -170,7 +173,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("accepts nominated release when only dispensing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
@@ -180,7 +183,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects nominated release when only dispensing app scope present by default", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -190,19 +193,18 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("accepts nominated release when unattended application-restricted access is enabled", () => {
-    const result = verifyParameters(
+    const result = verifyUnattendedParameters(
       validAttendedNominatedParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
-      "test_sds_role_id",
-      {allowApplicationRestricted: true, checkAccessTokenSDSRoleID: false}
+      "test_sds_role_id"
     )
     expect(result).toEqual([])
   })
 
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
-      const result = verifyParameters(
+      const result = verifyAttendedParameters(
         missingOwnerParameters,
         DISPENSING_USER_SCOPE,
         "test_sds_user_id",
@@ -214,12 +216,12 @@ describe("verifyParameters returns errors", () => {
 
   test("rejects when the agent parameter is missing", () => {
     expect(() => {
-      verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
+      verifyAttendedParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
     }).toThrow("Parameter with name agent not found")
   })
 
   test("accepts valid unattended agent param", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validUnattendedNominatedParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
@@ -229,24 +231,24 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105")
+    verifyAttendedParameters(
+      validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105")
     expect(console.warn).toHaveBeenCalled()
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID for user-restricted access", () => {
     jest.clearAllMocks()
-    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id")
+    verifyAttendedParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalled()
   })
 
   test("does not warn about SDS role profile ID for application-restricted access", () => {
     jest.clearAllMocks()
-    verifyParameters(
+    verifyUnattendedParameters(
       validUnattendedNominatedParameters,
       DISPENSING_APP_SCOPE,
       "3415870201",
-      "",
-      {allowApplicationRestricted: true, checkAccessTokenSDSRoleID: false}
+      ""
     )
     expect(console.warn).not.toHaveBeenCalled()
   })
