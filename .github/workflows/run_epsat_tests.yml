@@ -23,6 +23,10 @@ jobs:
     uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@5ac2707dd9cd60ad127275179495b9c890d74711
     with:
       verify_published_from_main_image: false
+    permissions:
+      attestations: read
+      contents: read
+      packages: read
 
   run_epsat_tests:
     runs-on: ubuntu-22.04
