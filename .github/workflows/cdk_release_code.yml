@@ -356,6 +356,9 @@ jobs:
   
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: write
     name: Prescribing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
@@ -369,6 +372,9 @@ jobs:
 
   dispensing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: write
     name: Dispensing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
