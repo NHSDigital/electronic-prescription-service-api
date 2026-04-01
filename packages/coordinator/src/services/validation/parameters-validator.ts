@@ -8,21 +8,31 @@ import {
 } from "../translation/common"
 import {isReference} from "../../utils/type-guards"
 
+type VerifyParametersOptions = {
+  allowApplicationRestricted?: boolean
+  checkAccessTokenSDSRoleID?: boolean
+}
+
 export function verifyParameters(
   parameters: fhir.Parameters,
   scope: string,
   accessTokenSDSUserID: string,
   accessTokenSDSRoleID: string,
-  checkAccessTokenSDSRoleID: boolean = true
+  options: VerifyParametersOptions = {}
 ): Array<fhir.OperationOutcomeIssue> {
+  const {
+    allowApplicationRestricted = false,
+    checkAccessTokenSDSRoleID = true
+  } = options
+
   if (parameters.resourceType !== "Parameters") {
     return [errors.createResourceTypeIssue("Parameters")]
   }
 
   const prescriptionIdParameter = getIdentifierParameterOrNullByName(parameters.parameter, "group-identifier")
-  const permissionErrors = prescriptionIdParameter
-    ? validatePermittedAttendedDispenseMessage(scope)
-    : validatePermittedUnattendedDispenseMessage(scope)
+  const permissionErrors = !prescriptionIdParameter && allowApplicationRestricted
+    ? validatePermittedUnattendedDispenseMessage(scope)
+    : validatePermittedAttendedDispenseMessage(scope)
   if (permissionErrors.length) {
     return permissionErrors
   }
@@ -64,6 +74,7 @@ export function verifyParameters(
     }
   }
 
+  // Only gets checked in the user-restricted case, since application-restricted tokens won't have an SDS Role ID.
   if (practitionerRole.identifier && checkAccessTokenSDSRoleID) {
     const bodySDSRoleID = getIdentifierValueForSystem(
       practitionerRole.identifier,

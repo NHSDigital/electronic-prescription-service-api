@@ -22,6 +22,48 @@ import {getStatusCode} from "../../utils/status-code"
 import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
 import {RouteDefMethods} from "@hapi/hapi"
 
+const createReleaseHandler = (allowApplicationRestricted: boolean) => externalValidator(
+  async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+    const logger = request.logger
+    const parameters = await getPayload(request) as fhir.Parameters
+    request.log("audit", {incomingMessageHash: createHash(JSON.stringify(parameters), HashingAlgorithm.SHA256)})
+
+    const scope = getScope(request.headers)
+    const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+    const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+    const appRestricted = allowApplicationRestricted && isApplicationRestrictedScope(scope)
+
+    if (allowApplicationRestricted) {
+      logger.info(
+        {appRestricted, scope},
+        "Application restricted state for incoming request"
+      )
+    }
+
+    const issues = parametersValidator.verifyParameters(
+      parameters,
+      scope,
+      accessTokenSDSUserID,
+      accessTokenSDSRoleID,
+      {
+        allowApplicationRestricted,
+        checkAccessTokenSDSRoleID: !appRestricted
+      }
+    )
+
+    if (issues.length) {
+      const response = fhir.createOperationOutcome(issues, parameters.meta?.lastUpdated)
+      const statusCode = getStatusCode(issues)
+      return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
+    }
+
+    logger.info("Building Spine release request")
+    const spineRequest = translator.convertParametersToSpineRequest(parameters, request.headers, logger)
+    const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
+    return await handleResponse(request, spineResponse, responseToolkit)
+  }
+)
+
 export default [
   /*
     Send a dispense release request to SPINE
@@ -29,40 +71,11 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Task/$release`,
-    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-      const logger = request.logger
-      const parameters = await getPayload(request) as fhir.Parameters
-      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(parameters), HashingAlgorithm.SHA256)})
-
-      const scope = getScope(request.headers)
-      const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
-      const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-
-      // If we're application-restricted, we don't have an SDS role ID, and can skip that check
-      const appRestricted = isApplicationRestrictedScope(scope)
-      logger.info(
-        {appRestricted, scope}, // pino places the object first, which looks backwards to me
-        "Application restricted state for incoming request"
-      )
-      const checkAccessTokenSDSRoleID = !appRestricted
-      const issues = parametersValidator.verifyParameters(
-        parameters,
-        scope,
-        accessTokenSDSUserID,
-        accessTokenSDSRoleID,
-        checkAccessTokenSDSRoleID
-      )
-
-      if (issues.length) {
-        const response = fhir.createOperationOutcome(issues, parameters.meta?.lastUpdated)
-        const statusCode = getStatusCode(issues)
-        return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
-      }
-
-      logger.info("Building Spine release request")
-      const spineRequest = translator.convertParametersToSpineRequest(parameters, request.headers, logger)
-      const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
-      return await handleResponse(request, spineResponse, responseToolkit)
-    })
+    handler: createReleaseHandler(false)
+  },
+  {
+    method: "POST" as RouteDefMethods,
+    path: `${BASE_PATH}/Task/$release-unattended`,
+    handler: createReleaseHandler(true)
   }
 ]

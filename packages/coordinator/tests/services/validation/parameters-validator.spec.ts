@@ -179,12 +179,23 @@ describe("verifyParameters returns errors", () => {
     expect(result).toEqual([])
   })
 
-  test("accepts nominated release when only dispensing app scope present", () => {
+  test("rejects nominated release when only dispensing app scope present by default", () => {
     const result = verifyParameters(
       validAttendedNominatedParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
+  })
+
+  test("accepts nominated release when unattended application-restricted access is enabled", () => {
+    const result = verifyParameters(
+      validAttendedNominatedParameters,
+      DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id",
+      {allowApplicationRestricted: true, checkAccessTokenSDSRoleID: false}
     )
     expect(result).toEqual([])
   })
@@ -230,7 +241,13 @@ describe("verifyParameters returns errors", () => {
 
   test("does not warn about SDS role profile ID for application-restricted access", () => {
     jest.clearAllMocks()
-    verifyParameters(validUnattendedNominatedParameters, DISPENSING_APP_SCOPE, "3415870201", "")
+    verifyParameters(
+      validUnattendedNominatedParameters,
+      DISPENSING_APP_SCOPE,
+      "3415870201",
+      "",
+      {allowApplicationRestricted: true, checkAccessTokenSDSRoleID: false}
+    )
     expect(console.warn).not.toHaveBeenCalled()
   })
 })
