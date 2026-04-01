@@ -25,7 +25,7 @@
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.4.4",
     "@peculiar/x509": "^1.14.3",
-    "@xmldom/xmldom": "^0.9.8",
+    "@xmldom/xmldom": "^0.9.9",
     "axios": "^1.13.6",
     "axios-retry": "^4.5.0",
     "crypto-js": "^4.2.0",
