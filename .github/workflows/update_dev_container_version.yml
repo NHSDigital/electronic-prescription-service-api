@@ -18,6 +18,6 @@ jobs:
       - name: Update devcontainer version
         uses: NHSDigital/eps-update-devcontainer@dc3a8c5f11e7226ee4f5f2bb35bd0d1265092306
         with:
-          calling_repo_base_branch: main
+          calling_repo_base_branch: master
           CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
           CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
