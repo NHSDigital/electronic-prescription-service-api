@@ -1,16 +1,22 @@
 import pino from "pino"
+import * as signatureVerification from "../../../../../src/services/verification/signature-verification"
 
-const actualVerification = jest.requireActual("../../../../../src/services/verification/signature-verification")
 let throwOnVerification = false
-jest.mock("../../../../../src/services/verification/signature-verification", () => ({
-  verifyPrescriptionSignature: (parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger) => {
-    if (throwOnVerification) {
-      throw new Error("Verification error")
-    } else {
-      return actualVerification.verifyPrescriptionSignature(parentPrescription, logger)
+vi.mock("../../../../../src/services/verification/signature-verification", async () => {
+  const actualVerification = await vi.importActual<typeof signatureVerification>(
+    "../../../../../src/services/verification/signature-verification"
+  )
+
+  return {
+    verifyPrescriptionSignature: (parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger) => {
+      if (throwOnVerification) {
+        throw new Error("Verification error")
+      } else {
+        return actualVerification.verifyPrescriptionSignature(parentPrescription, logger)
+      }
     }
   }
-}))
+})
 
 import {
   translateReleaseResponse,
@@ -40,6 +46,7 @@ import {Organization as IOrganisation} from "../../../../../../models/fhir/pract
 import {setSubcaccCertEnvVar} from "../../../../../tests/resources/test-helpers"
 import {getExamplePrescriptionReleaseResponse} from "../../../../resources/test-resources"
 import {DispenseProposalReturnFactory} from "../../../../../src/services/translation/request/return/return-factory"
+import {vi} from "vitest"
 
 const logger = pino()
 const returnFactory = new DispenseProposalReturnFactory()
@@ -58,9 +65,9 @@ const setupMockData = async (releaseExampleName: string): Promise<TranslationRes
 const beforeAllHookTimeout = 10000
 
 describe("outer bundle", () => {
-  let loggerErrorSpy: jest.SpyInstance
-  let loggerInfoSpy: jest.SpyInstance
-  let returnFactoryCreateFunctionSpy: jest.SpyInstance
+  let loggerErrorSpy: ReturnType<typeof vi.spyOn>
+  let loggerInfoSpy: ReturnType<typeof vi.spyOn>
+  let returnFactoryCreateFunctionSpy: ReturnType<typeof vi.spyOn>
 
   let result: TranslationResponseResult
   let prescriptionsParameter: fhir.ResourceParameter<fhir.Bundle>
@@ -68,11 +75,11 @@ describe("outer bundle", () => {
 
   setSubcaccCertEnvVar("../resources/certificates/NHS_INT_Level1D_Base64_pem.cer")
 
-  function getBeforeAllCallback(mockDataParameter: string, bundleParameter: string): jest.ProvidesHookCallback {
+  function getBeforeAllCallback(mockDataParameter: string, bundleParameter: string): () => Promise<void> {
     return async () => {
-      loggerErrorSpy = jest.spyOn(logger, "error")
-      loggerInfoSpy = jest.spyOn(logger, "info")
-      returnFactoryCreateFunctionSpy = jest.spyOn(returnFactory, "create")
+      loggerErrorSpy = vi.spyOn(logger, "error")
+      loggerInfoSpy = vi.spyOn(logger, "info")
+      returnFactoryCreateFunctionSpy = vi.spyOn(returnFactory, "create")
 
       result = await setupMockData(mockDataParameter)
       prescriptionsParameter = getBundleParameter(result.translatedResponse, bundleParameter)
@@ -251,7 +258,7 @@ describe("outer bundle", () => {
 
   test("marks prescription as failed if verification throws an error", async () => {
     try {
-      loggerErrorSpy = jest.spyOn(logger, "error")
+      loggerErrorSpy = vi.spyOn(logger, "error")
       throwOnVerification = true
       const result = await translateReleaseResponse(
         getExamplePrescriptionReleaseResponse("release_success.xml"),

@@ -1,10 +1,21 @@
-// jest.expect matcher for objects within arrays
+// Vitest version of matcher for objects within arrays
 // https://medium.com/@andrei.pfeiffer/jest-matching-objects-in-array-50fe2f4d6b98
+type MatcherContext = {
+  equals: (received: unknown, expected: unknown) => boolean
+  printReceived: (received: unknown) => string
+  printExpected: (expected: unknown) => string
+}
+
+type MatcherResult = {
+  message: () => string
+  pass: boolean
+}
+
 export function toContainObject(
-  this: jest.MatcherContext,
+  this: MatcherContext,
   received: unknown,
   argument: unknown
-): jest.CustomMatcherResult {
+): MatcherResult {
   const pass = this.equals(received,
     expect.arrayContaining([
       expect.objectContaining(argument)

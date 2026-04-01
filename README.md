@@ -6,7 +6,7 @@
 This is a RESTful HL7® FHIR® API specification for the _Electronic Prescription Service API_.
 
 - `azure/` Defines CI/CD pipeline for the API
-- `packages/bdd-tests/` Jest-Cucumber BDD Test Suite. See [README](./packages/bdd-tests/README.md) for more details.
+- `packages/bdd-tests/` Cucumber BDD Test Suite. See [README](./packages/bdd-tests/README.md) for more details.
 - `packages/coordinator/` Deals with message translation and distribution to other services. Backend for the production EPS FHIR API. See [README](./packages/coordinator/README.md) for more details.
 - `packages/e2e-tests/` End to end tests (Smoke tests). See [README](./packages/e2e-tests/README.md) for more details.
 - `packages/models/` A common project for sharing models and loading example requests and responses for testing
@@ -19,7 +19,7 @@ This is a RESTful HL7® FHIR® API specification for the _Electronic Prescriptio
 - `packages/tool/site` Code for EPSAT - split into client and server
 - `packages/tool/specification` API spec for EPSAT - needed for Apigee deployment
 - `packages/cdk` CDK code to deploy the stack in EPS AWS account
-- `packages/fhir-schema-generation` Script to generate FHIR schema from the Simplifier registry 
+- `packages/fhir-schema-generation` Script to generate FHIR schema from the Simplifier registry
 - `proxies/` Apigee API Proxies for the API
 - `scripts/` Utilities helpful to developers of this specification
 - `.devcontainer` Contains a dockerfile and vscode devcontainer definition

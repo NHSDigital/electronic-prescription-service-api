@@ -4,7 +4,7 @@ import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/tr
 import * as TestResources from "../../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {getStringParameterByName, isTruthy} from "../../../../src/services/translation/common"
-import {MomentFormatSpecification, MomentInput} from "moment"
+import moment from "moment"
 import {xmlTest} from "../../../resources/test-helpers"
 import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
@@ -13,11 +13,19 @@ import {PayloadContent, SendMessagePayloadFactory} from "../../../../src/service
 
 const logger = pino()
 
-const actualMoment = jest.requireActual("moment")
-const mockTime = {value: "2020-12-18T12:34:34Z"}
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) => actualMoment.utc(input || mockTime.value, format)
+const {mockTime} = vi.hoisted(() => ({
+  mockTime: {value: "2020-12-18T12:34:34Z"}
 }))
+
+const realMomentNow = moment.now
+
+beforeAll(() => {
+  moment.now = () => new Date(mockTime.value).valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
 
 function isParentPrescription(content: PayloadContent): content is hl7V3.ParentPrescriptionRoot {
   return (content as hl7V3.ParentPrescriptionRoot).ParentPrescription !== undefined
@@ -58,6 +66,7 @@ describe("convertFhirMessageToSignedInfoMessage", () => {
     "produces expected result for %s",
     async (desc: string, message: fhir.Bundle, expectedParameters: fhir.Parameters) => {
       mockTime.value = getStringParameterByName(expectedParameters.parameter, "timestamp").valueString
+      moment.now = () => new Date(mockTime.value).valueOf()
       const actualParameters = await convertFhirMessageToSignedInfoMessage(message, "fakeApplicationId", logger)
       expect(actualParameters).toEqual(expectedParameters)
     }
@@ -81,6 +90,7 @@ describe("convertFhirMessageToHl7V3ParentPrescriptionMessage", () => {
     "produces expected result for %s",
     (desc: string, message: fhir.Bundle, expectedOutput: ElementCompact) => {
       mockTime.value = convertHL7V3DateTimeToIsoDateTimeString(expectedOutput.PORX_IN020101SM31.creationTime)
+      moment.now = () => new Date(mockTime.value).valueOf()
       const payloadFactory = SendMessagePayloadFactory.forBundle()
       const actualMessage = payloadFactory.createSendMessagePayload(message, TestResources.validTestHeaders, logger)
 

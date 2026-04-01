@@ -6,8 +6,15 @@ import {fhir} from "@models"
 
 describe("prepare sandbox e2e tests", () => {
   test.each(TestResources.prepareErrorCases)(
-    "should fail to prepare a %s message",
-    async (desc: string, request: fhir.Bundle, response: fhir.Parameters, statusCode: number) => {
+    "should fail to prepare a $description message",
+    async (
+      {description, request, response, statusCode}: {
+        description: string,
+        request: fhir.Bundle,
+        response: fhir.Parameters,
+        statusCode: number
+      }
+    ) => {
       const options = new CreatePactOptions("sandbox", "prepare")
       const provider = new PactV2(pactOptions(options))
       await provider.setup()
@@ -20,7 +27,7 @@ describe("prepare sandbox e2e tests", () => {
 
       const interaction: InteractionObject = {
         state: "is not authenticated",
-        uponReceiving: `a request to prepare a ${desc} message`,
+        uponReceiving: `a request to prepare a ${description} message`,
         withRequest: {
           headers: {
             "Content-Type": "application/fhir+json; fhirVersion=4.0",

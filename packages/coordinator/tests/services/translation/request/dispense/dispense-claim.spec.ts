@@ -1,5 +1,5 @@
 import * as TestResources from "../../../../resources/test-resources"
-import {MomentFormatSpecification, MomentInput} from "moment"
+import moment from "moment"
 import {fhir, hl7V3} from "@models"
 import {toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
@@ -8,16 +8,19 @@ import {
   medicationDispenseEndorsementPresent
 } from "../../../../../src/services/translation/request/dispense/dispense-claim"
 import * as testData from "../../../../resources/test-data"
-import requireActual = jest.requireActual
 
-const actualMoment = requireActual("moment")
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
-}))
+const realMomentNow = moment.now
 
-const mockCreateLegalAuthenticator = jest.fn()
-jest.mock("../../../../../src/services/translation/request/agent-person", () => ({
+beforeAll(() => {
+  moment.now = () => new Date("2020-12-18T12:34:34Z").valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
+
+const mockCreateLegalAuthenticator = vi.fn()
+vi.mock("../../../../../src/services/translation/request/agent-person", () => ({
   createLegalAuthenticator: (pr: fhir.PractitionerRole, org: fhir.Organization, ts: hl7V3.Timestamp) =>
     mockCreateLegalAuthenticator(pr, org, ts)
 }))
@@ -146,7 +149,7 @@ describe("convertDispenseClaim", () => {
     ["9185", "Prescription prepayment certificate"],
     ["9186", "HRT Only PPC"],
     ["9200", "All DWP"]
-  // eslint-disable-next-line max-len
+    // eslint-disable-next-line max-len
   ])("9xxx chargeExemptionCoding with evidence results in v3.coverage with authorization", (exemptionCode: string, display: string) => {
     const claim: fhir.Claim = clone(TestResources.specification[2].fhirMessageClaim)
     claim.item[0].programCode = [{

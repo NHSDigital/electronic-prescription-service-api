@@ -12,8 +12,8 @@ import {
   practitionerRole
 } from "../../../../resources/test-data"
 
-const mockCreateAuthor = jest.fn()
-jest.mock("../../../../../src/services/translation/request/agent-person", () => ({
+const mockCreateAuthor = vi.fn()
+vi.mock("../../../../../src/services/translation/request/agent-person", () => ({
   createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
     mockCreateAuthor(pr, org)
 }))

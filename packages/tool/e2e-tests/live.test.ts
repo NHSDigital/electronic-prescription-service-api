@@ -12,7 +12,7 @@ import {
   beforeEach,
   expect,
   afterEach
-} from "@jest/globals"
+} from "vitest"
 
 import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
 

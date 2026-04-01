@@ -13,7 +13,7 @@ import {StaticProductInfo} from "../../src/components/claim/claimForm"
 import {MemoryRouter} from "react-router-dom"
 
 
-jest.spyOn(global.crypto, "randomUUID")
+vi.spyOn(global.crypto, "randomUUID")
   .mockReturnValue("test-uuid-in-uuid-format")
 
 const baseUrl = "baseUrl/"
@@ -35,7 +35,9 @@ beforeEach(() => mock.reset())
 afterEach(() => mock.reset())
 
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = renderWithContext(<ClaimPage prescriptionId={prescriptionId}/>, context)
+  mock.onGet(releaseResponseUrl).reply(() => new Promise(resolve => setTimeout(() => resolve([200, prescriptionOrder]), 1000)))
+
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -56,7 +58,7 @@ test("Displays claim form if prescription details are retrieved successfully", a
 test("Displays an error if prescription-order not found", async () => {
   mock.onAny(releaseResponseUrl).reply(200, null)
 
-  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -66,7 +68,7 @@ test("Displays an error if dispense-notification not found", async () => {
   mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
   mock.onAny(dispenseNotificationUrl).reply(200, [])
 
-  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -75,7 +77,7 @@ test("Displays an error if dispense-notification not found", async () => {
 test("Displays an error on invalid response", async () => {
   mock.onAny(releaseResponseUrl).reply(500)
 
-  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -89,7 +91,7 @@ test("Displays loading text while claim is being submitted", async () => {
       setTimeout(function () {
         resolve([200])
       }
-      , 1000)
+        , 1000)
     })
   })
 
@@ -140,20 +142,20 @@ test("Displays an error if previous claim not found for amend", async () => {
   mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
   mock.onAny(claimDownloadUrl).reply(200, null)
 
-  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} amend/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} amend /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
 })
 
 async function renderClaimPage() {
-  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
   return container
 }
 
 async function renderClaimAmendPage() {
-  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} amend/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimPage prescriptionId={prescriptionId} amend /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Claim for Dispensed Prescription"))
   return container
 }

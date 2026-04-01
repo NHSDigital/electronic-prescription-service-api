@@ -17,13 +17,13 @@ import {identifyMessageType} from "../../src/services/translation/common"
 import * as Hapi from "@hapi/hapi"
 import * as HapiShot from "@hapi/shot"
 
-jest.mock("../../src/services/translation/response", () => ({
+vi.mock("../../src/services/translation/response", () => ({
   translateToFhir: () => ({statusCode: 200, fhirResponse: {value: "some FHIR response"}})
 }))
 
 const mock = new MockAdapter(axios)
 
-describe("forward header", ()=> {
+describe("forward header", () => {
   afterEach(() => {
     mock.reset()
   })
@@ -250,7 +250,7 @@ describe("filterValidatorResponse", () => {
 
 describe("CodeSystem URL normalization", () => {
   let server: Hapi.Server
-  const loggerInfoSpy = jest.fn()
+  const loggerInfoSpy = vi.fn()
 
   beforeEach(async () => {
     server = Hapi.server({
@@ -263,9 +263,9 @@ describe("CodeSystem URL normalization", () => {
     // Mock logger on server
     server.decorate("request", "logger", {
       info: loggerInfoSpy,
-      error: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn()
+      error: vi.fn(),
+      warn: vi.fn(),
+      debug: vi.fn()
     })
     loggerInfoSpy.mockClear()
   })
@@ -465,10 +465,10 @@ describe("externalValidator", () => {
     })
 
     server.decorate("request", "logger", {
-      info: jest.fn(),
-      error: jest.fn(),
-      warn: jest.fn(),
-      debug: jest.fn()
+      info: vi.fn(),
+      error: vi.fn(),
+      warn: vi.fn(),
+      debug: vi.fn()
     })
   })
 

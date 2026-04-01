@@ -6,9 +6,9 @@ import {fhir, hl7V3} from "@models"
 import {createAuthor} from "../../../../src/services/translation/request/agent-person"
 import {practitionerRoleOrganisationRef, organization} from "../../../resources/test-data"
 
-const mockCreateAuthor = jest.fn()
+const mockCreateAuthor = vi.fn()
 
-jest.mock("../../../../src/services/translation/request/agent-person", () => ({
+vi.mock("../../../../src/services/translation/request/agent-person", () => ({
   createAuthor: (pr: fhir.PractitionerRole, org: fhir.Organization) =>
     mockCreateAuthor(pr, org)
 }))

@@ -19,7 +19,6 @@ export const convertSuccessExamples = fetcher.convertExamples
 
 export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
-  .map((spec) => spec.toErrorJestCase())
 
 export const dispensingValidationSchema = {
   Claim: fetcher.schemaFilePaths.filter(f => f.includes("Claim.xsd"))[0],

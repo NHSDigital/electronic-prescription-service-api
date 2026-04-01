@@ -36,7 +36,7 @@ describe("translateToFhir", () => {
     })
 
   test("returns internal server error on unexpected spine response", async () => {
-    const loggerSpy = jest.spyOn(logger, "error")
+    const loggerSpy = vi.spyOn(logger, "error")
     const bodyString = "this body does not pass the regex checks"
     const spineResponse: spine.SpineDirectResponse<string> = {
       body: bodyString,

@@ -80,7 +80,7 @@ describe("verifyPrescriptionSignature", () => {
     })
 
     test("logs error when parsing certificate", async () => {
-      const warn = jest.spyOn(logger, "warn")
+      const warn = vi.spyOn(logger, "warn")
       const clonePrescription = clone(validSignature)
       const signatureRoot = extractSignatureRootFromParentPrescription(clonePrescription)
       signatureRoot.Signature.KeyInfo.X509Data.X509Certificate._text = "invalid"

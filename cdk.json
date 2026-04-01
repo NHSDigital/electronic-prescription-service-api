@@ -15,8 +15,8 @@
       "**/tests*",
       "**/lib",
       "**/coverage",
-      "**/jest.config.ts",
-      "**/jest.debug.config.ts"
+      "**/vitest.config.ts",
+      "**/vitest.workspace.ts"
     ]
   },
   "context": {

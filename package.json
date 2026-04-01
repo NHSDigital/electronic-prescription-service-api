@@ -7,7 +7,7 @@
     "example": "examples"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "repository": {
     "type": "git",
@@ -32,17 +32,16 @@
   "private": true,
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/jest": "^30.0.0",
     "@types/node": "^25.5.0",
     "@typescript-eslint/eslint-plugin": "^8.57.1",
     "@typescript-eslint/parser": "^8.57.0",
+    "@vitest/coverage-v8": "^3.0.0",
     "eslint": "^10.1.0",
     "eslint-plugin-import-newlines": "^2.0.0",
     "globals": "^17.4.0",
-    "jest": "^30.3.0",
-    "jest-junit": "^16.0.0",
-    "ts-jest": "^29.4.6",
+    "jsdom": "^26.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^3.0.0"
   }
 }

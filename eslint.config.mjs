@@ -119,6 +119,7 @@ export default [
       parser: tsParser,
       globals: {
         ...globals.jest,
+        ...globals.vitest,
         ...globals.node,
       },
     },

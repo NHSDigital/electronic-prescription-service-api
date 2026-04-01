@@ -7,19 +7,22 @@ import * as TestResources from "../../../resources/test-resources"
 import * as XmlJs from "xml-js"
 import {xmlTest} from "../../../resources/test-helpers"
 import {hl7V3, fhir, signature} from "@models"
-import requireActual = jest.requireActual
-import {MomentFormatSpecification, MomentInput} from "moment"
+import moment from "moment"
 import {getMedicationRequests} from "../../../../src/services/translation/common/getResourcesOfType"
 import {getExtensionForUrl} from "../../../../src/services/translation/common"
 import pino from "pino"
 
 const logger = pino()
 
-const actualMoment = requireActual("moment")
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
-}))
+const realMomentNow = moment.now
+
+beforeAll(() => {
+  moment.now = () => new Date("2020-12-18T12:34:34Z").valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
 
 let hl7V3ParentPrescription: hl7V3.ParentPrescription
 let hl7V3ExtractedFragments: signature.Fragments

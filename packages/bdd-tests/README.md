@@ -1,4 +1,4 @@
-# Jest-Cucumber BDD Test Suite
+# Cucumber BDD Test Suite
 
 These tests will run again internal-dev or internal-qa environments only
 

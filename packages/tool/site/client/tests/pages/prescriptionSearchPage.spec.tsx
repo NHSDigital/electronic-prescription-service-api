@@ -15,7 +15,7 @@ import {DateRangeType} from "../../src/components/prescription-tracker/dateRange
 import {internalDev} from "../../src/services/environment"
 import {MemoryRouter} from "react-router-dom"
 
-jest.spyOn(global.crypto, "randomUUID")
+vi.spyOn(global.crypto, "randomUUID")
   .mockReturnValue("test-uuid-in-uuid-format")
 
 const baseUrl = "baseUrl/"
@@ -32,12 +32,13 @@ const summarySearchResult = readBundleFromFile("summarySearchResult.json")
 const detailSearchResult = readBundleFromFile("detailSearchResult.json")
 const dispenseNotificationResult = readBundleFromFile("dispenseNotification.json")
 
-jest.mock("moment", () => {
-  const actualMoment = jest.requireActual("moment")
-  return ({
+vi.mock("moment", () => {
+  const actualMoment = require("moment")
+  return {
+    default: actualMoment,
     ...actualMoment,
     utc: (inp?: MomentInput, strict?: boolean) => actualMoment.utc(inp ?? "2021-11-13T10:57:13.000Z", strict)
-  })
+  }
 })
 
 const mock = new MockAdapter(axiosInstance)
@@ -51,7 +52,7 @@ test("Displays search form", async () => {
 })
 
 test("Form values are populated from query string", async () => {
-  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage prescriptionId={prescriptionId}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   expect(screen.getByLabelText<HTMLInputElement>("Prescription ID").value).toEqual(prescriptionId)
   expect(container.innerHTML).toMatchSnapshot()
@@ -95,6 +96,8 @@ test("Displays error if creation date field invalid", async () => {
 })
 
 test("Displays loading text while performing a summary search", async () => {
+  mock.onAny(taskTrackerBaseUrl).reply(() => new Promise(resolve => setTimeout(() => resolve([200, summarySearchResult]), 1000)))
+
   const container = await renderPage()
   await enterNhsNumber()
   userEvent.click(screen.getByText("Search"))
@@ -194,6 +197,7 @@ test("Clicking back from the summary search results returns to the form", async 
 
 test("Displays loading text while performing a detail search", async () => {
   mock.onAny(taskTrackerBaseUrl).reply(200, summarySearchResult)
+  mock.onAny(dispenseNotifications).reply(() => new Promise(resolve => setTimeout(() => resolve([200, []]), 1000)))
 
   const container = await renderPage()
   await enterNhsNumber()
@@ -264,7 +268,7 @@ test("Clicking back from the detail search results returns to the summary search
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><PrescriptionSearchPage /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Search for a Prescription"))
   return container
 }

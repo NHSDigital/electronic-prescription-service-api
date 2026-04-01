@@ -4,14 +4,13 @@ import * as React from "react"
 import DispenseForm from "../../../src/components/dispense/dispenseForm"
 import {staticLineItemInfoArray, staticPrescriptionInfo} from "./props"
 import {LineItemStatus, PrescriptionStatus} from "../../../src/fhir/reference-data/valueSets"
-import {expect} from "@jest/globals"
 import userEvent from "@testing-library/user-event"
 import {MemoryRouter} from "react-router-dom"
 
 test("Fields default to current values", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -34,7 +33,7 @@ test("Fields default to current values", async () => {
 test("Reason field is shown when status is set to not dispensed", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -53,7 +52,7 @@ test("Reason field is shown when status is set to not dispensed", async () => {
 test("Reason field is hidden when status is not set to not dispensed", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -72,7 +71,7 @@ test("Reason field is hidden when status is not set to not dispensed", async () 
 test("Quantity field is shown when status is set to partial dispensed", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -90,7 +89,7 @@ test("Quantity field is shown when status is set to partial dispensed", async ()
 test("Quantity field is hidden when status is not set to partial dispensed", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -107,7 +106,7 @@ test("Quantity field is hidden when status is not set to partial dispensed", asy
 test("Reason field value is reset when hidden", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -142,7 +141,7 @@ test("Reason field value is reset when hidden", async () => {
 test("Prescription status updates to suggested value when line item status is changed", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -163,7 +162,7 @@ test("Prescription status updates to suggested value when line item status is ch
 test("Prescription status is not updated automatically if field has been touched", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -182,7 +181,7 @@ test("Prescription status is not updated automatically if field has been touched
 test("Dispense Different Medication checkbox is present for paracetamol 500 (60)", async () => {
   const {container} = render(
     <MemoryRouter>
-      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={jest.fn}/>
+      <DispenseForm lineItems={staticLineItemInfoArray} prescription={staticPrescriptionInfo} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 

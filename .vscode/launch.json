@@ -6,13 +6,16 @@
   "configurations": [
     {
       "type": "node",
-      "runtimeVersion": "16.14",
+      "runtimeVersion": "24.13",
       "request": "launch",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "name": "Coordinator - Debug Jest Tests",
+      "name": "Coordinator - Debug Vitest Tests",
       "cwd": "${workspaceFolder}/packages/coordinator",
-      "runtimeArgs": ["run", "test:debug"],
+      "runtimeArgs": [
+        "run",
+        "test:debug"
+      ],
       "runtimeExecutable": "npm",
       "skipFiles": [
         "<node_internals>/**",
@@ -25,9 +28,12 @@
       "request": "launch",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
-      "name": "BDD - Debug Jest Cucumber Tests",
+      "name": "BDD - Debug Cucumber Tests",
       "cwd": "${workspaceFolder}/packages/bdd-tests",
-      "runtimeArgs": ["run", "test:debug"],
+      "runtimeArgs": [
+        "run",
+        "test:debug"
+      ],
       "runtimeExecutable": "npm",
       "env": {
         "SIGNING_PRIVATE_KEY_PATH": "/workspaces/electronic-prescription-service-api/sign/eps_int_test_private.key",

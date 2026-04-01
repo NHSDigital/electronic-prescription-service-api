@@ -60,8 +60,8 @@ test("Clicking Remove Endorsement button removes one set of endorsement fields",
 })
 
 test("Clicking Claim button calls the callback with form values", async () => {
-  const submit = jest.fn()
-  render(<MemoryRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit}/></MemoryRouter>)
+  const submit = vi.fn()
+  render(<MemoryRouter><ClaimForm initialValues={noPriorClaimInitialValues} onSubmit={submit} /></MemoryRouter>)
   await enterValuesInAllFields()
   await userEvent.click(await screen.findByText("Claim"))
   await waitFor(() => expect(submit).toHaveBeenCalled())
@@ -115,7 +115,7 @@ async function enterValuesInAllFields() {
 }
 
 async function renderClaimForm(initialValues: ClaimFormValues) {
-  const {container} = renderWithContext(<MemoryRouter><ClaimForm initialValues={initialValues} onSubmit={jest.fn}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><ClaimForm initialValues={initialValues} onSubmit={vi.fn} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Claim"))
   return container
 }

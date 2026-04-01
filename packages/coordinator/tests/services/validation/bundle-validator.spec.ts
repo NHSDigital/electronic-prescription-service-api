@@ -25,7 +25,7 @@ import {isReference} from "../../../src/utils/type-guards"
 import pino from "pino"
 
 const logger = pino()
-const loggerWarnSpy = jest.spyOn(logger, "warn")
+const loggerWarnSpy = vi.spyOn(logger, "warn")
 
 function validateValidationErrors(validationErrors: Array<fhir.OperationOutcomeIssue>) {
   expect(validationErrors).toHaveLength(1)
