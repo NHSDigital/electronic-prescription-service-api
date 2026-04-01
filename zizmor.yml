@@ -4,7 +4,7 @@ rules:
     ignore:
       - cdk_package_code.yml:19:7
       - cdk_release_code.yml:144:7
-      - run_epsat_tests.yml:31:7
+      - run_epsat_tests.yml:35:7
       - run_pact_tests.yml:34:7
       - run_regression_tests.yml:29:7
   secrets-outside-env:
