@@ -1,0 +1,7 @@
+ignore:
+  # picomatch
+  - vulnerability: GHSA-c2c7-rcm5-vvqj
+  # path-to-regexp
+  - vulnerability: GHSA-j3q9-mxjg-w52f
+  # basic-ftp - only used in e2e tests in dev environment
+  - vulnerability: GHSA-5rq4-664w-9x2c

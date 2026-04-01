@@ -135,6 +135,8 @@ on:
 env:
   AWS_MAX_ATTEMPTS: 20
 
+permissions: {}
+
 jobs:
   release_code_and_api:
     runs-on: ubuntu-22.04
@@ -158,6 +160,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
           fetch-depth: 0
           sparse-checkout: |
             .github
@@ -198,22 +201,32 @@ jobs:
 
       - name: Retrieve AWS Account ID
         id: retrieve-deploy-account-id
-        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_OUTPUT"
 
       - name: Login to Amazon ECR
         id: login-ecr-push-image
         run: |
-          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com"
+        env:
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: Push FHIR Facade image to Amazon ECR
         run: |
-          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker tag "fhir-facade-repo:${VERSION_NUMBER}" "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${DOCKER_IMAGE_TAG}"
+          docker push "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${DOCKER_IMAGE_TAG}"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: Push Validator image to Amazon ECR
         run: |
-          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker tag "validator-repo:${VERSION_NUMBER}" "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${DOCKER_IMAGE_TAG}"
+          docker push "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${DOCKER_IMAGE_TAG}"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: fix cdk.json for deployment
         run: |
@@ -321,6 +334,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
+          persist-credentials: true
   
       - name: Update release tag in github pages
         if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}

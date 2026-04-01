@@ -7,6 +7,8 @@ on:
   push:
     branches: [master]
 
+permissions: {}
+
 jobs:
   delete-old-cloudformation-stacks:
     runs-on: ubuntu-22.04
@@ -19,11 +21,12 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
           sparse-checkout: |
             .github/scripts
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v6
+        uses: aws-actions/configure-aws-credentials@8df5847569e6427dd6c4fb1cf565c83acfa8afa7
         with:
           aws-region: eu-west-2
           role-to-assume: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
@@ -47,6 +50,7 @@ jobs:
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
           fetch-depth: 0
 
       - name: Configure AWS Credentials

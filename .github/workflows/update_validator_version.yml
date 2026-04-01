@@ -6,9 +6,12 @@ on:
   schedule:
     - cron: "0 8 * * 3"
 
+permissions: {}
+
 jobs:
   update-validator:
     runs-on: ubuntu-22.04
+    environment: create_pull_request
     permissions:
       contents: write
       pull-requests: write
@@ -17,7 +20,7 @@ jobs:
       - name: Checkout master branch
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
 
       - name: Set up date-time branch name
         id: datetime
@@ -27,6 +30,13 @@ jobs:
 
       - name: Run update script
         run: ./scripts/update_validator_version.sh
+
+      - name: Create GitHub App Token
+        uses: actions/create-github-app-token@f8d387b68d61c58ab83c6c016672934102569859
+        id: generate-token
+        with:
+          app-id: "${{ secrets.CREATE_PULL_REQUEST_APP_ID }}"
+          private-key: "${{ secrets.CREATE_PULL_REQUEST_PEM }}"
 
       - name: Create pull request
         if: env.HAS_VALIDATOR_CHANGED == 'true'
