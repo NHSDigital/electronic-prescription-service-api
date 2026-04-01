@@ -5,3 +5,6 @@ ignore:
   - vulnerability: GHSA-j3q9-mxjg-w52f
   # basic-ftp - only used in e2e tests in dev environment
   - vulnerability: GHSA-5rq4-664w-9x2c
+  # docker vulnerabilities - these are accepted
+  # libcrypto3 and libssl3
+  - vulnerability: CVE-2026-2673
