@@ -24,7 +24,7 @@ updates:
       prefix: "Upgrade: [dependabot] - "
     versioning-strategy: increase
     cooldown:
-      default-days: 3
+      default-days: 7
   # Coordinator Container
   - package-ecosystem: "docker"
     directory: "/packages/coordinator"
@@ -37,7 +37,7 @@ updates:
     commit-message:
       prefix: "Upgrade: [dependabot] - "
     cooldown:
-      default-days: 3
+      default-days: 7
   # EPSAT Container
   - package-ecosystem: "docker"
     directory: "/packages/tool/site"
@@ -50,7 +50,7 @@ updates:
     commit-message:
       prefix: "Upgrade: [dependabot] - "
     cooldown:
-      default-days: 3
+      default-days: 7
   - package-ecosystem: "github-actions"
     # Workflow files stored in the
     # default location of `.github/workflows`
@@ -63,7 +63,7 @@ updates:
     commit-message:
       prefix: "Upgrade: [dependabot] - "
     cooldown:
-      default-days: 3
+      default-days: 7
   ###################################
   # NPM workspace  ##################
   ###################################
@@ -80,4 +80,4 @@ updates:
     registries:
       - npm-github
     cooldown:
-      default-days: 3
+      default-days: 7
