@@ -12,6 +12,7 @@
 	generate-mock-certs clear-pacts create-sandbox-pacts create-apim-pacts create-proxygen-pacts verify-pacts run-smoke-tests generate-postman-collection npm-audit-fix \
 	publish-fhir-release-notes-int publish-fhir-rc-release-notes-int publish-fhir-release-notes-prod mark-jira-released \
 	update-snapshots cdk-synth verify-signature \
+	secret-scan \
 	docker-build docker-build-fhir-facade docker-build-validator %
 
 SHELL=/bin/bash -euo pipefail
@@ -43,7 +44,10 @@ else
 	BUILD_MESSAGE=echo running against all
 endif
 
-
+secret-scan:
+	git-secrets --register-aws
+	git-secrets --add-provider -- cat /usr/share/secrets-scanner/nhsd-rules-deny.txt
+	git-secrets --scan-history .
 
 test:
 	$(BUILD_MESSAGE)
