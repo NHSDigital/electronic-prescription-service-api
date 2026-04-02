@@ -108,8 +108,6 @@ on:
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
-      CDK_PULL_IMAGE_ROLE:
-        required: true
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
         required: false
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE:
