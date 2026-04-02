@@ -122,7 +122,7 @@ export async function downloadSimplifierPackage(
   registry: string,
   name: string,
   outputDir: string,
-  version?: string
+  version: string
 ): Promise<void> {
 
   // Check simplifier to fetch latest version or check if specified version is latest
