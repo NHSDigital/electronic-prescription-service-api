@@ -42,10 +42,16 @@ describe("verifyParameters returns errors", () => {
     }
   }
 
+  const statusParameter: fhir.Parameter = {
+    name: "status"
+  }
+
   const validAttendedNominatedParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
+      groupIdentifierParameter,
       attendedAgentParameter
     ]
   }
@@ -53,13 +59,25 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
+      groupIdentifierParameter,
       unattendedAgentParameter
+    ]
+  }
+  const validApplicationRestrictedUnattendedParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      statusParameter,
+      groupIdentifierParameter
     ]
   }
   const validParametersWithUserAndRoleIDs: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
+      groupIdentifierParameter,
       agentParameter
     ]
   }
@@ -67,6 +85,7 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
       groupIdentifierParameter,
       attendedAgentParameter
     ]
@@ -74,7 +93,24 @@ describe("verifyParameters returns errors", () => {
   const missingOwnerParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
+      statusParameter,
       groupIdentifierParameter,
+      attendedAgentParameter
+    ]
+  }
+  const missingStatusParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      groupIdentifierParameter,
+      attendedAgentParameter
+    ]
+  }
+  const missingGroupIdentifierParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      statusParameter,
       attendedAgentParameter
     ]
   }
@@ -82,6 +118,7 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
       groupIdentifierParameter
     ]
   }
@@ -192,12 +229,22 @@ describe("verifyParameters returns errors", () => {
     expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
   })
 
-  test("accepts nominated release when unattended application-restricted access is enabled", () => {
+  test("rejects unattended application-restricted release when performer role is included", () => {
     const result = verifyUnattendedParameters(
       validAttendedNominatedParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.unexpectedField('Parameters.parameter("agent")')])
+  })
+
+  test("accepts unattended application-restricted release when performer role is omitted", () => {
+    const result = verifyUnattendedParameters(
+      validApplicationRestrictedUnattendedParameters,
+      DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      ""
     )
     expect(result).toEqual([])
   })
@@ -214,10 +261,44 @@ describe("verifyParameters returns errors", () => {
     })
   })
 
+  test("rejects when the status parameter is missing", () => {
+    const result = verifyAttendedParameters(
+      missingStatusParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("status")])
+  })
+
+  test("rejects when the group-identifier parameter is missing", () => {
+    const result = verifyAttendedParameters(
+      missingGroupIdentifierParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("group-identifier")])
+  })
+
   test("rejects when the agent parameter is missing", () => {
-    expect(() => {
-      verifyAttendedParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    }).toThrow("Parameter with name agent not found")
+    const result = verifyAttendedParameters(
+      missingAgentParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("agent")])
+  })
+
+  test("rejects unattended user-restricted release when performer role is omitted", () => {
+    const result = verifyUnattendedParameters(
+      validApplicationRestrictedUnattendedParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("agent")])
   })
 
   test("accepts valid unattended agent param", () => {
@@ -245,7 +326,7 @@ describe("verifyParameters returns errors", () => {
   test("does not warn about SDS role profile ID for application-restricted access", () => {
     jest.clearAllMocks()
     verifyUnattendedParameters(
-      validUnattendedNominatedParameters,
+      validApplicationRestrictedUnattendedParameters,
       DISPENSING_APP_SCOPE,
       "3415870201",
       ""
