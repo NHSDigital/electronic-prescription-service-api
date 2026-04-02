@@ -21,6 +21,8 @@ import {getStatusCode} from "../utils/status-code"
 import {HashingAlgorithm} from "../services/translation/common/hashingAlgorithm"
 import {isSignatureValidationEnabled} from "../utils/feature-flags"
 import {identifyMessageType} from "../services/translation/common"
+import {verifyAndFormatPrescriptionSignature} from "../services/verification/signature-verification"
+import {spine} from "@models"
 
 export default [
   /*
@@ -52,24 +54,27 @@ export default [
 
       request.logger.info("Building Spine request")
 
+      let spineRequest: spine.SpineRequest
       if (identifyMessageType(bundle) === fhir.EventCodingCode.PRESCRIPTION) {
-        const {spineRequest, parentPrescription} = await translator.convertPrescriptionBundleToSpineRequest(
+        const result = await translator.convertPrescriptionBundleToSpineRequest(
           bundle, request.headers, request.logger
         )
 
         if (isSignatureValidationEnabled()) {
-          const signatureIssues = await translator.verifyPrescriptionSignature(parentPrescription, request.logger)
+          const signatureIssues = await verifyAndFormatPrescriptionSignature(
+            result.parentPrescription, request.logger, "creation"
+          )
           if (signatureIssues.length) {
             const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
             return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
           }
         }
 
-        const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
-        return await handleResponse(request, spineResponse, responseToolkit)
+        spineRequest = result.spineRequest
+      } else {
+        spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
       }
 
-      const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
       return await handleResponse(request, spineResponse, responseToolkit)
     })

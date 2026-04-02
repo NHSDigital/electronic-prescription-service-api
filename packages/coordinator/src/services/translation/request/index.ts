@@ -18,7 +18,6 @@ import Hapi from "@hapi/hapi"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {createHash} from "../../../../src/routes/create-hash"
 import {HashingAlgorithm, getPrepareHashingAlgorithmFromEnvVar} from "../common/hashingAlgorithm"
-import {verifyAndFormatPrescriptionSignature} from "../../verification/signature-verification"
 
 export async function convertFhirMessageToSignedInfoMessage(
   bundle: fhir.Bundle,
@@ -147,13 +146,6 @@ export async function convertPrescriptionBundleToSpineRequest(
   const spineRequest = requestBuilder.toSpineRequest(sendMessagePayload, headers)
 
   return {spineRequest, parentPrescription}
-}
-
-export async function verifyPrescriptionSignature(
-  parentPrescription: hl7V3.ParentPrescription,
-  logger: pino.Logger
-): Promise<Array<fhir.OperationOutcomeIssue>> {
-  return verifyAndFormatPrescriptionSignature(parentPrescription, logger, "creation")
 }
 
 export {

@@ -2,7 +2,6 @@ import pino from "pino"
 import * as translator from "../../../../src/services/translation/request"
 import {
   convertFhirMessageToSignedInfoMessage,
-  verifyPrescriptionSignature,
   convertPrescriptionBundleToSpineRequest
 } from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
@@ -14,7 +13,6 @@ import {ElementCompact} from "xml-js"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../../../../src/services/translation/common/dateTime"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
 import {PayloadContent, SendMessagePayloadFactory} from "../../../../src/services/translation/request/payload/factory"
-import * as signatureVerification from "../../../../src/services/verification/signature-verification"
 
 const logger = pino()
 
@@ -151,84 +149,5 @@ describe("convertPrescriptionBundleToSpineRequest", () => {
     expect(result.spineRequest.message).toBeDefined()
     expect(result.spineRequest.interactionId).toBeDefined()
     expect(result.parentPrescription).toBeDefined()
-  })
-})
-
-describe("verifyPrescriptionSignature", () => {
-  const mockBundle = TestResources.specification[0].fhirMessageUnsigned
-
-  beforeEach(() => {
-    jest.clearAllMocks()
-    jest.restoreAllMocks()
-  })
-
-  test("returns empty array if signature is valid", async () => {
-    jest.spyOn(signatureVerification, "verifyPrescriptionSignature").mockResolvedValue([])
-    jest.spyOn(signatureVerification, "verifyAndFormatPrescriptionSignature").mockResolvedValue([])
-
-    const parentPrescription = (
-      await convertPrescriptionBundleToSpineRequest(mockBundle, TestResources.validTestHeaders, logger)
-    ).parentPrescription
-    const issues = await verifyPrescriptionSignature(parentPrescription, logger)
-    expect(issues).toEqual([])
-  })
-
-  test("returns mapped OperationOutcome issues if signature is invalid", async () => {
-    const mockIssues: Array<fhir.OperationOutcomeIssue> = [
-      {
-        severity: "error",
-        code: fhir.IssueCodes.INVALID,
-        details: {coding:
-          [{system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode", code: "INVALID_VALUE",
-            display: "Signature is invalid."}]
-        },
-        diagnostics: "Signature is invalid",
-        expression: ["Provenance.signature.data"]
-      },
-      {
-        severity: "error",
-        code: fhir.IssueCodes.INVALID,
-        details: {coding:
-          [{system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "INVALID_VALUE", display: "Signature is invalid."}]
-        },
-        diagnostics: "Certificate is revoked",
-        expression: ["Provenance.signature.data"]
-      }
-    ]
-    jest.spyOn(signatureVerification, "verifyAndFormatPrescriptionSignature").mockResolvedValue(mockIssues)
-
-    const parentPrescription = (
-      await convertPrescriptionBundleToSpineRequest(mockBundle, TestResources.validTestHeaders, logger)
-    ).parentPrescription
-    const issues = await verifyPrescriptionSignature(parentPrescription, logger)
-
-    expect(issues.length).toBe(2)
-    expect(issues[0].diagnostics).toBe("Signature is invalid")
-    expect(issues[1].diagnostics).toBe("Certificate is revoked")
-  })
-
-  test("returns mapped OperationOutcome issue if uncaught error occurs", async () => {
-    const mockIssues: Array<fhir.OperationOutcomeIssue> = [
-      {
-        severity: "error",
-        code: fhir.IssueCodes.INVALID,
-        details: {coding:
-          [{system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "INVALID_VALUE", display: "Signature is invalid."}]
-        },
-        diagnostics: "Uncaught error during signature verification",
-        expression: ["Provenance.signature.data"]
-      }
-    ]
-    jest.spyOn(signatureVerification, "verifyAndFormatPrescriptionSignature").mockResolvedValue(mockIssues)
-
-    const parentPrescription = (
-      await convertPrescriptionBundleToSpineRequest(mockBundle, TestResources.validTestHeaders, logger)
-    ).parentPrescription
-    const issues = await verifyPrescriptionSignature(parentPrescription, logger)
-
-    expect(issues.length).toBe(1)
-    expect(issues[0].diagnostics).toBe("Uncaught error during signature verification")
   })
 })

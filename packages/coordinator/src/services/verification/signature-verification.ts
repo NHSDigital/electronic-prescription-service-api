@@ -70,6 +70,20 @@ export const verifyPrescriptionSignature = async (
   return errors
 }
 
+const createSignatureIssue = (diagnostics: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  details: {
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+      code: "INVALID_VALUE",
+      display: "Signature is invalid."
+    }]
+  },
+  diagnostics,
+  expression: ["Provenance.signature.data"]
+})
+
 export const verifyAndFormatPrescriptionSignature = async (
   parentPrescription: hl7V3.ParentPrescription,
   logger: pino.Logger,
@@ -84,34 +98,10 @@ export const verifyAndFormatPrescriptionSignature = async (
     const prescriptionId = parentPrescription.id._attributes.root.toLowerCase()
     logger.error(`[Verifying signature for prescription ${prescriptionId} on ${action}]: ${errors.join(", ")}`)
 
-    return errors.map(error => ({
-      severity: "error",
-      code: fhir.IssueCodes.INVALID,
-      details: {
-        coding: [{
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-          code: "INVALID_VALUE",
-          display: "Signature is invalid."
-        }]
-      },
-      diagnostics: error,
-      expression: ["Provenance.signature.data"]
-    }))
+    return errors.map(createSignatureIssue)
   } catch (e) {
     logger.error(e, `Uncaught error during signature verification for ${action}`)
-    return [{
-      severity: "error",
-      code: fhir.IssueCodes.INVALID,
-      details: {
-        coding: [{
-          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-          code: "INVALID_VALUE",
-          display: "Signature is invalid."
-        }]
-      },
-      diagnostics: "Uncaught error during signature verification",
-      expression: ["Provenance.signature.data"]
-    }]
+    return [createSignatureIssue("Uncaught error during signature verification")]
   }
 }
 
