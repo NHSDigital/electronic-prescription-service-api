@@ -9,7 +9,7 @@ import {
   handleResponse
 } from "./util"
 import {createHash} from "./create-hash"
-import {fhir} from "@models"
+import {fhir, spine} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
 import {
   getAsid,
@@ -22,7 +22,6 @@ import {HashingAlgorithm} from "../services/translation/common/hashingAlgorithm"
 import {isSignatureValidationEnabled} from "../utils/feature-flags"
 import {identifyMessageType} from "../services/translation/common"
 import {verifyAndFormatPrescriptionSignature} from "../services/verification/signature-verification"
-import {spine} from "@models"
 
 export default [
   /*
