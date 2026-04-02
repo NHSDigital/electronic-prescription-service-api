@@ -30,7 +30,7 @@ export function validatePermittedUnattendedDispenseMessage(scope: string): Array
     return [errors.createDisabledFeatureIssue("Dispensing")]
   }
 
-  if (!validateScope(scope, [DISPENSING_USER_SCOPE, AWS_DISPENSING_USER_SCOPE, DISPENSING_APP_SCOPE])) {
+  if (!validateScope(scope, [DISPENSING_APP_SCOPE])) {
     return [errors.createMissingScopeIssue("Dispensing")]
   }
 

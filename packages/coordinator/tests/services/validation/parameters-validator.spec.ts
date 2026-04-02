@@ -291,14 +291,14 @@ describe("verifyParameters returns errors", () => {
     expect(result).toEqual([errors.missingRequiredParameter("agent")])
   })
 
-  test("rejects unattended user-restricted release when performer role is omitted", () => {
+  test("rejects unattended user-restricted release as forbidden", () => {
     const result = verifyUnattendedParameters(
       validApplicationRestrictedUnattendedParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
     )
-    expect(result).toEqual([errors.missingRequiredParameter("agent")])
+    expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("accepts valid unattended agent param", () => {
