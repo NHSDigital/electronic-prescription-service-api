@@ -1,4 +1,5 @@
 import {StructureDefinitionDifferential} from "../structure-definition/differential-element.interface.js"
+import {StructureDefinitionKind} from "../structure-definition/kind.type.js"
 import {StructureDefinitionSnapshot} from "../structure-definition/snapshot.interface.js"
 
 export interface StructureDefinition {
@@ -21,7 +22,7 @@ export interface StructureDefinition {
     description: string
     fhirVersion: string
     mapping: string
-    kind: "primitive-type" | "complex-type" | "resource" | "logical"
+    kind: StructureDefinitionKind
     abstract: string
     type: string
     baseDefinition: string
