@@ -402,7 +402,6 @@ paths:
                   value:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
-        - nhs-cis2-aal3: []
         - app-level3: []
   /FHIR/R4/Task:
     post:
