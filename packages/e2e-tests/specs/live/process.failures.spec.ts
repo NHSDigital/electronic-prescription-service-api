@@ -65,6 +65,38 @@ describe("ensure errors are translated", () => {
       .find((r) => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
 
+    const isSignatureValidationEnabled = process.env.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION === "true"
+
+    const expectedIssue = isSignatureValidationEnabled
+      ? {
+        code: "invalid",
+        severity: "error",
+        details: {
+          coding: [
+            {
+              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+              code: "INVALID_VALUE",
+              display: "Signature is invalid."
+            }
+          ]
+        },
+        diagnostics: "Invalid signature format",
+        expression: ["Provenance.signature.data"]
+      }
+      : {
+        code: "business-rule",
+        severity: "error",
+        details: {
+          coding: [
+            {
+              system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+              code: "MISSING_DIGITAL_SIGNATURE",
+              display: "Digital signature not found"
+            }
+          ]
+        }
+      }
+
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new PactV2(pactOptions(options))
     await provider.setup()
@@ -92,21 +124,7 @@ describe("ensure errors are translated", () => {
           meta: {
             lastUpdated: iso8601DateTime()
           },
-          issue: [
-            {
-              code: "business-rule",
-              severity: "error",
-              details: {
-                coding: [
-                  {
-                    system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-                    code: "MISSING_DIGITAL_SIGNATURE",
-                    display: "Digital signature not found"
-                  }
-                ]
-              }
-            }
-          ]
+          issue: [expectedIssue]
         },
         status: 400
       }
