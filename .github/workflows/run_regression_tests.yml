@@ -81,7 +81,7 @@ jobs:
             REGRESSION_TEST_URL=https://raw.githubusercontent.com/NHSDigital/electronic-prescription-service-api-regression-tests/${TARGET}/${REGRESSION_TEST_WORKFLOW_TAG}/scripts/run_regression_tests.py
             echo "Fetching regression tests from URL: ${REGRESSION_TEST_URL}"
 
-            curl REGRESSION_TEST_URL -o run_regression_tests.py
+            curl ${REGRESSION_TEST_URL} -o run_regression_tests.py
             poetry install
             echo Running regression tests in the "$TARGET_ENVIRONMENT" environment
             poetry run python -u run_regression_tests.py \
