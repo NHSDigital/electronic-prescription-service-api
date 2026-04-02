@@ -11,7 +11,7 @@
 	check-licenses-api check-licenses-epsat check-licenses-all check-language-versions \
 	generate-mock-certs clear-pacts create-sandbox-pacts create-apim-pacts create-proxygen-pacts verify-pacts run-smoke-tests generate-postman-collection npm-audit-fix \
 	publish-fhir-release-notes-int publish-fhir-rc-release-notes-int publish-fhir-release-notes-prod mark-jira-released \
-	update-snapshots cdk-synth verify-signature \
+	update-snapshots cdk-synth cdk-watch verify-signature \
 	docker-build docker-build-fhir-facade docker-build-validator %
 
 SHELL=/bin/bash -euo pipefail
@@ -433,6 +433,9 @@ cdk-synth:
 	npx cdk synth \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
+
+cdk-watch:
+	./scripts/run_sync.sh
 
 verify-signature:
 	cd packages/coordinator && npm run verify-signature
