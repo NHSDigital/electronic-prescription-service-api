@@ -232,6 +232,7 @@ jobs:
         run: |
           ./.github/scripts/fix_cdk_json.sh
         env:
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           SERVICE_NAME: "${{ inputs.STACK_NAME }}"
           VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
