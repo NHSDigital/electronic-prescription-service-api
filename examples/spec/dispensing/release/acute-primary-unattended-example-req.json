@@ -43,7 +43,11 @@
         "address": [
           {
             "use": "work",
-            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+            "line": [
+              "17 Austhorpe Road",
+              "Crossgates",
+              "Leeds"
+            ],
             "city": "West Yorkshire",
             "postalCode": "LS15 8BA"
           }

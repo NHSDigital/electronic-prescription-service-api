@@ -7,6 +7,7 @@ export const PRESCRIBING_APP_SCOPE = "urn:nhsd:apim:app:level3:electronic-prescr
 export const DISPENSING_USER_SCOPE = "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:dispensing"
 export const AWS_DISPENSING_USER_SCOPE = "urn:nhsd:apim:user-nhs-id:aal3:fhir-dispensing"
 export const DISPENSING_APP_SCOPE = "urn:nhsd:apim:app:level3:electronic-prescription-service-api:dispensing"
+export const AWS_DISPENSING_APP_SCOPE = "urn:nhsd:apim:app:level3:fhir-dispensing"
 export const TRACKER_USER_SCOPE = "urn:nhsd:apim:user-nhs-id:aal3:electronic-prescription-service-api:tracker"
 export const TRACKER_APP_SCOPE = "urn:nhsd:apim:app:level3:electronic-prescription-service-api:tracker"
 
@@ -30,7 +31,7 @@ export function validatePermittedUnattendedDispenseMessage(scope: string): Array
     return [errors.createDisabledFeatureIssue("Dispensing")]
   }
 
-  if (!validateScope(scope, [DISPENSING_APP_SCOPE])) {
+  if (!validateScope(scope, [DISPENSING_APP_SCOPE, AWS_DISPENSING_APP_SCOPE])) {
     return [errors.createMissingScopeIssue("Dispensing")]
   }
 
@@ -43,7 +44,7 @@ export function validatePermittedAttendedDispenseMessage(scope: string): Array<f
   }
 
   if (!validateScope(scope, [DISPENSING_USER_SCOPE, AWS_DISPENSING_USER_SCOPE])) {
-    if (validateScope(scope, [DISPENSING_APP_SCOPE])) {
+    if (validateScope(scope, [DISPENSING_APP_SCOPE, AWS_DISPENSING_APP_SCOPE])) {
       return [errors.createUserRestrictedOnlyScopeIssue("Dispensing")]
     }
     return [errors.createMissingScopeIssue("Dispensing")]
@@ -67,6 +68,7 @@ function validateScope(scope: string, permittedScopes: Array<string>) {
 const APPLICATION_RESTRICTED_SCOPES = [
   PRESCRIBING_APP_SCOPE,
   DISPENSING_APP_SCOPE,
+  AWS_DISPENSING_APP_SCOPE,
   TRACKER_APP_SCOPE
 ]
 

@@ -5,6 +5,7 @@ import {
   verifyUnattendedParameters
 } from "../../../src/services/validation/parameters-validator"
 import {
+  AWS_DISPENSING_APP_SCOPE,
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,
   PRESCRIBING_APP_SCOPE,
@@ -243,6 +244,16 @@ describe("verifyParameters returns errors", () => {
     const result = verifyUnattendedParameters(
       validApplicationRestrictedUnattendedParameters,
       DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      ""
+    )
+    expect(result).toEqual([])
+  })
+
+  test("accepts unattended application-restricted release with AWS dispensing app scope", () => {
+    const result = verifyUnattendedParameters(
+      validApplicationRestrictedUnattendedParameters,
+      AWS_DISPENSING_APP_SCOPE,
       "test_sds_user_id",
       ""
     )
