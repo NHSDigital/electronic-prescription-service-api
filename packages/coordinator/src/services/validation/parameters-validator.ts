@@ -1,9 +1,5 @@
 import {fhir, validationErrors as errors} from "@models"
-import {
-  isApplicationRestrictedScope,
-  validatePermittedAttendedDispenseMessage,
-  validatePermittedUnattendedDispenseMessage
-} from "./scope-validator"
+import {validatePermittedAttendedDispenseMessage, validatePermittedUnattendedDispenseMessage} from "./scope-validator"
 import {getIdentifierValueForSystem, getOwnerParameterOrNull} from "../translation/common"
 import {isPractitionerRole, isReference} from "../../utils/type-guards"
 
@@ -35,7 +31,7 @@ export function verifyUnattendedParameters(
     validatePermittedUnattendedDispenseMessage(scope),
     accessTokenSDSUserID,
     accessTokenSDSRoleID,
-    isApplicationRestrictedScope(scope)
+    true
   )
 }
 
