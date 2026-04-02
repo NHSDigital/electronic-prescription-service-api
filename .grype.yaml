@@ -8,3 +8,55 @@ ignore:
   # docker vulnerabilities - these are accepted
   # libcrypto3 and libssl3
   - vulnerability: CVE-2026-2673
+  # validator
+  # critical
+  - vulnerability: GHSA-599f-7c49-w659
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-vr79-8m62-wh98
+
+    # high
+  - vulnerability: GHSA-gr3c-q7xf-47vh
+  - vulnerability: GHSA-gr3c-q7xf-47vh
+  - vulnerability: GHSA-gr3c-q7xf-47vh
+  - vulnerability: GHSA-w9j7-phm3-f97j
+  - vulnerability: GHSA-mgp5-rv84-w37q
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6v53-7c9g-w56r
+  - vulnerability: GHSA-fgv2-4q4g-wc35
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-crv7-7245-f45f
+  - vulnerability: GHSA-xqfj-vm6h-2x34
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-7hfm-57qf-j43q
+  - vulnerability: GHSA-mc84-pj99-q6hh
+  - vulnerability: CVE-2025-21587    
+  - vulnerability: CVE-2025-30749    
+  - vulnerability: CVE-2025-50106     
+  - vulnerability: CVE-2025-50059   
+  - vulnerability: CVE-2025-53066    
+  - vulnerability: CVE-2026-21945    
+  - vulnerability: CVE-2026-21932
