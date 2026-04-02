@@ -1,0 +1,58 @@
+{
+  "resourceType": "Parameters",
+  "id": "854b706a-c6e5-11ec-9d64-0242ac120002",
+  "parameter": [
+    {
+      "name": "group-identifier",
+      "valueIdentifier": {
+        "system": "https://fhir.nhs.uk/Id/prescription-order-number",
+        "value": "24F5DA-A83008-7EFE6Z"
+      }
+    },
+    {
+      "name": "owner",
+      "resource": {
+        "resourceType": "Organization",
+        "id": "4a964042-3c11-4b0f-990f-22d7b41ad603",
+        "identifier": [
+          {
+            "system": "https://fhir.nhs.uk/Id/ods-organization-code",
+            "value": "VNE51"
+          }
+        ],
+        "active": true,
+        "type": [
+          {
+            "coding": [
+              {
+                "system": "https://fhir.nhs.uk/CodeSystem/organisation-role",
+                "code": "182",
+                "display": "PHARMACY"
+              }
+            ]
+          }
+        ],
+        "name": "The Simple Pharmacy",
+        "telecom": [
+          {
+            "system": "phone",
+            "value": "0113 3180277",
+            "use": "work"
+          }
+        ],
+        "address": [
+          {
+            "use": "work",
+            "line": ["17 Austhorpe Road", "Crossgates", "Leeds"],
+            "city": "West Yorkshire",
+            "postalCode": "LS15 8BA"
+          }
+        ]
+      }
+    },
+    {
+      "name": "status",
+      "valueCode": "accepted"
+    }
+  ]
+}

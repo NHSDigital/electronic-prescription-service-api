@@ -338,23 +338,23 @@ paths:
         content:
           application/fhir+json:
             schema:
-              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
+              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/ReleaseUnattended"
             examples:
               acute-primary:
                 summary: Acute
-                description: A valid acute, primary care release request.
+                description: A valid acute, primary care unattended release request.
                 value:
-                  $ref: examples/spec/dispensing/release/acute-primary-example-req.json
+                  $ref: examples/spec/dispensing/release/acute-primary-unattended-example-req.json
               repeat-primary:
                 summary: Repeat
-                description: A Valid repeat, primary care release request
+                description: A valid repeat, primary care unattended release request.
                 value:
-                  $ref: examples/spec/dispensing/release/repeat-primary-example-req.json
+                  $ref: examples/spec/dispensing/release/repeat-primary-unattended-example-req.json
               eRD-primary:
                 summary: eRD
-                description: a Valid eRD, primary care release request.
+                description: A valid eRD, primary care unattended release request.
                 value:
-                  $ref: examples/spec/dispensing/release/eRD-primary-example-req.json
+                  $ref: examples/spec/dispensing/release/eRD-primary-unattended-example-req.json
       responses:
         "200":
           description: Successfully downloaded a prescription for dispensing.

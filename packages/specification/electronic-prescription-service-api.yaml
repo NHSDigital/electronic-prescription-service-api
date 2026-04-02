@@ -758,7 +758,7 @@ paths:
         content:
           application/fhir+json:
             schema:
-              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/Release"
+              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/ReleaseUnattended"
       responses:
         "200":
           description: Successfully downloaded prescriptions for dispensing.
