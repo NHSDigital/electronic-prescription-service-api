@@ -49,6 +49,7 @@ jobs:
     permissions:
       id-token: write
       contents: write
+      packages: write
     with:
       dry_run: false
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
