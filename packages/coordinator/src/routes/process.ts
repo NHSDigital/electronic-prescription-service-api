@@ -9,7 +9,7 @@ import {
   handleResponse
 } from "./util"
 import {createHash} from "./create-hash"
-import {fhir} from "@models"
+import {fhir, spine} from "@models"
 import * as bundleValidator from "../services/validation/bundle-validator"
 import {
   getAsid,
@@ -19,6 +19,9 @@ import {
 } from "../utils/headers"
 import {getStatusCode} from "../utils/status-code"
 import {HashingAlgorithm} from "../services/translation/common/hashingAlgorithm"
+import {isSignatureValidationEnabled} from "../utils/feature-flags"
+import {identifyMessageType} from "../services/translation/common"
+import {verifyAndFormatPrescriptionSignature} from "../services/verification/signature-verification"
 
 export default [
   /*
@@ -49,7 +52,28 @@ export default [
       }
 
       request.logger.info("Building Spine request")
-      const spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
+
+      let spineRequest: spine.SpineRequest
+      if (identifyMessageType(bundle) === fhir.EventCodingCode.PRESCRIPTION) {
+        const result = await translator.convertPrescriptionBundleToSpineRequest(
+          bundle, request.headers, request.logger
+        )
+
+        if (isSignatureValidationEnabled()) {
+          const signatureIssues = await verifyAndFormatPrescriptionSignature(
+            result.parentPrescription, request.logger, "creation"
+          )
+          if (signatureIssues.length) {
+            const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
+            return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
+          }
+        }
+
+        spineRequest = result.spineRequest
+      } else {
+        spineRequest = await translator.convertBundleToSpineRequest(bundle, request.headers, request.logger)
+      }
+
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
       return await handleResponse(request, spineResponse, responseToolkit)
     })

@@ -12,6 +12,9 @@ on:
       IS_PULL_REQUEST:
         type: boolean
         default: false
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION:
+        type: boolean
+        default: false
       pinned_image:
         type: string
         required: true
@@ -90,6 +93,7 @@ jobs:
           SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
           SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
           API_DEPLOYMENT_METHOD: proxygen
+          ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: ${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}
 
       - name: Verify pacts
         shell: bash
