@@ -325,7 +325,7 @@ paths:
         Use this endpoint to download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 
         This endpoint is intended for unattended download workflows and supports application-restricted access.
-        To perform an unattended nominated download, send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) without a `group-identifier` parameter.
+        To perform an unattended nominated download, send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) without a `agent` resource.
       tags:
         - dispensing
       parameters:

@@ -739,7 +739,7 @@ paths:
       summary: Download prescriptions unattended - Dispensing
       description: |
         ## Overview
-        Use this endpoint to download prescriptions from EPS that are available for dispensing in a user-restricted interaction.
+        Use this endpoint to download prescriptions from EPS that are available for dispensing in a application-restricted interaction.
         You can download a single prescription using the prescription's ID,
         or download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
 

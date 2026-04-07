@@ -34,16 +34,16 @@
 					}
 				},
 				"url": {
-					"raw": "{{host}}/Task/$release-unattended",
+					"raw": "{{host}}/Task/$release",
 					"host": [
 						"{{host}}"
 					],
 					"path": [
 						"Task",
-						"$release-unattended"
+						"$release"
 					]
 				},
-				"description": "Release all prescriptions nominated to a given ODS Code using the `/Task/$release-unattended` endpoint.\n\n## Variables\n\n- `nominatedODSCode` - The ODS Code with nominated prescriptions to be released."
+				"description": "Release all prescriptions nominated to a given ODS Code using the `/Task/$release` endpoint.\n\n## Variables\n\n- `nominatedODSCode` - The ODS Code with nominated prescriptions to be released."
 			},
 			"response": []
 		},
