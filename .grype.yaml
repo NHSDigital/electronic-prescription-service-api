@@ -64,3 +64,4 @@ ignore:
   - vulnerability: CVE-2025-53066    
   - vulnerability: CVE-2026-21945    
   - vulnerability: CVE-2026-21932
+  - vulnerability: GHSA-2m67-wjpj-xhg9
