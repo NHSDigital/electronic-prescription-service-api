@@ -3,9 +3,9 @@ rules:
     # these workflows use unpinned images because they are using a full image passed in that contains the tag
     ignore:
       - cdk_package_code.yml:19:7
-      - cdk_release_code.yml:144:7
+      - cdk_release_code.yml:145:7
       - run_epsat_tests.yml:35:7
-      - run_pact_tests.yml:34:7
+      - run_pact_tests.yml:37:7
       - run_regression_tests.yml:29:7
   secrets-outside-env:
     # these are ignored because they are using known secrets
@@ -15,11 +15,11 @@ rules:
       - delete_old_cloudformation_stacks.yml:59:31
       - delete_old_cloudformation_stacks.yml:32:31
       - delete_old_cloudformation_stacks.yml:60:31
-      - run_pact_tests.yml:118:34
-      - run_pact_tests.yml:117:30
-      - run_pact_tests.yml:91:29
-      - run_pact_tests.yml:90:36
-      - run_pact_tests.yml:88:34
-      - run_pact_tests.yml:87:30
+      - run_pact_tests.yml:122:34
+      - run_pact_tests.yml:121:30
+      - run_pact_tests.yml:94:29
+      - run_pact_tests.yml:93:36
+      - run_pact_tests.yml:91:34
+      - run_pact_tests.yml:90:30
   unpinned-uses:
     disable: true
