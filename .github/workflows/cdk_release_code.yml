@@ -72,6 +72,9 @@ on:
       SHA1_ENABLED_APPLICATION_IDS:
         type: string
         required: true
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION:
+        type: boolean
+        required: true
       SANDBOX_MODE_ENABLED:
         type: string
         required: true
@@ -104,8 +107,6 @@ on:
         required: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
-        required: true
-      CDK_PULL_IMAGE_ROLE:
         required: true
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
         required: false
@@ -236,6 +237,7 @@ jobs:
           SANDBOX_MODE_ENABLED: "${{ inputs.SANDBOX_MODE_ENABLED }}"
           ENABLE_MUTUAL_TLS: "${{ inputs.ENABLE_MUTUAL_TLS }}"
           SHA1_ENABLED_APPLICATION_IDS: "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}"
+          ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: "${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}"
           DESIRED_FHIR_FACADE_COUNT: "${{ inputs.DESIRED_FHIR_FACADE_COUNT }}"
           DESIRED_CLAIMS_COUNT: "${{ inputs.DESIRED_CLAIMS_COUNT }}"
           DESIRED_PEAK_CLAIMS_COUNT: "${{ inputs.DESIRED_PEAK_CLAIMS_COUNT }}"
@@ -375,6 +377,7 @@ jobs:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: ${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}
       pinned_image: ${{ inputs.pinned_image }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}

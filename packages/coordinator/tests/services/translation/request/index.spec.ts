@@ -1,6 +1,9 @@
 import pino from "pino"
 import * as translator from "../../../../src/services/translation/request"
-import {convertFhirMessageToSignedInfoMessage} from "../../../../src/services/translation/request"
+import {
+  convertFhirMessageToSignedInfoMessage,
+  convertPrescriptionBundleToSpineRequest
+} from "../../../../src/services/translation/request"
 import * as TestResources from "../../../resources/test-resources"
 import * as LosslessJson from "lossless-json"
 import {getStringParameterByName, isTruthy} from "../../../../src/services/translation/common"
@@ -134,3 +137,17 @@ function getAllUUIDsNotUpperCase(translatedMessage: string) {
   const allUpperUUIDS = translatedMessage.match(uppercaseUUIDRe)
   return allUUIDS.filter((uuid) => !allUpperUUIDS.includes(uuid))
 }
+
+describe("convertPrescriptionBundleToSpineRequest", () => {
+  const mockBundle = TestResources.specification[0].fhirMessageUnsigned
+
+  test("returns spineRequest and parentPrescription", async () => {
+    const result = await convertPrescriptionBundleToSpineRequest(
+      mockBundle, TestResources.validTestHeaders, logger
+    )
+    expect(result.spineRequest).toBeDefined()
+    expect(result.spineRequest.message).toBeDefined()
+    expect(result.spineRequest.interactionId).toBeDefined()
+    expect(result.parentPrescription).toBeDefined()
+  })
+})

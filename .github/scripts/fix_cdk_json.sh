@@ -76,6 +76,7 @@ fix_string_key defaultPTLPartyKey "${DEFAULT_PTL_PARTY_KEY}"
 fix_string_key sandboxModeEnabled "${SANDBOX_MODE_ENABLED}"
 fix_boolean_number_key enableMutualTls "${ENABLE_MUTUAL_TLS}"
 fix_string_key SHA1EnabledApplicationIds "${SHA1_ENABLED_APPLICATION_IDS}"
+fix_boolean_number_key enablePrescribingSignatureValidation "${ENABLE_PRESCRIBING_SIGNATURE_VALIDATION}"
 fix_boolean_number_key desiredFhirFacadeCount "${DESIRED_FHIR_FACADE_COUNT}"
 fix_boolean_number_key forwardCsocLogs "${FORWARD_CSOC_LOGS}"
 
