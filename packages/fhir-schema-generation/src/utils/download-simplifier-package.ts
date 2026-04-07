@@ -26,17 +26,13 @@ async function queryPackageVersion(
     throw new Error(`Failed to fetch metadata: ${metaResponse.statusText}`)
   }
 
-  if (!version) {
-    throw new Error("Version not provided")
-  }
-
   const metadata: PackageMetadata = await metaResponse.json()
   const targetVersion: string | undefined = version === "latest" ? metadata["dist-tags"].latest : version
 
-  if (targetVersion === null || targetVersion === undefined) {
+  if (targetVersion === null || targetVersion === undefined || targetVersion.length === 0) {
     throw new Error(`Cannot find valid version in metadata`)
   } else if (!metadata.versions[targetVersion]) {
-    throw new Error(`Version ${targetVersion} not found in registry.`)
+    throw new Error(`Version ${targetVersion} not found in registry`)
   } else if (targetVersion !== metadata["dist-tags"].latest) {
     console.warn("A later version of this package is available", metadata["dist-tags"].latest)
   }
@@ -122,7 +118,7 @@ export async function downloadSimplifierPackage(
   registry: string,
   name: string,
   outputDir: string,
-  version: string
+  version: string | undefined
 ): Promise<void> {
 
   // Check simplifier to fetch latest version or check if specified version is latest
@@ -131,6 +127,9 @@ export async function downloadSimplifierPackage(
   const targetDir = normalizeFileName(`${name}-${metadata.version}`)
   const targetPath = `${targetDir}.tgz`
   const rawOutputFile = path.join(outputDir, targetPath)
+
+  console.log("outputDir", outputDir)
+  console.log("rawOutputFile", rawOutputFile)
 
   if (!fs.existsSync(outputDir)) {
     console.log(`Creating directory "${outputDir}"`)

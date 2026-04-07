@@ -3,21 +3,19 @@ import {normalizeFileName} from "../src/utils/common.js"
 
 describe("common utilities", () => {
   describe("normalizeFileName", () => {
-    it("should replace all slashes with dashes in a file name", () => {
-      const input = "hl7.fhir.r4.core/package/some/nested/file.json"
-      const expected = "hl7.fhir.r4.core-package-some-nested-file.json"
-
-      const result = normalizeFileName(input)
-
-      expect(result).toBe(expected)
+    it("should replace all slashes with dashes", () => {
+      const input = "hl7.fhir.r4.core/package/file.json"
+      const expected = "hl7.fhir.r4.core-package-file.json"
+      expect(normalizeFileName(input)).toBe(expected)
     })
 
     it("should return the original string if no slashes are present", () => {
-      const input = "hl7.fhir.r4.core-package"
+      const input = "simple-filename.json"
+      expect(normalizeFileName(input)).toBe(input)
+    })
 
-      const result = normalizeFileName(input)
-
-      expect(result).toBe(input)
+    it("should handle empty strings", () => {
+      expect(normalizeFileName("")).toBe("")
     })
   })
 })

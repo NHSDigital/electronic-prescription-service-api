@@ -1,7 +1,6 @@
 import * as path from "node:path"
 import {StructureDefinition} from "../models/fhir-package/structure-definition.interface.js"
-import {JSONSchema} from "json-schema-to-ts"
-import {JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/jsonSchema.js"
+import {JSONSchema, JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/jsonSchema.js"
 import {parseSimplifierPackage} from "./parse-simplifier-package.js"
 import {StructureDefinitionDifferential} from "../models/structure-definition/differential-element.interface.js"
 
@@ -23,13 +22,19 @@ export class SchemaProcessor {
   }
 
   private processSpecification(simplifierSchema: StructureDefinition): JSONSchema | undefined {
+    switch (simplifierSchema.kind) {
+      case "primitive-type":
+        return this.processPrimitive(simplifierSchema)
 
-    if (simplifierSchema.kind === "primitive-type") {
-      // These are the basic, single-value data types built into the system (like String, Integer, etc)
-      return this.processPrimitive(simplifierSchema)
+      case "complex-type":
+      case "logical":
+      case "resource":
+        return this.processResource(simplifierSchema)
+
+      default:
+      // Catches anything that isn't explicitly handled above
+        throw new Error(`Unrecognised specification type: ${simplifierSchema.kind}`)
     }
-
-    return this.processResource(simplifierSchema)
   }
 
   private processResource(simplifierSchema: StructureDefinition): JSONSchema {
@@ -59,8 +64,8 @@ export class SchemaProcessor {
     let pattern: string | undefined = undefined
 
     if (type === "string") {
-      const snapshot = simplifierSchema.snapshot.element[simplifierSchema.snapshot.element.length - 1]
-      const snapType = snapshot.type[snapshot.type.length - 1]
+      const differential = simplifierSchema.differential.element[simplifierSchema.differential.element.length - 1]
+      const snapType = differential.type[differential.type.length - 1]
       const snapValue = snapType.extension[snapType.extension.length - 1]?.valueString
       pattern = snapValue
     }
@@ -141,8 +146,8 @@ export class SchemaProcessor {
     return this.specifications
   }
 
-  public processSimplifierPackageSpecifications(filePath: string, prefix: string | undefined = undefined): void {
-    if (!this.rootDir && prefix) {
+  public processSimplifierPackageSpecifications(filePath: string, prefix: string = ""): void {
+    if (!this.rootDir) {
       this.rootDir = path.join(filePath.substring(0, filePath.lastIndexOf("/")), prefix)
     }
 
@@ -150,9 +155,5 @@ export class SchemaProcessor {
 
     this.inProgress.set(parsedSchema.id, [])
     this.processSpecification(parsedSchema)
-
-    // if (this.inProgress.size === 0) {
-    //   console.log("this.specifications", this.specifications)
-    // }
   }
 }
