@@ -12,6 +12,8 @@ ignore:
   # docker vulnerabilities - these are accepted
   # libcrypto3 and libssl3
   - vulnerability: CVE-2026-2673
+  # node vuln - fixed in 24.14.1
+  - vulnerability: CVE-2026-21710
   # validator
   # critical
   - vulnerability: GHSA-599f-7c49-w659
