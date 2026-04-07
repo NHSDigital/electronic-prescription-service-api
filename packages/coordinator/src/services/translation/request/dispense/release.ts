@@ -38,14 +38,12 @@ export function createPatientReleaseRequest(
 }
 
 export function createNominatedReleaseRequest(
-  practitionerRole: fhir.PractitionerRole | null,
+  practitionerRole: fhir.PractitionerRole,
   organization: fhir.Organization
 ): hl7V3.NominatedPrescriptionReleaseRequestWrapper {
   const hl7Id = new hl7V3.GlobalIdentifier(crypto.randomUUID())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.NominatedPrescriptionReleaseRequest(hl7Id, timestamp)
-  if (practitionerRole) {
-    hl7Release.author = createAuthor(practitionerRole, organization)
-  }
+  hl7Release.author = createAuthor(practitionerRole, organization)
   return new hl7V3.NominatedPrescriptionReleaseRequestWrapper(hl7Release)
 }
