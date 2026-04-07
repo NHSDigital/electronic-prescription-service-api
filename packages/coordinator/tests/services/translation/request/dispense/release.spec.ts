@@ -48,6 +48,15 @@ describe("release functions", () => {
 
       expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
     })
+
+    test("translates app-restricted release request without agent but with prescription ID", async () => {
+      const parameters = new fhir.Parameters([ownerParameter, groupIdentifierParameter])
+      const translatedRelease = translateReleaseRequest(parameters)
+
+      expect(translatedRelease).toBeInstanceOf(hl7V3.PatientPrescriptionReleaseRequestWrapper)
+      const wrapper = translatedRelease as hl7V3.PatientPrescriptionReleaseRequestWrapper
+      expect(wrapper.PatientPrescriptionReleaseRequest.author).toBeUndefined()
+    })
   })
 
   describe("createNominatedReleaseRequest", () => {
@@ -87,6 +96,24 @@ describe("release functions", () => {
           .extension
       ).toEqual(prescriptionId)
       expect(mockCreateAuthor).toHaveBeenCalledWith(practitionerRole, organization)
+    })
+
+    test("omits author when practitionerRole is null (app-restricted)", async () => {
+      mockCreateAuthor.mockClear()
+      const prescriptionId = "18B064-A99968-4BCAA3"
+      const translatedRelease = createPatientReleaseRequest(null, organization, prescriptionId)
+
+      expect(translatedRelease.PatientPrescriptionReleaseRequest.author).toBeUndefined()
+      expect(
+        translatedRelease
+          .PatientPrescriptionReleaseRequest
+          .pertinentInformation
+          .pertinentPrescriptionID
+          .value
+          ._attributes
+          .extension
+      ).toEqual(prescriptionId)
+      expect(mockCreateAuthor).not.toHaveBeenCalled()
     })
   })
 })

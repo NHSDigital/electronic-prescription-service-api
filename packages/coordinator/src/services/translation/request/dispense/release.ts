@@ -22,14 +22,16 @@ export function translateReleaseRequest(
 }
 
 export function createPatientReleaseRequest(
-  practitionerRole: fhir.PractitionerRole,
+  practitionerRole: fhir.PractitionerRole | null,
   organization: fhir.Organization,
   prescriptionIdValue: string
 ): hl7V3.PatientPrescriptionReleaseRequestWrapper {
   const hl7Id = new hl7V3.GlobalIdentifier(crypto.randomUUID())
   const timestamp = convertMomentToHl7V3DateTime(moment.utc())
   const hl7Release = new hl7V3.PatientPrescriptionReleaseRequest(hl7Id, timestamp)
-  hl7Release.author = createAuthor(practitionerRole, organization)
+  if (practitionerRole) {
+    hl7Release.author = createAuthor(practitionerRole, organization)
+  }
   const prescriptionId = new hl7V3.PrescriptionId(prescriptionIdValue)
   hl7Release.pertinentInformation = new hl7V3.PatientPrescriptionReleaseRequestPertinentInformation(prescriptionId)
   return new hl7V3.PatientPrescriptionReleaseRequestWrapper(hl7Release)
