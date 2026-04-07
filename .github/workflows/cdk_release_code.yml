@@ -160,7 +160,6 @@ jobs:
       - name: Checkout local github actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
           persist-credentials: false
           fetch-depth: 0
           sparse-checkout: |
