@@ -21,5 +21,3 @@ rules:
       - run_pact_tests.yml:93:36
       - run_pact_tests.yml:91:34
       - run_pact_tests.yml:90:30
-  unpinned-uses:
-    disable: true
