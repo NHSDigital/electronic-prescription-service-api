@@ -98,6 +98,8 @@ jobs:
 
   get_commit_id:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     outputs:
       commit_id: ${{ steps.commit_id.outputs.commit_id }}
       sha_short: ${{ steps.commit_id.outputs.sha_short }}
