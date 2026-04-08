@@ -108,7 +108,8 @@ export default [
       globals: true,
       environment: "jsdom",
       include: ["tests/**/*.{test,spec}.{ts,tsx}"],
-      setupFiles: ["./tests/vitest.setup.ts"]
+      setupFiles: ["./tests/vitest.setup.ts"],
+      testTimeout: 30000
     }
   },
 

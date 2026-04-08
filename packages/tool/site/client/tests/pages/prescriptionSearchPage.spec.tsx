@@ -60,7 +60,7 @@ test("Form values are populated from query string", async () => {
 
 test("Displays error if mandatory field missing", async () => {
   const container = await renderPage()
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() =>
     expect(screen.getAllByText("One of Prescription ID or NHS Number is required")).toHaveLength(2)
   )
@@ -73,7 +73,7 @@ test("Displays error if creation date field partially completed", async () => {
   await enterDateRangeType(DateRangeType.FROM)
   await enterDateField("Day", "12")
   await enterDateField("Month", "6")
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() =>
     expect(screen.getByText("All fields are required for a date search")).toBeTruthy()
   )
@@ -87,7 +87,7 @@ test("Displays error if creation date field invalid", async () => {
   await enterDateField("Day", "45")
   await enterDateField("Month", "12")
   await enterDateField("Year", "2020")
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() =>
     expect(screen.getByText("Invalid date")).toBeTruthy()
   )
@@ -100,7 +100,7 @@ test("Displays loading text while performing a summary search", async () => {
 
   const container = await renderPage()
   await enterNhsNumber()
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() => expect(screen.getByText("Searching for prescriptions.")).toBeTruthy())
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -166,7 +166,7 @@ test("Displays an error message if summary search returns an error", async () =>
 
   const container = await renderPage()
   await enterNhsNumber()
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -177,7 +177,7 @@ test("Displays an error message if summary search returns invalid response", asy
 
   const container = await renderPage()
   await enterNhsNumber()
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -189,7 +189,7 @@ test("Clicking back from the summary search results returns to the form", async 
   const container = await renderPage()
   await enterNhsNumber()
   await clickSearchButton()
-  userEvent.click(screen.getByText("Back"))
+  await userEvent.click(screen.getByText("Back"))
   await waitFor(() => screen.getByText("Search for a Prescription"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -202,7 +202,7 @@ test("Displays loading text while performing a detail search", async () => {
   const container = await renderPage()
   await enterNhsNumber()
   await clickSearchButton()
-  userEvent.click(screen.getAllByText("View Details")[0])
+  await userEvent.click(screen.getAllByText("View Details")[0])
   await waitFor(() => screen.getByText("Retrieving full prescription details."))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -259,7 +259,7 @@ test("Clicking back from the detail search results returns to the summary search
   await enterNhsNumber()
   await clickSearchButton()
   await clickViewDetailsLink()
-  userEvent.click(screen.getByText("Back"))
+  await userEvent.click(screen.getByText("Back"))
   await waitFor(() => expect(screen.getByText("Search Results")).toBeTruthy())
   expect(screen.getByText(prescriptionId)).toBeTruthy()
   expect(screen.getAllByText(formattedNhsNumber)).toHaveLength(5)
@@ -274,21 +274,21 @@ async function renderPage() {
 }
 
 async function enterPrescriptionId() {
-  userEvent.type(screen.getByLabelText("Prescription ID"), prescriptionId)
+  await userEvent.type(screen.getByLabelText("Prescription ID"), prescriptionId)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLInputElement>("Prescription ID").value).toEqual(prescriptionId)
   )
 }
 
 async function enterNhsNumber() {
-  userEvent.type(screen.getByLabelText("NHS Number"), nhsNumber)
+  await userEvent.type(screen.getByLabelText("NHS Number"), nhsNumber)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLInputElement>("NHS Number").value).toEqual(nhsNumber)
   )
 }
 
 async function enterStatus() {
-  userEvent.selectOptions(screen.getByLabelText("Status"), PrescriptionStatus.DISPENSED)
+  await userEvent.selectOptions(screen.getByLabelText("Status"), PrescriptionStatus.DISPENSED)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLSelectElement>("Status").value).toEqual(PrescriptionStatus.DISPENSED)
   )
@@ -302,25 +302,25 @@ async function enterDate() {
 }
 
 async function enterDateRangeType(value: DateRangeType) {
-  userEvent.selectOptions(screen.getByLabelText("Creation Date"), value)
+  await userEvent.selectOptions(screen.getByLabelText("Creation Date"), value)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLSelectElement>("Creation Date").value).toEqual(value)
   )
 }
 
 async function enterDateField(labelText: "Day" | "Month" | "Year", value: string) {
-  userEvent.type(screen.getByLabelText(labelText), value)
+  await userEvent.type(screen.getByLabelText(labelText), value)
   await waitFor(
     () => expect(screen.getByLabelText<HTMLInputElement>(labelText).value).toEqual(value)
   )
 }
 
 async function clickSearchButton() {
-  userEvent.click(screen.getByText("Search"))
+  await userEvent.click(screen.getByText("Search"))
   await waitFor(() => screen.getByText("Search Results"))
 }
 
 async function clickViewDetailsLink() {
-  userEvent.click(screen.getAllByText("View Details")[0])
+  await userEvent.click(screen.getAllByText("View Details")[0])
   await waitFor(() => screen.getByText("Prescription Details"))
 }

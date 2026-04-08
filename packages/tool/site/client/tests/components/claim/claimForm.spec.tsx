@@ -99,7 +99,7 @@ async function addEndorsement() {
 
 async function removeEndorsement() {
   const initialEndorsementCount = screen.queryAllByText("Remove Endorsement").length
-  userEvent.click(screen.getAllByText("Remove Endorsement")[0])
+  await userEvent.click(screen.getAllByText("Remove Endorsement")[0])
   await waitFor(() =>
     expect(screen.queryAllByText("Remove Endorsement")).toHaveLength(initialEndorsementCount - 1)
   )
