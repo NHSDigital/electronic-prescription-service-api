@@ -20,7 +20,7 @@
     "@babel/preset-env": "^7.29.2",
     "@cucumber/cucumber": "^12.7.0",
     "@types/fhir": "^0.0.41",
-    "axios": "^1.13.6",
+    "axios": "^1.14.0",
     "axios-cookiejar-support": "^6.0.5",
     "dom-parser": "^1.1.5",
     "dotenv": "^17.3.1",

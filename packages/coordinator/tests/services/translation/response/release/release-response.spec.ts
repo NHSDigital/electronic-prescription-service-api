@@ -8,11 +8,25 @@ vi.mock("../../../../../src/services/verification/signature-verification", async
   )
 
   return {
-    verifyPrescriptionSignature: (parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger) => {
+    verifyAndFormatPrescriptionSignature: async (
+      parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger, action: "creation" | "release"
+    ) => {
       if (throwOnVerification) {
-        throw new Error("Verification error")
+        return [{
+          severity: "error",
+          code: "invalid",
+          details: {
+            coding: [{
+              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+              code: "INVALID_VALUE",
+              display: "Signature is invalid."
+            }]
+          },
+          diagnostics: "Uncaught error during signature verification",
+          expression: ["Provenance.signature.data"]
+        }]
       } else {
-        return actualVerification.verifyPrescriptionSignature(parentPrescription, logger)
+        return actualVerification.verifyAndFormatPrescriptionSignature(parentPrescription, logger, action)
       }
     }
   }
@@ -173,7 +187,7 @@ describe("outer bundle", () => {
 
     test("logs an error", () => {
       expect(loggerErrorSpy).toHaveBeenCalledWith(
-        "[Verifying signature for prescription ID 93041e69-2017-4242-b325-cbc9a84d5ef1]: Signature is invalid"
+        "[Verifying signature for prescription 93041e69-2017-4242-b325-cbc9a84d5ef1 on release]: Signature is invalid"
       )
     })
 
@@ -218,6 +232,7 @@ describe("outer bundle", () => {
                 }
               ]
             },
+            diagnostics: "Signature is invalid",
             expression: ["Provenance.signature.data"]
           }
         ])
@@ -256,9 +271,8 @@ describe("outer bundle", () => {
     })
   })
 
-  test("marks prescription as failed if verification throws an error", async () => {
+  test("marks prescription as failed if verification returns errors", async () => {
     try {
-      loggerErrorSpy = vi.spyOn(logger, "error")
       throwOnVerification = true
       const result = await translateReleaseResponse(
         getExamplePrescriptionReleaseResponse("release_success.xml"),
@@ -268,9 +282,7 @@ describe("outer bundle", () => {
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
       expect(prescriptions.total).toEqual(2)
-      expect(loggerErrorSpy).toHaveBeenCalledWith(expect.anything(), "Uncaught error during signature verification")
     } finally {
-      loggerErrorSpy.mockRestore()
       throwOnVerification = false
     }
   })

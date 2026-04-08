@@ -1,23 +1,22 @@
-name: Update devcontainer version
+name: Sync Copilot Instructions
 
 on:
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 1'
-permissions: {}
 
 jobs:
-  update-devcontainer-version:
+  sync-copilot-instructions:
     runs-on: ubuntu-22.04
     environment: create_pull_request
     permissions:
       contents: read
-      packages: read
 
     steps:
-      - name: Update devcontainer version
-        uses: NHSDigital/eps-update-devcontainer@dc3a8c5f11e7226ee4f5f2bb35bd0d1265092306
+      - name: Sync shared instructions
+        uses: NHSDigital/eps-copilot-instructions@a7849a16aabd5c1edef13e29467a480fa08555f8
         with:
+          copilot_instructions_ref: main
           calling_repo_base_branch: master
           CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}
           CREATE_PULL_REQUEST_PEM: ${{ secrets.CREATE_PULL_REQUEST_PEM }}
