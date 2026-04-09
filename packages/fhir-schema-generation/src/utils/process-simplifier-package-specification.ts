@@ -64,9 +64,9 @@ export class SchemaProcessor {
     let pattern: string | undefined = undefined
 
     if (type === "string") {
-      const differential = simplifierSchema.differential.element[simplifierSchema.differential.element.length - 1]
-      const snapType = differential.type[differential.type.length - 1]
-      const snapValue = snapType.extension[snapType.extension.length - 1]?.valueString
+      const differential = simplifierSchema.differential.element.at(-1)
+      const snapType = differential?.type.at(-1)
+      const snapValue = snapType?.extension.at(-1)?.valueString
       pattern = snapValue
     }
 

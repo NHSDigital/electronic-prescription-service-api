@@ -31,7 +31,7 @@ describe("download-simplifier-package", () => {
       json: async () => ({data: "success"})
     })
 
-    await expect(downloadSimplifierPackage("http://reg", "pkg", "/out", undefined))
+    await expect(downloadSimplifierPackage("https://reg", "pkg", "/out", undefined))
       .rejects.toThrow("Cannot find valid version in metadata")
   })
 
@@ -43,7 +43,7 @@ describe("download-simplifier-package", () => {
       json: async () => ({data: "success"})
     })
 
-    await expect(downloadSimplifierPackage("http://reg", "pkg", "/out", ""))
+    await expect(downloadSimplifierPackage("https://reg", "pkg", "/out", ""))
       .rejects.toThrow("Cannot find valid version in metadata")
   })
 
@@ -53,7 +53,7 @@ describe("download-simplifier-package", () => {
       versions: {"1.0.0": {version: "1.0.0", dist: {}}}
     }))))
 
-    await expect(downloadSimplifierPackage("http://reg", "pkg", "/out", "a"))
+    await expect(downloadSimplifierPackage("https://reg", "pkg", "/out", "a"))
       .rejects.toThrow("Version a not found in registry")
   })
 
@@ -72,7 +72,7 @@ describe("download-simplifier-package", () => {
 
     const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {})
 
-    await downloadSimplifierPackage("http://reg", "pkg", tmpDir, "latest")
+    await downloadSimplifierPackage("https://reg", "pkg", tmpDir, "latest")
 
     expect(consoleSpy).toHaveBeenCalledWith('File "pkg-1.0.0.tgz" already exists locally. Skipping download.')
   })
@@ -120,7 +120,7 @@ describe("download-simplifier-package", () => {
 
   it("throws if metadata fetch fails", async () => {
     vi.stubGlobal("fetch", vi.fn().mockResolvedValue({ok: false, statusText: "Not Found"}))
-    await expect(downloadSimplifierPackage("http://reg", "pkg", "/dir", "latest"))
+    await expect(downloadSimplifierPackage("https://reg", "pkg", "/dir", "latest"))
       .rejects.toThrow("Failed to fetch metadata: Not Found")
   })
 
@@ -132,7 +132,7 @@ describe("download-simplifier-package", () => {
         versions: {"1.0.0": {version: "1.0.0"}} // 2.0.0 is missing
       })
     }))
-    await expect(downloadSimplifierPackage("http://reg", "pkg", "/dir", "latest"))
+    await expect(downloadSimplifierPackage("https://reg", "pkg", "/dir", "latest"))
       .rejects.toThrow("Version 2.0.0 not found in registry")
   })
 
@@ -142,14 +142,14 @@ describe("download-simplifier-package", () => {
         ok: true,
         json: async () => ({
           "dist-tags": {latest: "1.0.0"},
-          versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "http://reg/tarball.tgz"}}}
+          versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "https://reg/tarball.tgz"}}}
         })
       }
       return {ok: false, statusText: "Forbidden"} // Fails on tarball fetch
     }))
 
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "fhir-test-"))
-    await expect(downloadSimplifierPackage("http://reg", "pkg", tmpDir, "latest"))
+    await expect(downloadSimplifierPackage("https://reg", "pkg", tmpDir, "latest"))
       .rejects.toThrow("Failed to download tarball: Forbidden")
   })
 
