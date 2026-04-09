@@ -23,7 +23,7 @@ jest.mock("../../src/services/translation/request", () => ({
 }))
 
 jest.mock("../../src/services/verification/signature-verification", () => ({
-  verifyAndFormatPrescriptionSignature: jest.fn()
+  verifyPrescriptionSignature: jest.fn()
 }))
 
 jest.mock("../../src/services/communication/spine-client", () => ({
@@ -42,8 +42,8 @@ const mockIsSignatureValidationEnabled = featureFlags.isSignatureValidationEnabl
 const mockConvertPrescriptionBundle = translator.convertPrescriptionBundleToSpineRequest as jest.MockedFunction<
   typeof translator.convertPrescriptionBundleToSpineRequest
 >
-const mockVerifyAndFormatSignature = signatureVerification.verifyAndFormatPrescriptionSignature as jest.MockedFunction<
-  typeof signatureVerification.verifyAndFormatPrescriptionSignature
+const mockVerifyPrescriptionSignature = signatureVerification.verifyPrescriptionSignature as jest.MockedFunction<
+  typeof signatureVerification.verifyPrescriptionSignature
 >
 const mockSpineSend = spineClientModule.spineClient.send as jest.MockedFunction<
   typeof spineClientModule.spineClient.send
@@ -94,7 +94,7 @@ describe("process route - signature validation", () => {
       spineRequest: spineRequest,
       parentPrescription: {
         _attributes: undefined,
-        id: undefined,
+        id: {_attributes: {root: "TEST-PRESCRIPTION-ID", extension: undefined}},
         code: undefined,
         effectiveTime: undefined,
         typeId: undefined,
@@ -125,42 +125,26 @@ describe("process route - signature validation", () => {
     await makeRequest(prescriptionBundle)
 
     expect(mockConvertPrescriptionBundle).toHaveBeenCalled()
-    expect(mockVerifyAndFormatSignature).not.toHaveBeenCalled()
+    expect(mockVerifyPrescriptionSignature).not.toHaveBeenCalled()
     expect(mockSpineSend).toHaveBeenCalled()
   })
 
   test("when signature validation is enabled and signature is valid, forwards to Spine", async () => {
     mockIsSignatureValidationEnabled.mockReturnValue(true)
-    mockVerifyAndFormatSignature.mockResolvedValue([])
+    mockVerifyPrescriptionSignature.mockResolvedValue([])
 
     await makeRequest(prescriptionBundle)
 
     expect(mockConvertPrescriptionBundle).toHaveBeenCalled()
-    expect(mockVerifyAndFormatSignature).toHaveBeenCalledWith(
-      expect.anything(), expect.anything(), "creation"
+    expect(mockVerifyPrescriptionSignature).toHaveBeenCalledWith(
+      expect.anything(), expect.anything()
     )
     expect(mockSpineSend).toHaveBeenCalled()
   })
 
   test("when signature validation is enabled and signature is invalid, returns 400 with OperationOutcome", async () => {
     mockIsSignatureValidationEnabled.mockReturnValue(true)
-
-    const signatureIssue: fhir.OperationOutcomeIssue = {
-      code: fhir.IssueCodes.INVALID,
-      severity: "error",
-      details: {
-        coding: [
-          {
-            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "INVALID_VALUE",
-            display: "Signature is invalid."
-          }
-        ]
-      },
-      diagnostics: "Invalid signature format",
-      expression: ["Provenance.signature.data"]
-    }
-    mockVerifyAndFormatSignature.mockResolvedValue([signatureIssue])
+    mockVerifyPrescriptionSignature.mockResolvedValue(["Invalid signature format"])
 
     const response = await makeRequest(prescriptionBundle)
 
@@ -168,6 +152,7 @@ describe("process route - signature validation", () => {
     const body = JSON.parse(response.payload) as fhir.OperationOutcome
     expect(body.resourceType).toBe("OperationOutcome")
     expect(body.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
+    expect(body.issue[0].diagnostics).toBe("Invalid signature format")
     expect(mockSpineSend).not.toHaveBeenCalled()
   })
 
@@ -184,7 +169,7 @@ describe("process route - signature validation", () => {
     await makeRequest(nonPrescriptionBundle)
 
     expect(mockConvertPrescriptionBundle).not.toHaveBeenCalled()
-    expect(mockVerifyAndFormatSignature).not.toHaveBeenCalled()
+    expect(mockVerifyPrescriptionSignature).not.toHaveBeenCalled()
     expect(mockConvertBundle).toHaveBeenCalled()
   })
 })

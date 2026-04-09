@@ -21,7 +21,21 @@ import {getStatusCode} from "../utils/status-code"
 import {HashingAlgorithm} from "../services/translation/common/hashingAlgorithm"
 import {isSignatureValidationEnabled} from "../utils/feature-flags"
 import {identifyMessageType} from "../services/translation/common"
-import {verifyAndFormatPrescriptionSignature} from "../services/verification/signature-verification"
+import {verifyPrescriptionSignature} from "../services/verification/signature-verification"
+
+const createCreationSignatureIssue = (diagnostics: string): fhir.OperationOutcomeIssue => ({
+  severity: "error",
+  code: fhir.IssueCodes.INVALID,
+  details: {
+    coding: [{
+      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+      code: "INVALID_VALUE",
+      display: "Signature is invalid."
+    }]
+  },
+  diagnostics,
+  expression: ["Provenance.signature.data"]
+})
 
 export default [
   /*
@@ -60,10 +74,22 @@ export default [
         )
 
         if (isSignatureValidationEnabled()) {
-          const signatureIssues = await verifyAndFormatPrescriptionSignature(
-            result.parentPrescription, request.logger, "creation"
-          )
-          if (signatureIssues.length) {
+          try {
+            const errors = await verifyPrescriptionSignature(
+              result.parentPrescription, request.logger
+            )
+            if (errors.length) {
+              const prescriptionId = result.parentPrescription.id._attributes.root.toLowerCase()
+              request.logger.error(
+                `[Verifying signature for prescription ${prescriptionId} on creation]: ${errors.join(", ")}`
+              )
+              const signatureIssues = errors.map(createCreationSignatureIssue)
+              const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
+              return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
+            }
+          } catch (e) {
+            request.logger.error(e, "Uncaught error during signature verification for creation")
+            const signatureIssues = [createCreationSignatureIssue("Uncaught error during signature verification")]
             const response = fhir.createOperationOutcome(signatureIssues, bundle.meta?.lastUpdated)
             return responseToolkit.response(response).code(400).type(ContentTypes.FHIR)
           }
