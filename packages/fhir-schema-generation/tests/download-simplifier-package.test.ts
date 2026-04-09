@@ -84,12 +84,12 @@ describe("download-simplifier-package", () => {
     vi.stubGlobal("fetch", vi.fn(async () => {
       return new Response(JSON.stringify({
         "dist-tags": {latest: "1.0.0"},
-        versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "http://test/pkg.tgz"}}}
+        versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "https://test/pkg.tgz"}}}
       }), {status: 200})
     }))
 
     await expect(
-      downloadSimplifierPackage("http://test", "my-package", outputDir, "latest")
+      downloadSimplifierPackage("https://test", "my-package", outputDir, "latest")
     ).rejects.toThrow("Could not find expected 'package/package.json'")
 
     expect(fs.existsSync(outputDir)).toBe(true)
@@ -104,7 +104,7 @@ describe("download-simplifier-package", () => {
     }))
 
     const tmp = makeTempDir()
-    await expect(downloadSimplifierPackage("http://test", "my-package", tmp, "latest"))
+    await expect(downloadSimplifierPackage("https://test", "my-package", tmp, "latest"))
       .rejects.toThrow("Failed to find valid URL for Tarball")
   })
 
