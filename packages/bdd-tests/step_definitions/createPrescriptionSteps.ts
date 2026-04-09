@@ -1,4 +1,5 @@
 import {Then} from "@cucumber/cucumber"
+import {expect} from "expect"
 
 Then(/^IGNORE I get an error response (\d+)$/, function (status, table) {
   expect(this.resp.status).toBe(parseInt(status))

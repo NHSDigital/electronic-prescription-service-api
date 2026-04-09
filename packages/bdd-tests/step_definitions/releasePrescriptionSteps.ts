@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import {Then, setDefaultTimeout} from "@cucumber/cucumber"
+import {expect} from "expect"
 
 setDefaultTimeout(60 * 1000)
 
