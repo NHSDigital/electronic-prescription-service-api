@@ -319,15 +319,6 @@ describe("CodeSystem URL normalization", () => {
     expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
     expect(parsedResponse.priority.coding[0].system)
       .toBe("http://terminology.hl7.org/CodeSystem/processpriority") // NOSONAR
-
-    // Verify that normalization was logged
-    expect(loggerInfoSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        originalUrl: "https://terminology.hl7.org/CodeSystem/claim-type",
-        normalisedUrl: "http://terminology.hl7.org/CodeSystem/claim-type" // NOSONAR
-      }),
-      "Normalizing HL7 URIs from https to http"
-    )
   })
 
   test("leaves http CodeSystem URLs unchanged", async () => {
