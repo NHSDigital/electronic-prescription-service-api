@@ -26,15 +26,7 @@ import {verifyPrescriptionSignature} from "../services/verification/signature-ve
 const createCreationSignatureIssue = (diagnostics: string): fhir.OperationOutcomeIssue => ({
   severity: "error",
   code: fhir.IssueCodes.INVALID,
-  details: {
-    coding: [{
-      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-      code: "INVALID_VALUE",
-      display: "Signature is invalid."
-    }]
-  },
-  diagnostics,
-  expression: ["Provenance.signature.data"]
+  diagnostics
 })
 
 export default [

@@ -151,7 +151,7 @@ describe("process route - signature validation", () => {
     expect(response.statusCode).toBe(400)
     const body = JSON.parse(response.payload) as fhir.OperationOutcome
     expect(body.resourceType).toBe("OperationOutcome")
-    expect(body.issue[0].details.coding[0].code).toBe("INVALID_VALUE")
+    expect(body.issue[0].code).toBe("invalid")
     expect(body.issue[0].diagnostics).toBe("Invalid signature format")
     expect(mockSpineSend).not.toHaveBeenCalled()
   })
