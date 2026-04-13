@@ -1,30 +1,21 @@
 import pino from "pino"
 
-const actualVerification = jest.requireActual("../../../../../src/services/verification/signature-verification")
 let throwOnVerification = false
-jest.mock("../../../../../src/services/verification/signature-verification", () => ({
-  verifyAndFormatPrescriptionSignature: async (
-    parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger, action: "creation" | "release"
-  ) => {
-    if (throwOnVerification) {
-      return [{
-        severity: "error",
-        code: "invalid",
-        details: {
-          coding: [{
-            system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-            code: "INVALID_VALUE",
-            display: "Signature is invalid."
-          }]
-        },
-        diagnostics: "Uncaught error during signature verification",
-        expression: ["Provenance.signature.data"]
-      }]
-    } else {
-      return actualVerification.verifyAndFormatPrescriptionSignature(parentPrescription, logger, action)
+jest.mock("../../../../../src/services/verification/signature-verification", () => {
+  const actual = jest.requireActual("../../../../../src/services/verification/signature-verification")
+  return {
+    ...actual,
+    verifyPrescriptionSignature: async (
+      parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger
+    ) => {
+      if (throwOnVerification) {
+        throw new Error("Verification error")
+      } else {
+        return actual.verifyPrescriptionSignature(parentPrescription, logger)
+      }
     }
   }
-}))
+})
 
 import {
   translateReleaseResponse,
@@ -225,7 +216,6 @@ describe("outer bundle", () => {
                 }
               ]
             },
-            diagnostics: "Signature is invalid",
             expression: ["Provenance.signature.data"]
           }
         ])
@@ -264,7 +254,8 @@ describe("outer bundle", () => {
     })
   })
 
-  test("marks prescription as failed if verification returns errors", async () => {
+  test("marks prescription as failed if verification throws an error", async () => {
+    const loggerErrorSpy = jest.spyOn(logger, "error")
     try {
       throwOnVerification = true
       const result = await translateReleaseResponse(
@@ -275,8 +266,12 @@ describe("outer bundle", () => {
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
       expect(prescriptions.total).toEqual(2)
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.any(Error), "Uncaught error during signature verification for release"
+      )
     } finally {
       throwOnVerification = false
+      loggerErrorSpy.mockRestore()
     }
   })
 })
