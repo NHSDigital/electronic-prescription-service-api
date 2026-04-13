@@ -27,6 +27,9 @@ on:
         required: true
       SIGNING_CERT:
         required: true
+
+permissions: {}
+
 jobs:
   run_pact_tests:
     runs-on: ubuntu-22.04
@@ -47,7 +50,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
 
       - name: Run make install
         run: |
