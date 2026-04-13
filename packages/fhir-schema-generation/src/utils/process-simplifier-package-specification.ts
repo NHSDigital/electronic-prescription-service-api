@@ -1,14 +1,15 @@
 import * as path from "node:path"
 import {StructureDefinition} from "../models/fhir-package/structure-definition.interface.js"
-import {JSONSchema, JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/jsonSchema.js"
+import {JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/JSONSchema.js"
 import {parseSimplifierPackage} from "./parse-simplifier-package.js"
 import {StructureDefinitionDifferential} from "../models/structure-definition/differential-element.interface.js"
 import {DeepMutable} from "./deep-mutible.js"
+import {EditableJSONSchema} from "../types/editable-json-schema.type.js"
 
 export class SchemaProcessor {
-  private specifications = new Map<string, JSONSchema>()
-  private definitions = new Map<string, JSONSchema | undefined>()
-  private primitives = new Map<string, JSONSchema | undefined>()
+  private specifications = new Map<string, EditableJSONSchema>()
+  private definitions = new Map<string, EditableJSONSchema | undefined>()
+  private primitives = new Map<string, EditableJSONSchema | undefined>()
   private inProgress = new Map<string, Array<string>>()
 
   private rootDir: string = ""
@@ -17,17 +18,17 @@ export class SchemaProcessor {
   private defaultSchemaDescription
     = "see http://hl7.org/fhir/json.html#schema for information about the FHIR Json Schemas"
 
-  private updatePrimitives(id: string, schema: JSONSchema) {
+  private updatePrimitives(id: string, schema: EditableJSONSchema) {
     this.inProgress.delete(id)
     this.primitives.set(id, schema)
   }
 
-  private updateSpecifications(id: string, schema: JSONSchema) {
+  private updateSpecifications(id: string, schema: EditableJSONSchema) {
     this.inProgress.delete(id)
     this.specifications.set(id, schema)
   }
 
-  private updateDefinitions(id: string, schema: JSONSchema | undefined) {
+  private updateDefinitions(id: string, schema: EditableJSONSchema | undefined) {
     this.inProgress.delete(id)
     this.definitions.set(id, schema)
   }
@@ -51,7 +52,7 @@ export class SchemaProcessor {
   private processResource(simplifierSchema: StructureDefinition) {
     const properties = this.processProperties(simplifierSchema)
 
-    let schema: DeepMutable<JSONSchema> = {
+    let schema: DeepMutable<EditableJSONSchema> = {
       description: this.defaultSchemaDescription,
       $ref: "#/definitions/" + simplifierSchema.name
     }
@@ -68,7 +69,7 @@ export class SchemaProcessor {
     this.updateSpecifications(simplifierSchema.id, schema)
   }
 
-  private processPrimitive(simplifierSchema: StructureDefinition): JSONSchema {
+  private processPrimitive(simplifierSchema: StructureDefinition): EditableJSONSchema {
     const type: JSONSchemaType = ["boolean", "integer", "string", "decimal"].includes(simplifierSchema.type)
       ? simplifierSchema.type as JSONSchemaType
       : "string"
@@ -81,94 +82,99 @@ export class SchemaProcessor {
       pattern = snapValue
     }
 
-    const schema: JSONSchema = {type, pattern}
+    const schema: EditableJSONSchema = {type, pattern}
     this.updatePrimitives(simplifierSchema.id, schema)
     return schema
   }
 
   private setNestedProp(obj: any, pathArray: Array<string>, newValue: any): void {
-    // 1. Separate the path to traverse from the final key
-    const pathTraverse = pathArray.slice(0, -1) // ["apple", "core", "seed"]
-    const finalKey = pathArray[pathArray.length - 1] // "type"
+    const pathTraverse = pathArray.slice(0, -1)
+    const finalKey = pathArray[pathArray.length - 1]
 
-    // 2. Drill down to the parent object
     const targetObj = pathTraverse.reduce((prev, curr) => prev?.[curr], obj)
 
-    // 3. Update the value on the parent object
     if (targetObj) {
       targetObj[finalKey] = newValue
     }
 
-    // 4. Return the fully updated object
     return obj
   };
 
-  private processProperties(simplifierSchema: StructureDefinition): Record<string, JSONSchema> {
+  private processProperties(simplifierSchema: StructureDefinition): Record<string, EditableJSONSchema> {
     return simplifierSchema
       .differential
       .element
-      .reduce((result: Record<string, JSONSchema>, current: StructureDefinitionDifferential) => {
+      .reduce((result: Record<string, EditableJSONSchema>, current: StructureDefinitionDifferential) => {
         // Get id parts
         const idParts: Array<string> = current.id.split(".").reverse()
 
         // Get object name (i.e., MedicationRequest)
         let prop = idParts.pop()!
 
-        // If the object has no type, skip - this shouldn't happen
         const types = current.type
-        if (!types || types.length === 0) {
-          return result
-        }
 
-        // Check if item is a sub-definition (i.e., MedicationRequest_Requester)
-        if (idParts.length > 1) {
-          prop += `_${idParts.pop()}`
-        }
+        // Only process if the object has a type
+        if (types && types.length > 0) {
+          // Check if item is a sub-definition (i.e., MedicationRequest_Requester)
+          if (idParts.length > 1) {
+            prop += `_${idParts.pop()}`
+          }
 
-        // Check if the element is required
-        const extensions = types[0].extension
-        const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
-        const code = extension ?? types[0].code
+          // Check if the element is required
+          const extensions = types[0].extension
+          const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
+          const code = extension ?? types[0].code
 
-        if (current.min && current.min > 0) {
-          result[prop] = result[prop] || {} satisfies DeepMutable<JSONSchema>
-          (result[prop] as Exclude<DeepMutable<JSONSchema>, boolean>).required = [
-            ...((result[prop] as Exclude<JSONSchema, boolean>).required ?? []),
-            current.id
-          ]
-        }
+          if (current.min && current.min > 0) {
+            result[prop] = result[prop] || {} satisfies DeepMutable<EditableJSONSchema>
+            (result[prop] as Exclude<DeepMutable<EditableJSONSchema>, boolean>).required = [
+              ...((result[prop] as Exclude<EditableJSONSchema, boolean>).required ?? []),
+              current.id
+            ]
+          }
 
-        // Check if this specification has already been processed
-        const existingSpec = this.specifications.get(code)
-        if (existingSpec) {
-          this.setNestedProp(result[prop], idParts, existingSpec)
-          return result
-        }
+          // Check specifications, definitions, and progress states
+          const existingSpec = this.specifications.get(code)
+          const existingDef = this.definitions.get(code)
+          const isInProgress = this.inProgress.has(code)
 
-        // Check if this specification has already been processed as a definition
-        const existingDef = this.definitions.get(code)
-        if (existingDef) {
-          this.setNestedProp(result[prop], idParts, {"$ref": `#/$defs/${code}`})
-          return result
-        }
-
-        // Check if this specification is complex and requires a definition
-        const isInProgress = this.inProgress.has(code)
-        if (isInProgress) {
-          this.setNestedProp(result[prop], idParts, {"$ref": `#/$defs/${code}`})
-          this.updateDefinitions(code, undefined)
-          return result
-        }
-
-        // Handle the specification as a normal property
-        const processed = this.processProperty(current, code)
-        if (processed) {
-          if (this.definitions.has(code)) {
-            this.setNestedProp(result[prop], idParts, {"$ref": `#/$defs/${code}`})
-            this.definitions.set(code, processed)
-            this.specifications.delete(code)
+          if (existingSpec) {
+            // Check if this specification has already been processed
+            this.setNestedProp(result[prop], idParts, {
+              ...existingSpec,
+              description: current.definition
+            })
+          } else if (existingDef) {
+            // Check if this specification has already been processed as a definition
+            this.setNestedProp(result[prop], idParts, {
+              "$ref": `#/$defs/${code}`,
+              description: current.definition
+            })
+          } else if (isInProgress) {
+            // Check if this specification is complex and requires a definition
+            this.setNestedProp(result[prop], idParts, {
+              "$ref": `#/$defs/${code}`,
+              description: current.definition
+            })
+            this.updateDefinitions(code, undefined)
           } else {
-            this.setNestedProp(result[prop], idParts, processed)
+            // Handle the specification as a normal property
+            const processed = this.processProperty(current, code)
+            if (processed) {
+              if (this.definitions.has(code)) {
+                this.setNestedProp(result[prop], idParts, {
+                  "$ref": `#/$defs/${code}`,
+                  description: current.definition
+                })
+                this.definitions.set(code, processed)
+                this.specifications.delete(code)
+              } else {
+                this.setNestedProp(result[prop], idParts, {
+                  ...processed,
+                  description: current.definition
+                })
+              }
+            }
           }
         }
 
@@ -176,11 +182,11 @@ export class SchemaProcessor {
       }, {})
   }
 
-  private processProperty(element: StructureDefinitionDifferential, code: string): JSONSchema | undefined {
+  private processProperty(element: StructureDefinitionDifferential, code: string): EditableJSONSchema | undefined {
 
     // Recursively process the dependency
     this.processSimplifierPackageSpecifications(`${this.rootDir}${code}.json`)
-    const found = this.specifications.get(code) as Exclude<JSONSchema, boolean>
+    const found = this.specifications.get(code) as Exclude<EditableJSONSchema, boolean>
 
     if (found && element.max === "*") {
       return {type: "array", items: found}
@@ -188,7 +194,7 @@ export class SchemaProcessor {
     return found
   }
 
-  public getSpecifications(): Map<string, JSONSchema> {
+  public getSpecifications(): Map<string, EditableJSONSchema> {
     return this.specifications
   }
 
