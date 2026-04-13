@@ -3,13 +3,24 @@ import {StructureDefinition} from "../models/fhir-package/structure-definition.i
 import {JSONSchema, JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/jsonSchema.js"
 import {parseSimplifierPackage} from "./parse-simplifier-package.js"
 import {StructureDefinitionDifferential} from "../models/structure-definition/differential-element.interface.js"
+import {DeepMutable} from "./deep-mutible.js"
 
 export class SchemaProcessor {
   private specifications = new Map<string, JSONSchema>()
   private definitions = new Map<string, JSONSchema | undefined>()
+  private primitives = new Map<string, JSONSchema | undefined>()
   private inProgress = new Map<string, Array<string>>()
 
   private rootDir: string = ""
+  private schemaVersion = "http://json-schema.org/draft-04/schema#"
+  private schemaIdPrefix = "http://hl7.org/fhir/json-schema/"
+  private defaultSchemaDescription
+    = "see http://hl7.org/fhir/json.html#schema for information about the FHIR Json Schemas"
+
+  private updatePrimitives(id: string, schema: JSONSchema) {
+    this.inProgress.delete(id)
+    this.primitives.set(id, schema)
+  }
 
   private updateSpecifications(id: string, schema: JSONSchema) {
     this.inProgress.delete(id)
@@ -21,40 +32,40 @@ export class SchemaProcessor {
     this.definitions.set(id, schema)
   }
 
-  private processSpecification(simplifierSchema: StructureDefinition): JSONSchema | undefined {
+  private processSpecification(simplifierSchema: StructureDefinition) {
     switch (simplifierSchema.kind) {
       case "primitive-type":
-        return this.processPrimitive(simplifierSchema)
-
+        this.processPrimitive(simplifierSchema)
+        break
       case "complex-type":
       case "logical":
       case "resource":
-        return this.processResource(simplifierSchema)
-
+        this.processResource(simplifierSchema)
+        break
       default:
       // Catches anything that isn't explicitly handled above
         throw new Error(`Unrecognised specification type: ${simplifierSchema.kind}`)
     }
   }
 
-  private processResource(simplifierSchema: StructureDefinition): JSONSchema {
-    const {properties, required} = this.processProperties(simplifierSchema)
-    let definitions: Record<string, JSONSchema> | undefined = undefined
+  private processResource(simplifierSchema: StructureDefinition) {
+    const properties = this.processProperties(simplifierSchema)
 
-    if (this.inProgress.size === 1 && this.inProgress.has(simplifierSchema.id)) {
-      definitions = Object.fromEntries(this.definitions) as Record<string, JSONSchema>
+    let schema: DeepMutable<JSONSchema> = {
+      description: this.defaultSchemaDescription,
+      $ref: "#/definitions/" + simplifierSchema.name
     }
 
-    const schema: JSONSchema = {
-      title: simplifierSchema.name,
-      type: "object",
-      properties: properties,
-      required: required.length > 0 ? required : undefined,
-      definitions: definitions
+    if (Object.keys(properties).length !== 0) {
+      schema = {
+        ...schema,
+        $id: this.schemaIdPrefix + simplifierSchema.name,
+        $schema: this.schemaVersion,
+        definitions: properties
+      }
     }
 
     this.updateSpecifications(simplifierSchema.id, schema)
-    return schema
   }
 
   private processPrimitive(simplifierSchema: StructureDefinition): JSONSchema {
@@ -71,63 +82,98 @@ export class SchemaProcessor {
     }
 
     const schema: JSONSchema = {type, pattern}
-    this.updateSpecifications(simplifierSchema.id, schema)
+    this.updatePrimitives(simplifierSchema.id, schema)
     return schema
   }
 
-  private processProperties(simplifierSchema: StructureDefinition) {
-    const properties: Record<string, JSONSchema> = {}
-    const required: Array<string> = []
+  private setNestedProp(obj: any, pathArray: Array<string>, newValue: any): void {
+    // 1. Separate the path to traverse from the final key
+    const pathTraverse = pathArray.slice(0, -1) // ["apple", "core", "seed"]
+    const finalKey = pathArray[pathArray.length - 1] // "type"
 
-    simplifierSchema.differential.element.forEach((element) => {
-      const id = element.id.split(".").pop()
-      if (!id || id === simplifierSchema.name) return
+    // 2. Drill down to the parent object
+    const targetObj = pathTraverse.reduce((prev, curr) => prev?.[curr], obj)
 
-      const types = element.type
-      if (!types || types.length === 0) return undefined
+    // 3. Update the value on the parent object
+    if (targetObj) {
+      targetObj[finalKey] = newValue
+    }
 
-      const extensions = types[0].extension
-      const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
-      const code = extension ?? types[0].code
+    // 4. Return the fully updated object
+    return obj
+  };
 
-      if (element.min && element.min > 0) required.push(id)
+  private processProperties(simplifierSchema: StructureDefinition): Record<string, JSONSchema> {
+    return simplifierSchema
+      .differential
+      .element
+      .reduce((result: Record<string, JSONSchema>, current: StructureDefinitionDifferential) => {
+        // Get id parts
+        const idParts: Array<string> = current.id.split(".").reverse()
 
-      // Check if this specification has already been processed
-      const existingSpec = this.specifications.get(code)
-      if (existingSpec) {
-        properties[id] = existingSpec
-        return
-      }
+        // Get object name (i.e., MedicationRequest)
+        let prop = idParts.pop()!
 
-      // Check if this specification has already been processed as a definition
-      const existingDef = this.definitions.get(code)
-      if (existingDef) {
-        properties[id] = {"$ref": `#/$defs/${code}`}
-        return
-      }
-
-      // Check if this specification is complex and requires a definition
-      const isInProgress = this.inProgress.has(code)
-      if (isInProgress) {
-        properties[id] = {"$ref": `#/$defs/${code}`}
-        this.updateDefinitions(code, undefined)
-        return
-      }
-
-      // Handle the specification as a normal property
-      const processed = this.processProperty(element, code)
-      if (processed) {
-        if (this.definitions.has(code)) {
-          properties[id] = {"$ref": `#/$defs/${code}`}
-          this.definitions.set(code, processed)
-          this.specifications.delete(code)
-        } else {
-          properties[id] = processed
+        // If the object has no type, skip - this shouldn't happen
+        const types = current.type
+        if (!types || types.length === 0) {
+          return result
         }
-      }
-    })
 
-    return {properties, required}
+        // Check if item is a sub-definition (i.e., MedicationRequest_Requester)
+        if (idParts.length > 1) {
+          prop += `_${idParts.pop()}`
+        }
+
+        // Check if the element is required
+        const extensions = types[0].extension
+        const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
+        const code = extension ?? types[0].code
+
+        if (current.min && current.min > 0) {
+          result[prop] = result[prop] || {} satisfies DeepMutable<JSONSchema>
+          (result[prop] as Exclude<DeepMutable<JSONSchema>, boolean>).required = [
+            ...((result[prop] as Exclude<JSONSchema, boolean>).required ?? []),
+            current.id
+          ]
+        }
+
+        // Check if this specification has already been processed
+        const existingSpec = this.specifications.get(code)
+        if (existingSpec) {
+          this.setNestedProp(result[prop], idParts, existingSpec)
+          return result
+        }
+
+        // Check if this specification has already been processed as a definition
+        const existingDef = this.definitions.get(code)
+        if (existingDef) {
+          this.setNestedProp(result[prop], idParts, {"$ref": `#/$defs/${code}`})
+          return result
+        }
+
+        // Check if this specification is complex and requires a definition
+        const isInProgress = this.inProgress.has(code)
+        if (isInProgress) {
+          this.setNestedProp(result[prop], idParts, {"$ref": `#/$defs/${code}`})
+          this.updateDefinitions(code, undefined)
+          return result
+        }
+
+        // Handle the specification as a normal property
+        const processed = this.processProperty(current, code)
+        if (processed) {
+          if (this.definitions.has(code)) {
+            this.setNestedProp(result[prop], idParts, {"$ref": `#/$defs/${code}`})
+            this.definitions.set(code, processed)
+            this.specifications.delete(code)
+          } else {
+            this.setNestedProp(result[prop], idParts, processed)
+          }
+        }
+
+        return result
+      }, {})
   }
 
   private processProperty(element: StructureDefinitionDifferential, code: string): JSONSchema | undefined {
