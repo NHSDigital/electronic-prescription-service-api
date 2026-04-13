@@ -7,6 +7,8 @@ ignore:
   - vulnerability: GHSA-5rq4-664w-9x2c
   # epsat - uses old version of lodash. This is OK
   - vulnerability: GHSA-r5fr-rjxr-66jc
+  # epsat - basic-ftp dependency. Only used in e2e tests in dev environment
+  - vulnerability: GHSA-6v7q-wjvx-w8wg
   # @hapi/content
   - vulnerability: GHSA-jg4p-7fhp-p32p
   # docker vulnerabilities - these are accepted
