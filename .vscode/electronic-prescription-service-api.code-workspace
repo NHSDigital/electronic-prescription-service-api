@@ -52,24 +52,14 @@
 	"settings": {
 		"cucumber.features": [
 			"**/features/*.feature",
-		  ],
-		  "cucumber.glue": [
+		],
+		"cucumber.glue": [
 			"**/step_definitions/*.ts",
-		  ],
-		"jest.disabledWorkspaceFolders": [
-			"electronic-prescription-service-monorepo",
-			"packages/specification",
-			"packages/tool",
-			"packages/tool/site",
-			"packages/tool/site/server",
-			"packages/tool/e2e-tests",
-			"packages/e2e-tests",
-			"packages/bdd-tests"
 		],
 		"files.exclude": {
 			"packages/": true,
 		},
-        "cSpell.words": [
+		"cSpell.words": [
 			"APIGEE",
 			"Autoscale",
 			"awslogs",
@@ -127,7 +117,7 @@
 			"ms-python.python",
 			"github.vscode-pull-request-github",
 			"eamodio.gitlens",
-			"orta.vscode-jest",
+			"vitest.explorer",
 			"42crunch.vscode-openapi",
 			"mermade.openapi-lint",
 			"rvest.vs-code-prettier-eslint",

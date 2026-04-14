@@ -8,10 +8,10 @@ import {
 import * as testData from "../../../resources/test-data"
 import {OrganisationTypeCode} from "../../../../src/services/translation/common/organizationTypeCode"
 
-const mockConvertTelecom = jest.fn()
-const mockConvertAddress = jest.fn()
+const mockConvertTelecom = vi.fn()
+const mockConvertAddress = vi.fn()
 
-jest.mock("../../../../src/services/translation/request/demographics", () => ({
+vi.mock("../../../../src/services/translation/request/demographics", () => ({
   convertTelecom: (contactPoint: fhir.ContactPoint, fhirPath: string) =>
     mockConvertTelecom(contactPoint, fhirPath),
   convertAddress: (fhirAddress: fhir.Address, fhirPath: string) =>

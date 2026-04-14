@@ -4,12 +4,12 @@ import {convert} from "../../convert"
 
 describe("conversion tests", () => {
   beforeAll(() => {
-    jest.useFakeTimers()
-    jest.setSystemTime(new Date(2022, 1, 1))
+    vi.useFakeTimers()
+    vi.setSystemTime(new Date(2022, 1, 1))
   })
 
   afterAll(() => {
-    jest.useRealTimers()
+    vi.useRealTimers()
   })
 
   test.each(TestResources.convertSuccessExamples)(

@@ -178,9 +178,9 @@ describe("custom response handler", () => {
     }
   }
 
-  const rejectionOverride = jest.fn()
-  const errorOverride = jest.fn()
-  const successOverride = jest.fn()
+  const rejectionOverride = vi.fn()
+  const errorOverride = vi.fn()
+  const successOverride = vi.fn()
 
   const customHandlerClass = class extends SpineResponseHandler<undefined> {
     protected handleRejectionResponse = rejectionOverride
@@ -226,7 +226,7 @@ describe("custom response handler", () => {
 })
 
 describe("cancel response handler", () => {
-  const mockTranslator = jest.fn()
+  const mockTranslator = vi.fn()
   const cancelResponseHandler = new CancelResponseHandler("PORX_IN050101UK31", mockTranslator)
   const mockCancellationResponse = {}
   const mockCancellationResponseRoot = {CancellationResponse: mockCancellationResponse}
@@ -283,8 +283,8 @@ describe("cancel response handler", () => {
 })
 
 describe("release response handler", () => {
-  const mockTranslator = jest.fn()
-  const mockReturnFactory = {create: jest.fn()}
+  const mockTranslator = vi.fn()
+  const mockReturnFactory = {create: vi.fn()}
   const dispenseReturnPayloadFactory = new DispenseReturnPayloadFactory()
   const releaseResponseHandler = new ReleaseResponseHandler(
     "PORX_IN070101UK31",
@@ -298,7 +298,7 @@ describe("release response handler", () => {
   const mockReleaseResponse = {}
   const mockReleaseResponseRoot = {PrescriptionReleaseResponse: mockReleaseResponse}
   const mockTranslatorResponse = {
-    translatedResponse : {resourceType: "Bundle"}
+    translatedResponse: {resourceType: "Bundle"}
   }
 
   test("handleResponse returns 400 response if spine response is a rejection", async () => {
@@ -556,7 +556,7 @@ function operationOutcomeIssue(
   otherCode: string,
   display: string,
   system: string
-): fhir.OperationOutcomeIssue{
+): fhir.OperationOutcomeIssue {
   return {
     code: code,
     severity: "error",
@@ -576,7 +576,7 @@ function createReleaseRejectSubject(
   return {
     PrescriptionReleaseReject: {
       pertinentInformation: {
-        pertinentRejectionReason:{
+        pertinentRejectionReason: {
           value: errorCode,
           performer: createTestPerformer()
         }

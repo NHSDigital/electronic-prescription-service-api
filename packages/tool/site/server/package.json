@@ -4,7 +4,7 @@
   "description": "EPS API Tool Server",
   "main": "app.js",
   "scripts": {
-    "test": "jest --ci --reporters=default --reporters=jest-junit",
+    "test": "vitest run --project tool-site-server --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
     "build:prod": "tsc --project ./tsconfig.json",
     "start": "node --enable-source-maps app.js --use_strict",
     "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs ."

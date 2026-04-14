@@ -8,7 +8,7 @@ import {
   describe,
   test,
   beforeAll
-} from "@jest/globals"
+} from "vitest"
 import {Match, Annotations} from "aws-cdk-lib/assertions"
 
 // cdk-nag has some issues if multiple versions of aws-cdk-lib are installed

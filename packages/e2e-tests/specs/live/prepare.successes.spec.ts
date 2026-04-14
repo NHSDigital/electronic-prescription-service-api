@@ -11,8 +11,10 @@ import {fhir} from "@models"
 
 describe("prepare e2e tests", () => {
   test.each(TestResources.prepareCaseGroups)(
-    "should be able to prepare a %s message",
-    async (desc: string, request: fhir.Bundle, response: fhir.Parameters) => {
+    "should be able to prepare a $description message",
+    async (
+      {description, request, response}: {description: string, request: fhir.Bundle, response: fhir.Parameters}
+    ) => {
       const options = new CreatePactOptions("live", "prepare")
       const provider = new PactV2(pactOptions(options))
       await provider.setup()
@@ -21,7 +23,7 @@ describe("prepare e2e tests", () => {
         options,
         request,
         getResponseExpectation(response),
-        `a request to prepare ${desc} message`
+        `a request to prepare ${description} message`
       )
 
       await provider.addInteraction(interaction)

@@ -21,8 +21,8 @@ const patient = getPatientResources(prescriptionOrder)[0]
 const medicationRequests = getMedicationRequestResources(prescriptionOrder)
 const medicationDispenses = getMedicationDispenseResources(dispenseNotification)
 
-jest.mock("uuid")
-jest.spyOn(global.crypto, "randomUUID").mockReturnValue("test-uuid-in-uuid-format")
+vi.mock("uuid")
+vi.spyOn(global.crypto, "randomUUID").mockReturnValue("test-uuid-in-uuid-format")
 
 const staticLineItemsArray =
   createStaticLineItemInfoArray(medicationRequests, medicationDispenses) as Array<LineItemFormValues>

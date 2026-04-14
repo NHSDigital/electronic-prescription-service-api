@@ -8,7 +8,12 @@ import {MedicationDispense} from "../../../../../models/fhir"
 import {LosslessNumber} from "lossless-json"
 
 describe("dosage-instructions", () => {
-  const logger: Logger = jest.createMockFromModule("pino")
+  const logger = {
+    info: vi.fn(),
+    warn: vi.fn(),
+    error: vi.fn(),
+    debug: vi.fn()
+  } as unknown as Logger
   let medicationDispense: Partial<fhir.MedicationDispense>
   let dosageInstruction: Array<Partial<fhir.Dosage>>
   let expectedDosageInstruction: string

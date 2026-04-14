@@ -5,7 +5,7 @@ import HapiPino from "hapi-pino"
 import {PayloadIdentifiers} from "../../src/routes/logging"
 import {isPayloadIdentifiersLog, PayloadIdentifiersLog} from "./types"
 
-const testIfValidPayload = (payload?: fhir.Resource): jest.It => {
+const testIfValidPayload = (payload?: fhir.Resource) => {
   return payload ? test : test.skip
 }
 
