@@ -3,6 +3,7 @@ import {
   ContentTypes,
   externalValidator,
   filterValidatorResponse,
+  getFhirValidatorErrors,
   getPayload,
   handleResponse,
   VALIDATOR_HOST
@@ -16,6 +17,7 @@ import {fhir, spine} from "@models"
 import {identifyMessageType} from "../../src/services/translation/common"
 import * as Hapi from "@hapi/hapi"
 import * as HapiShot from "@hapi/shot"
+import pino from "pino"
 
 vi.mock("../../src/services/translation/response", () => ({
   translateToFhir: () => ({statusCode: 200, fhirResponse: {value: "some FHIR response"}})
@@ -440,6 +442,67 @@ describe("CodeSystem URL normalization", () => {
 
     const parsedResponse = JSON.parse(response.payload)
     expect(parsedResponse.type.coding[0].system).toBe("http://terminology.hl7.org/CodeSystem/claim-type") // NOSONAR
+  })
+})
+
+describe("callFhirValidator with logger", () => {
+  afterEach(() => {
+    mock.reset()
+  })
+
+  test("logs debug messages when logger is provided", async () => {
+    mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {resourceType: "OperationOutcome", issue: []})
+
+    const logger = {
+      debug: vi.fn(),
+      info: vi.fn(),
+      warn: vi.fn(),
+      error: vi.fn()
+    } as unknown as pino.Logger
+
+    await callFhirValidator("data", {"content-type": "application/fhir+json", "x-request-id": "test-id"}, logger)
+
+    expect(logger.debug).toHaveBeenCalledWith(
+      expect.objectContaining({payloadType: "string", isBuffer: false}),
+      "Preparing to send payload to FHIR validator"
+    )
+  })
+})
+
+describe("getFhirValidatorErrors", () => {
+  afterEach(() => {
+    mock.reset()
+  })
+
+  test("calls validator and returns null when no issues", async () => {
+    mock.onPost(`${VALIDATOR_HOST}/$validate`).reply(200, {
+      resourceType: "OperationOutcome",
+      issue: []
+    })
+
+    const mockRequest = {
+      headers: {
+        "content-type": "application/fhir+json",
+        "x-request-id": "test-id"
+      },
+      app: {},
+      payload: JSON.stringify({resourceType: "Bundle"}),
+      logger: {
+        info: vi.fn(),
+        debug: vi.fn(),
+        error: vi.fn(),
+        warn: vi.fn()
+      }
+    } as unknown as Hapi.Request
+
+    const result = await getFhirValidatorErrors(mockRequest, false)
+
+    expect(result).toBeNull()
+    expect(mockRequest.logger.debug).toHaveBeenCalledWith(
+      expect.objectContaining({payloadType: "string"}),
+      "Making call to FHIR validator"
+    )
+    expect(mockRequest.logger.debug).toHaveBeenCalledWith("Received response from FHIR validator")
   })
 })
 
