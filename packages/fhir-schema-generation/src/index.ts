@@ -45,7 +45,12 @@ async function runSchemaGenerationPipeline() {
 
   console.log("\n\n\n TEST =======")
   const test = results.get("MedicationRequest")
+
+  // Output to console as string
   console.log(JSON.stringify(test))
+
+  // Output to console as JSON
+  // console.dir(test, {depth: null})
 }
 
 try {

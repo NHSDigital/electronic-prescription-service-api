@@ -91,95 +91,88 @@ export class SchemaProcessor {
     const pathTraverse = pathArray.slice(0, -1)
     const finalKey = pathArray[pathArray.length - 1]
 
-    const targetObj = pathTraverse.reduce((prev, curr) => prev?.[curr], obj)
+    // Create intermediate objects if they don't exist
+    const targetObj = pathTraverse.reduce((prev, curr) => {
+      prev[curr] = prev[curr] || {}
+      return prev[curr]
+    }, obj)
 
     if (targetObj) {
       targetObj[finalKey] = newValue
     }
-
-    return obj
   };
 
   private processProperties(simplifierSchema: StructureDefinition): Record<string, EditableJSONSchema> {
-    return simplifierSchema
-      .differential
-      .element
-      .reduce((result: Record<string, EditableJSONSchema>, current: StructureDefinitionDifferential) => {
-        // Get id parts
-        const idParts: Array<string> = current.id.split(".").reverse()
+    const result: Record<string, EditableJSONSchema> = {}
+    const elements = simplifierSchema.differential.element
 
-        // Get object name (i.e., MedicationRequest)
-        let prop = idParts.pop()!
+    for (const current of elements.sort((a, b) => a.id.localeCompare(b.id))) {
+      // Get id parts
+      const idParts: Array<string> = current.id.split(".").reverse()
 
-        const types = current.type
+      // Get object name (i.e., MedicationRequest)
+      let prop = idParts.pop()!
 
-        // Only process if the object has a type
-        if (types && types.length > 0) {
-          // Check if item is a sub-definition (i.e., MedicationRequest_Requester)
-          if (idParts.length > 1) {
-            prop += `_${idParts.pop()}`
-          }
+      const types = current.type
 
-          // Check if the element is required
-          const extensions = types[0].extension
-          const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
-          const code = extension ?? types[0].code
-
-          if (current.min && current.min > 0) {
-            result[prop] = result[prop] || {} satisfies DeepMutable<EditableJSONSchema>
-            (result[prop] as Exclude<DeepMutable<EditableJSONSchema>, boolean>).required = [
-              ...((result[prop] as Exclude<EditableJSONSchema, boolean>).required ?? []),
-              current.id
-            ]
-          }
-
-          // Check specifications, definitions, and progress states
-          const existingSpec = this.specifications.get(code)
-          const existingDef = this.definitions.get(code)
-          const isInProgress = this.inProgress.has(code)
-
-          if (existingSpec) {
-            // Check if this specification has already been processed
-            this.setNestedProp(result[prop], idParts, {
-              ...existingSpec,
-              description: current.definition
-            })
-          } else if (existingDef) {
-            // Check if this specification has already been processed as a definition
-            this.setNestedProp(result[prop], idParts, {
-              "$ref": `#/$defs/${code}`,
-              description: current.definition
-            })
-          } else if (isInProgress) {
-            // Check if this specification is complex and requires a definition
-            this.setNestedProp(result[prop], idParts, {
-              "$ref": `#/$defs/${code}`,
-              description: current.definition
-            })
-            this.updateDefinitions(code, undefined)
-          } else {
-            // Handle the specification as a normal property
-            const processed = this.processProperty(current, code)
-            if (processed) {
-              if (this.definitions.has(code)) {
-                this.setNestedProp(result[prop], idParts, {
-                  "$ref": `#/$defs/${code}`,
-                  description: current.definition
-                })
-                this.definitions.set(code, processed)
-                this.specifications.delete(code)
-              } else {
-                this.setNestedProp(result[prop], idParts, {
-                  ...processed,
-                  description: current.definition
-                })
-              }
-            }
-          }
+      // Only process if the object has a type
+      if (types && types.length > 0) {
+        // Check if item is a sub-definition (i.e., MedicationRequest_Requester)
+        if (idParts.length > 1) {
+          const postfix = idParts.pop()!
+          prop += `_${postfix[0].toUpperCase()}${postfix.slice(1)}`
         }
 
-        return result
-      }, {})
+        // Check if the element is required
+        const extensions = types[0].extension
+        const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
+        const code = extension ?? types[0].code
+
+        result[prop] = result[prop] || {} satisfies DeepMutable<EditableJSONSchema>
+        if (current.min && current.min > 0) {
+          (result[prop] as Exclude<DeepMutable<EditableJSONSchema>, boolean>).required = [
+            ...((result[prop] as Exclude<EditableJSONSchema, boolean>).required ?? []),
+            current.id
+          ]
+        }
+
+        // Check specifications, definitions, and progress states
+        const existingSpec = this.specifications.get(code)
+        const existingDef = this.definitions.get(code)
+        const isInProgress = this.inProgress.has(code)
+        const primitive = this.primitives.has(code)
+
+        if (!(existingSpec || existingDef || isInProgress || primitive)) {
+          // Handle the specification as a normal property
+          this.processProperty(current, code)
+
+          elements.push(current)
+        }
+
+        idParts.reverse()
+        if (current.short.includes(" | ")) {
+          this.setNestedProp(result[prop], idParts, {
+            description: current.definition,
+            enum: current.short.split("|").map((item) => item.trim()),
+            type: "string"
+          })
+        } else if (this.primitives.has(code)) {
+          this.setNestedProp(result[prop], idParts, {
+            description: current.definition,
+            type: current.type,
+            ...(this.primitives.get(code) ?? {}) as any
+          })
+        } else if (!isInProgress) {
+          console.log("\n| > ", "idParts", idParts)
+          this.setNestedProp(result[prop], idParts, {
+            "$ref": `${code}.schema.json#/$definitions/${code}`,
+            description: current.definition
+          })
+        }
+      }
+    }
+
+    return result
   }
 
   private processProperty(element: StructureDefinitionDifferential, code: string): EditableJSONSchema | undefined {
