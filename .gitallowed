@@ -3,6 +3,7 @@ token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
 github-token: ?"?\$\{\{\s*secrets\.GITHUB_TOKEN\s*\}\}"?
 token: ?"?\$\{\{\s*secrets\.DEPENDABOT_TOKEN\s*\}\}"?
 token: ?"?\$\{\{\s*secrets\.VALIDATOR_UPGRADE_PAT\s*\}\}"?
+token: \$\{\{ steps\.generate-token\.outputs\.token \}\}
 id-token: write
 --token=\$\{\{\s*steps\.generate-token\.outputs\.token\s*\}\}
 --token=\$GITHUB-TOKEN
@@ -16,6 +17,7 @@ poetry.lock
 self.token = token
 CidrIp: 0.0.0.0\/0
 host: "0\.0\.0\.0"
+token="\${GITHUB_TOKEN}"
 const token = await getAuthToken()
 throw new Error\(`Cannot retrieve auth token: \${requestUrl} returned \${response.data}`\)
 throw `Could not retrieve token: \${result.data}

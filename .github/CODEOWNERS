@@ -1,0 +1,2 @@
+# restrict access to approving workflow changes
+.github/workflows/ @NHSDigital/eps-admins

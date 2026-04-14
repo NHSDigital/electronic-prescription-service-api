@@ -20,6 +20,8 @@ on:
       REGRESSION_TESTS_PEM:
         required: true
 
+permissions: {}
+
 jobs:
   run_regression_tests:
     runs-on: ubuntu-22.04
@@ -41,8 +43,8 @@ jobs:
       - name: Checkout local github actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Generate a token to authenticate regression testing
         id: generate-token
@@ -59,7 +61,8 @@ jobs:
         env:
           TARGET_ENVIRONMENT: ${{ inputs.ENVIRONMENT }}
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
-          GITHUB-TOKEN: ${{ steps.generate-token.outputs.token }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
+          PRODUCT: ${{ inputs.PRODUCT }}
         run: |
           if [[ "$TARGET_ENVIRONMENT" != "prod" && "$TARGET_ENVIRONMENT" != "ref" ]]; then
             # this should be the tag of the tests you want to run
@@ -84,9 +87,9 @@ jobs:
             poetry run python -u run_regression_tests.py \
             --env="$TARGET_ENVIRONMENT" \
             --pr_label="$VERSION_NUMBER" \
-            --token=${{ steps.generate-token.outputs.token }} \
+            --token="${GITHUB_TOKEN}" \
             --is_called_from_github=true \
-            --product=${{ inputs.PRODUCT }} \
+            --product="${PRODUCT}" \
             --regression_test_repo_tag "${REGRESSION_TEST_REPO_TAG}" \
             --regression_test_workflow_tag "${REGRESSION_TEST_WORKFLOW_TAG}"
           fi
