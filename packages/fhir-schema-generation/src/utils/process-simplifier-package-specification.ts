@@ -28,11 +28,6 @@ export class SchemaProcessor {
     this.specifications.set(id, schema)
   }
 
-  private updateDefinitions(id: string, schema: EditableJSONSchema | undefined) {
-    this.inProgress.delete(id)
-    this.definitions.set(id, schema)
-  }
-
   private processSpecification(simplifierSchema: StructureDefinition) {
     switch (simplifierSchema.kind) {
       case "primitive-type":

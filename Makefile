@@ -344,6 +344,12 @@ lint-githubactions:
 
 lint-all: lint-api lint-epsat lint-githubactions
 
+## Security Scanning
+
+grype-scan-local:
+	@command -v grype >/dev/null 2>&1 || { echo "Error: Grype is not installed."; echo "Install from: https://github.com/anchore/grype#installation"; exit 1; }
+	grype . --fail-on high
+
 ## check licenses
 
 check-language-versions:

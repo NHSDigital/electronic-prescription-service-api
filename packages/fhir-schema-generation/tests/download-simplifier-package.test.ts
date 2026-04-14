@@ -166,4 +166,72 @@ describe("download-simplifier-package", () => {
     await expect(extractAndReadPackage(tarballPath, outputDir))
       .rejects.toThrow("Could not find expected 'package/package.json' inside")
   })
+
+  it("logs a warning when a non-latest version is requested", async () => {
+    const tmpDir = makeTempDir()
+
+    vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
+      "dist-tags": {latest: "2.0.0"},
+      versions: {
+        "1.0.0": {version: "1.0.0", dist: {tarball: "http://test.com/1.0.0.tgz"}},
+        "2.0.0": {version: "2.0.0", dist: {tarball: "http://test.com/2.0.0.tgz"}}
+      }
+    }))))
+
+    const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {})
+
+    // Pass tmpDir instead of "/out"
+    // We can also catch any errors if we don't want to fully mock the tarball extraction
+    await downloadSimplifierPackage("https://reg", "pkg", tmpDir, "1.0.0").catch(() => {})
+
+    expect(warnSpy).toHaveBeenCalledWith(
+      "A later version of this package is available",
+      "2.0.0"
+    )
+  })
+
+  it("throws an error if the tarball response body is empty", async () => {
+    const tmpDir = makeTempDir()
+
+    vi.stubGlobal("fetch", vi.fn()
+      .mockResolvedValueOnce({ // Metadata call
+        ok: true,
+        json: async () => ({
+          "dist-tags": {latest: "1.0.0"},
+          versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "http://test.tgz"}}}
+        })
+      })
+      .mockResolvedValueOnce({ // Tarball call
+        ok: true,
+        body: null, // This triggers line 85
+        statusText: "No Body"
+      })
+    )
+
+    // Pass tmpDir as the output directory
+    await expect(downloadSimplifierPackage("https://reg", "pkg", tmpDir, "latest"))
+      .rejects.toThrow("Failed to download tarball: No Body")
+  })
+
+  it("filters files during extraction to ensure they stay within target directory", async () => {
+    const tmp = makeTempDir()
+    const source = path.join(tmp, "dummy.tgz")
+    const target = path.join(tmp, "out")
+    fs.writeFileSync(source, "fake tar content")
+
+    // Trigger the function to capture the filter predicate passed to tar.x
+    await extractAndReadPackage(source, target).catch(() => {})
+
+    const tarMock = vi.mocked(tar.x)
+    const filterFunc = tarMock.mock.calls[0][0].filter
+
+    // tar's filter function expects (path: string, entry: any)
+    const mockEntry = {} as any
+
+    // Test line 99: Valid path within the resolved target
+    expect(filterFunc!("package/index.js", mockEntry)).toBe(true)
+
+    // Test line 99: Potential path traversal (should return false)
+    expect(filterFunc!("../traversal.js", mockEntry)).toBe(false)
+  })
 })
