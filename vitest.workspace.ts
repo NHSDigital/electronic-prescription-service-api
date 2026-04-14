@@ -63,9 +63,9 @@ export default [
   // ─── models ─────────────────────────────────────────────────────────────────
   // Node environment, minimal config — no path aliases or setup files needed.
   {
+    root: "./packages/models",
     test: {
       name: "models",
-      root: "./packages/models",
       globals: true,
       environment: "node",
       include: ["**/*.{test,spec}.{ts,tsx}"],
@@ -115,9 +115,9 @@ export default [
 
   // ─── tool e2e tests (selenium) ────────────────────────────────────────────
   {
+    root: "./packages/tool/e2e-tests",
     test: {
       name: "tool-e2e-tests",
-      root: "./packages/tool/e2e-tests",
       globals: true,
       environment: "node",
       include: ["**/*.{test,spec}.{ts,tsx}"],
@@ -131,9 +131,9 @@ export default [
 
   // ─── tool site server ─────────────────────────────────────────────────────
   {
+    root: "./packages/tool/site/server",
     test: {
       name: "tool-site-server",
-      root: "./packages/tool/site/server",
       globals: true,
       environment: "node",
       include: ["tests/**/*.{test,spec}.{ts,tsx}", "src/**/*.{test,spec}.{ts,tsx}"],
