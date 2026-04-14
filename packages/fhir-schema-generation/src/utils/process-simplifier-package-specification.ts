@@ -3,7 +3,7 @@ import {StructureDefinition} from "../models/fhir-package/structure-definition.i
 import {JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/JSONSchema.js"
 import {parseSimplifierPackage} from "./parse-simplifier-package.js"
 import {StructureDefinitionDifferential} from "../models/structure-definition/differential-element.interface.js"
-import {DeepMutable} from "./deep-mutible.js"
+import {DeepMutable} from "../types/deep-mutable.type.js"
 import {EditableJSONSchema} from "../types/editable-json-schema.type.js"
 
 export class SchemaProcessor {
@@ -123,18 +123,45 @@ export class SchemaProcessor {
           prop += `_${postfix[0].toUpperCase()}${postfix.slice(1)}`
         }
 
+        // Initialize the definition object with the allOf wrapper if it doesn't exist
+        if (!result[prop]) {
+          let baseRef: string
+
+          if (prop === simplifierSchema.name) {
+            const baseClass = simplifierSchema.baseDefinition
+              ? simplifierSchema.baseDefinition.split("/").pop()!
+              : "DomainResource"
+
+            baseRef = `${baseClass}#/definitions/${baseClass}`
+          } else {
+            const baseClass = types[0].code || "BackboneElement"
+            baseRef = `${baseClass}#/definitions/${baseClass}`
+          }
+
+          result[prop] = {
+            allOf: [
+              {$ref: baseRef},
+              {
+                description: current.definition,
+                properties: {}
+              }
+            ]
+          }
+        }
+
+        // Skip assignment if it's the root self-declaration (e.g., id: "MedicationRequest")
+        if (idParts.length === 0) continue
+
         // Check if the element is required
+        if (current.min && current.min > 0) {
+          const defBody = (result[prop] as any).allOf[1]
+          defBody.required = defBody.required || []
+          defBody.required.push(idParts[0])
+        }
+
         const extensions = types[0].extension
         const extension = extensions?.length > 0 ? extensions[0].valueUrl : undefined
         const code = extension ?? types[0].code
-
-        result[prop] = result[prop] || {} satisfies DeepMutable<EditableJSONSchema>
-        if (current.min && current.min > 0) {
-          (result[prop] as Exclude<DeepMutable<EditableJSONSchema>, boolean>).required = [
-            ...((result[prop] as Exclude<EditableJSONSchema, boolean>).required ?? []),
-            current.id
-          ]
-        }
 
         // Check specifications, definitions, and progress states
         const existingSpec = this.specifications.get(code)
@@ -150,21 +177,24 @@ export class SchemaProcessor {
         }
 
         idParts.reverse()
-        if (current.short.includes(" | ")) {
-          this.setNestedProp(result[prop], idParts, {
+
+        // Target the specific `properties` dictionary inside the `allOf` array
+        const targetProperties = (result[prop] as any).allOf[1].properties
+
+        if (current.short && current.short.includes(" | ")) {
+          this.setNestedProp(targetProperties, idParts, {
             description: current.definition,
             enum: current.short.split("|").map((item) => item.trim()),
             type: "string"
           })
         } else if (this.primitives.has(code)) {
-          this.setNestedProp(result[prop], idParts, {
+          this.setNestedProp(targetProperties, idParts, {
             description: current.definition,
             type: current.type,
             ...(this.primitives.get(code) ?? {}) as any
           })
         } else if (!isInProgress) {
-          console.log("\n| > ", "idParts", idParts)
-          this.setNestedProp(result[prop], idParts, {
+          this.setNestedProp(targetProperties, idParts, {
             "$ref": `${code}.schema.json#/$definitions/${code}`,
             description: current.definition
           })
@@ -176,7 +206,6 @@ export class SchemaProcessor {
   }
 
   private processProperty(element: StructureDefinitionDifferential, code: string): EditableJSONSchema | undefined {
-
     // Recursively process the dependency
     this.processSimplifierPackageSpecifications(`${this.rootDir}${code}.json`)
     const found = this.specifications.get(code) as Exclude<EditableJSONSchema, boolean>
