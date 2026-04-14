@@ -22,9 +22,9 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/tar": "^7.0.87",
-    "eslint": "^10.0.3",
+    "eslint": "^10.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.57.2",

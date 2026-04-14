@@ -1,6 +1,6 @@
 import pino from "pino"
 import {ElementCompact} from "xml-js"
-import {fhir, hl7V3} from "@models"
+import {hl7V3} from "@models"
 import {writeXmlStringCanonicalized} from "../serialisation/xml"
 import {convertFragmentsToHashableFormat, extractFragments} from "../translation/request/signature"
 import {createParametersDigest} from "../translation/request"
@@ -68,41 +68,6 @@ export const verifyPrescriptionSignature = async (
   }
 
   return errors
-}
-
-const createSignatureIssue = (diagnostics: string): fhir.OperationOutcomeIssue => ({
-  severity: "error",
-  code: fhir.IssueCodes.INVALID,
-  details: {
-    coding: [{
-      system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-      code: "INVALID_VALUE",
-      display: "Signature is invalid."
-    }]
-  },
-  diagnostics,
-  expression: ["Provenance.signature.data"]
-})
-
-export const verifyAndFormatPrescriptionSignature = async (
-  parentPrescription: hl7V3.ParentPrescription,
-  logger: pino.Logger,
-  action: "creation" | "release"
-): Promise<Array<fhir.OperationOutcomeIssue>> => {
-  try {
-    const errors = await verifyPrescriptionSignature(parentPrescription, logger)
-    if (errors.length === 0) {
-      return []
-    }
-
-    const prescriptionId = parentPrescription.id._attributes.root.toLowerCase()
-    logger.error(`[Verifying signature for prescription ${prescriptionId} on ${action}]: ${errors.join(", ")}`)
-
-    return errors.map(createSignatureIssue)
-  } catch (e) {
-    logger.error(e, `Uncaught error during signature verification for ${action}`)
-    return [createSignatureIssue("Uncaught error during signature verification")]
-  }
 }
 
 function verifyChain(x509Certificate: crypto.X509Certificate): boolean {

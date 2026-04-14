@@ -232,7 +232,6 @@ describe("outer bundle", () => {
                 }
               ]
             },
-            diagnostics: "Signature is invalid",
             expression: ["Provenance.signature.data"]
           }
         ])
@@ -271,7 +270,8 @@ describe("outer bundle", () => {
     })
   })
 
-  test("marks prescription as failed if verification returns errors", async () => {
+  test("marks prescription as failed if verification throws an error", async () => {
+    const loggerErrorSpy = vi.spyOn(logger, "error")
     try {
       throwOnVerification = true
       const result = await translateReleaseResponse(
@@ -282,8 +282,12 @@ describe("outer bundle", () => {
       prescriptionsParameter = getBundleParameter(result.translatedResponse, "failedPrescriptions")
       prescriptions = prescriptionsParameter.resource
       expect(prescriptions.total).toEqual(2)
+      expect(loggerErrorSpy).toHaveBeenCalledWith(
+        expect.any(Error), "Uncaught error during signature verification for release"
+      )
     } finally {
       throwOnVerification = false
+      loggerErrorSpy.mockRestore()
     }
   })
 })

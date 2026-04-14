@@ -71,17 +71,7 @@ describe("ensure errors are translated", () => {
       ? {
         code: "invalid",
         severity: "error",
-        details: {
-          coding: [
-            {
-              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID_VALUE",
-              display: "Signature is invalid."
-            }
-          ]
-        },
-        diagnostics: "Invalid signature format",
-        expression: ["Provenance.signature.data"]
+        diagnostics: "Invalid signature format"
       }
       : {
         code: "business-rule",
