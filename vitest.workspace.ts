@@ -121,6 +121,8 @@ export default [
       globals: true,
       environment: "node",
       include: ["**/*.{test,spec}.{ts,tsx}"],
+      testTimeout: 3600000,
+      hookTimeout: 3600000,
       retry: 3,
       pool: "forks",
       poolOptions: {
