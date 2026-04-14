@@ -8,25 +8,14 @@ vi.mock("../../../../../src/services/verification/signature-verification", async
   )
 
   return {
-    verifyAndFormatPrescriptionSignature: async (
-      parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger, action: "creation" | "release"
+    ...actualVerification,
+    verifyPrescriptionSignature: async (
+      parentPrescription: hl7V3.ParentPrescription, logger: pino.Logger
     ) => {
       if (throwOnVerification) {
-        return [{
-          severity: "error",
-          code: "invalid",
-          details: {
-            coding: [{
-              system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
-              code: "INVALID_VALUE",
-              display: "Signature is invalid."
-            }]
-          },
-          diagnostics: "Uncaught error during signature verification",
-          expression: ["Provenance.signature.data"]
-        }]
+        throw new Error("Verification error")
       } else {
-        return actualVerification.verifyAndFormatPrescriptionSignature(parentPrescription, logger, action)
+        return actualVerification.verifyPrescriptionSignature(parentPrescription, logger)
       }
     }
   }

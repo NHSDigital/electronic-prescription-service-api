@@ -24,7 +24,7 @@ vi.mock("../../src/services/translation/request", () => ({
 }))
 
 vi.mock("../../src/services/verification/signature-verification", () => ({
-  verifyAndFormatPrescriptionSignature: vi.fn()
+  verifyPrescriptionSignature: vi.fn()
 }))
 
 vi.mock("../../src/services/communication/spine-client", () => ({
