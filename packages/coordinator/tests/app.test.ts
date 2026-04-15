@@ -17,18 +17,18 @@ import HapiPino from "hapi-pino"
 import pino, {DestinationStream} from "pino"
 import split from "split2"
 
-jest.mock("../src/utils/environment", () => ({
-  isProd: jest.fn(),
-  isEpsHostedContainer: jest.fn()
+vi.mock("../src/utils/environment", () => ({
+  isProd: vi.fn(),
+  isEpsHostedContainer: vi.fn()
 }))
 
-jest.mock("../src/utils/feature-flags", () => ({
-  isEpsHostedContainer: jest.fn(),
-  isSandbox: jest.fn(() => false)
+vi.mock("../src/utils/feature-flags", () => ({
+  isEpsHostedContainer: vi.fn(),
+  isSandbox: vi.fn(() => false)
 }))
 
-const newIsProd = isProd as jest.MockedFunction<typeof isProd>
-const newIsEpsHostedContainer = isEpsHostedContainer as jest.MockedFunction<typeof isEpsHostedContainer>
+const newIsProd = vi.mocked(isProd)
+const newIsEpsHostedContainer = vi.mocked(isEpsHostedContainer)
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function sink(spyFunc: (...args: Array<any>) => void) {
@@ -47,7 +47,7 @@ function sink(spyFunc: (...args: Array<any>) => void) {
   return result
 }
 
-const spyOnPinoOutput = jest.fn()
+const spyOnPinoOutput = vi.fn()
 const spyStream: DestinationStream = sink(spyOnPinoOutput)
 
 const logger = pino(spyStream)
@@ -366,7 +366,7 @@ describe("logs payload in correct situations", () => {
   ]
 
   test.each(logTestCases)(
-    "$scenarioDescription", async function(logTestCase) {
+    "$scenarioDescription", async function (logTestCase) {
       newIsEpsHostedContainer.mockImplementation(() => logTestCase.isEpsDeployment)
       const expectedPayload = {"foo": "bar"}
       const response = await server.inject({

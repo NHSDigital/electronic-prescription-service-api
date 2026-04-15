@@ -48,12 +48,4 @@ export class ProcessCase extends Case {
       && exampleFile.statusText === requestFile.statusText)
   }
 
-  toJestCase(): [string, fhir.Bundle] {
-    return [this.description, this.request]
-  }
-
-  // [description, request, response, statusCode]
-  toErrorJestCase(): [string, fhir.Bundle, fhir.OperationOutcome, number, string] {
-    return [this.description, this.request, this.response, this.statusCode, this.statusText]
-  }
 }

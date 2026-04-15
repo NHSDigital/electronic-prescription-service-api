@@ -10,8 +10,15 @@ import {fhir} from "@models"
 
 describe("dispense interactions", () => {
   test.each(TestResources.taskReleaseCases)(
-    "should be able to acquire prescription info on a prescription release",
-    async (description: string, request: fhir.Parameters, response: fhir.Bundle, statusCode: number) => {
+    "should be able to acquire prescription info on a prescription release: $description",
+    async (
+      {description, request, response, statusCode}: {
+        description: string,
+        request: fhir.Parameters,
+        response: fhir.Bundle,
+        statusCode: number
+      }
+    ) => {
       const options = new CreatePactOptions("live", "task", "release")
       const provider = new PactV2(pactOptions(options))
       await provider.setup()
@@ -31,16 +38,16 @@ describe("dispense interactions", () => {
 
 describe("Task return e2e tests", () => {
   test.each(TestResources.taskReturnCases)(
-    "should be able to process %s",
-    async (desc: string, message: fhir.Task) => {
+    "should be able to process $description",
+    async ({description, request}: {description: string, request: fhir.Task}) => {
       const options = new CreatePactOptions("live", "task", "return")
       const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
-        message,
+        request,
         successfulOperationOutcome,
-        `a request to return ${desc} message`
+        `a request to return ${description} message`
       )
       await provider.addInteraction(interaction)
       await provider.writePact()
@@ -51,16 +58,16 @@ describe("Task return e2e tests", () => {
 
 describe("Task withdraw e2e tests", () => {
   test.each(TestResources.taskWithdrawCases)(
-    "should be able to withdraw %s",
-    async (desc: string, message: fhir.Task) => {
+    "should be able to withdraw $description",
+    async ({description, request}: {description: string, request: fhir.Task}) => {
       const options = new CreatePactOptions("live", "task", "withdraw")
       const provider = new PactV2(pactOptions(options))
       await provider.setup()
       const interaction = createInteraction(
         options,
-        message,
+        request,
         successfulOperationOutcome,
-        `a request to withdraw ${desc} message`
+        `a request to withdraw ${description} message`
       )
       await provider.addInteraction(interaction)
       await provider.writePact()

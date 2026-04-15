@@ -3,12 +3,12 @@
   "version": "0.0.1",
   "description": "E2E Pact tests for Electronic Prescription Service API",
   "scripts": {
-    "test": "jest --runInBand --ci --reporters=default --reporters=jest-junit --coverage",
+    "test": "vitest run --project e2e-tests --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml --poolOptions.forks.maxForks=1",
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
     "generate-postman-collection": "ts-node postman-pact.ts --use_strict",
-    "clear-cache": "jest --clearCache",
-    "create-sandbox-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPatterns sandbox",
-    "create-live-pacts": "jest --ci --reporters=default --reporters=jest-junit --testPathPatterns live",
+    "clear-cache": "rm -rf node_modules/.vitest",
+    "create-sandbox-pacts": "vitest run --project e2e-tests specs/sandbox --reporter=default --reporter=junit --outputFile.junit=./junit.xml --poolOptions.forks.maxForks=1",
+    "create-live-pacts": "vitest run --project e2e-tests specs/live --reporter=default --reporter=junit --outputFile.junit=./junit.xml --poolOptions.forks.maxForks=1",
     "fetch-apigee-access-token": "ts-node --project tsconfig.json ./auth/src/oauth.ts --use_strict",
     "verify-pacts": "ts-node --project tsconfig.json ./broker/verify.ts --use_strict"
   },

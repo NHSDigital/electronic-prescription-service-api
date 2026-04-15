@@ -1,3 +1,4 @@
+import {vi, MockedFunction} from "vitest"
 import Hapi from "@hapi/hapi"
 import HapiPino from "hapi-pino"
 import {fhir, hl7V3} from "@models"
@@ -10,46 +11,46 @@ import * as spineClientModule from "../../src/services/communication/spine-clien
 import * as bundleValidator from "../../src/services/validation/bundle-validator"
 import {clone} from "../resources/test-helpers"
 
-jest.mock("../../src/utils/feature-flags", () => ({
-  isSignatureValidationEnabled: jest.fn(),
-  isSandbox: jest.fn(() => false),
-  isEpsHostedContainer: jest.fn(() => false),
-  enableDefaultAsidPartyKey: jest.fn(() => true)
+vi.mock("../../src/utils/feature-flags", () => ({
+  isSignatureValidationEnabled: vi.fn(),
+  isSandbox: vi.fn(() => false),
+  isEpsHostedContainer: vi.fn(() => false),
+  enableDefaultAsidPartyKey: vi.fn(() => true)
 }))
 
-jest.mock("../../src/services/translation/request", () => ({
-  convertPrescriptionBundleToSpineRequest: jest.fn(),
-  convertBundleToSpineRequest: jest.fn()
+vi.mock("../../src/services/translation/request", () => ({
+  convertPrescriptionBundleToSpineRequest: vi.fn(),
+  convertBundleToSpineRequest: vi.fn()
 }))
 
-jest.mock("../../src/services/verification/signature-verification", () => ({
-  verifyPrescriptionSignature: jest.fn()
+vi.mock("../../src/services/verification/signature-verification", () => ({
+  verifyPrescriptionSignature: vi.fn()
 }))
 
-jest.mock("../../src/services/communication/spine-client", () => ({
+vi.mock("../../src/services/communication/spine-client", () => ({
   spineClient: {
-    send: jest.fn()
+    send: vi.fn()
   }
 }))
 
-jest.mock("../../src/services/validation/bundle-validator", () => ({
-  verifyBundle: jest.fn().mockReturnValue([])
+vi.mock("../../src/services/validation/bundle-validator", () => ({
+  verifyBundle: vi.fn().mockReturnValue([])
 }))
 
-const mockIsSignatureValidationEnabled = featureFlags.isSignatureValidationEnabled as jest.MockedFunction<
+const mockIsSignatureValidationEnabled = featureFlags.isSignatureValidationEnabled as MockedFunction<
   typeof featureFlags.isSignatureValidationEnabled
 >
-const mockConvertPrescriptionBundle = translator.convertPrescriptionBundleToSpineRequest as jest.MockedFunction<
+const mockConvertPrescriptionBundle = translator.convertPrescriptionBundleToSpineRequest as MockedFunction<
   typeof translator.convertPrescriptionBundleToSpineRequest
 >
-const mockVerifyPrescriptionSignature = signatureVerification.verifyPrescriptionSignature as jest.MockedFunction<
+const mockVerifyPrescriptionSignature = signatureVerification.verifyPrescriptionSignature as MockedFunction<
   typeof signatureVerification.verifyPrescriptionSignature
 >
-const mockSpineSend = spineClientModule.spineClient.send as jest.MockedFunction<
+const mockSpineSend = spineClientModule.spineClient.send as MockedFunction<
   typeof spineClientModule.spineClient.send
 >
-const mockVerifyBundle = bundleValidator.verifyBundle as jest.MockedFunction<typeof bundleValidator.verifyBundle>
-const mockConvertBundle = translator.convertBundleToSpineRequest as jest.MockedFunction<
+const mockVerifyBundle = bundleValidator.verifyBundle as MockedFunction<typeof bundleValidator.verifyBundle>
+const mockConvertBundle = translator.convertBundleToSpineRequest as MockedFunction<
   typeof translator.convertBundleToSpineRequest
 >
 
@@ -87,7 +88,7 @@ describe("process route - signature validation", () => {
   })
 
   beforeEach(() => {
-    jest.clearAllMocks()
+    vi.clearAllMocks()
     prescriptionBundle = clone(TestResources.specification[0].fhirMessageSigned)
     mockVerifyBundle.mockReturnValue([])
     mockConvertPrescriptionBundle.mockResolvedValue({

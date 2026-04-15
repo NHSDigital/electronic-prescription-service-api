@@ -51,7 +51,7 @@ describe("endpoint authentication e2e tests", () => {
 
 describe("ensure errors are translated", () => {
   test("EPS Prescribe error 0003", async () => {
-    const message = TestResources.prepareCaseBundles[0][1] as fhir.Bundle
+    const message = TestResources.prepareCaseBundles[0].request as fhir.Bundle
     const messageClone = LosslessJson.parse(LosslessJson.stringify(message)) as fhir.Bundle
     messageClone.identifier.value = crypto.randomUUID().toUpperCase()
     const bundleStr = LosslessJson.stringify(messageClone)
@@ -125,13 +125,19 @@ describe("ensure errors are translated", () => {
   })
 
   test.each(TestResources.processErrorCases)(
-    "returns correct status code and body for %p",
+    "returns correct status code and body for $description",
     async (
-      _: string,
-      request: fhir.Bundle,
-      response: fhir.OperationOutcome,
-      statusCode: number,
-      statusText: string
+      {
+        request,
+        response,
+        statusCode,
+        statusText
+      }: {
+        request: fhir.Bundle,
+        response: fhir.OperationOutcome,
+        statusCode: number,
+        statusText: string
+      }
     ) => {
       const bundleStr = LosslessJson.stringify(request)
 
@@ -198,7 +204,7 @@ describe("ensure errors are translated", () => {
 })
 
 test.skip("should reject a message with an invalid SDS Role Profile ID", async () => {
-  const message = TestResources.processOrderCases[0][1]
+  const message = TestResources.processOrderCases[0].request
   const bundleStr = LosslessJson.stringify(message)
   const bundle = JSON.parse(bundleStr) as fhir.Bundle
   const requestId = crypto.randomUUID()

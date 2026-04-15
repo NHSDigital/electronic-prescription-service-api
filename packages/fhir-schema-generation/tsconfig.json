@@ -9,7 +9,9 @@
     "strict": true,
     "skipLibCheck": true,
     "declaration": true,
-    "types": ["node"] 
+    "types": [
+      "node"
+    ]
   },
   "include": [
     "src/**/*",

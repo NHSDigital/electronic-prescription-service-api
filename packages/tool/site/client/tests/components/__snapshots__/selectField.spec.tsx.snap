@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
 exports[`Renders correctly 1`] = `"<form action="#"><div class="nhsuk-form-group"><label class="nhsuk-label" id="test--label" for="test">test</label><select class="nhsuk-select" name="test" id="test"></select></div></form>"`;
 

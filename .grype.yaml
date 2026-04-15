@@ -1,4 +1,8 @@
 ignore:
+  # vite - server.fs.deny bypass. Transitive dev dep via vitest; Vite dev server is not used (we use webpack)
+  - vulnerability: GHSA-v2wj-q39q-566r
+  # vite - arbitrary file read via WebSocket. Transitive dev dep via vitest; Vite dev server is not used (we use webpack)
+  - vulnerability: GHSA-p9ff-h696-f583
   # picomatch
   - vulnerability: GHSA-c2c7-rcm5-vvqj
   # path-to-regexp
@@ -61,12 +65,12 @@ ignore:
   - vulnerability: GHSA-9654-pr4f-gh6m
   - vulnerability: GHSA-7hfm-57qf-j43q
   - vulnerability: GHSA-mc84-pj99-q6hh
-  - vulnerability: CVE-2025-21587    
-  - vulnerability: CVE-2025-30749    
-  - vulnerability: CVE-2025-50106     
-  - vulnerability: CVE-2025-50059   
-  - vulnerability: CVE-2025-53066    
-  - vulnerability: CVE-2026-21945    
+  - vulnerability: CVE-2025-21587
+  - vulnerability: CVE-2025-30749
+  - vulnerability: CVE-2025-50106
+  - vulnerability: CVE-2025-50059
+  - vulnerability: CVE-2025-53066
+  - vulnerability: CVE-2026-21945
   - vulnerability: CVE-2026-21932
   - vulnerability: GHSA-2m67-wjpj-xhg9
   - vulnerability: GHSA-rv64-5gf8-9qq8

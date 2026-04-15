@@ -12,10 +12,9 @@ import * as TestResources from "../../../resources/test-resources"
 import * as common from "../../../../src/services/translation/common/getResourcesOfType"
 import {getMessageHeader, getProvenances} from "../../../../src/services/translation/common/getResourcesOfType"
 import {fhir, hl7V3, processingErrors as errors} from "@models"
-import {MomentFormatSpecification, MomentInput} from "moment"
+import moment from "moment"
 import {onlyElement} from "../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../src/services/translation/common/dateTime"
-import requireActual = jest.requireActual
 import medicationRequests from "../../../resources/message-fragments/medicationRequest"
 import practitionerRoles from "../../../resources/message-fragments/practitionerRole"
 import practitioners from "../../../resources/message-fragments/practitioner"
@@ -23,11 +22,15 @@ import organizations from "../../../resources/message-fragments/organization"
 import messageHeaders from "../../../resources/message-fragments/messageHeader"
 import {isReference} from "../../../../src/utils/type-guards"
 
-const actualMoment = requireActual("moment")
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
-}))
+const realMomentNow = moment.now
+
+beforeAll(() => {
+  moment.now = () => new Date("2020-12-18T12:34:34Z").valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [
@@ -61,13 +64,13 @@ describe("getAgentPersonTelecom", () => {
     }
   ]
 
-  function roleSource() : AgentPersonTelecomSource {
+  function roleSource(): AgentPersonTelecomSource {
     return {
       contactPoints: roleTelecom,
       fhirPath: "PractitionerRole.telecom"
     }
   }
-  function childSource() : AgentPersonTelecomSource {
+  function childSource(): AgentPersonTelecomSource {
     return {
       contactPoints: childTelecom,
       fhirPath: "Practitioner.telecom"
@@ -165,7 +168,7 @@ describe("getAgentPersonTelecom", () => {
     return practitionerRole
   }
 
-  function examplePractitioner(withTelecom: boolean): fhir.Practitioner{
+  function examplePractitioner(withTelecom: boolean): fhir.Practitioner {
     const practitioner: fhir.Practitioner = {
       resourceType: "Practitioner"
     }
@@ -175,7 +178,7 @@ describe("getAgentPersonTelecom", () => {
     return practitioner
   }
 
-  function exampleOrganization(withTelecom: boolean): fhir.Organization{
+  function exampleOrganization(withTelecom: boolean): fhir.Organization {
     const organization: fhir.Organization = {
       resourceType: "Organization"
     }
@@ -336,7 +339,7 @@ describe("convertAuthor", () => {
   })
 })
 
-function buildNoRPTestBundle(): fhir.Bundle{
+function buildNoRPTestBundle(): fhir.Bundle {
   const bundle: fhir.Bundle = {
     resourceType: "Bundle"
   }
@@ -375,14 +378,14 @@ function buildNoRPTestBundle(): fhir.Bundle{
   return bundle
 }
 
-function buildRPTestBundle(baseRP: string): fhir.Bundle{
+function buildRPTestBundle(baseRP: string): fhir.Bundle {
   const bundle: fhir.Bundle = buildNoRPTestBundle()
 
-  const responsibleParty: fhir.PractitionerRole= {...practitionerRoles.get(baseRP)}
-  if (isReference(responsibleParty.practitioner)){
+  const responsibleParty: fhir.PractitionerRole = {...practitionerRoles.get(baseRP)}
+  if (isReference(responsibleParty.practitioner)) {
     responsibleParty.practitioner.reference = bundle.entry[3].fullUrl
   }
-  if (responsibleParty.organization){
+  if (responsibleParty.organization) {
     (responsibleParty.organization as fhir.Reference<fhir.Organization>).reference = bundle.entry[4].fullUrl
   }
 

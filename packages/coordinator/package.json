@@ -10,10 +10,10 @@
     "start": "node --enable-source-maps dist/coordinator/src/app.js --use_strict",
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
-    "test": "NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=4096' jest --reporters=default --reporters=jest-junit --coverage",
-    "test:debug": "NODE_OPTIONS='--experimental-vm-modules --max-old-space-size=4096' jest -i --reporters=default --reporters=jest-junit",
+    "test": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
+    "test:debug": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator --reporter=default --reporter=junit --outputFile.junit=./junit.xml --poolOptions.forks.maxForks=1",
     "create-examples": "ts-node tests/generate-spine-examples.ts",
-    "verify-signature": "NODE_OPTIONS='--experimental-vm-modules' jest tests/debug/verify-signature.spec.ts"
+    "verify-signature": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator tests/debug/verify-signature.spec.ts"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -54,7 +54,6 @@
     "@types/split2": "^4.2.3",
     "@types/xml-c14n": "^0.0.3",
     "axios-mock-adapter": "^2.1.0",
-    "jest-expect-message": "^1.1.3",
     "split2": "^4.2.0",
     "ts-node-dev": "^2.0.0"
   },

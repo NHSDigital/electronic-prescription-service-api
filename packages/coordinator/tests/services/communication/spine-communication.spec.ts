@@ -1,4 +1,3 @@
-import "jest"
 import MockAdapter from "axios-mock-adapter"
 import axios from "axios"
 import fs from "fs"
@@ -64,7 +63,7 @@ describe.each([
       .onGet()
       .replyOnce(200, "foo")
 
-    const loggerSpy = jest.spyOn(logger, "info")
+    const loggerSpy = vi.spyOn(logger, "info")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
@@ -81,7 +80,7 @@ describe.each([
     expect(loggerSpy).toHaveBeenCalledWith({
       defaultPollingDelay: defaultPollingDelay,
       attempt: 1,
-      totalPollingTime: defaultPollingDelay+initialPollingDelay
+      totalPollingTime: defaultPollingDelay + initialPollingDelay
     },
     secondMessage)
 
@@ -99,7 +98,7 @@ describe.each([
       .onGet()
       .replyOnce(200, "foo")
 
-    const loggerSpy = jest.spyOn(logger, "info")
+    const loggerSpy = vi.spyOn(logger, "info")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
@@ -118,7 +117,7 @@ describe.each([
     expect(loggerSpy).toHaveBeenCalledWith({
       defaultPollingDelay: defaultPollingDelay,
       attempt: 1,
-      totalPollingTime: defaultPollingDelay+initialPollingDelay
+      totalPollingTime: defaultPollingDelay + initialPollingDelay
     },
     secondMessage)
 
@@ -134,7 +133,7 @@ describe.each([
       .onGet()
       .reply(202, "foo")
 
-    const loggerSpy = jest.spyOn(logger, "error")
+    const loggerSpy = vi.spyOn(logger, "error")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
@@ -155,12 +154,13 @@ describe.each([
               }
             ]
           }
-        }]}
+        }]
+      }
     )
 
-    const duration = pollingTimeout+initialPollingDelay
-    const attempts = Math.ceil(duration/defaultPollingDelay)
-    const expectedError =`No response to poll after ${attempts} attempts in ${duration} milliseconds`
+    const duration = pollingTimeout + initialPollingDelay
+    const attempts = Math.ceil(duration / defaultPollingDelay)
+    const expectedError = `No response to poll after ${attempts} attempts in ${duration} milliseconds`
 
     expect(loggerSpy).toHaveBeenCalledWith({
       attempt: attempts,
@@ -210,7 +210,8 @@ describe.each([
               }
             ]
           }
-        }]}
+        }]
+      }
     )
   })
 
@@ -236,7 +237,7 @@ describe.each([
     const errorMessage = "Internal Server Error"
     mock.onPost().reply(500, errorMessage)
 
-    const loggerSpy = jest.spyOn(logger, "error")
+    const loggerSpy = vi.spyOn(logger, "error")
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
     expect(spineResponse.statusCode).toBe(500)
@@ -260,9 +261,9 @@ describe.each([
     loggerSpy.mockRestore()
   })
 
-  test("should return error when a network error", async() => {
+  test("should return error when a network error", async () => {
     mock.onPost().networkError()
-    const loggerWarnSpy = jest.spyOn(logger, "warn")
+    const loggerWarnSpy = vi.spyOn(logger, "warn")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 
@@ -274,14 +275,14 @@ describe.each([
     expect(loggerWarnSpy).not.toHaveBeenCalledWith("Call to spine failed - retrying. Retry count 4")
   })
 
-  test("should return success when there is a network error once", async() => {
+  test("should return success when there is a network error once", async () => {
     mock.onPost()
       .networkErrorOnce()
     mock.onPost().reply(202, 'statusText: "OK"', {
       "content-location": "/_poll/test-content-location"
     })
     mock.onGet().reply(200, "foo")
-    const loggerWarnSpy = jest.spyOn(logger, "warn")
+    const loggerWarnSpy = vi.spyOn(logger, "warn")
 
     const spineResponse = await requestHandler.send(mockRequest, "from_asid", logger)
 

@@ -11,7 +11,7 @@ import {axiosInstance} from "../../src/requests/axiosInstance"
 import {internalDev} from "../../src/services/environment"
 import {MemoryRouter} from "react-router-dom"
 
-jest.spyOn(global.crypto, "randomUUID")
+vi.spyOn(global.crypto, "randomUUID")
   .mockReturnValue("test-uuid-in-uuid-format")
 
 const baseUrl = "baseUrl/"
@@ -31,7 +31,9 @@ beforeEach(() => mock.reset())
 afterEach(() => mock.reset())
 
 test("Displays loading text while prescription data is being requested", async () => {
-  const {container} = renderWithContext(<DispensePage prescriptionId={prescriptionId}/>, context)
+  mock.onGet(releaseResponseUrl).reply(() => new Promise(resolve => setTimeout(() => resolve([200, prescriptionOrder]), 1000)))
+
+  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Loading"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -64,7 +66,7 @@ test("Displays dispense form if prescription details are retrieved successfully 
 test("Displays an error if prescription-order not found", async () => {
   mock.onAny(releaseResponseUrl).reply(200, null)
 
-  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -73,7 +75,7 @@ test("Displays an error if prescription-order not found", async () => {
 test("Displays an error on invalid response", async () => {
   mock.onAny(releaseResponseUrl).reply(500, {})
 
-  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Error"))
 
   expect(container.innerHTML).toMatchSnapshot()
@@ -82,6 +84,7 @@ test("Displays an error on invalid response", async () => {
 test("Displays loading text while dispense notification is being submitted", async () => {
   mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
   mock.onAny(dispenseNotificationUrl).reply(200, [dispenseNotification])
+  mock.onPost(dispenseUrl).reply(() => new Promise(resolve => setTimeout(() => resolve([200, {}]), 1000)))
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Dispense"))
@@ -116,13 +119,13 @@ test("Displays the amend id when amending a dispense notification", async () => 
   mock.onAny(releaseResponseUrl).reply(200, prescriptionOrder)
   mock.onAny(dispenseNotificationUrl).reply(200, [])
 
-  renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId="test-id"/></MemoryRouter>, context)
+  renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId="test-id" /></MemoryRouter>, context)
 
   expect(await screen.findByText("Amending Dispense: test-id")).toBeTruthy()
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null}/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><DispensePage prescriptionId={prescriptionId} amendId={null} /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Dispense Prescription"))
   return container
 }

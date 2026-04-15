@@ -3,13 +3,9 @@
     "version": "1.0.0",
     "description": "",
     "scripts": {
-        "test-live": "jest live --ci --reporters=default --reporters=jest-junit",
-        "test-sandbox": "jest sandbox --ci --reporters=default --reporters=jest-junit",
+        "test-live": "vitest run --project tool-e2e-tests live --reporter=default --reporter=junit --outputFile.junit=./test_results/junit.xml --poolOptions.forks.maxForks=1",
+        "test-sandbox": "vitest run --project tool-e2e-tests sandbox --reporter=default --reporter=junit --outputFile.junit=./test_results/junit.xml --poolOptions.forks.maxForks=1",
         "lint": "eslint  --max-warnings 0 --fix --config ../../../eslint.config.mjs ."
-    },
-    "jest-junit": {
-        "outputDirectory": "test_results",
-        "outputName": "junit.xml"
     },
     "keywords": [],
     "author": "",

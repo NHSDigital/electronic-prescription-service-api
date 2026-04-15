@@ -5,8 +5,8 @@ import userEvent from "@testing-library/user-event"
 import {MemoryRouter} from "react-router-dom"
 
 test("Shows loading message while task runs", async () => {
-  const mockTask = jest.fn()
-  mockTask.mockReturnValue(new Promise(jest.fn()))
+  const mockTask = vi.fn()
+  mockTask.mockReturnValue(new Promise(vi.fn()))
 
   const ui = <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Some loading message">
     {result => <span>{result.data}</span>}
@@ -19,7 +19,7 @@ test("Shows loading message while task runs", async () => {
 })
 
 test("Renders children if task resolves", async () => {
-  const mockTask = jest.fn()
+  const mockTask = vi.fn()
   mockTask.mockResolvedValue({data: "Some data from the backend"})
 
   const ui = <LongRunningTask<Record<string, string>> task={mockTask} loadingMessage="Loading">
@@ -38,7 +38,7 @@ test.each([
   ["a string", "Some error message", "Some error message"],
   ["anything else", null, "Unknown error."]
 ])("Displays an error if task rejects with %s", async (desc: string, rejectedValue: unknown, expectedText: string) => {
-  const mockTask = jest.fn()
+  const mockTask = vi.fn()
   mockTask.mockRejectedValue(rejectedValue)
 
   const ui = <MemoryRouter>
@@ -54,9 +54,9 @@ test.each([
 })
 
 test("Error page includes a back button with the provided onclick handler", async () => {
-  const mockTask = jest.fn()
+  const mockTask = vi.fn()
   mockTask.mockRejectedValue(new Error("Some error message"))
-  const mockBack = jest.fn()
+  const mockBack = vi.fn()
 
   const ui = (
     <MemoryRouter>
