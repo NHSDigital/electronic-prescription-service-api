@@ -2,6 +2,7 @@ import {Construct} from "constructs"
 import {Duration, RemovalPolicy} from "aws-cdk-lib"
 import {
   Bucket,
+  IBucket,
   BucketEncryption,
   BlockPublicAccess,
   ObjectOwnership,
@@ -21,6 +22,7 @@ import {
 export interface S3BucketProps {
   readonly bucketName: string
   readonly deploymentRole: IPrincipal
+  readonly auditLoggingBucket: IBucket
   readonly itemExpiryDays?: number
 }
 
@@ -53,6 +55,8 @@ export class S3Bucket extends Construct {
       enforceSSL: true,
       versioned: false,
       objectOwnership: ObjectOwnership.BUCKET_OWNER_ENFORCED,
+      serverAccessLogsBucket: props.auditLoggingBucket,
+      serverAccessLogsPrefix: "prescriptions-observability",
       lifecycleRules: props.itemExpiryDays ? [expiryLifecycleRule!] : []
     })
 

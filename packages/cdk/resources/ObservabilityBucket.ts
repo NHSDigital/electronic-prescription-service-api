@@ -2,11 +2,12 @@ import {Construct} from "constructs"
 import {S3Bucket} from "../constructs/S3Bucket"
 import {IPrincipal} from "aws-cdk-lib/aws-iam"
 import {Key} from "aws-cdk-lib/aws-kms"
-import {Bucket} from "aws-cdk-lib/aws-s3"
+import {Bucket, IBucket} from "aws-cdk-lib/aws-s3"
 
 export interface ObservabilityBucketProps {
   readonly stackName: string,
-  readonly deploymentRole: IPrincipal
+  readonly deploymentRole: IPrincipal,
+  readonly auditLoggingBucket: IBucket
 }
 
 export class ObservabilityBucket extends Construct {
@@ -20,6 +21,7 @@ export class ObservabilityBucket extends Construct {
     const observabilityBucket = new S3Bucket(this, "ObservabilityBucket", {
       bucketName: `${props.stackName}-observability`,
       deploymentRole: props.deploymentRole,
+      auditLoggingBucket: props.auditLoggingBucket,
       itemExpiryDays: 42
     })
     this.observabilityBucket = observabilityBucket.bucket
