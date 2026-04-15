@@ -262,11 +262,21 @@ jobs:
           FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
           AWS_MAX_ATTEMPTS: 5
 
-      - name: Deploy code
+      - name: Deploy API code
         run: |
           cd .build
           npx cdk deploy \
           --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
+          --all \
+          --require-approval=never \
+          --ci true
+        shell: bash
+
+      - name: Deploy Prescriptions code
+        run: |
+          cd .build
+          npx cdk deploy \
+          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResources.ts" \
           --all \
           --require-approval=never \
           --ci true

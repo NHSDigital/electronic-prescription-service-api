@@ -1,19 +1,19 @@
 import {Construct} from "constructs"
-import {S3Bucket} from "../../constructs/S3Bucket"
+import {S3Bucket} from "../constructs/S3Bucket"
 import {IPrincipal} from "aws-cdk-lib/aws-iam"
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 
-export interface ObservabilityResourcesProps {
+export interface ObservabilityBucketProps {
   readonly stackName: string,
   readonly deploymentRole: IPrincipal
 }
 
-export class ObservabilityResources extends Construct {
+export class ObservabilityBucket extends Construct {
   public readonly observabilityBucket: Bucket
   public readonly observabilityKmsKey: Key
 
-  constructor(scope: Construct, id: string, props: ObservabilityResourcesProps) {
+  constructor(scope: Construct, id: string, props: ObservabilityBucketProps) {
     super(scope, id)
 
     // Create S3 bucket for fhir facade request/response data with encryption
