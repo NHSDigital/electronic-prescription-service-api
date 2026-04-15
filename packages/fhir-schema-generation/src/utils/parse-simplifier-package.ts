@@ -12,7 +12,7 @@ import {StructureDefinition} from "../models/fhir-package/structure-definition.i
 export function parseSimplifierPackage(
   filePath: string
 ): StructureDefinition {
-  // console.log(`Parsing schema: ${filePath}`)
+  console.log(`Parsing schema: ${filePath}`)
 
   const rawFile = fs.readFileSync(filePath, "utf-8")
   const parsedJson: unknown = JSON.parse(rawFile)
@@ -30,12 +30,12 @@ export function parseSimplifierPackage(
 export async function getSimplifierDefinitionFiles(folderPath: string, prefix: string): Promise<Array<string>> {
   try {
     // Read the directory contents, returning fs.Dirent objects
-    // console.log(`Searching directory "${folderPath} with prefix: "${prefix}"`)
-    const items = await fs.readdirSync(folderPath, {withFileTypes: true})
+    console.log(`Searching directory "${folderPath} with prefix: "${prefix}"`)
+    const items = fs.readdirSync(folderPath, {withFileTypes: true})
 
     const matchedFiles: Array<string> = []
 
-    // console.log(`Found ${items.length}`)
+    console.log(`Found ${items.length}`)
     for (const item of items) {
       // Check if it's a file and starts with the prefix
       if (item.isFile() && item.name.startsWith(prefix)) {

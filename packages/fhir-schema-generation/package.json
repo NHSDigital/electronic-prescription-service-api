@@ -25,6 +25,7 @@
     "@types/node": "^25.5.2",
     "@types/tar": "^7.0.87",
     "eslint": "^10.2.0",
+    "json-schema-to-ts": "^3.1.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.58.0",
