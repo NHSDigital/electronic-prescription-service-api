@@ -90,7 +90,7 @@ install-epsat: install-python install-hooks
 
 
 install-node:
-	npm ci --workspace packages/specification \
+	npm ci --ignore-scripts --workspace packages/specification \
 		--workspace packages/models \
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
