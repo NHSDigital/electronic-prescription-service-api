@@ -98,6 +98,8 @@ install-node:
 		--workspace packages/cdk \
 		--workspace packages/fhir-schema-generation \
 		--include-workspace-root
+	# need to get post install script run for this package
+	npm rebuild xsd-schema-validator --workspace packages/coordinator
 
 install-python:
 	poetry install
