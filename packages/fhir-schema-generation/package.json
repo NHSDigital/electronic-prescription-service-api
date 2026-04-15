@@ -8,8 +8,8 @@
     "dev:new": "rm -rf .output && npm run dev",
     "start": "node dist/index.js",
     "start:new": "rm -rf .output && npm run start",
-    "test": "vitest run --project fhir-schema-generation --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
-    "test:watch": "vitest --project fhir-schema-generation",
+    "test": "vitest run --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
+    "test:watch": "vitest --watch",
     "lint": "eslint --max-warnings 0 --fix"
   },
   "keywords": [],
