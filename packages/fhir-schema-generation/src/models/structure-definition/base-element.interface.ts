@@ -10,4 +10,5 @@ export interface StructureDefinitionBaseElement {
     max?: string
     type: Array<StructureDefinitionType>
     mapping: Array<StructureDefinitionIdentityMap>
+    mustSupport?: boolean
 }

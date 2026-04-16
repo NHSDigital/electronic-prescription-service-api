@@ -5,6 +5,7 @@ import {parseSimplifierPackage} from "./parse-simplifier-package.js"
 import {StructureDefinitionDifferential} from "../models/structure-definition/differential-element.interface.js"
 import {DeepMutable} from "../types/deep-mutable.type.js"
 import {EditableJSONSchema} from "../types/editable-json-schema.type.js"
+import {StructureDefinitionBaseElement} from "../models/structure-definition/base-element.interface.js"
 
 export class SchemaProcessor {
   private specifications = new Map<string, EditableJSONSchema>()
@@ -91,24 +92,28 @@ export class SchemaProcessor {
     }
   }
 
-  private applyRequiredConstraints(schema: EditableJSONSchema, current: any, fieldName: string): void {
-    if (current.min && current.min > 0) {
-      const definitionBody = schema.allOf[1]
+  private isDefinitionRequired(
+    schema: EditableJSONSchema,
+    current: StructureDefinitionBaseElement,
+    fieldName: string
+  ): boolean {
+    const definitionBody = schema.allOf[1]
 
-      // console.log("definition", Object.keys(definitionBody.properties))
-      // Don't include extension objects
-      const isExtensionObject = Object.keys(definitionBody.properties)
-        .filter((name) => name.includes(`_${name}`))
+    // Don't include extension objects
+    const isExtensionObject = Object.keys(definitionBody.properties)
+      .filter((name) => name.includes(`_${name}`))
 
-      if (isExtensionObject?.length > 0) {
-        console.log("isExtensionObject", isExtensionObject, fieldName)
-        return
-      }
-
-      definitionBody.required = definitionBody.required || []
-      definitionBody.required.push(fieldName)
-
+    if (isExtensionObject?.length > 0) {
+      console.log("isExtensionObject", isExtensionObject, fieldName)
+      return false
     }
+
+    const hasMinimumValue = current.min && current.min > 0
+    if (hasMinimumValue || current.mustSupport) {
+      return true
+    }
+
+    return false
   }
 
   private processElement(
@@ -128,7 +133,14 @@ export class SchemaProcessor {
 
     this.initializeSchemaDefinition(result, prop, current, simplifierSchema)
 
+    // Check if item is required, and if so updates schema
+    const required = this.isDefinitionRequired(result[prop], current, idParts[0])
+    if (!required) {
+      return
+    }
+
     const code = this.resolveTypeCode(types[0])
+    console.log("idParts", idParts)
 
     // Check if dependencies/ child elements are missing
     this.handleDependencies(current, code, elements)
@@ -136,9 +148,6 @@ export class SchemaProcessor {
     // Correct idParts and add element to schema
     idParts.reverse()
     this.assignPropertySchema(result[prop], current, code, idParts)
-
-    // Check if item is required, and if so updates schema
-    this.applyRequiredConstraints(result[prop], current, idParts[0])
   }
 
   private processProperties(simplifierSchema: StructureDefinition): Record<string, EditableJSONSchema> {
@@ -207,7 +216,8 @@ export class SchemaProcessor {
 
   private setNestedProp(obj: any, pathArray: Array<string>, newValue: any): void {
     const pathTraverse = pathArray.slice(0, -1)
-    const finalKey = pathArray.at(-1)
+    let finalKey = pathArray.at(-1)
+    finalKey = finalKey?.split("[x]").shift()
 
     // Create intermediate objects if they don't exist
     const targetObj = pathTraverse.reduce((prev, curr) => {
@@ -247,7 +257,9 @@ export class SchemaProcessor {
 
     // Primitive types can be replaced or accompanied by an extension object using an underscore prefix
     if (requiresExtension && idParts.length > 0) {
-      const element = idParts[idParts.length - 1]
+      let element = idParts[idParts.length - 1]
+      element = element.split("[x]").shift() ?? element
+
       const parentParts = idParts.slice(0, -1)
 
       this.setNestedProp(targetProperties, [...parentParts, `_${element}`], {

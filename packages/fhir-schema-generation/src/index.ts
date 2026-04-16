@@ -48,7 +48,8 @@ async function runSchemaGenerationPipeline() {
 
   console.log("\n")
   const results = processor.getSpecifications()
-  results.forEach((result) => console.log(JSON.stringify(result)))
+  // results.forEach((result) => console.log(JSON.stringify(result)))
+  console.log(JSON.stringify(results.get("MedicationRequest")))
 }
 
 try {
