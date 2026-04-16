@@ -3,8 +3,8 @@ import * as path from "node:path"
 
 import {normalizeFileName} from "./utils/common.js"
 import {downloadSimplifierPackage} from "./utils/download-simplifier-package.js"
-import {parseFhirSchema} from "./utils/parse-fhir-schema.js"
-import {generateSchema} from "./utils/generate-schema.js"
+import {generateSchema} from "./utils/generate-openapi-schema.js"
+import {parseSimplifierPackage} from "./utils/parse-simplifier-package.js"
 
 const SIMPLIFIER_REGISTRY_URL = "https://packages.simplifier.net"
 const PACKAGE_NAME = "hl7.fhir.r4.core"
@@ -30,7 +30,7 @@ function writeSchemas(outputDir: string, schemas: Record<string, unknown>): void
   }
 }
 
-async function run(): Promise<void> {
+async function runSchemaGenerationPipeline(): Promise<void> {
   const outputPath = buildOutputPath()
   const packagePath = path.join(outputPath, "package")
 
@@ -46,7 +46,8 @@ async function run(): Promise<void> {
   await downloadSimplifierPackage(SIMPLIFIER_REGISTRY_URL, PACKAGE_NAME, outputPath, PACKAGE_VERSION)
 
   console.log("parsing fhir schema...")
-  const parsedSchema = parseFhirSchema(outputPath, ENTRY_SCHEMA_FILE)
+  const entryFilePath = path.join(packagePath, ENTRY_SCHEMA_FILE)
+  const parsedSchema = parseSimplifierPackage(entryFilePath)
 
   console.log("generating json schemas...")
   const schemas = generateSchema(parsedSchema, packagePath)
@@ -59,7 +60,7 @@ async function run(): Promise<void> {
 }
 
 try {
-  await run()
+  await runSchemaGenerationPipeline()
 } catch (error) {
   console.error("schema generation failed", error)
   process.exit(1)

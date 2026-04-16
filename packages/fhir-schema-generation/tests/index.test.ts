@@ -9,27 +9,21 @@ import {
 
 // 1. Setup Hoisted Variables for our Mocks so they persist across module resets
 const mockDownload = vi.fn()
-const mockProcessSpecs = vi.fn()
-const mockGetSpecs = vi.fn()
+const mockParseSimplifierPackage = vi.fn()
+const mockGenerateSchema = vi.fn()
 
 // 2. Mock the modules
 vi.mock("../src/utils/download-simplifier-package.js", () => ({
   downloadSimplifierPackage: (...args: Array<any>) => mockDownload(...args)
 }))
 
-vi.mock("../src/utils/process-simplifier-package-specification.js", () => {
-  // Use an actual class to ensure 'new SchemaProcessor()' works seamlessly
-  return {
-    SchemaProcessor: class {
-      processSimplifierPackageSpecifications(...args: Array<any>) {
-        return mockProcessSpecs(...args)
-      }
-      getSpecifications(...args: Array<any>) {
-        return mockGetSpecs(...args)
-      }
-    }
-  }
-})
+vi.mock("../src/utils/parse-simplifier-package.js", () => ({
+  parseSimplifierPackage: (...args: Array<any>) => mockParseSimplifierPackage(...args)
+}))
+
+vi.mock("../src/utils/generate-schema.js", () => ({
+  generateSchema: (...args: Array<any>) => mockGenerateSchema(...args)
+}))
 
 describe("index.ts - Schema Generation Pipeline", () => {
   let exitSpy: ReturnType<typeof vi.spyOn>
@@ -42,12 +36,13 @@ describe("index.ts - Schema Generation Pipeline", () => {
 
     // Reset mock call histories
     mockDownload.mockReset()
-    mockProcessSpecs.mockReset()
-    mockGetSpecs.mockReset()
+    mockParseSimplifierPackage.mockReset()
+    mockGenerateSchema.mockReset()
 
     // Configure default successful mock behaviors
     mockDownload.mockResolvedValue(undefined)
-    mockGetSpecs.mockReturnValue(new Map([["MedicationRequest", {type: "object", title: "MedicationRequest Mock"}]]))
+    mockParseSimplifierPackage.mockReturnValue({id: "MedicationRequest", kind: "resource"})
+    mockGenerateSchema.mockReturnValue({MedicationRequest: {type: "object", title: "MedicationRequest Mock"}})
 
     // Intercept process.exit
     exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
@@ -74,7 +69,7 @@ describe("index.ts - Schema Generation Pipeline", () => {
     await import("../src/index.js")
 
     // 1. Assert standard logs
-    expect(consoleLogSpy).toHaveBeenCalledWith("Starting schema generation pipeline...")
+    expect(consoleLogSpy).toHaveBeenCalledWith("downloading simplifier package...")
 
     // 2. Assert downloadSimplifierPackage was called
     expect(mockDownload).toHaveBeenCalledTimes(1)
@@ -85,16 +80,15 @@ describe("index.ts - Schema Generation Pipeline", () => {
       "latest"
     )
 
-    // 3. Assert processor methods were triggered properly
-    expect(mockProcessSpecs).toHaveBeenCalledTimes(1)
-    expect(mockProcessSpecs).toHaveBeenCalledWith(
-      expect.stringContaining("StructureDefinition-MedicationRequest.json"),
-      "StructureDefinition-"
+    // 3. Assert parseSimplifierPackage and generateSchema were triggered properly
+    expect(mockParseSimplifierPackage).toHaveBeenCalledTimes(1)
+    expect(mockParseSimplifierPackage).toHaveBeenCalledWith(
+      expect.stringContaining("StructureDefinition-MedicationRequest.json")
     )
-    expect(mockGetSpecs).toHaveBeenCalledTimes(1)
+    expect(mockGenerateSchema).toHaveBeenCalledTimes(1)
 
     // 4. Assert end result logging
-    expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify({type: "object", title: "MedicationRequest Mock"}))
+    expect(consoleLogSpy).toHaveBeenCalledWith("done")
 
     // 5. Assert process.exit was NOT called on a successful run
     expect(exitSpy).not.toHaveBeenCalled()
@@ -113,7 +107,7 @@ describe("index.ts - Schema Generation Pipeline", () => {
 
     // 1. Assert the error log printed the failure message
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "\n\n=== Schema generation pipeline failed ===\n\n",
+      "schema generation failed",
       mockError
     )
 
