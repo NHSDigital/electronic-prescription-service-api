@@ -72,6 +72,9 @@ on:
       SHA1_ENABLED_APPLICATION_IDS:
         type: string
         required: true
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION:
+        type: boolean
+        required: true
       SANDBOX_MODE_ENABLED:
         type: string
         required: true
@@ -105,8 +108,6 @@ on:
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE:
         required: true
-      CDK_PULL_IMAGE_ROLE:
-        required: true
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE:
         required: false
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE:
@@ -135,6 +136,8 @@ on:
 env:
   AWS_MAX_ATTEMPTS: 20
 
+permissions: {}
+
 jobs:
   release_code_and_api:
     runs-on: ubuntu-22.04
@@ -157,7 +160,7 @@ jobs:
       - name: Checkout local github actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
           fetch-depth: 0
           sparse-checkout: |
             .github
@@ -198,27 +201,38 @@ jobs:
 
       - name: Retrieve AWS Account ID
         id: retrieve-deploy-account-id
-        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_OUTPUT"
 
       - name: Login to Amazon ECR
         id: login-ecr-push-image
         run: |
-          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com"
+        env:
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: Push FHIR Facade image to Amazon ECR
         run: |
-          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker tag "fhir-facade-repo:${VERSION_NUMBER}" "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${DOCKER_IMAGE_TAG}"
+          docker push "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${DOCKER_IMAGE_TAG}"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: Push Validator image to Amazon ECR
         run: |
-          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker tag "validator-repo:${VERSION_NUMBER}" "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${DOCKER_IMAGE_TAG}"
+          docker push "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${DOCKER_IMAGE_TAG}"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: fix cdk.json for deployment
         run: |
           ./.github/scripts/fix_cdk_json.sh
         env:
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           SERVICE_NAME: "${{ inputs.STACK_NAME }}"
           VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
@@ -236,6 +250,7 @@ jobs:
           SANDBOX_MODE_ENABLED: "${{ inputs.SANDBOX_MODE_ENABLED }}"
           ENABLE_MUTUAL_TLS: "${{ inputs.ENABLE_MUTUAL_TLS }}"
           SHA1_ENABLED_APPLICATION_IDS: "${{ inputs.SHA1_ENABLED_APPLICATION_IDS }}"
+          ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: "${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}"
           DESIRED_FHIR_FACADE_COUNT: "${{ inputs.DESIRED_FHIR_FACADE_COUNT }}"
           DESIRED_CLAIMS_COUNT: "${{ inputs.DESIRED_CLAIMS_COUNT }}"
           DESIRED_PEAK_CLAIMS_COUNT: "${{ inputs.DESIRED_PEAK_CLAIMS_COUNT }}"
@@ -321,6 +336,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
+          persist-credentials: true
   
       - name: Update release tag in github pages
         if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}
@@ -342,6 +358,9 @@ jobs:
   
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: write
     name: Prescribing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
@@ -355,6 +374,9 @@ jobs:
 
   dispensing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: write
     name: Dispensing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
@@ -369,12 +391,17 @@ jobs:
   pact_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Pact Tests
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
     uses: ./.github/workflows/run_pact_tests.yml
     needs: release_code_and_api
     with:
       APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
       VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
       IS_PULL_REQUEST: ${{ inputs.IS_PULL_REQUEST }}
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: ${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}
       pinned_image: ${{ inputs.pinned_image }}
     secrets:
       API_CLIENT_ID: ${{ secrets.API_CLIENT_ID }}

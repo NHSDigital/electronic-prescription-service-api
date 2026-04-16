@@ -10,7 +10,10 @@
     "strict": true,
     "skipLibCheck": true,
     "declaration": true,
-    "types": ["node", "jest"] 
+    "types": [
+      "node",
+      "vitest/globals"
+    ]
   },
   "include": [
     "src/**/*"

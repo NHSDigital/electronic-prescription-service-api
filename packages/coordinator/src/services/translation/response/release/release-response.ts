@@ -73,16 +73,6 @@ export type TranslationResponseResult = {
   dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot>
 }
 
-const logSignatureVerificationFailure = (
-  prescriptionId: string,
-  errors: Array<string>,
-  logger: pino.Logger
-): void => {
-  const logMessage = `[Verifying signature for prescription ID ${prescriptionId}]: `
-  const errorsAndMessage = logMessage + errors.join(", ")
-  logger.error(errorsAndMessage)
-}
-
 export async function translateReleaseResponse(
   releaseResponse: hl7V3.PrescriptionReleaseResponse,
   logger: pino.Logger,
@@ -90,7 +80,7 @@ export async function translateReleaseResponse(
 ): Promise<TranslationResponseResult> {
   const passedPrescriptions: Array<fhir.Bundle> = []
   const passedPrescriptionIds: Array<string> = []
-  const failedPrescriptions: Array<fhir.Bundle|fhir.OperationOutcome> = []
+  const failedPrescriptions: Array<fhir.Bundle | fhir.OperationOutcome> = []
   const failedPrescriptionIds: Array<string> = []
   const dispenseProposalReturns: Array<hl7V3.DispenseProposalReturnRoot> = []
 
@@ -100,11 +90,18 @@ export async function translateReleaseResponse(
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
     const bundle = await createBundle(ParentPrescription, releaseRequestId, logger)
+
     let errors: Array<string>
     try {
       errors = await verifyPrescriptionSignature(ParentPrescription, logger)
+      if (errors.length > 0) {
+        const prescriptionId = ParentPrescription.id._attributes.root.toLowerCase()
+        logger.error(
+          `[Verifying signature for prescription ${prescriptionId} on release]: ${errors.join(", ")}`
+        )
+      }
     } catch (e) {
-      logger.error(e, "Uncaught error during signature verification")
+      logger.error(e, "Uncaught error during signature verification for release")
       errors = ["Uncaught error during signature verification"]
     }
 
@@ -112,9 +109,6 @@ export async function translateReleaseResponse(
       passedPrescriptions.push(bundle)
       passedPrescriptionIds.push(ParentPrescription.id._attributes.root)
     } else {
-      const prescriptionId = ParentPrescription.id._attributes.root.toLowerCase()
-      logSignatureVerificationFailure(prescriptionId, errors, logger)
-
       const operationOutcome = createInvalidSignatureOutcome(bundle)
       const dispenseProposalReturn = returnFactory.create(
         ParentPrescription,

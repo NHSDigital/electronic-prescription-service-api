@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
         name: Check for merge conflict strings
@@ -18,6 +18,34 @@ repos:
 
   - repo: local
     hooks:
+      - id: grype-scan-local
+        name: Grype scan local changes
+        entry: make
+        args: ["grype-scan-local"]
+        language: system
+        pass_filenames: false
+        always_run: true
+
+      - id: check-commit-signing
+        name: Check commit signing
+        description: Ensures that commits are GPG signed
+        entry: bash
+        args:
+          - -c
+          - |
+            if ! git config --get commit.gpgsign | grep -q "true" > /dev/null 2>&1; then
+              echo "Error: Commit signing is not enabled."
+              echo "Please enable commit signing with:"
+              echo "  git config commit.gpgsign true"
+              echo ""
+              echo "For more information, see: https://docs.github.com/en/authentication/managing-commit-signature-verification/signing-commits"
+              exit 1
+            fi
+            echo "Commit signing is properly configured."
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: lint-models
         name: Lint models
         entry: npm
@@ -138,8 +166,6 @@ repos:
         types_or: [yaml]
         pass_filenames: false
 
-  - repo: local
-    hooks:
       - id: git-secrets
         name: Git Secrets
         description: git-secrets scans commits, commit messages, and --no-ff merges to prevent adding secrets into your git repositories.

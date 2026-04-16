@@ -78,17 +78,19 @@ all:
 install-api: install-node install-python install-hooks generate-mock-certs
 
 install-all: install-python install-hooks generate-mock-certs
-	npm ci
+	npm ci --ignore-scripts
+	# need to get post install script run for this package
+	npm rebuild xsd-schema-validator --workspace packages/coordinator
 
 install-epsat: install-python install-hooks
-	npm ci --workspace=packages/tool/site/client \
+	npm ci --ignore-scripts --workspace=packages/tool/site/client \
 		--workspace=packages/tool/site/server \
 		--workspace=packages/tool/e2e-tests \
 		--include-workspace-root
 
 
 install-node:
-	npm ci --workspace packages/specification \
+	npm ci --ignore-scripts --workspace packages/specification \
 		--workspace packages/models \
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
@@ -96,6 +98,8 @@ install-node:
 		--workspace packages/cdk \
 		--workspace packages/fhir-schema-generation \
 		--include-workspace-root
+	# need to get post install script run for this package
+	npm rebuild xsd-schema-validator --workspace packages/coordinator
 
 install-python:
 	poetry install

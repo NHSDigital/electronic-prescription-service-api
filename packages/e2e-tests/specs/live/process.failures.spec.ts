@@ -51,7 +51,7 @@ describe("endpoint authentication e2e tests", () => {
 
 describe("ensure errors are translated", () => {
   test("EPS Prescribe error 0003", async () => {
-    const message = TestResources.prepareCaseBundles[0][1] as fhir.Bundle
+    const message = TestResources.prepareCaseBundles[0].request as fhir.Bundle
     const messageClone = LosslessJson.parse(LosslessJson.stringify(message)) as fhir.Bundle
     messageClone.identifier.value = crypto.randomUUID().toUpperCase()
     const bundleStr = LosslessJson.stringify(messageClone)
@@ -64,6 +64,28 @@ describe("ensure errors are translated", () => {
       .map((e) => e.resource)
       .find((r) => r.resourceType === "MedicationRequest") as fhir.MedicationRequest
     const prescriptionId = firstMedicationRequest.groupIdentifier.value
+
+    const isSignatureValidationEnabled = process.env.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION === "true"
+
+    const expectedIssue = isSignatureValidationEnabled
+      ? {
+        code: "invalid",
+        severity: "error",
+        diagnostics: "Invalid signature format"
+      }
+      : {
+        code: "business-rule",
+        severity: "error",
+        details: {
+          coding: [
+            {
+              system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
+              code: "MISSING_DIGITAL_SIGNATURE",
+              display: "Digital signature not found"
+            }
+          ]
+        }
+      }
 
     const options = new CreatePactOptions("live", "process", "send")
     const provider = new PactV2(pactOptions(options))
@@ -92,21 +114,7 @@ describe("ensure errors are translated", () => {
           meta: {
             lastUpdated: iso8601DateTime()
           },
-          issue: [
-            {
-              code: "business-rule",
-              severity: "error",
-              details: {
-                coding: [
-                  {
-                    system: "https://fhir.nhs.uk/CodeSystem/EPS-IssueCode",
-                    code: "MISSING_DIGITAL_SIGNATURE",
-                    display: "Digital signature not found"
-                  }
-                ]
-              }
-            }
-          ]
+          issue: [expectedIssue]
         },
         status: 400
       }
@@ -117,13 +125,19 @@ describe("ensure errors are translated", () => {
   })
 
   test.each(TestResources.processErrorCases)(
-    "returns correct status code and body for %p",
+    "returns correct status code and body for $description",
     async (
-      _: string,
-      request: fhir.Bundle,
-      response: fhir.OperationOutcome,
-      statusCode: number,
-      statusText: string
+      {
+        request,
+        response,
+        statusCode,
+        statusText
+      }: {
+        request: fhir.Bundle,
+        response: fhir.OperationOutcome,
+        statusCode: number,
+        statusText: string
+      }
     ) => {
       const bundleStr = LosslessJson.stringify(request)
 
@@ -190,7 +204,7 @@ describe("ensure errors are translated", () => {
 })
 
 test.skip("should reject a message with an invalid SDS Role Profile ID", async () => {
-  const message = TestResources.processOrderCases[0][1]
+  const message = TestResources.processOrderCases[0].request
   const bundleStr = LosslessJson.stringify(message)
   const bundle = JSON.parse(bundleStr) as fhir.Bundle
   const requestId = crypto.randomUUID()

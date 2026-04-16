@@ -18,14 +18,14 @@ package-mode = false
 python = "^3.13"
 semver = "^3.0.4"
 gitpython = "^3.1.46"
-requests = "^2.33.0"
+requests = "^2.33.1"
 argparse = "^1.4.0"
 pre-commit = "^4.5.1"
 
 [tool.poetry.group.dev.dependencies]
 flake8 = "^7.3.0"
 black = "^26.3"
-pytest = "^9.0.2"
+pytest = "^9.0.3"
 pytest-cov = "^7.1.0"
 
 [tool.poetry.group.create_prescription.dependencies]

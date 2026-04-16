@@ -3,34 +3,32 @@ name: release workflow
 on:
   workflow_dispatch:
 
-env:
-  BRANCH_NAME: ${{ github.event.ref.BRANCH_NAME }}
+
+permissions: {}
 
 jobs:
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
     with:
       verify_published_from_main_image: true
+    permissions:
+      attestations: read
+      contents: read
+      packages: read
+
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
     needs: [get_config_values]
+    permissions:
+      contents: read
+      id-token: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       run_docker_scan: true
       docker_images: fhir-facade,validator
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  get_version:
-    runs-on: ubuntu-22.04
-    outputs:
-      version: ${{ steps.set_version.outputs.version }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - name: Set version
-        id: set_version
-        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
 
   get_commit_id:
     runs-on: ubuntu-22.04
@@ -47,10 +45,11 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_config_values]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
     permissions:
       id-token: write
       contents: write
+      packages: write
     with:
       dry_run: false
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -63,8 +62,12 @@ jobs:
       EXECUTE_JIRA_LAMBDA_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_EXECUTE_LAMBDA_ROLE }}
 
   package_code:
-    needs: [get_version, get_commit_id, tag_release, get_config_values]
+    needs: [get_commit_id, tag_release, get_config_values]
     uses: ./.github/workflows/cdk_package_code.yml
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
     with:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -72,6 +75,10 @@ jobs:
   
   release_dev:
     needs: [tag_release, package_code, get_commit_id, get_config_values]
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -96,6 +103,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: false
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -107,7 +115,6 @@ jobs:
       FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -124,6 +131,10 @@ jobs:
   release_dev_sandbox:
     needs: [tag_release, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandbox
@@ -145,6 +156,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 486a14ea-a0df-4f76-abac-e7d10dab8ae2,aa237a18-24af-421d-a4a8-e82474572a49,babc739d-6a30-4bb1-b4b2-919c6b63c7bc,1122eb42-c783-4748-84b7-47e20446306d
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: false
       SANDBOX_MODE_ENABLED: 1
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -156,7 +168,6 @@ jobs:
       FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
       API_CLIENT_ID: ${{ secrets.DEV_API_CLIENT_ID }}
@@ -176,6 +187,10 @@ jobs:
         get_commit_id,
         get_config_values,
       ]
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -198,6 +213,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 4515047f-fdbf-486f-bafe-dfae62482526,d3984d64-c463-4bb1-adec-ba303a8a123b
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: true
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 2
       DESIRED_CLAIMS_COUNT: 2
@@ -209,7 +225,6 @@ jobs:
       FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.REF_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
       DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
@@ -226,6 +241,10 @@ jobs:
         get_config_values,
       ]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
@@ -247,6 +266,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 5ad18b73-df45-4d41-9a1e-764d5a2b8671,8082cea1-1016-4ebf-9d80-5057c8275074
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: true
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -258,7 +278,6 @@ jobs:
       FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.QA_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PTL_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
       API_CLIENT_ID: ${{ secrets.QA_API_CLIENT_ID }}
@@ -270,6 +289,10 @@ jobs:
 
   release_int:
     needs: [tag_release, release_qa, package_code, get_commit_id, get_config_values]
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -294,6 +317,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: 5a5e8a3d-8272-4d59-985e-5b2df5c08176,b09efcba-4fa0-4cb9-8ee0-d49b43a4cc1d
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: true
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -305,7 +329,6 @@ jobs:
       FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
@@ -321,6 +344,10 @@ jobs:
 
   release_sandbox:
     needs: [tag_release, release_qa, package_code, get_commit_id, get_config_values]
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -343,6 +370,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: true
       SHA1_ENABLED_APPLICATION_IDS: unused
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: false
       SANDBOX_MODE_ENABLED: 1
       DESIRED_FHIR_FACADE_COUNT: 1
       DESIRED_CLAIMS_COUNT: 1
@@ -354,7 +382,6 @@ jobs:
       FORWARD_CSOC_LOGS: false
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.INT_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       PROXYGEN_ROLE: ${{ secrets.PROXYGEN_PROD_ROLE }}
       REGRESSION_TESTS_PEM: ${{ secrets.REGRESSION_TESTS_PEM }}
       DEFAULT_PTL_ASID: unused
@@ -363,6 +390,10 @@ jobs:
   release_prod:
     needs:
       [tag_release, release_int, release_sandbox, package_code, get_commit_id, get_config_values]
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     uses: ./.github/workflows/cdk_release_code.yml
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
@@ -387,6 +418,7 @@ jobs:
       IS_PULL_REQUEST: false
       ENABLE_DEFAULT_ASID_PARTY_KEY: false
       SHA1_ENABLED_APPLICATION_IDS: dbc8b146-7cb1-4a72-a4b3-767a118bdc36,875e2505-6ad5-442a-9e6c-69a299561e33,da32c882-52d4-41f7-86c2-959b15673aca
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: false
       SANDBOX_MODE_ENABLED: 0
       DESIRED_FHIR_FACADE_COUNT: 2
       DESIRED_CLAIMS_COUNT: 2
@@ -398,7 +430,6 @@ jobs:
       FORWARD_CSOC_LOGS: true
     secrets:
       CLOUD_FORMATION_DEPLOY_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_DEPLOY_ROLE }}
-      CDK_PULL_IMAGE_ROLE: ${{ secrets.DEV_CDK_PULL_IMAGE_ROLE }}
       DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.DEV_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       INT_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.INT_CLOUD_FORMATION_CHECK_VERSION_ROLE }}
       PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE: ${{ secrets.PROD_CLOUD_FORMATION_CHECK_VERSION_ROLE }}

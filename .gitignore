@@ -50,3 +50,4 @@ packages/fhir-schema-generation/.output
 packages/fhir-schema-generation/**/*.d.ts
 packages/fhir-schema-generation/**/*.js
 !packages/fhir-schema-generation/**/*.config.js
+.sbom/

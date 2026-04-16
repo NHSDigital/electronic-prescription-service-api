@@ -132,9 +132,9 @@ function extractSignatureMethodFromSignatureRoot(signatureRoot: ElementCompact) 
     return signatureMethod[0] === "rsa-sha256" ? signatureMethod[0] : "rsa-sha1"
   } else {
     signatureRoot.Signature.SignedInfo.SignatureMethod._attributes.Algorithm =
-    "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
+      "http://www.w3.org/2000/09/xmldsig#rsa-sha1"
     signatureRoot.Signature.SignedInfo.Reference.DigestMethod._attributes.Algorithm =
-    "http://www.w3.org/2000/09/xmldsig#sha1"
+      "http://www.w3.org/2000/09/xmldsig#sha1"
     return "rsa-sha1"
   }
 }

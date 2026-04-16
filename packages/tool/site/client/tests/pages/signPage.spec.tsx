@@ -14,7 +14,7 @@ import {MomentInput} from "moment"
 import {internalDev} from "../../src/services/environment"
 import {MemoryRouter} from "react-router-dom"
 
-jest.spyOn(global.crypto, "randomUUID")
+vi.spyOn(global.crypto, "randomUUID")
   .mockReturnValue("test-uuid-in-uuid-format")
 
 const baseUrl = "baseUrl/"
@@ -26,15 +26,18 @@ const signatureRequestUrl = `${baseUrl}sign/upload-signatures`
 
 const prescriptionOrder = readBundleFromFile("prescriptionOrder.json")
 
-jest.mock("moment", () => {
-  const actualMoment = jest.requireActual("moment")
-  return ({
+vi.mock("moment", () => {
+  const actualMoment = require("moment")
+  return {
+    default: actualMoment,
     ...actualMoment,
     utc: (inp?: MomentInput, strict?: boolean) => actualMoment.utc(inp ?? "2021-11-13T10:57:13.000Z", strict)
-  })
+  }
 })
 
-jest.mock("../../src/browser/navigation")
+vi.mock("../../src/browser/navigation", () => ({
+  redirect: vi.fn()
+}))
 
 const mock = new MockAdapter(axiosInstance)
 
@@ -47,10 +50,10 @@ test("Displays loading text while prescription data is being requested", async (
       setTimeout(function () {
         resolve([200, [prescriptionOrder]])
       }
-      , 1000)
+        , 1000)
     })
   })
-  const {container} = renderWithContext(<SignPage/>, context)
+  const {container} = renderWithContext(<SignPage />, context)
   await waitFor(() => screen.getByText("Retrieving prescription details."))
 
   expect(screen.getByText("Retrieving prescription details.")).toBeTruthy()
@@ -68,6 +71,7 @@ test("Displays prescription summary if prescription details are retrieved succes
 
 test("Displays loading text while prescription is being sent", async () => {
   mock.onAny(prescriptionsUrl).reply(200, [prescriptionOrder])
+  mock.onPost(signatureRequestUrl).reply(() => new Promise(resolve => setTimeout(() => resolve([200, {redirectUri: "https://example.com/"}]), 1000)))
 
   const container = await renderPage()
   userEvent.click(screen.getByText("Sign & Send"))
@@ -147,7 +151,7 @@ test("Displays error message if redirect URI not present", async () => {
 })
 
 async function renderPage() {
-  const {container} = renderWithContext(<MemoryRouter><SignPage/></MemoryRouter>, context)
+  const {container} = renderWithContext(<MemoryRouter><SignPage /></MemoryRouter>, context)
   await waitFor(() => screen.getByText("Prescription Summary"))
   return container
 }

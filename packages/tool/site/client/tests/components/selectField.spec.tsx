@@ -3,14 +3,14 @@ import {render} from "@testing-library/react"
 import SelectField from "../../src/components/common/selectField"
 import {Formik, Form} from "formik"
 
-const TestForm: React.FC<any> = ({children}) => <Formik initialValues={{}} onSubmit={jest.fn()}>
+const TestForm: React.FC<any> = ({children}) => <Formik initialValues={{}} onSubmit={vi.fn()}>
   <Form>
     {children}
   </Form>
 </Formik>
 
 test("Renders correctly", () => {
-  const component = <SelectField id="test" name="test" label="test" fieldOptions={[]}/>
+  const component = <SelectField id="test" name="test" label="test" fieldOptions={[]} />
   const testForm = <TestForm>{component}</TestForm>
 
   const {container} = render(testForm)
@@ -27,7 +27,7 @@ test("Renders correctly with many field options", () => {
       label="test"
       fieldOptions={
         [fieldOption, fieldOption, fieldOption].map(
-          (option, index)=>({...option, id:index})
+          (option, index) => ({...option, id: index})
         )
       }
     />

@@ -3,10 +3,18 @@ import * as crypto from "crypto-js"
 import {writeXmlStringCanonicalized} from "../../serialisation/xml"
 import {convertParentPrescription} from "./prescribe/parent-prescription"
 import {convertFragmentsToHashableFormat, extractFragments} from "./signature"
-import {fhir, processingErrors as errors} from "@models"
+import {
+  fhir,
+  hl7V3,
+  spine,
+  processingErrors as errors
+} from "@models"
 import {convertHL7V3DateTimeToIsoDateTimeString} from "../common/dateTime"
 import pino from "pino"
-import {identifyMessageType} from "../common"
+import {getBundleIdentifierValue, identifyMessageType} from "../common"
+import {createSendMessagePayload as createSendMessagePayloadFn} from "./payload/message"
+import * as requestBuilder from "../../communication/ebxml-request-builder"
+import Hapi from "@hapi/hapi"
 import {getCourseOfTherapyTypeCode} from "./course-of-therapy-type"
 import {createHash} from "../../../../src/routes/create-hash"
 import {HashingAlgorithm, getPrepareHashingAlgorithmFromEnvVar} from "../common/hashingAlgorithm"
@@ -117,6 +125,27 @@ class AlgorithmIdentifier implements XmlJs.ElementCompact {
 export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequest>): boolean {
   const courseOfTherapyTypeCode = getCourseOfTherapyTypeCode(medicationRequests)
   return courseOfTherapyTypeCode === fhir.CourseOfTherapyTypeCode.CONTINUOUS_REPEAT_DISPENSING
+}
+
+export async function convertPrescriptionBundleToSpineRequest(
+  bundle: fhir.Bundle,
+  headers: Hapi.Utils.Dictionary<string>,
+  logger: pino.Logger
+): Promise<{spineRequest: spine.SpineRequest, parentPrescription: hl7V3.ParentPrescription}> {
+  const messageId = getBundleIdentifierValue(bundle)
+  logger.info({payloadId: messageId}, "Creating Spine payload from FHIR resource")
+
+  const parentPrescription = convertParentPrescription(bundle, logger)
+  const content = new hl7V3.ParentPrescriptionRoot(parentPrescription)
+  const sendMessagePayload = createSendMessagePayloadFn(
+    messageId,
+    hl7V3.Hl7InteractionIdentifier.PARENT_PRESCRIPTION_URGENT,
+    headers,
+    content
+  )
+  const spineRequest = requestBuilder.toSpineRequest(sendMessagePayload, headers)
+
+  return {spineRequest, parentPrescription}
 }
 
 export {

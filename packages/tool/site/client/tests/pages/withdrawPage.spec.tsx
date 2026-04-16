@@ -29,14 +29,7 @@ describe("Withdraw Page", () => {
 
   describe("When the page is loading the dispense notifications", () => {
     beforeEach(async () => {
-      mock.onGet(dispenseNotificationUrl).reply(function () {
-        return new Promise(function (resolve) {
-          setTimeout(function () {
-            resolve([200])
-          }
-            , 1000)
-        })
-      })
+      mock.onGet(dispenseNotificationUrl).reply(() => new Promise(() => {})) // Promise that never resolves to simulate loading
 
       renderWithContext(<WithdrawPage prescriptionId={prescriptionId} />, context)
     })

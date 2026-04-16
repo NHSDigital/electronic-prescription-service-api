@@ -12,6 +12,9 @@ on:
       IS_PULL_REQUEST:
         type: boolean
         default: false
+      ENABLE_PRESCRIBING_SIGNATURE_VALIDATION:
+        type: boolean
+        default: false
       pinned_image:
         type: string
         required: true
@@ -24,6 +27,9 @@ on:
         required: true
       SIGNING_CERT:
         required: true
+
+permissions: {}
+
 jobs:
   run_pact_tests:
     runs-on: ubuntu-22.04
@@ -44,7 +50,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
 
       - name: Run make install
         run: |
@@ -87,6 +93,7 @@ jobs:
           SIGNING_PRIVATE_KEY: ${{ secrets.SIGNING_PRIVATE_KEY }}
           SIGNING_CERT: ${{ secrets.SIGNING_CERT }}
           API_DEPLOYMENT_METHOD: proxygen
+          ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: ${{ inputs.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION }}
 
       - name: Verify pacts
         shell: bash

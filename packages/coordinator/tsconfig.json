@@ -3,6 +3,10 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "types": [
+      "node",
+      "vitest/globals"
+    ],
     "target": "es6",
     "lib": [
       "es2019",
@@ -20,9 +24,15 @@
         "node_modules/*",
         "tests/*"
       ],
-      "@models": ["../models"],
-      "@services": ["./src/services"],
-      "@resources": ["./src/resources"],
+      "@models": [
+        "../models"
+      ],
+      "@services": [
+        "./src/services"
+      ],
+      "@resources": [
+        "./src/resources"
+      ],
     }
   },
   "include": [
@@ -33,6 +43,5 @@
     {
       "path": "../models"
     }
-  ],
-  "files": ["../../node_modules/jest-expect-message/types/index.d.ts"],
+  ]
 }

@@ -14,8 +14,4 @@ export class PrepareCase extends Case {
     const responseString = fs.readFileSync(responseFile.path, "utf-8")
     this.response = LosslessJson.parse(responseString) as fhir.Parameters
   }
-
-  toJestCase(): [string, fhir.Bundle, fhir.Parameters, number] {
-    return [this.description, this.request, this.response, this.statusCode]
-  }
 }

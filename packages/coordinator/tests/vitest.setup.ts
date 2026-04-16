@@ -1,5 +1,6 @@
 import {toContainObject} from "./matchers/toContainObject"
+import {expect} from "vitest"
 
 expect.extend(
-  {toContainObject}
+  {toContainObject: toContainObject as never}
 )

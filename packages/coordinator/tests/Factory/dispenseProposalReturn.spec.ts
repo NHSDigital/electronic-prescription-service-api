@@ -26,8 +26,8 @@ describe("create", () => {
   const prescription = getParentPrescription(releaseResponse)
   const returnReasonCode = new ReturnReasonCode("0005", "Invalid digital signature")
   const logger = pino()
-  const loggerSpy = jest.spyOn(logger, "info")
-  jest.spyOn(crypto, "randomUUID")
+  const loggerSpy = vi.spyOn(logger, "info")
+  vi.spyOn(crypto, "randomUUID")
     .mockReturnValue("test-uuid-in-uuid-format")
   const result = returnPayloadFactory.create(prescription, releaseResponse, returnReasonCode, logger)
   const dispenseProposalReturnResult = result.DispenseProposalReturn

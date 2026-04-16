@@ -1,13 +1,13 @@
 # End to end tests using pact
 
-This contains code to create pacts and verify them as a provider.   
+This contains code to create pacts and verify them as a provider.
 
-Tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.   
+Tests can be run against any deployed version of a proxy, follow the [setup and install](#setup) to get started.
 
-There are two stages to the testing. Create pact step uses jest to create pact files based on examples in this repo. These are defined in the specs folder. 
-The sandbox folder contains tests that run against sandbox deployments, and the live folder contains tests that run against a non sandbox deployment.   
+There are two stages to the testing. Create pact step uses Vitest to create pact files based on examples in this repo. These are defined in the specs folder.
+The sandbox folder contains tests that run against sandbox deployments, and the live folder contains tests that run against a non sandbox deployment.
 
-The live tests have a 'beforeAll' step which runs updatePrescriptions in services/update-prescriptions.ts which updates the prescription id in the examples and creates a valid signature in the payload that is going to be sent. 
+The live tests have a 'beforeAll' step which runs updatePrescriptions in services/update-prescriptions.ts which updates the prescription id in the examples and creates a valid signature in the payload that is going to be sent.
 
 Preparing the tests generates pact files under pact/pacts.
 
@@ -20,7 +20,7 @@ If a new example is added, see [Add a new example](./docs/AddingExamples.md) for
 
 ### To run locally
 
-You can run the tests locally against any deployed proxy.   
+You can run the tests locally against any deployed proxy.
 You need to set the following environment variables:
 ```
 export PACT_PROVIDER=eps

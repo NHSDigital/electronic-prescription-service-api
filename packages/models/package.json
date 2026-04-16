@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc --build --clean ./tsconfig.json",
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs .",
-    "test": "jest --ci --reporters=default --reporters=jest-junit --coverage"
+    "test": "vitest run --project models --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml"
   },
   "author": "NHS Digital",
   "license": "MIT",
@@ -14,8 +14,8 @@
     "npm": "11.6.x"
   },
   "dependencies": {
-    "axios": "^1.13.6",
-    "fhirpath": "^4.9.1",
+    "axios": "^1.15.0",
+    "fhirpath": "^4.9.2",
     "lossless-json": "^4.3.0",
     "xml-js": "^1.6.11"
   },

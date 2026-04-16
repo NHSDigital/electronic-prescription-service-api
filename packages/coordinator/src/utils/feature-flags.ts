@@ -35,6 +35,10 @@ export function isSandbox(): boolean {
   return process.env.SANDBOX === "1"
 }
 
+export function isSignatureValidationEnabled(): boolean {
+  return process.env.ENABLE_PRESCRIBING_SIGNATURE_VALIDATION === "true"
+}
+
 export enum DoseToTextMode {
   DISABLED = "DISABLED",
   AUDIT = "AUDIT"
