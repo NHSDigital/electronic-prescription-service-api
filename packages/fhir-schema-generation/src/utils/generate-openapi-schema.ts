@@ -46,7 +46,7 @@ export function generateSchema(
 }
 
 // wraps a schema in array notation when cardinality indicates multiple values.
-// max > 1 or "*" means array. minItems from min, maxItems from max (omitted for "*").
+// max > 1 or "*" means array. minItems from min (omitted when 0), maxItems from max (omitted for "*").
 export function applyCardinality(
   schema: EditableJSONSchema,
   element: StructureDefinitionBaseElement
@@ -61,8 +61,11 @@ export function applyCardinality(
 
   const arraySchema: EditableJSONSchema = {
     type: "array",
-    items: schema,
-    minItems: min
+    items: schema
+  }
+
+  if (min > 0) {
+    arraySchema.minItems = min
   }
 
   if (max !== "*") {

@@ -11,6 +11,8 @@ import {
 const mockDownload = vi.fn()
 const mockParseSimplifierPackage = vi.fn()
 const mockGenerateSchema = vi.fn()
+const mockWriteFileSync = vi.fn()
+const mockMkdirSync = vi.fn()
 
 // 2. Mock the modules
 vi.mock("../src/utils/download-simplifier-package.js", () => ({
@@ -21,9 +23,23 @@ vi.mock("../src/utils/parse-simplifier-package.js", () => ({
   parseSimplifierPackage: (...args: Array<any>) => mockParseSimplifierPackage(...args)
 }))
 
-vi.mock("../src/utils/generate-schema.js", () => ({
+vi.mock("../src/utils/generate-openapi-schema.js", () => ({
   generateSchema: (...args: Array<any>) => mockGenerateSchema(...args)
 }))
+
+vi.mock("node:fs", async (importOriginal) => {
+  const actual = await importOriginal<typeof import("node:fs")>()
+  return {
+    ...actual,
+    default: {
+      ...actual,
+      writeFileSync: (...args: Array<any>) => mockWriteFileSync(...args),
+      mkdirSync: (...args: Array<any>) => mockMkdirSync(...args)
+    },
+    writeFileSync: (...args: Array<any>) => mockWriteFileSync(...args),
+    mkdirSync: (...args: Array<any>) => mockMkdirSync(...args)
+  }
+})
 
 describe("index.ts - Schema Generation Pipeline", () => {
 
@@ -39,6 +55,8 @@ describe("index.ts - Schema Generation Pipeline", () => {
     mockDownload.mockReset()
     mockParseSimplifierPackage.mockReset()
     mockGenerateSchema.mockReset()
+    mockWriteFileSync.mockReset()
+    mockMkdirSync.mockReset()
 
     // Configure default successful mock behaviors
     mockDownload.mockResolvedValue(undefined)

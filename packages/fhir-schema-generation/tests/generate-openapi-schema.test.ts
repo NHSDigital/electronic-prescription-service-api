@@ -211,8 +211,7 @@ describe("generateSchema", () => {
 
     expect(body.properties.identifier).toEqual({
       type: "array",
-      items: {description: "ids", type: "boolean", pattern: undefined},
-      minItems: 0
+      items: {description: "ids", type: "boolean", pattern: undefined}
     })
   })
 
@@ -495,8 +494,7 @@ describe("generateSchema", () => {
 
     expect(body.properties["value[x]"]).toEqual({
       type: "array",
-      items: {type: "boolean", pattern: undefined},
-      minItems: 0
+      items: {type: "boolean", pattern: undefined}
     })
   })
 
@@ -518,8 +516,7 @@ describe("generateSchema", () => {
 
     expect(body.properties.tags).toEqual({
       type: "array",
-      items: {description: "Tags", enum: ["a", "b", "c"], type: "string"},
-      minItems: 0
+      items: {description: "Tags", enum: ["a", "b", "c"], type: "string"}
     })
   })
 
@@ -598,9 +595,9 @@ describe("applyCardinality", () => {
     expect(applyCardinality(base, el(0, "0"))).toBe(base)
   })
 
-  it("wraps in array with minItems when max is '*'", () => {
+  it("wraps in array without minItems when min is 0 and max is '*'", () => {
     expect(applyCardinality(base, el(0, "*"))).toEqual({
-      type: "array", items: base, minItems: 0
+      type: "array", items: base
     })
   })
 
@@ -610,9 +607,9 @@ describe("applyCardinality", () => {
     })
   })
 
-  it("defaults minItems to 0 when min is undefined", () => {
+  it("omits minItems when min is undefined (defaults to 0)", () => {
     expect(applyCardinality(base, el(undefined, "*"))).toEqual({
-      type: "array", items: base, minItems: 0
+      type: "array", items: base
     })
   })
 
