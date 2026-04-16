@@ -26,7 +26,8 @@ vi.mock("../src/utils/generate-schema.js", () => ({
 }))
 
 describe("index.ts - Schema Generation Pipeline", () => {
-  let exitSpy: ReturnType<typeof vi.spyOn>
+
+  let exitSpy: any
   let consoleLogSpy: ReturnType<typeof vi.spyOn>
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>
 
@@ -45,9 +46,9 @@ describe("index.ts - Schema Generation Pipeline", () => {
     mockGenerateSchema.mockReturnValue({MedicationRequest: {type: "object", title: "MedicationRequest Mock"}})
 
     // Intercept process.exit
-    exitSpy = vi.spyOn(process, "exit").mockImplementation((code) => {
+    exitSpy = vi.spyOn(process, "exit").mockImplementation(((code: number) => {
       throw new Error(`process.exit called with code ${code}`)
-    })
+    }) as () => never)
 
     // Silence console logs to keep test output clean
     consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {})
