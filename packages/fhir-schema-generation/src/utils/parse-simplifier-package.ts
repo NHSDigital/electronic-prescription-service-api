@@ -1,6 +1,7 @@
 import * as fs from "node:fs"
 import * as path from "node:path"
 import {StructureDefinition} from "../models/fhir-package/structure-definition.interface.js"
+import readline from "readline"
 
 /**
  * Reads a JSON Schema file produced by the Simplifier package and returns
@@ -12,7 +13,8 @@ import {StructureDefinition} from "../models/fhir-package/structure-definition.i
 export function parseSimplifierPackage(
   filePath: string
 ): StructureDefinition {
-  console.log(`Parsing schema: ${filePath}`)
+  readline.clearLine(process.stdout, 0)
+  process.stdout.write(`\rParsing schema: ${filePath.split("/").at(-1)}`)
 
   const rawFile = fs.readFileSync(filePath, "utf-8")
   const parsedJson: unknown = JSON.parse(rawFile)

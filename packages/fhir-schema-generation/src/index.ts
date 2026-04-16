@@ -32,25 +32,23 @@ async function runSchemaGenerationPipeline() {
 
   const packagePath = `${outputPath}/package/`
 
+  // Uncomment next line to process entire package.
+  // console.log("\n", `Processing ${normalizeFileName(`${PACKAGE_NAME}-${PACKAGE_VERSION}`)}`)
   // const files = await getSimplifierDefinitionFiles(packagePath, TARGET_FILE_PREFIX)
+
+  // Currently only processing MedicationRequest.json (see above)
+  console.log("\nNOTE: Only processing \"MedicationRequest\"", "\n\n")
   const files = [path.join(packagePath, `${TARGET_FILE_PREFIX}MedicationRequest.json`)]
   const processor = new SchemaProcessor()
 
+  console.log("\n")
   for (const file of files) {
-    console.log("file: ", file)
     processor.processSimplifierPackageSpecifications(file, TARGET_FILE_PREFIX)
   }
 
+  console.log("\n")
   const results = processor.getSpecifications()
-
-  console.log("\n\n\n TEST =======")
-  const test = results.get("MedicationRequest")
-
-  // Output to console as string
-  console.log(JSON.stringify(test))
-
-  // Output to console as JSON
-  // console.dir(test, {depth: null})
+  results.forEach((result) => console.log(JSON.stringify(result)))
 }
 
 try {
