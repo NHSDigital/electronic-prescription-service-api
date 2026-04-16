@@ -47,16 +47,7 @@ describe("convertPatient", () => {
     expect(actual).toEqual(undefined)
   })
 
-  test("If the GP has ID 'V81999' make the Id have nullFlavor 'UNK'", () => {
-    fhirPatient.generalPractitioner = createGpWithIdValue(UNKNOWN_GP_ODS_CODE)
-
-    const patientsubjectOf = convertPatient(bundle, fhirPatient, logger).patientPerson.playedProviderPatient.subjectOf
-    const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
-
-    expect(actual).toEqual({nullFlavor: "UNK"})
-  })
-
-  test("If the GP ID is not 'V81999' make the Id the value", () => {
+  test("should map valid GP ODS code to healthCareProvider id attributes", () => {
     const idValue = "testValue"
     fhirPatient.generalPractitioner = createGpWithIdValue(idValue)
 
@@ -66,7 +57,7 @@ describe("convertPatient", () => {
     expect(actual).toEqual({extension: idValue, root: "1.2.826.0.1285.0.1.10"})
   })
 
-  test("If the GP code is missing, then the Id should have nullFlavor 'UNK'", () => {
+  test("If the GP code is missing, then the Id should be V81999", () => {
     const newBundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     const fhirPatient = getPatient(newBundle)
     delete fhirPatient.generalPractitioner
@@ -74,10 +65,10 @@ describe("convertPatient", () => {
     const patientsubjectOf = convertPatient(bundle, fhirPatient, logger).patientPerson.playedProviderPatient.subjectOf
     const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
 
-    expect(actual).toEqual({nullFlavor: "UNK"})
+    expect(actual).toEqual({extension: UNKNOWN_GP_ODS_CODE, root: "1.2.826.0.1285.0.1.10"})
   })
 
-  test("If the GP code is empty, then the Id should have nullFlavor 'UNK'", () => {
+  test("If the GP code is empty, then the Id should be V81999", () => {
     const newBundle = clone(TestResources.specification[0].fhirMessageUnsigned)
     const fhirPatient = getPatient(newBundle)
     fhirPatient.generalPractitioner = []
@@ -85,7 +76,7 @@ describe("convertPatient", () => {
     const patientsubjectOf = convertPatient(bundle, fhirPatient, logger).patientPerson.playedProviderPatient.subjectOf
     const actual = patientsubjectOf.patientCareProvision.responsibleParty.healthCareProvider.id._attributes
 
-    expect(actual).toEqual({nullFlavor: "UNK"})
+    expect(actual).toEqual({extension: UNKNOWN_GP_ODS_CODE, root: "1.2.826.0.1285.0.1.10"})
   })
   function createGpWithIdValue(idValue: string) {
     return [

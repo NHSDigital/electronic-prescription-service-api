@@ -5,42 +5,37 @@ function getProcessCases(operation: ApiOperation) {
   return fetcher.processExamples
     .filter(e => e.isSuccess)
     .filter(e => e.requestFile.operation === operation)
-    .map(spec => spec.toJestCase())
 }
 
 function getTaskReleaseCases() {
   return fetcher.taskReleaseExamples
     .filter(e => e.isSuccess)
-    .map(spec => spec.toJestCase())
 }
 
 function getTaskCases(operation: ApiOperation) {
   return fetcher.taskExamples
     .filter(e => e.isSuccess)
     .filter(e => e.requestFile.operation === operation)
-    .map(spec => spec.toJestCase())
 }
 
 function getClaimCases() {
   return fetcher.claimExamples
     .filter(e => e.isSuccess)
     .filter(e => e.requestFile.operation !== "amend")
-    .map(spec => spec.toJestCase())
 }
 
 function getClaimAmendCases() {
   return fetcher.claimExamples
     .filter(e => e.isSuccess)
     .filter(e => e.requestFile.operation === "amend")
-    .map(spec => spec.toJestCase())
 }
 
-export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess).map(spec => spec.toJestCase())
-export const prepareErrorCases = fetcher.prepareExamples.filter(e => !e.isSuccess).map(spec => spec.toJestCase())
+export const prepareCaseGroups = fetcher.prepareExamples.filter(e => e.isSuccess)
+export const prepareErrorCases = fetcher.prepareExamples.filter(e => !e.isSuccess)
 
-export const prepareCaseBundles = prepareCaseGroups.filter(e => e[1].resourceType === "Bundle")
+export const prepareCaseBundles = prepareCaseGroups.filter(e => e.request.resourceType === "Bundle")
 
-export const processErrorCases = fetcher.processExamples.filter(e => !e.isSuccess).map(spec => spec.toErrorJestCase())
+export const processErrorCases = fetcher.processExamples.filter(e => !e.isSuccess)
 
 export const processOrderCases = getProcessCases("send")
 export const processOrderUpdateCases = getProcessCases("cancel")

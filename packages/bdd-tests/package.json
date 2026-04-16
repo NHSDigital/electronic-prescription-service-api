@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "bdd tests for EPS",
   "scripts": {
-    "test-dev": "jest dev",
-    "test-sandbox": "jest sandbox",
+    "test-dev": "NODE_ENV=dev cucumber-js --tags 'not @excluded'",
+    "test-sandbox": "NODE_ENV=sandbox cucumber-js --tags 'not @excluded'",
     "test": "cucumber-js --tags 'not @excluded'",
     "test:debug": "cucumber-js --tags 'not @excluded'",
     "lint": "eslint  --max-warnings 0 --fix --config ../../eslint.config.mjs ."
@@ -22,7 +22,6 @@
     "@types/fhir": "^0.0.41",
     "axios": "^1.15.0",
     "axios-cookiejar-support": "^6.0.5",
-    "babel-jest": "^30.3.0",
     "dom-parser": "^1.1.5",
     "dotenv": "^17.4.1",
     "expect": "^30.3.0",

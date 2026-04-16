@@ -8,7 +8,7 @@ import {
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
 
-jest.spyOn(global.console, "warn").mockImplementation(() => null)
+vi.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyTask returns errors", () => {
   const validReturnTask = fetcher.taskReturnExamples[0].request

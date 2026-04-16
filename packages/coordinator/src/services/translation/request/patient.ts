@@ -14,15 +14,10 @@ function convertPatientToProviderPatient(patient: fhir.Patient, logger: Logger) 
   if (patient.generalPractitioner && patient.generalPractitioner.length > 0) {
     const generalPractitionerId = onlyElement(patient.generalPractitioner, "Patient.generalPractitioner")
     const gpIdValue = generalPractitionerId.identifier.value
-    if (gpIdValue === UNKNOWN_GP_ODS_CODE) {
-      logger.warn("generalPractitioner passed in as V81999 - using unknown")
-      hl7V3HealthCareProvider.id = hl7V3.Null.UNKNOWN
-    } else {
-      hl7V3HealthCareProvider.id = new hl7V3.SdsOrganizationIdentifier(gpIdValue)
-    }
+    hl7V3HealthCareProvider.id = new hl7V3.SdsOrganizationIdentifier(gpIdValue)
   } else {
-    logger.warn("Missing generalPractitioner - replacing with unknown")
-    hl7V3HealthCareProvider.id = hl7V3.Null.UNKNOWN
+    logger.warn("Missing generalPractitioner - replacing with V81999")
+    hl7V3HealthCareProvider.id = new hl7V3.SdsOrganizationIdentifier(UNKNOWN_GP_ODS_CODE)
   }
   const hl7V3PatientCareProvision = new hl7V3.PatientCareProvision(
     hl7V3.PatientCareProvisionTypeCode.PRIMARY_CARE

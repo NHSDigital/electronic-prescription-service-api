@@ -4,7 +4,7 @@ import {DISPENSING_USER_SCOPE} from "../../../src/services/validation/scope-vali
 import pino from "pino"
 
 const logger = pino()
-const loggerWarnSpy = jest.spyOn(logger, "warn")
+const loggerWarnSpy = vi.spyOn(logger, "warn")
 
 describe("verifyClaim", () => {
   const invalidClaim = fetcher.claimExamples[0].request

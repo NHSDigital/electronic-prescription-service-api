@@ -18,7 +18,9 @@ const configUrl = `${baseUrl}getconfig`
 const attendedAuthRedirectUrl = `https://attended-auth.com`
 const unattendedAuthRedirectUrl = `https://unattended-auth.com`
 
-jest.mock("../../src/browser/navigation")
+vi.mock("../../src/browser/navigation", () => ({
+  redirect: vi.fn()
+}))
 
 const mock = new MockAdapter(axiosInstance)
 
