@@ -34,10 +34,14 @@ vi.mock("node:fs", async (importOriginal) => {
     default: {
       ...actual,
       writeFileSync: (...args: Array<any>) => mockWriteFileSync(...args),
-      mkdirSync: (...args: Array<any>) => mockMkdirSync(...args)
+      mkdirSync: (...args: Array<any>) => mockMkdirSync(...args),
+      existsSync: actual.existsSync,
+      readFileSync: actual.readFileSync
     },
     writeFileSync: (...args: Array<any>) => mockWriteFileSync(...args),
-    mkdirSync: (...args: Array<any>) => mockMkdirSync(...args)
+    mkdirSync: (...args: Array<any>) => mockMkdirSync(...args),
+    existsSync: actual.existsSync,
+    readFileSync: actual.readFileSync
   }
 })
 
