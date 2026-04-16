@@ -14,7 +14,7 @@ export class SchemaProcessor {
 
   private rootDir: string = ""
   private readonly schemaVersion = "http://json-schema.org/draft-04/schema#"
-  private readonly schemaIdPrefix = "http://hl7.org/fhir/json-schema/"
+  private readonly schemaIdPrefix = "http://hl7.org/fhir/json-schema" // NOSONAR
   private readonly defaultSchemaDescription
     = "see http://hl7.org/fhir/json.html#schema for information about the FHIR Json Schemas"
 
@@ -55,7 +55,7 @@ export class SchemaProcessor {
     if (Object.keys(properties).length !== 0) {
       schema = {
         ...schema,
-        $id: this.schemaIdPrefix + simplifierSchema.name,
+        $id: path.join(this.schemaIdPrefix, simplifierSchema.name),
         $schema: this.schemaVersion,
         definitions: properties
       }

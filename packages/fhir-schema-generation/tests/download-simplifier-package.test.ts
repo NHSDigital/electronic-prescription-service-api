@@ -173,8 +173,8 @@ describe("download-simplifier-package", () => {
     vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify({
       "dist-tags": {latest: "2.0.0"},
       versions: {
-        "1.0.0": {version: "1.0.0", dist: {tarball: "http://test.com/1.0.0.tgz"}},
-        "2.0.0": {version: "2.0.0", dist: {tarball: "http://test.com/2.0.0.tgz"}}
+        "1.0.0": {version: "1.0.0", dist: {tarball: "https://test.com/1.0.0.tgz"}},
+        "2.0.0": {version: "2.0.0", dist: {tarball: "https://test.com/2.0.0.tgz"}}
       }
     }))))
 
@@ -198,7 +198,7 @@ describe("download-simplifier-package", () => {
         ok: true,
         json: async () => ({
           "dist-tags": {latest: "1.0.0"},
-          versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "http://test.tgz"}}}
+          versions: {"1.0.0": {version: "1.0.0", dist: {tarball: "https://test.tgz"}}}
         })
       })
       .mockResolvedValueOnce({ // Tarball call
