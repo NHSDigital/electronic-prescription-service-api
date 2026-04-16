@@ -440,7 +440,6 @@ cdk-synth-prescriptions:
 	npx cdk synth \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResourcesApp.ts" \
-		--verbose
 
 cdk-synth: cdk-synth-api cdk-synth-prescriptions
 
