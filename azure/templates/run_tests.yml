@@ -18,7 +18,7 @@ steps:
   - task: NodeTool@0
     displayName: Use Node v24.14.x
     inputs:
-      versionSpec: "24.14.0"
+      versionSpec: "24.14.1"
     condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
   - bash: |
       #!/bin/bash
