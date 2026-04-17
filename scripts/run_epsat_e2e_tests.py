@@ -4,6 +4,7 @@
 Script to generate user defined unique ID which can be used to
 check the status of the regression test run to be reported to the CI.
 """
+
 import argparse
 from datetime import datetime, timedelta, timezone
 import random
@@ -14,7 +15,9 @@ from requests.auth import HTTPBasicAuth, AuthBase
 
 # This should be set to a known good version of regression test repo
 GITHUB_API_URL = "https://api.github.com/repos/NHSDigital/electronic-prescription-service-api/actions"
-GITHUB_RUN_URL = "https://github.com/NHSDigital/electronic-prescription-service-api/actions/runs"
+GITHUB_RUN_URL = (
+    "https://github.com/NHSDigital/electronic-prescription-service-api/actions/runs"
+)
 
 
 class BearerAuth(AuthBase):
@@ -56,7 +59,7 @@ def trigger_test_run(
         "inputs": {
             "id": run_id,
             "SERVICE_BASE_PATH": service_base_path,
-            "APIGEE_ENVIRONMENT": apigee_environment
+            "APIGEE_ENVIRONMENT": apigee_environment,
         },
     }
 
@@ -118,8 +121,7 @@ def find_workflow(auth_header, run_id, run_date_filter):
                     steps = job.get("steps", [])
 
                     matching_step = next(
-                        (step for step in steps if run_id in step.get("name", "")),
-                        None
+                        (step for step in steps if run_id in step.get("name", "")), None
                     )
                     if matching_step:
                         print(f"Workflow Job found! Using ID: {current_workflow_id}")
@@ -127,7 +129,9 @@ def find_workflow(auth_header, run_id, run_date_filter):
             else:
                 print("Jobs for this workflow run haven't populated yet...")
 
-            print(f"Workflow with ID {current_workflow_id} does not match the Unique ID.")
+            print(
+                f"Workflow with ID {current_workflow_id} does not match the Unique ID."
+            )
         print(
             "Processed all available workflows but no jobs were matching the Unique ID were found!"
         )
@@ -172,7 +176,9 @@ def get_upload_result_job(auth_header, workflow_id):
     jobs = response_json["jobs"]
     upload_result_job = next(
         (job for job in jobs if job["name"] == "run_epsat_tests"),
-        {"status": "can not find run_epsat_tests job - tests are likely still starting"},
+        {
+            "status": "can not find run_epsat_tests job - tests are likely still starting"
+        },
     )
     return upload_result_job
 
@@ -224,7 +230,7 @@ def main():
         "--branch",
         required=False,
         help="Please provide the branch to trigger job on.",
-        default="master"
+        default="master",
     )
     parser.add_argument(
         "--is_called_from_github",
@@ -251,7 +257,7 @@ def main():
         service_base_path=arguments.service_base_path,
         auth_header=auth_header,
         run_id=run_id,
-        branch=arguments.branch
+        branch=arguments.branch,
     )
 
     time.sleep(60)

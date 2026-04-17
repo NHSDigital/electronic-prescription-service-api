@@ -2,11 +2,11 @@ rules:
   unpinned-images:
     # these workflows use unpinned images because they are using a full image passed in that contains the tag
     ignore:
-      - cdk_package_code.yml:19:7
-      - cdk_release_code.yml:145:7
-      - run_epsat_tests.yml:35:7
-      - run_pact_tests.yml:37:7
-      - run_regression_tests.yml:29:7
+      - cdk_package_code.yml:19:18
+      - cdk_release_code.yml:145:18
+      - run_epsat_tests.yml:35:18
+      - run_pact_tests.yml:37:18
+      - run_regression_tests.yml:29:18
   secrets-outside-env:
     # these are ignored because they are using known secrets
     ignore:
