@@ -21,6 +21,7 @@ token="\${GITHUB_TOKEN}"
 const token = await getAuthToken()
 throw new Error\(`Cannot retrieve auth token: \${requestUrl} returned \${response.data}`\)
 throw `Could not retrieve token: \${result.data}
+\.gitleaksignore
 
 # ignore adding begin and end certificate in verification code
 ^([a-f0-9]{40}:)?packages\/coordinator\/tests\/debug\/verify-signature\.spec\.ts:.*BEGIN CERTIFICATE.*
