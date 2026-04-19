@@ -30,7 +30,7 @@ pytest-cov = "^7.1.0"
 
 [tool.poetry.group.create_prescription.dependencies]
 boto3 = "^1.42.74"
-aws-lambda-powertools = "^3.26.0"
+aws-lambda-powertools = "^3.27.0"
 
 [tool.poetry.scripts]
 
