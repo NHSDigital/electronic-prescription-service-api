@@ -6,6 +6,9 @@ on:
       STACK_NAME:
         required: true
         type: string
+      SR_STACK_NAME:
+        required: true
+        type: string
       AWS_ENVIRONMENT:
         required: true
         type: string
@@ -235,6 +238,7 @@ jobs:
           ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           SERVICE_NAME: "${{ inputs.STACK_NAME }}"
+          SR_SERVICE_NAME: "${{ inputs.SR_STACK_NAME }}"
           VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
           LOG_RETENTION_IN_DAYS: "${{ inputs.LOG_RETENTION_DAYS }}"
           COMMIT_ID: "${{ inputs.COMMIT_ID }}"
@@ -276,7 +280,7 @@ jobs:
         run: |
           cd .build
           npx cdk deploy \
-          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResources.ts" \
+          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResourcesApp.ts" \
           --all \
           --require-approval=never \
           --ci true

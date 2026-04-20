@@ -445,12 +445,12 @@ update-snapshots: install-all
 cdk-synth-api:
 	npx cdk synth \
 		--quiet \
-		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
+		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
 
 cdk-synth-prescriptions:
 	npx cdk synth \
 		--quiet \
-		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResourcesApp.ts" \
+		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResourcesApp.ts"
 
 cdk-synth: cdk-synth-api cdk-synth-prescriptions
 

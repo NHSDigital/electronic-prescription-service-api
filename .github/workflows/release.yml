@@ -83,6 +83,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      SR_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
@@ -138,6 +139,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandbox
+      SR_STACK_NAME: prescriptions-stateful-resources-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: true
@@ -195,6 +197,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      SR_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: ref
       APIGEE_ENVIRONMENT: ref
       ENABLE_MUTUAL_TLS: true
@@ -248,6 +251,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      SR_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: qa
       APIGEE_ENVIRONMENT: internal-qa
       ENABLE_MUTUAL_TLS: true
@@ -297,6 +301,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      SR_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: int
       APIGEE_ENVIRONMENT: int
       ENABLE_MUTUAL_TLS: true
@@ -352,6 +357,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandox
+      SR_STACK_NAME: prescriptions-stateful-resources-sandbox
       AWS_ENVIRONMENT: int
       APIGEE_ENVIRONMENT: sandbox
       ENABLE_MUTUAL_TLS: true
@@ -398,6 +404,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      SR_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: prod
       APIGEE_ENVIRONMENT: prod
       ENABLE_MUTUAL_TLS: true

@@ -47,6 +47,7 @@ export class S3Bucket extends Construct {
     } : undefined
 
     const bucket = new Bucket(this, props.bucketName, {
+      bucketName: props.bucketName,
       blockPublicAccess: BlockPublicAccess.BLOCK_ALL,
       encryption: BucketEncryption.KMS,
       encryptionKey: kmsKey,
@@ -56,7 +57,7 @@ export class S3Bucket extends Construct {
       versioned: false,
       objectOwnership: ObjectOwnership.BUCKET_OWNER_ENFORCED,
       serverAccessLogsBucket: props.auditLoggingBucket,
-      serverAccessLogsPrefix: "prescriptions-observability",
+      serverAccessLogsPrefix: props.bucketName,
       lifecycleRules: props.itemExpiryDays ? [expiryLifecycleRule!] : []
     })
 
@@ -66,7 +67,6 @@ export class S3Bucket extends Construct {
       principals: [props.deploymentRole],
       actions: [
         "s3:Abort*",
-        "s3:DeleteObject",
         "s3:GetBucket*",
         "s3:GetObject*",
         "s3:List*",
@@ -98,7 +98,9 @@ export class S3Bucket extends Construct {
           principals: [props.deploymentRole],
           actions: [
             "kms:Encrypt",
-            "kms:GenerateDataKey"
+            "kms:GenerateDataKey",
+            "kms:Decrypt",
+            "kms:DescribeKey"
           ],
           resources:["*"]
         })

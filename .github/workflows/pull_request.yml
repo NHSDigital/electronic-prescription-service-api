@@ -139,6 +139,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
+      SR_STACK_NAME: prescriptions-stateful-resources-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: false
@@ -188,6 +189,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      SR_STACK_NAME: prescriptions-stateful-resources-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: false
