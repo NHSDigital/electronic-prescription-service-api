@@ -64,9 +64,11 @@ export class SchemaProcessor {
   private extractPropertyName(idParts: Array<string>): string {
     let prop = idParts.pop()!
 
-    if (idParts.length > 1) {
+    // Traverse all parts of property name to build the sub-definition name
+    while (idParts.length > 1) {
       const postfix = idParts.pop()!
-      prop += `_${postfix[0].toUpperCase()}${postfix.slice(1)}`
+      const cleanPostfix = postfix.split("[x]")[0]
+      prop += `_${cleanPostfix[0].toUpperCase()}${cleanPostfix.slice(1)}`
     }
     return prop
   }
@@ -92,28 +94,27 @@ export class SchemaProcessor {
     }
   }
 
-  private isDefinitionRequired(
+  private applyRequiredConstraints(
     schema: EditableJSONSchema,
     current: StructureDefinitionBaseElement,
     fieldName: string
-  ): boolean {
-    const definitionBody = schema.allOf[1]
+  ): void {
+    const definitionBody = schema.allOf?.[1] as EditableJSONSchema
 
     // Don't include extension objects
-    const isExtensionObject = Object.keys(definitionBody.properties)
+    const isExtensionObject = Object.keys(definitionBody?.properties ?? {})
       .filter((name) => name.includes(`_${name}`))
 
+    // If extension object, then original prop must be required
     if (isExtensionObject?.length > 0) {
-      console.log("isExtensionObject", isExtensionObject, fieldName)
-      return false
+      return
     }
 
+    // Check if it has a minimum required count or has "mustSupport" flag
     const hasMinimumValue = current.min && current.min > 0
     if (hasMinimumValue || current.mustSupport) {
-      return true
+      definitionBody.required = definitionBody.required ? [...definitionBody.required, fieldName] : []
     }
-
-    return false
   }
 
   private processElement(
@@ -133,14 +134,7 @@ export class SchemaProcessor {
 
     this.initializeSchemaDefinition(result, prop, current, simplifierSchema)
 
-    // Check if item is required, and if so updates schema
-    const required = this.isDefinitionRequired(result[prop], current, idParts[0])
-    if (!required) {
-      return
-    }
-
     const code = this.resolveTypeCode(types[0])
-    console.log("idParts", idParts)
 
     // Check if dependencies/ child elements are missing
     this.handleDependencies(current, code, elements)
@@ -148,11 +142,14 @@ export class SchemaProcessor {
     // Correct idParts and add element to schema
     idParts.reverse()
     this.assignPropertySchema(result[prop], current, code, idParts)
+
+    // Check if item is required, and if so updates schema
+    this.applyRequiredConstraints(result[prop], current, idParts[0])
   }
 
   private processProperties(simplifierSchema: StructureDefinition): Record<string, EditableJSONSchema> {
     const result: Record<string, EditableJSONSchema> = {}
-    const elements = simplifierSchema.differential.element.sort((a, b) => a.id.localeCompare(b.id))
+    const elements = simplifierSchema.differential?.element.sort((a, b) => a.id.localeCompare(b.id)) ?? []
 
     for (const current of elements) {
       this.processElement(current, elements, result, simplifierSchema)
@@ -170,11 +167,15 @@ export class SchemaProcessor {
     if (type === "string") {
       const differential = simplifierSchema.differential.element.at(-1)
       const snapType = differential?.type.at(-1)
-      const snapValue = snapType?.extension.at(-1)?.valueString
+      const snapValue = snapType?.extension?.at(-1)?.valueString
       pattern = snapValue
     }
 
-    const schema: EditableJSONSchema = {type, pattern}
+    const schema: EditableJSONSchema = {type}
+    if (pattern) {
+      schema.pattern = pattern
+    }
+
     this.updatePrimitives(simplifierSchema.id, schema)
   }
 
@@ -183,13 +184,13 @@ export class SchemaProcessor {
 
     let schema: DeepMutable<EditableJSONSchema> = {
       description: this.defaultSchemaDescription,
-      $ref: "#/definitions/" + simplifierSchema.name
+      $ref: "#/definitions/" + simplifierSchema.id
     }
 
     if (Object.keys(properties).length !== 0) {
       schema = {
         ...schema,
-        $id: path.join(this.schemaIdPrefix, simplifierSchema.name),
+        $id: path.join(this.schemaIdPrefix, simplifierSchema.id),
         $schema: this.schemaVersion,
         definitions: properties
       }
@@ -198,7 +199,7 @@ export class SchemaProcessor {
     this.updateSpecifications(simplifierSchema.id, schema)
   }
 
-  private processSpecification(simplifierSchema: StructureDefinition) {
+  private processStructureDefinition(simplifierSchema: StructureDefinition) {
     switch (simplifierSchema.kind) {
       case "primitive-type":
         this.processPrimitive(simplifierSchema)
@@ -244,10 +245,20 @@ export class SchemaProcessor {
     } else if (this.primitives.has(code)) {
       this.setNestedProp(targetProperties, idParts, {
         description: current.definition,
-        type: current.type,
         ...(this.primitives.get(code) ?? {} as any)
       })
       requiresExtension = true
+    } else if (code === "BackboneElement" || code === "Element") {
+      const parts = current.id.split(".")
+      const defName = parts[0] + "_" + parts.slice(1).map((p: string) => {
+        const clean = p.split("[x]")[0]
+        return clean[0].toUpperCase() + clean.slice(1)
+      }).join("_")
+
+      this.setNestedProp(targetProperties, idParts, {
+        $ref: `#/definitions/${defName}`,
+        description: current.definition
+      })
     } else if (!this.inProgress.has(code)) {
       this.setNestedProp(targetProperties, idParts, {
         $ref: `${code}.schema.json#/$definitions/${code}`,
@@ -255,7 +266,7 @@ export class SchemaProcessor {
       })
     }
 
-    // Primitive types can be replaced or accompanied by an extension object using an underscore prefix
+    // Handle extension object using an underscore prefix
     if (requiresExtension && idParts.length > 0) {
       let element = idParts[idParts.length - 1]
       element = element.split("[x]").shift() ?? element
@@ -264,25 +275,161 @@ export class SchemaProcessor {
 
       this.setNestedProp(targetProperties, [...parentParts, `_${element}`], {
         description: `Extensions for ${element}`,
-        type: this.definitions.get("Element")
+        $ref: "Element.schema.json#/$definitions/Element"
       })
     }
   }
 
-  public processSimplifierPackageSpecifications(filePath: string, prefix: string = ""): void {
-    if (!this.rootDir) {
-      this.rootDir = path.join(filePath.substring(0, filePath.lastIndexOf("/")), prefix)
-    }
+  public processSpecification(filePath: string): void {
 
     const parsedSchema = parseSimplifierPackage(filePath)
 
     this.inProgress.set(parsedSchema.id, [])
-    this.processSpecification(parsedSchema)
+    this.processStructureDefinition(parsedSchema)
+  }
+
+  public isPropertyRequired(
+    schema: EditableJSONSchema,
+    processed: Map<string, boolean>
+  ): boolean {
+    const schemaId = schema.$id ?? schema.$ref ?? ""
+
+    // Check if we have already processed this schema to avoid infinite loops and duplicate checks
+    if (schemaId && processed.has(schemaId)) {
+      return processed.get(schemaId)!
+    }
+
+    if (schemaId) processed.set(schemaId, false)
+
+    let schemaHasRequired = false
+
+    if (schema.definitions) {
+      for (const defName of Object.keys(schema.definitions)) {
+        const childDef = schema.definitions[defName] as EditableJSONSchema
+        const childBody = childDef.allOf?.at(-1) as EditableJSONSchema
+
+        const localRefId = `${schemaId}#${defName}`
+        if (processed.has(localRefId)) {
+          if (processed.get(localRefId)) {
+            schemaHasRequired = true
+          }
+          continue
+        }
+
+        processed.set(localRefId, false)
+
+        if (childBody && this.filterProperties(childBody, schema, processed)) {
+          schemaHasRequired = true
+          processed.set(localRefId, true)
+        }
+      }
+    }
+
+    if (schemaId) processed.set(schemaId, schemaHasRequired)
+    return schemaHasRequired
+  }
+
+  private filterProperties(
+    body: EditableJSONSchema,
+    schema: EditableJSONSchema,
+    processed: Map<string, boolean>
+  ): boolean {
+    if (!body.properties) return false
+
+    const requiredProps = body.required ?? []
+    let hasRequired = requiredProps.length > 0
+
+    const filteredProperties: Record<string, any> = {}
+
+    // Iterate through properties to check if they, or their child, are required
+    for (const key of Object.keys(body.properties)) {
+      const prop = body.properties[key] as EditableJSONSchema
+      let isRequired = requiredProps.includes(key)
+
+      // Keep the extension if the non-extension is required
+      if (!isRequired && key.startsWith("_") && requiredProps.includes(key.substring(1))) {
+        isRequired = true
+      }
+
+      if (!isRequired) {
+        const ref = prop.$ref ?? (prop.items as EditableJSONSchema)?.$ref
+
+        // Check references and their children
+        if (ref) {
+          const defName = ref.split("/").at(-1) ?? "" // Take only reference name
+          const childDef = schema.definitions?.[defName] as EditableJSONSchema | undefined
+          const childBody = childDef?.allOf?.at(-1) as EditableJSONSchema | undefined
+
+          const schemaId = `${schema.$id ?? schema.$ref ?? ""}#${defName}`
+          if (processed.has(schemaId)) {
+            // If we've already processed this reference, just get the result
+            isRequired = processed.get(schemaId)!
+          } else {
+            // Check the reference (set as false by default to avoid infinite loop)
+            processed.set(schemaId, false)
+            if (childBody) {
+              isRequired = this.filterProperties(childBody, schema, processed)
+            }
+            processed.set(schemaId, isRequired)
+          }
+        } else {
+          // Check dependencies
+          const specCode = ref?.split(".schema.json").shift()
+          if (specCode && this.specifications.has(specCode)) {
+            const spec = this.specifications.get(specCode)!
+            isRequired = this.isPropertyRequired(spec, processed)
+          }
+        }
+      }
+
+      if (isRequired) {
+        hasRequired = true
+        // Add the property to our new object instead of deleting unrequired ones
+        filteredProperties[key] = prop
+      }
+    }
+
+    // Reassign the filtered properties back to the body
+    body.properties = filteredProperties
+
+    // Remove the 'required' array now that we have used it for filtering
+    delete body.required
+
+    return hasRequired
+  }
+
+  public filterRequiredSpecifications(): Array<string> {
+    const requiredSchemas: Array<string> = []
+    const processed = new Map<string, boolean>()
+
+    for (const [id, spec] of this.specifications) {
+      const required = this.isPropertyRequired(spec, processed)
+
+      if (required) {
+        requiredSchemas.push(id)
+      }
+    }
+
+    return requiredSchemas
+  }
+
+  public processSimplifierPackageSpecifications(filenames: Array<string>, prefix: string = ""): void {
+    if (!this.rootDir) {
+      const filePath = filenames.find((name) => !!name)
+      if (!filePath) {
+        return
+      }
+
+      this.rootDir = path.join(filePath.substring(0, filePath.lastIndexOf("/")), prefix)
+    }
+
+    filenames.forEach((file) => this.processSpecification(file))
+    this.filterRequiredSpecifications()
   }
 
   private processProperty(element: StructureDefinitionDifferential, code: string): EditableJSONSchema | undefined {
     // Recursively process the dependency
-    this.processSimplifierPackageSpecifications(`${this.rootDir}${code}.json`)
+    this.processSpecification(`${this.rootDir}${code}.json`)
     const found = this.specifications.get(code) as Exclude<EditableJSONSchema, boolean>
 
     if (found && element.max === "*") {

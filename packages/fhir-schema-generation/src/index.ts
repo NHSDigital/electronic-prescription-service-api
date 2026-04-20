@@ -2,6 +2,7 @@ import * as path from "node:path"
 import {normalizeFileName} from "./utils/common.js"
 import {downloadSimplifierPackage} from "./utils/download-simplifier-package.js"
 import {SchemaProcessor} from "./utils/process-simplifier-package-specification.js"
+import {getSimplifierDefinitionFiles} from "./utils/parse-simplifier-package.js"
 
 const SIMPLIFIER_REGISTRY_URL = "https://packages.simplifier.net"
 const PACKAGE_NAME = "hl7.fhir.r4.core"
@@ -33,23 +34,17 @@ async function runSchemaGenerationPipeline() {
   const packagePath = `${outputPath}/package/`
 
   // Uncomment next line to process entire package.
-  // console.log("\n", `Processing ${normalizeFileName(`${PACKAGE_NAME}-${PACKAGE_VERSION}`)}`)
-  // const files = await getSimplifierDefinitionFiles(packagePath, TARGET_FILE_PREFIX)
-
-  // Currently only processing MedicationRequest.json (see above)
-  console.log("\nNOTE: Only processing \"MedicationRequest\"", "\n\n")
-  const files = [path.join(packagePath, `${TARGET_FILE_PREFIX}MedicationRequest.json`)]
+  console.log("\n", `Processing ${normalizeFileName(`${PACKAGE_NAME}-${PACKAGE_VERSION}`)}`)
+  const files = await getSimplifierDefinitionFiles(packagePath, TARGET_FILE_PREFIX)
+  // const files = [path.join(packagePath, `${TARGET_FILE_PREFIX}MedicationRequest.json`)]
   const processor = new SchemaProcessor()
 
   console.log("\n")
-  for (const file of files) {
-    processor.processSimplifierPackageSpecifications(file, TARGET_FILE_PREFIX)
-  }
+  processor.processSimplifierPackageSpecifications(files, TARGET_FILE_PREFIX)
 
   console.log("\n")
   const results = processor.getSpecifications()
-  // results.forEach((result) => console.log(JSON.stringify(result)))
-  console.log(JSON.stringify(results.get("MedicationRequest")))
+  console.dir(results, {depth: null, colors: true})
 }
 
 try {
