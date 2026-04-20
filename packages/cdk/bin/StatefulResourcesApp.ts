@@ -3,6 +3,7 @@ import * as cdk from "aws-cdk-lib"
 import {StatefulResourcesStack} from "../stacks/StatefulResourcesStack"
 import {Aspects, Tags} from "aws-cdk-lib"
 import {AwsSolutionsChecks} from "cdk-nag"
+import {addCfnGuardMetadata} from "./utils/appUtils"
 
 const app = new cdk.App()
 
@@ -23,10 +24,12 @@ Tags.of(app).add("cdkApp", "prescriptions")
 Tags.of(app).add("repo", "electronic-prescription-service-api")
 Tags.of(app).add("cfnDriftDetectionGroup", cfnDriftDetectionGroup)
 
-new StatefulResourcesStack(app, "stateful-resources", {
+const StatefulResources = new StatefulResourcesStack(app, "stateful-resources", {
   env: {
     region: "eu-west-2",
     account: accountId
   },
   stackName: statefulResourcesServiceName
 })
+
+addCfnGuardMetadata(StatefulResources, "Custom::S3AutoDeleteObjectsCustomResourceProvider", "Handler")
