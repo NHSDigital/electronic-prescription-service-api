@@ -69,6 +69,12 @@ jobs:
         env:
           VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
 
+      - name: Build python lambda dependencies
+        run: |
+          poetry export --only create_prescription -o requirements_create_prescription
+          mkdir -p .dependencies/create_prescription/python
+          pip3 install -r requirements_create_prescription -t .dependencies/create_prescription/python
+
       - name: "package cdk"
         run: |
           tar -rf artifact.tar \
@@ -78,15 +84,16 @@ jobs:
             package.json \
             package-lock.json \
             Makefile \
-            cdk.json
+            cdk.json \
+            .dependencies
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: Upload docker images
         with:
           name: docker_artifact

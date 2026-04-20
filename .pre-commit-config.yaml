@@ -91,6 +91,14 @@ repos:
         types_or: [ts, tsx, javascript, jsx, json]
         pass_filenames: false
 
+      - id: lint-python
+        name: Lint Python code
+        entry: make
+        language: system
+        args: ["lint-python"]
+        files: ^(scripts|packages)
+        types_or: [python]
+
       - id: oas-build-checks
         name: Build OAS
         entry: make
@@ -166,5 +174,6 @@ repos:
           - -c
           - "gitleaks git --pre-commit --redact --staged --verbose"
         language: system
+
 fail_fast: true
 default_stages: [pre-commit]

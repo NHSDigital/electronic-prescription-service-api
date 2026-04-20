@@ -168,10 +168,13 @@ test-api: check-licenses-api generate-mock-certs test-coordinator
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
 
+test-lambdas:
+	cd packages/create_prescription && poetry run pytest
+
 test-fhir-schema-generation:
 	npm run test --workspace packages/fhir-schema-generation
 
-test-all: test-api test-epsat test-fhir-schema-generation
+test-all: test-api test-epsat test-fhir-schema-generation test-lambdas
 	npm run test --workspace packages/cdk
 
 test-coordinator:
@@ -266,6 +269,9 @@ clean:
 	rm -rf packages/specification/build
 	rm -rf packages/coordinator/dist
 	rm -rf packages/coordinator/coverage
+	rm -rf packages/create_prescription/coverage
+	rm -rf packages/create_prescription/.coverage
+	rm -rf packages/create_prescription/**/*cache*
 	rm -rf packages/tool/site/server/dist
 	rm -rf packages/tool/site/client/dist
 	rm -rf packages/tool/site/client/coverage
@@ -344,7 +350,10 @@ lint-epsat:
 lint-githubactions:
 	actionlint
 
-lint-all: lint-api lint-epsat lint-githubactions
+lint-python:
+	poetry run black .
+
+lint-all: lint-api lint-epsat lint-githubactions lint-python
 
 ## check licenses
 
