@@ -332,7 +332,7 @@ jobs:
           MTLS_KEY: ${{ inputs.MTLS_KEY }}
         run: ./.github/scripts/deploy_api.sh
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: Upload specs
         with:
           name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs
