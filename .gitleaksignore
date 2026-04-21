@@ -62,7 +62,6 @@ a118623c5d9d051b85eb920ad7f6f4b8b1f4d358:tool/site/server/src/oauthUtils.ts:gene
 2b7a238d5dd6b1d8b3af28704e0db4cf6e39699e:sds-api/spine-directory-service/spine-directory-service-env-example.yaml:private-key:17
 2dfa75a91c820581b572a5e48a8d36f642b6c9e7:coordinator/tests/resources/certificates/privateKey.pem:private-key:1
 f7ebb612bcfb0c7798fad1e99900b68f3eb132b2:tool/site/client-react/tests/pages/sendPostSignPage.spec.tsx:generic-api-key:11
-f7ebb612bcfb0c7798fad1e99900b68f3eb132b2:tool/site/client-react/tests/pages/sendPostSignPage.spec.tsx:generic-api-key:11
 22af30d8519f78f850b5aaab5cefa9b31fc1756e:tool/docker-compose.yml:generic-api-key:28
 5be3abdab87e50bc55f8f720aa651aa2559b915b:tool/docker-compose.yml:generic-api-key:14
 7db19b13ee7a86035fb90d585d2b15629fd9012e:tool/docker-compose.yml:generic-api-key:14
