@@ -3,6 +3,7 @@ import {StructureDefinition} from "../models/fhir-package/structure-definition.i
 import {JSONSchemaType} from "json-schema-to-ts/lib/types/definitions/JSONSchema.js"
 import {parseSimplifierPackage} from "./parse-simplifier-package.js"
 import {StructureDefinitionDifferential} from "../models/structure-definition/differential-element.interface.js"
+import {StructureDefinitionSnapshot} from "../models/structure-definition/snapshot.interface.js"
 import {DeepMutable} from "../types/deep-mutable.type.js"
 import {EditableJSONSchema} from "../types/editable-json-schema.type.js"
 
@@ -26,6 +27,12 @@ export class SchemaProcessor {
   private updateSpecifications(id: string, schema: EditableJSONSchema) {
     this.inProgress.delete(id)
     this.specifications.set(id, schema)
+  }
+
+  private getProfile(
+    schema: StructureDefinition
+  ): Array<StructureDefinitionSnapshot | StructureDefinitionDifferential> | null {
+    return schema.snapshot?.element ?? schema.differential?.element
   }
 
   private initializeSchemaDefinition(
@@ -93,11 +100,15 @@ export class SchemaProcessor {
 
   private applyRequiredConstraints(schema: EditableJSONSchema, current: any, fieldName: string): void {
     if (current.min && current.min > 0) {
-      const definitionBody = schema.allOf[1]
+      const definitionBody = schema.allOf?.[1] as EditableJSONSchema
+
+      if (!definitionBody) {
+        return
+      }
 
       // console.log("definition", Object.keys(definitionBody.properties))
       // Don't include extension objects
-      const isExtensionObject = Object.keys(definitionBody.properties)
+      const isExtensionObject = Object.keys(definitionBody?.properties ?? {})
         .filter((name) => name.includes(`_${name}`))
 
       if (isExtensionObject?.length > 0) {
@@ -107,7 +118,6 @@ export class SchemaProcessor {
 
       definitionBody.required = definitionBody.required || []
       definitionBody.required.push(fieldName)
-
     }
   }
 
@@ -143,7 +153,14 @@ export class SchemaProcessor {
 
   private processProperties(simplifierSchema: StructureDefinition): Record<string, EditableJSONSchema> {
     const result: Record<string, EditableJSONSchema> = {}
-    const elements = simplifierSchema.differential.element.sort((a, b) => a.id.localeCompare(b.id))
+    const profile = this.getProfile(simplifierSchema)
+
+    if (!profile) {
+      const existing = this.specifications.get(simplifierSchema.baseDefinition?.split("/").at(-1) ?? "")
+      return existing?.properties as Record<string, EditableJSONSchema> ?? result
+    }
+
+    const elements = profile.sort((a, b) => a.id.localeCompare(b.id))
 
     for (const current of elements) {
       this.processElement(current, elements, result, simplifierSchema)
@@ -159,8 +176,8 @@ export class SchemaProcessor {
     let pattern: string | undefined = undefined
 
     if (type === "string") {
-      const differential = simplifierSchema.differential.element.at(-1)
-      const snapType = differential?.type.at(-1)
+      const profile = this.getProfile(simplifierSchema)?.at(-1)
+      const snapType = profile?.type.at(-1)
       const snapValue = snapType?.extension.at(-1)?.valueString
       pattern = snapValue
     }
@@ -268,7 +285,10 @@ export class SchemaProcessor {
     this.processSpecification(parsedSchema)
   }
 
-  private processProperty(element: StructureDefinitionDifferential, code: string): EditableJSONSchema | undefined {
+  private processProperty(
+    element: StructureDefinitionSnapshot | StructureDefinitionDifferential,
+    code: string
+  ): EditableJSONSchema | undefined {
     // Recursively process the dependency
     this.processSimplifierPackageSpecifications(`${this.rootDir}${code}.json`)
     const found = this.specifications.get(code) as Exclude<EditableJSONSchema, boolean>
