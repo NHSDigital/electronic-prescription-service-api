@@ -113,7 +113,8 @@ export class SchemaProcessor {
     // Check if it has a minimum required count or has "mustSupport" flag
     const hasMinimumValue = current.min && current.min > 0
     if (hasMinimumValue || current.mustSupport) {
-      definitionBody.required = definitionBody.required ? [...definitionBody.required, fieldName] : []
+      // FIX: Ensure the fieldName is added when the array is initialized
+      definitionBody.required = definitionBody.required ? [...definitionBody.required, fieldName] : [fieldName]
     }
   }
 
@@ -360,24 +361,25 @@ export class SchemaProcessor {
           const childDef = schema.definitions?.[defName] as EditableJSONSchema | undefined
           const childBody = childDef?.allOf?.at(-1) as EditableJSONSchema | undefined
 
-          const schemaId = `${schema.$id ?? schema.$ref ?? ""}#${defName}`
-          if (processed.has(schemaId)) {
-            // If we've already processed this reference, just get the result
-            isRequired = processed.get(schemaId)!
-          } else {
-            // Check the reference (set as false by default to avoid infinite loop)
-            processed.set(schemaId, false)
-            if (childBody) {
+          if (childBody) {
+            const schemaId = `${schema.$id ?? schema.$ref ?? ""}#${defName}`
+            if (processed.has(schemaId)) {
+              // If we've already processed this reference, just get the result
+              isRequired = processed.get(schemaId)!
+            } else {
+              // Check the reference (set as false by default to avoid infinite loop)
+              processed.set(schemaId, false)
               isRequired = this.filterProperties(childBody, schema, processed)
+              processed.set(schemaId, isRequired)
             }
-            processed.set(schemaId, isRequired)
-          }
-        } else {
-          // Check dependencies
-          const specCode = ref?.split(".schema.json").shift()
-          if (specCode && this.specifications.has(specCode)) {
-            const spec = this.specifications.get(specCode)!
-            isRequired = this.isPropertyRequired(spec, processed)
+          } else {
+            // FIX: Dependency check moved out of the local reference block
+            // Check external dependencies
+            const specCode = ref.split(".schema.json").shift()
+            if (specCode && this.specifications.has(specCode)) {
+              const spec = this.specifications.get(specCode)!
+              isRequired = this.isPropertyRequired(spec, processed)
+            }
           }
         }
       }

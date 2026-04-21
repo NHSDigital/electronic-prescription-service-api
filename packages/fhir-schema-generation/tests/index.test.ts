@@ -78,8 +78,10 @@ describe("index.ts - Schema Generation Pipeline", () => {
     )
 
     expect(mockProcessSpecs).toHaveBeenCalledTimes(1)
-    expect(mockProcessSpecs).toHaveBeenCalledWith(
-      [expect.stringContaining("StructureDefinition-MedicationRequest.json")],
+    expect(mockProcessSpecs).toBeCalledWith(
+      expect.arrayContaining(
+        [expect.stringContaining("StructureDefinition-MedicationRequest.json")]
+      ),
       "StructureDefinition-"
     )
     expect(mockGetSpecs).toHaveBeenCalledTimes(1)

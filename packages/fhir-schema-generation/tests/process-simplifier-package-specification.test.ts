@@ -46,6 +46,23 @@ describe("SchemaProcessor", () => {
     })
   })
 
+  it("handles non-string primitives without adding a regex pattern", () => {
+    const mockSchema = {
+      id: "boolean",
+      kind: "primitive-type",
+      type: "boolean",
+      differential: {element: []}
+    }
+    vi.mocked(parser.parseSimplifierPackage).mockReturnValue(mockSchema as any)
+
+    processor.processSimplifierPackageSpecifications(["boolean.json"])
+
+    const primitives = (processor as any).primitives
+    expect(primitives.get("boolean")).toEqual({
+      type: "boolean" // Should not extract or assign a pattern
+    })
+  })
+
   it("handles required fields based on 'min' property", () => {
     const mockResource = {
       id: "Patient",
@@ -59,14 +76,10 @@ describe("SchemaProcessor", () => {
       }
     }
 
-    // Use mockImplementation to handle recursive lookups for nested types like 'string'
     vi.mocked(parser.parseSimplifierPackage).mockImplementation((filePath: string) => {
-      // Return the main resource mock
       if (filePath.includes("Patient.json")) {
         return mockResource as any
       }
-
-      // Return a generic fallback for nested/referenced types so parsedSchema isn't undefined
       return {
         id: "string",
         kind: "primitive-type",
@@ -78,7 +91,6 @@ describe("SchemaProcessor", () => {
     processor.processSpecification("Patient.json")
     const patientSpec: any = processor.getSpecifications().get("Patient")
 
-    // In SchemaProcessor, required properties are wrapped in definitions.[ResourceName].allOf[1]
     expect(patientSpec.definitions.Patient.allOf[1].required).toContain("name")
   })
 
@@ -89,7 +101,7 @@ describe("SchemaProcessor", () => {
     const mockResource ={
       resourceType: "StructureDefinition",
       id: "Invalid",
-      kind: "unknown-type", // Triggers the default switch case
+      kind: "unknown-type",
       differential: {element: []}
     }
 
@@ -109,7 +121,6 @@ describe("SchemaProcessor", () => {
       differential: {
         element: [
           {id: "Patient", path: "Patient"},
-          // A 3-part ID triggers the idParts.length > 1 condition
           {id: "Patient.contact.name", type: [{code: "string"}], min: 1}
         ]
       }
@@ -130,10 +141,8 @@ describe("SchemaProcessor", () => {
     processor.processSimplifierPackageSpecifications(["Patient.json"])
     const patientSpec: any = processor.getSpecifications().get("Patient")
 
-    // Verify lines 117-118 triggered: "Patient.contact" became "Patient_Contact"
     expect(patientSpec.definitions).toHaveProperty("Patient_Contact")
 
-    // Verify that the final property "name" was properly assigned to the nested sub-definition
     const contactDef = patientSpec.definitions["Patient_Contact"]
     expect(contactDef.allOf[1].properties).toHaveProperty("name")
   })
@@ -149,7 +158,7 @@ describe("SchemaProcessor", () => {
           {
             id: "MedicationRequest.status",
             path: "MedicationRequest.status",
-            short: "active | on-hold | cancelled | completed", // Triggers lines 180-182
+            short: "active | on-hold | cancelled | completed",
             definition: "A code specifying the current state of the order.",
             min: 1,
             type: [{code: "code"}]
@@ -172,11 +181,8 @@ describe("SchemaProcessor", () => {
 
     processor.processSimplifierPackageSpecifications(["MedicationRequest.json"])
     const specs: any = processor.getSpecifications().get("MedicationRequest")
-
-    // Navigate to the 'status' property within the MedicationRequest definition
     const statusProp = specs.definitions.MedicationRequest.allOf[1].properties.status
 
-    // Assertions for lines 180-182
     expect(statusProp.type).toBe("string")
     expect(statusProp.enum).toEqual(["active", "on-hold", "cancelled", "completed"])
     expect(statusProp.description).toBe("A code specifying the current state of the order.")
@@ -195,7 +201,7 @@ describe("SchemaProcessor", () => {
             path: "MedicationRequest.subject",
             definition: "Who the medication is for",
             min: 1,
-            type: [{code: "Reference"}] // 'Reference' is a complex type
+            type: [{code: "Reference"}]
           }
         ]
       }
@@ -205,7 +211,6 @@ describe("SchemaProcessor", () => {
       if (filePath.includes("MedicationRequest.json")) {
         return mockResource as any
       }
-      // Return a mock for the dependency 'Reference'
       return {
         id: "Reference",
         name: "Reference",
@@ -219,10 +224,107 @@ describe("SchemaProcessor", () => {
     const specs: any = processor.getSpecifications().get("MedicationRequest")
     const subjectProp = specs.definitions.MedicationRequest.allOf[1].properties.subject
 
-    // Assertions for lines 191-192
     expect(subjectProp).toEqual({
       "$ref": "Reference.schema.json#/$definitions/Reference",
       description: "Who the medication is for"
     })
+  })
+
+  it("returns early and safely handles an empty filename list or undefined items", () => {
+    expect(() => processor.processSimplifierPackageSpecifications([])).not.toThrow()
+    expect(() => processor.processSimplifierPackageSpecifications([undefined as any])).not.toThrow()
+    expect(processor.getSpecifications().size).toBe(0)
+  })
+
+  it("skips elements without a type and safely returns early on duplicate initialization", () => {
+    const mockResource = {
+      id: "Patient",
+      name: "Patient",
+      kind: "resource",
+      differential: {
+        element: [
+          {id: "Patient", path: "Patient"},
+          {id: "Patient.notype", path: "Patient.notype", min: 1},
+          {id: "Patient.name", path: "Patient.name", type: [{code: "string"}], min: 1},
+          {id: "Patient.name", path: "Patient.name", type: [{code: "string"}], min: 1}
+        ]
+      }
+    }
+
+    // FIX: Replaced mockReturnValue with mockImplementation to break the infinite recursion cycle
+    vi.mocked(parser.parseSimplifierPackage).mockImplementation((filePath: string) => {
+      if (filePath.includes("Patient.json")) return mockResource as any
+      return {id: "string", kind: "primitive-type", type: "string", differential: {element: []}} as any
+    })
+
+    processor.processSimplifierPackageSpecifications(["Patient.json"])
+    const spec: any = processor.getSpecifications().get("Patient")
+    const props = spec.definitions.Patient.allOf[1].properties
+
+    expect(props.notype).toBeUndefined()
+    expect(props.name).toBeDefined()
+  })
+
+  it("retains extensions of required properties and filters deep references properly", () => {
+    const mockResource = {
+      id: "TestResource",
+      name: "TestResource",
+      kind: "resource",
+      differential: {
+        element: [
+          {id: "TestResource", path: "TestResource"},
+          {id: "TestResource.name", path: "TestResource.name", min: 1, type: [{code: "string"}]}, // required primitive
+          {
+            id: "TestResource._name",
+            path: "TestResource._name",
+            type: [{code: "Element"}]
+          }, // extension of required field
+          {
+            id: "TestResource.optional",
+            path: "TestResource.optional",
+            min: 0,
+            type: [{code: "string"}]
+          }, // optional primitive
+          {id: "TestResource.nested", path: "TestResource.nested", min: 0, type: [{code: "NestedObject"}]} // nested ref
+        ]
+      }
+    }
+
+    const nestedMock = {
+      id: "NestedObject",
+      name: "NestedObject",
+      kind: "complex-type",
+      differential: {
+        element: [
+          {id: "NestedObject", path: "NestedObject"},
+          {id: "NestedObject.reqField", path: "NestedObject.reqField", min: 1, type: [{code: "string"}]}
+        ]
+      }
+    }
+
+    vi.mocked(parser.parseSimplifierPackage).mockImplementation((filePath: string) => {
+      if (filePath.includes("TestResource.json")) return mockResource as any
+      if (filePath.includes("NestedObject.json")) return nestedMock as any
+
+      // Dynamically extract the expected ID from the filename to prevent infinite loops
+      const fileNameMatch = filePath.match(/([a-zA-Z0-9_-]+)\.json$/)
+      const mockId = fileNameMatch ? fileNameMatch[1] : "string"
+
+      return {
+        id: mockId,
+        kind: "primitive-type",
+        type: "string",
+        differential: {element: []}
+      } as any
+    })
+
+    processor.processSimplifierPackageSpecifications(["TestResource.json"])
+    const spec: any = processor.getSpecifications().get("TestResource")
+    const props = spec.definitions.TestResource.allOf[1].properties
+
+    expect(props.name).toBeDefined()
+    expect(props._name).toBeDefined() // Extension of required kept
+    expect(props.optional).toBeUndefined() // Optional stripped
+    expect(props.nested).toBeDefined() // Retained due to deep required properties
   })
 })
