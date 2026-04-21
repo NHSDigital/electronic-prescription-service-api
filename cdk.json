@@ -72,7 +72,7 @@
     "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": false,
     "@aws-cdk/aws-s3:keepNotificationInImportedBucket": false,
     "serviceName": "pd-dummy",
-    "statefulResourcesServiceName": "sr-dummy",
+    "statefulResourcesStackName": "sr-dummy",
     "VERSION_NUMBER": "foo",
     "COMMIT_ID": "foo",
     "accountId": "766544332211",

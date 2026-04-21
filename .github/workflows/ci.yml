@@ -80,7 +80,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
-      SR_STACK_NAME: prescriptions-stateful-resources
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
@@ -136,7 +136,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandbox
-      SR_STACK_NAME: prescriptions-stateful-resources-sandbox
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: true
@@ -194,7 +194,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
-      SR_STACK_NAME: prescriptions-stateful-resources
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: ref
       APIGEE_ENVIRONMENT: ref
       ENABLE_MUTUAL_TLS: true
@@ -248,7 +248,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
-      SR_STACK_NAME: prescriptions-stateful-resources
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: qa
       APIGEE_ENVIRONMENT: internal-qa
       ENABLE_MUTUAL_TLS: true
