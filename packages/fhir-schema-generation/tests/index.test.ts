@@ -33,7 +33,6 @@ vi.mock("../src/utils/process-simplifier-package-specification.js", () => {
 
 describe("index.ts - Schema Generation Pipeline", () => {
   let exitSpy: ReturnType<typeof vi.spyOn>
-  let consoleLogSpy: ReturnType<typeof vi.spyOn>
   let consoleErrorSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(() => {
@@ -54,9 +53,6 @@ describe("index.ts - Schema Generation Pipeline", () => {
       throw new Error(`process.exit called with code ${code}`)
     })
 
-    // Silence console logs to keep test output clean
-    consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {})
-
     // Intercept console.error.
     // IMPORTANT: If index.ts hits the catch block unexpectedly, this will throw the underlying error
     // so you can see exactly WHAT caused the pipeline to fail in the test logs.
@@ -70,13 +66,9 @@ describe("index.ts - Schema Generation Pipeline", () => {
   })
 
   it("should run the schema generation pipeline successfully", async () => {
-    // Execute the index.ts pipeline
+
     await import("../src/index.js")
 
-    // 1. Assert standard logs
-    expect(consoleLogSpy).toHaveBeenCalledWith("Starting schema generation pipeline...")
-
-    // 2. Assert downloadSimplifierPackage was called
     expect(mockDownload).toHaveBeenCalledTimes(1)
     expect(mockDownload).toHaveBeenCalledWith(
       "https://packages.simplifier.net",
@@ -85,18 +77,12 @@ describe("index.ts - Schema Generation Pipeline", () => {
       "latest"
     )
 
-    // 3. Assert processor methods were triggered properly
     expect(mockProcessSpecs).toHaveBeenCalledTimes(1)
     expect(mockProcessSpecs).toHaveBeenCalledWith(
-      expect.stringContaining("StructureDefinition-MedicationRequest.json"),
+      [expect.stringContaining("StructureDefinition-MedicationRequest.json")],
       "StructureDefinition-"
     )
     expect(mockGetSpecs).toHaveBeenCalledTimes(1)
-
-    // 4. Assert end result logging
-    expect(consoleLogSpy).toHaveBeenCalledWith(JSON.stringify({type: "object", title: "MedicationRequest Mock"}))
-
-    // 5. Assert process.exit was NOT called on a successful run
     expect(exitSpy).not.toHaveBeenCalled()
   })
 

@@ -36,7 +36,7 @@ describe("SchemaProcessor", () => {
     }
     vi.mocked(parser.parseSimplifierPackage).mockReturnValue(mockSchema as any)
 
-    processor.processSimplifierPackageSpecifications("string.json")
+    processor.processSimplifierPackageSpecifications(["string.json"])
 
     // Access the private primitives map as suggested
     const primitives = (processor as any).primitives
@@ -75,7 +75,7 @@ describe("SchemaProcessor", () => {
       } as any
     })
 
-    processor.processSimplifierPackageSpecifications("Patient.json")
+    processor.processSpecification("Patient.json")
     const patientSpec: any = processor.getSpecifications().get("Patient")
 
     // In SchemaProcessor, required properties are wrapped in definitions.[ResourceName].allOf[1]
@@ -97,7 +97,7 @@ describe("SchemaProcessor", () => {
       .mockReturnValueOnce(mockResource as any)
 
     const processor = new SchemaProcessor()
-    expect(() => processor.processSimplifierPackageSpecifications(filePath))
+    expect(() => processor.processSimplifierPackageSpecifications([filePath]))
       .toThrow("Unrecognised specification type: unknown-type")
   })
 
@@ -110,7 +110,7 @@ describe("SchemaProcessor", () => {
         element: [
           {id: "Patient", path: "Patient"},
           // A 3-part ID triggers the idParts.length > 1 condition
-          {id: "Patient.contact.name", type: [{code: "string"}]}
+          {id: "Patient.contact.name", type: [{code: "string"}], min: 1}
         ]
       }
     }
@@ -127,7 +127,7 @@ describe("SchemaProcessor", () => {
       } as any
     })
 
-    processor.processSimplifierPackageSpecifications("Patient.json")
+    processor.processSimplifierPackageSpecifications(["Patient.json"])
     const patientSpec: any = processor.getSpecifications().get("Patient")
 
     // Verify lines 117-118 triggered: "Patient.contact" became "Patient_Contact"
@@ -170,7 +170,7 @@ describe("SchemaProcessor", () => {
       } as any
     })
 
-    processor.processSimplifierPackageSpecifications("MedicationRequest.json")
+    processor.processSimplifierPackageSpecifications(["MedicationRequest.json"])
     const specs: any = processor.getSpecifications().get("MedicationRequest")
 
     // Navigate to the 'status' property within the MedicationRequest definition
@@ -214,7 +214,7 @@ describe("SchemaProcessor", () => {
       } as any
     })
 
-    processor.processSimplifierPackageSpecifications("MedicationRequest.json")
+    processor.processSimplifierPackageSpecifications(["MedicationRequest.json"])
 
     const specs: any = processor.getSpecifications().get("MedicationRequest")
     const subjectProp = specs.definitions.MedicationRequest.allOf[1].properties.subject
