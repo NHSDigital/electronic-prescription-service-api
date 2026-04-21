@@ -4,7 +4,7 @@ import {
   Stack,
   StackProps
 } from "aws-cdk-lib"
-import {ObservabilityBucket} from "../resources/ObservabilityBucket"
+import {Observability} from "../resources/Observability"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 
@@ -25,7 +25,7 @@ export class StatefulResourcesStack extends Stack {
     const auditLoggingBucket = Bucket.fromBucketArn(this, "AuditLoggingBucket", auditLoggingBucketImport)
 
     // resources
-    new ObservabilityBucket(this, "ObservabilityBucket", {
+    new Observability(this, "Observability", {
       stackName: props.stackName,
       deploymentRole: deploymentRole,
       auditLoggingBucket: auditLoggingBucket
