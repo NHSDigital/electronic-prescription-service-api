@@ -1,35 +1,21 @@
 name: deploy_pr
-
 on:
   pull_request:
     branches: [master]
   merge_group:
     branches: [master]
-
 permissions: {}
-
 jobs:
-  dependabot-auto-approve-and-merge:
-    needs: quality_checks
-    uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
-    secrets:
-      AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
-      AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
-    permissions:
-      contents: write
-      pull-requests: write
-
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
     with:
       verify_published_from_main_image: false
     permissions:
       attestations: read
       contents: read
       packages: read
-
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@8399c1f015c1304e40771cbd8ccc24c7ed48fdbc
     needs: [get_config_values]
     permissions:
       contents: read
@@ -41,22 +27,19 @@ jobs:
       docker_images: fhir-facade,validator
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   pr_title_format_check:
     if: github.event_name != 'merge_group'
-    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@f747b664d45e3a554d5ab72af509ab8e14fe84aa
+    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
     permissions:
       pull-requests: write
-
   get_issue_number:
     runs-on: ubuntu-22.04
     needs: quality_checks
     outputs:
       issue_number: ${{ steps.get_issue_number.outputs.result }}
       version: ${{ steps.get_issue_number.outputs.version_number }}
-
     steps:
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         name: get issue number
         id: get_issue_number
         with:
@@ -95,7 +78,6 @@ jobs:
 
               return String(pr.number);
             }
-
   get_commit_id:
     runs-on: ubuntu-22.04
     permissions:
@@ -103,20 +85,17 @@ jobs:
     outputs:
       commit_id: ${{ steps.commit_id.outputs.commit_id }}
       sha_short: ${{ steps.commit_id.outputs.sha_short }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
           persist-credentials: false
-
       - name: Get Commit ID
         id: commit_id
         run: |
           #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-
   package_code:
     needs: [get_issue_number, get_commit_id, get_config_values]
     permissions:
@@ -128,7 +107,6 @@ jobs:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
-
   release_code:
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
@@ -177,7 +155,6 @@ jobs:
       SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
       DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
       DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
-
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml

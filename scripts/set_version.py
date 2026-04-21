@@ -5,6 +5,7 @@ set_version.py
 Reads an openapi spec on stdin and adds the calculated version to it,
 then prints it on stdout.
 """
+
 import sys
 import json
 from calculate_version import calculate_version
