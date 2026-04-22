@@ -5,7 +5,7 @@ import * as LosslessJson from "lossless-json"
 import axios from "axios"
 import stream from "stream"
 import {translateToFhir} from "../services/translation/response"
-import {getShowValidationWarnings, RequestHeaders} from "../utils/headers"
+import {collapseHeaderArrays, getShowValidationWarnings, RequestHeaders} from "../utils/headers"
 import {getPayloadIdentifiers} from "./logging"
 import {
   isBundle,
@@ -60,12 +60,13 @@ export async function handleResponse<T>(
   }
 }
 
-function extractTraceIds(headers: Hapi.Utils.Dictionary<string>): Record<string, string> {
+function extractTraceIds(headers: Hapi.InternalRequestDefaults["Headers"]): Record<string, string> {
+  const collapsedHeaders = collapseHeaderArrays(headers)
   return {
-    "x-request-id": headers["x-request-id"] || headers["nhsd-request-id"],
-    "x-amzn-trace-id": headers["x-amzn-trace-id"],
-    "nhsd-correlation-id": headers["nhsd-correlation-id"],
-    "nhsd-request-id": headers["nhsd-request-id"]
+    "x-request-id": collapsedHeaders["x-request-id"]! || collapsedHeaders["nhsd-request-id"]!,
+    "x-amzn-trace-id": collapsedHeaders["x-amzn-trace-id"]!,
+    "nhsd-correlation-id": collapsedHeaders["nhsd-correlation-id"]!,
+    "nhsd-request-id": collapsedHeaders["nhsd-request-id"]!
   }
 }
 
@@ -84,7 +85,7 @@ const getCircularReplacer = () => {
 
 export async function callFhirValidator(
   payload: HapiPayload,
-  requestHeaders: Hapi.Utils.Dictionary<string>,
+  requestHeaders: Hapi.InternalRequestDefaults["Headers"],
   logger: pino.Logger = null
 ): Promise<fhir.OperationOutcome> {
   // Payload is already normalised if it went through externalValidator or getPayload

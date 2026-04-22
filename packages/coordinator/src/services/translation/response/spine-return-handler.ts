@@ -15,12 +15,12 @@ export interface SpineReturnHandler {
 
 export class DispensePropsalReturnHandler implements SpineReturnHandler {
 
-  private readonly requestHeaders : Hapi.Utils.Dictionary<string>
+  private readonly requestHeaders : Hapi.InternalRequestDefaults["Headers"]
   private readonly payloadFactory: ReturnPayloadFactory
   private readonly spineClient: SpineClient
 
   constructor(
-    headers: Hapi.Utils.Dictionary<string>,
+    headers: Hapi.InternalRequestDefaults["Headers"],
     returnPayloadFactory: ReturnPayloadFactory,
     spineClient : SpineClient) {
     this.requestHeaders = headers

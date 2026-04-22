@@ -67,7 +67,7 @@ export function addEbXmlWrapper(spineRequest: spine.SpineRequest): string {
  */
 export function toSpineRequest<T>(
   sendMessagePayload: hl7V3.SendMessagePayload<T>,
-  headers: Hapi.Utils.Dictionary<string>,
+  headers: Hapi.InternalRequestDefaults["Headers"],
   messageId?: string
 ): spine.SpineRequest {
   const requestId = getRequestId(headers)

@@ -129,7 +129,7 @@ export function isRepeatDispensing(medicationRequests: Array<fhir.MedicationRequ
 
 export async function convertPrescriptionBundleToSpineRequest(
   bundle: fhir.Bundle,
-  headers: Hapi.Utils.Dictionary<string>,
+  headers: Hapi.InternalRequestDefaults["Headers"],
   logger: pino.Logger
 ): Promise<{spineRequest: spine.SpineRequest, parentPrescription: hl7V3.ParentPrescription}> {
   const messageId = getBundleIdentifierValue(bundle)

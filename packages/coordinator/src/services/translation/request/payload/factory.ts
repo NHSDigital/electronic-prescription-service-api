@@ -66,7 +66,7 @@ export abstract class SendMessagePayloadFactory {
 
   public createSendMessagePayload(
     fhirResource: FactoryInput,
-    headers: Hapi.Utils.Dictionary<string>,
+    headers: Hapi.InternalRequestDefaults["Headers"],
     logger: pino.Logger
   ): hl7V3.SendMessagePayload<PayloadContent> {
     this.logIdentifiers(fhirResource, logger)

@@ -7,7 +7,7 @@ import Hapi from "@hapi/hapi"
 export function createSendMessagePayload<T>(
   messageId: string,
   interactionId: hl7V3.Hl7InteractionIdentifier,
-  headers: Hapi.Utils.Dictionary<string>,
+  headers: Hapi.InternalRequestDefaults["Headers"],
   subject: T
 ): hl7V3.SendMessagePayload<T> {
   const fromAsid = getAsid(headers)
@@ -31,7 +31,7 @@ function createCommunicationFunction(asid: string) {
 }
 
 function createControlActEvent<T>(
-  headers: Hapi.Utils.Dictionary<string>,
+  headers: Hapi.InternalRequestDefaults["Headers"],
   subject: T
 ) {
   const sdsUniqueIdentifier = getSdsUserUniqueId(headers)
