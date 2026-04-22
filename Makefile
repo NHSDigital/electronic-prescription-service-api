@@ -94,9 +94,9 @@ install-node:
 		--workspace packages/models \
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
+		--workspace packages/fhir-schema-generation \
 		--workspace packages/bdd-tests \
 		--workspace packages/cdk \
-		--workspace packages/fhir-schema-generation \
 		--include-workspace-root
 	# need to get post install script run for this package
 	npm rebuild xsd-schema-validator --workspace packages/coordinator
@@ -325,8 +325,7 @@ run-epsat: build-epsat
 	npm run watch --workspace packages/tool/site/client/ &
 	cd packages/tool && docker-compose up
 
-run-fhir-schema-generation:
-	build-fhir-schema-generation
+run-fhir-schema-generation: build-fhir-schema-generation
 	npm run start --workspace packages/fhir-schema-generation
 
 
@@ -354,6 +353,12 @@ lint-python:
 	poetry run black .
 
 lint-all: lint-api lint-epsat lint-githubactions lint-python
+
+## Security Scanning
+
+grype-scan-local:
+	@command -v grype >/dev/null 2>&1 || { echo "Error: Grype is not installed."; echo "Install from: https://github.com/anchore/grype#installation"; exit 1; }
+	grype . --fail-on high
 
 ## check licenses
 

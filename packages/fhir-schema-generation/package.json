@@ -3,13 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "dev": "tsx watch src/index.ts",
     "dev:new": "rm -rf .output && npm run dev",
     "start": "node dist/index.js",
     "start:new": "rm -rf .output && npm run start",
-    "test": "vitest run --project fhir-schema-generation --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
-    "test:watch": "vitest --project fhir-schema-generation",
+    "test": "vitest run --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
+    "test:watch": "vitest --watch",
     "lint": "eslint --max-warnings 0 --fix"
   },
   "keywords": [],
@@ -25,6 +25,7 @@
     "@types/node": "^25.5.2",
     "@types/tar": "^7.0.87",
     "eslint": "^10.2.0",
+    "json-schema-to-ts": "^3.1.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.58.0"
