@@ -443,14 +443,14 @@ update-snapshots: install-all
 	npm run update-snapshots --workspace packages/tool/site/client
 
 cdk-synth-api:
-	npx cdk synth \
+	npx cdk synth prescribe-dispense \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
 
 cdk-synth-prescriptions:
-	npx cdk synth \
+	npx cdk synth stateful-resources \
 		--quiet \
-		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResourcesApp.ts"
+		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
 
 cdk-synth: cdk-synth-api cdk-synth-prescriptions
 

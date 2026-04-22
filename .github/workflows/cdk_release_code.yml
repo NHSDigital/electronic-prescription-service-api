@@ -269,7 +269,7 @@ jobs:
       - name: Deploy API code
         run: |
           cd .build
-          npx cdk deploy \
+          npx cdk deploy prescribe-dispense \
           --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
           --all \
           --require-approval=never \
@@ -279,8 +279,8 @@ jobs:
       - name: Deploy Prescriptions code
         run: |
           cd .build
-          npx cdk deploy \
-          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/StatefulResourcesApp.ts" \
+          npx cdk deploy stateful-resources \
+          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
           --all \
           --require-approval=never \
           --ci true
