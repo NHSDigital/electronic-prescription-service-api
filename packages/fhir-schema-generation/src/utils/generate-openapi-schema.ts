@@ -123,9 +123,6 @@ function setNestedProp(
 }
 
 // parses an element id into a definition key and property path within that definition.
-// e.g. "MedicationRequest.status" → definitionKey: "MedicationRequest", propertyPath: ["status"]
-// e.g. "MedicationRequest.dispenseRequest.initialFill.duration"
-//     → definitionKey: "MedicationRequest_DispenseRequest", propertyPath: ["initialFill", "duration"]
 function parseElementPath(elementId: string, resourceName: string): {
   definitionKey: string
   propertyPath: Array<string>
@@ -136,16 +133,22 @@ function parseElementPath(elementId: string, resourceName: string): {
   // remove the resource name prefix
   parts.shift()
 
+  // Clean [x] modifiers from all parts for key generation
+  const cleanParts = parts.map(p => p.split("[x]")[0])
+
   // direct property of the resource (e.g. "status")
-  if (parts.length === 1) {
-    return {definitionKey: resourceName, propertyPath: parts}
+  if (cleanParts.length === 1) {
+    return {definitionKey: resourceName, propertyPath: cleanParts}
   }
 
-  // sub-definition: second part becomes the definition suffix
-  const subPart = parts.shift()!
-  const definitionKey = `${resourceName}_${subPart[0].toUpperCase()}${subPart.slice(1)}`
+  // traverse all parts of property name to build the sub-definition name
+  let definitionKey = resourceName
+  const pathTraverse = cleanParts.slice(0, -1)
+  for (const subPart of pathTraverse) {
+    definitionKey += `_${subPart[0].toUpperCase()}${subPart.slice(1)}`
+  }
 
-  return {definitionKey, propertyPath: parts}
+  return {definitionKey, propertyPath: cleanParts}
 }
 
 function processDefinition(
@@ -175,17 +178,21 @@ function buildPrimitiveSchema(
 
   const pattern = extractPrimitivePattern(schema, type)
 
-  const result: EditableJSONSchema = {type, pattern}
+  const result: EditableJSONSchema = {type}
+  if (pattern) {
+    result.pattern = pattern
+  }
+
   primitives.set(schema.id, result)
   return result
 }
 
 function extractPrimitivePattern(schema: StructureDefinition, type: JSONSchemaType): string | undefined {
   if (type !== "string") return undefined
-  if (!schema.snapshot?.element?.length) return undefined
+  if (!schema.differential?.element?.length) return undefined
 
   // pattern lives on the last extension of the last type of the last element
-  const lastElement = schema.snapshot.element[schema.snapshot.element.length - 1]
+  const lastElement = schema.differential.element[schema.differential.element.length - 1]
   const lastType = lastElement.type?.[lastElement.type.length - 1]
 
   return lastType?.extension?.[lastType.extension.length - 1]?.valueString
@@ -237,7 +244,8 @@ function buildResourceSchema(
     const fieldName = propertyPath[propertyPath.length - 1]
 
     // mark required fields
-    if (element.min && element.min > 0 && !defBody.required?.includes(fieldName)) {
+    const hasMinimumValue = element.min && element.min > 0
+    if ((hasMinimumValue || element.mustSupport) && !defBody.required?.includes(fieldName)) {
       defBody.required = defBody.required ?? []
       defBody.required.push(fieldName)
     }
@@ -245,10 +253,18 @@ function buildResourceSchema(
     // determine the field schema value
     const code = extractTypeCode(element)
     let fieldValue: EditableJSONSchema | undefined
+    let requiresExtension = false
 
     // binding enums: "active | on-hold | cancelled" → JSON Schema enum
     if (hasBindingEnum(element)) {
       fieldValue = buildBindingEnum(element)
+      requiresExtension = true
+    } else if (code === "BackboneElement" || code === "Element") {
+      const childDefName = `${definitionKey}_${fieldName[0].toUpperCase()}${fieldName.slice(1)}`
+      fieldValue = {
+        "$ref": `#/definitions/${childDefName}`,
+        description: element.definition
+      }
     } else {
       // ensure the dependency is resolved (loads from disk if needed)
       ensureTypeResolved(code, resolved, primitives, inProgress, packagePath, filePrefix)
@@ -260,6 +276,7 @@ function buildResourceSchema(
           description: element.definition,
           ...primitiveSchema
         }
+        requiresExtension = true
       } else {
         // complex type — use $ref to external schema file
         fieldValue = {
@@ -272,6 +289,15 @@ function buildResourceSchema(
     if (fieldValue) {
       fieldValue = applyCardinality(fieldValue, element)
       setNestedProp(defBody.properties, propertyPath, fieldValue)
+    }
+
+    // Handle extension object using an underscore prefix
+    if (requiresExtension) {
+      const extPropPath = [...propertyPath.slice(0, -1), `_${fieldName}`]
+      setNestedProp(defBody.properties, extPropPath, {
+        description: `Extensions for ${fieldName}`,
+        "$ref": "Element.schema.json#/$definitions/Element"
+      })
     }
   }
 
@@ -287,8 +313,8 @@ function buildResourceSchema(
   if (Object.keys(definitions).length > 0) {
     return {
       description: SCHEMA_DESCRIPTION,
-      "$ref": `#/definitions/${schema.name}`,
-      "$id": `${SCHEMA_ID_PREFIX}${schema.name}`,
+      "$ref": `#/definitions/${schema.id}`,
+      "$id": `${SCHEMA_ID_PREFIX}${schema.id}`,
       "$schema": SCHEMA_VERSION,
       definitions: definitions as Record<string, EditableJSONSchema>
     }
@@ -296,7 +322,7 @@ function buildResourceSchema(
 
   return {
     description: SCHEMA_DESCRIPTION,
-    "$ref": `#/definitions/${schema.name}`
+    "$ref": `#/definitions/${schema.id}`
   }
 }
 
