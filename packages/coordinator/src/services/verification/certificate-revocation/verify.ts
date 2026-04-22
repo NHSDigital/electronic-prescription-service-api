@@ -15,6 +15,7 @@ import {
   getX509SerialNumber,
   wasPrescriptionSignedAfterRevocation
 } from "./utils"
+import "core-js/full/reflect"
 import {X509CrlEntry} from "@peculiar/x509"
 import {isEpsHostedContainer} from "../../../utils/feature-flags"
 
