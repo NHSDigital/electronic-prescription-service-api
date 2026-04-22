@@ -81,3 +81,8 @@ updates:
       - npm-github
     cooldown:
       default-days: 7
+    ignore:
+    # The latest update to @types/fhir was 0.0.41.
+    #   Dependabot tried to bump to '3.0.2', which doesn't exist
+    #   https://github.com/NHSDigital/electronic-prescription-service-api/pull/4587
+      - dependency-name: "@types/fhir"
