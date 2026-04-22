@@ -3,6 +3,7 @@ import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
+import "core-js/full/reflect"
 import {X509Certificate, X509Crl} from "@peculiar/x509"
 
 process.env.CRL_DISTRIBUTION_DOMAIN = "crl.nhs.uk"

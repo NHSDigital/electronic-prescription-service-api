@@ -8,6 +8,7 @@ import {
   extractSignatureRootFromParentPrescription,
   getCertificateFromPrescriptionCrypto
 } from "../common"
+import "core-js/full/reflect"
 import {X509CrlEntry, X509Crl} from "@peculiar/x509"
 
 const CRL_REQUEST_TIMEOUT_IN_MS = 10000
