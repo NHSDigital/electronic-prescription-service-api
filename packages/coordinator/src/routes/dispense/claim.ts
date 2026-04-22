@@ -4,7 +4,8 @@ import {
   ContentTypes,
   externalValidator,
   getPayload,
-  handleResponse
+  handleResponse,
+  handlerWrapper
 } from "../util"
 import {createHash} from "../create-hash"
 import {fhir} from "@models"
@@ -28,7 +29,7 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Claim`,
-    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+    _handler: handlerWrapper(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
       const claimPayload = await getPayload(request) as fhir.Claim
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(claimPayload), HashingAlgorithm.SHA256)})
@@ -48,6 +49,6 @@ export default [
       const spineRequest = translator.convertClaimToSpineRequest(claimPayload, request.headers, logger)
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
       return await handleResponse(request, spineResponse, responseToolkit)
-    })
+    }, [externalValidator])
   }
 ]

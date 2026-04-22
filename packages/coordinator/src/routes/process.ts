@@ -6,7 +6,8 @@ import {
   ContentTypes,
   externalValidator,
   getPayload,
-  handleResponse
+  handleResponse,
+  handlerWrapper
 } from "./util"
 import {createHash} from "./create-hash"
 import {fhir, spine} from "@models"
@@ -36,7 +37,7 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$process-message`,
-    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+    handler: handlerWrapper(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const bundle = await getPayload(request) as fhir.Bundle
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(bundle), HashingAlgorithm.SHA256)})
 
@@ -94,6 +95,6 @@ export default [
 
       const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
       return await handleResponse(request, spineResponse, responseToolkit)
-    })
+    }, [externalValidator])
   }
 ]
