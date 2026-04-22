@@ -127,7 +127,7 @@ describe("index.ts - Schema Generation Pipeline", () => {
 
     // 1. Assert the error log printed the failure message
     expect(consoleErrorSpy).toHaveBeenCalledWith(
-      "schema generation failed",
+      "Schema generation failed",
       mockError
     )
 

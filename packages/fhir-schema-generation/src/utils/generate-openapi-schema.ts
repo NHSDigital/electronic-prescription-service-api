@@ -134,21 +134,24 @@ function parseElementPath(elementId: string, resourceName: string): {
   parts.shift()
 
   // Clean [x] modifiers from all parts for key generation
-  const cleanParts = parts.map(p => p.split("[x]")[0])
+  const formattedKey = parts.map(p => p.split("[x]")[0])
 
-  // direct property of the resource (e.g. "status")
-  if (cleanParts.length === 1) {
-    return {definitionKey: resourceName, propertyPath: cleanParts}
+  // Direct property of the resource (e.g. "status")
+  if (formattedKey.length === 1) {
+    return {definitionKey: resourceName, propertyPath: formattedKey}
   }
 
-  // traverse all parts of property name to build the sub-definition name
+  // Traverse all parts of property name to build the sub-definition name
   let definitionKey = resourceName
-  const pathTraverse = cleanParts.slice(0, -1)
+  const pathTraverse = formattedKey.slice(0, -1)
   for (const subPart of pathTraverse) {
     definitionKey += `_${subPart[0].toUpperCase()}${subPart.slice(1)}`
   }
 
-  return {definitionKey, propertyPath: cleanParts}
+  return {
+    definitionKey,
+    propertyPath: [formattedKey[formattedKey.length - 1]]
+  }
 }
 
 function processDefinition(
@@ -189,10 +192,16 @@ function buildPrimitiveSchema(
 
 function extractPrimitivePattern(schema: StructureDefinition, type: JSONSchemaType): string | undefined {
   if (type !== "string") return undefined
-  if (!schema.differential?.element?.length) return undefined
+
+  // Prefer differential, but fall back to snapshot if differential is missing/empty
+  const elements = schema.differential?.element?.length
+    ? schema.differential.element
+    : schema.snapshot?.element
+
+  if (!elements?.length) return undefined
 
   // pattern lives on the last extension of the last type of the last element
-  const lastElement = schema.differential.element[schema.differential.element.length - 1]
+  const lastElement = elements[elements.length - 1]
   const lastType = lastElement.type?.[lastElement.type.length - 1]
 
   return lastType?.extension?.[lastType.extension.length - 1]?.valueString

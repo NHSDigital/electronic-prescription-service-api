@@ -89,8 +89,13 @@ describe("generateSchema", () => {
       type: "string",
       snapshot: {
         element: [{
-          id: "MyPrimitive", path: "MyPrimitive", short: "", definition: "", comment: "",
-          min: 0, max: "1",
+          id: "MyPrimitive",
+          path: "MyPrimitive",
+          short: "",
+          definition: "",
+          comment: "",
+          min: 1,
+          max: "1",
           type: [{code: "string", extension: [{url: "", valueString: "^[a-z]+$"}]}],
           mapping: []
         }]
@@ -340,9 +345,15 @@ describe("generateSchema", () => {
       id: "Patient", name: "Patient", kind: "resource",
       differential: {
         element: [
-          element("Patient.name", "code", 0, "1"),
-          {id: "Patient.contact.name", path: "Patient.contact.name", min: 0, max: "1",
-            definition: "Contact name", type: [{code: "code"}]}
+          element("Patient.name", "code", 1, "1"),
+          {
+            id: "Patient.contact.name",
+            path: "Patient.contact.name",
+            min: 1,
+            max: "1",
+            definition: "Contact name",
+            type: [{code: "code"}]
+          }
         ]
       } as any
     })
@@ -446,12 +457,12 @@ describe("generateSchema", () => {
     const body = getDefBody(result, "ChoiceResource", "ChoiceResource")
 
     // [x] name is preserved, not expanded
-    expect(body.properties["medication[x]"]).toBeDefined()
+    expect(body.properties["medication"]).toBeDefined()
     expect(body.properties.medicationCodeableConcept).toBeUndefined()
     expect(body.properties.medicationReference).toBeUndefined()
 
     // uses first type for $ref
-    expect(body.properties["medication[x]"]).toEqual({
+    expect(body.properties["medication"]).toEqual({
       "$ref": "CodeableConcept.schema.json#/$definitions/CodeableConcept",
       description: "The medication"
     })
@@ -473,7 +484,7 @@ describe("generateSchema", () => {
     const result = generateSchema(sd, tmpDir)
     const body = getDefBody(result, "ChoiceReqResource", "ChoiceReqResource")
 
-    expect(body.required).toContain("value[x]")
+    expect(body.required).toContain("value")
   })
 
   it("applies cardinality to choice type fields", () => {
@@ -492,7 +503,7 @@ describe("generateSchema", () => {
     const result = generateSchema(sd, tmpDir)
     const body = getDefBody(result, "ChoiceArrayResource", "ChoiceArrayResource")
 
-    expect(body.properties["value[x]"]).toEqual({
+    expect(body.properties["value"]).toEqual({
       type: "array",
       items: {type: "boolean", pattern: undefined}
     })
@@ -539,23 +550,33 @@ describe("generateSchema", () => {
       id: "Deep", name: "Deep", kind: "resource",
       differential: {
         element: [
-          element("Deep.status", "code", 0, "1"),
-          {id: "Deep.dispenseRequest.initialFill", path: "Deep.dispenseRequest.initialFill",
-            min: 0, max: "1", definition: "First fill", type: [{code: "BackboneElement"}]},
-          {id: "Deep.dispenseRequest.initialFill.duration", path: "Deep.dispenseRequest.initialFill.duration",
-            min: 0, max: "1", definition: "How long", type: [{code: "Duration"}]}
+          element("Deep.status", "code", 1, "1"),
+          {id: "Deep.dispenseRequest.initialFill",
+            path: "Deep.dispenseRequest.initialFill",
+            min: 1,
+            max: "1",
+            definition: "First fill",
+            type: [{code: "BackboneElement"}]},
+          {id: "Deep.dispenseRequest.initialFill.duration",
+            path: "Deep.dispenseRequest.initialFill.duration",
+            min: 1,
+            max: "1",
+            definition: "How long",
+            type: [{code: "Duration"}]}
         ]
       } as any
     })
 
     const result = generateSchema(sd, tmpDir)
-    const body = getDefBody(result, "Deep", "Deep_DispenseRequest")
 
-    expect(body.properties.initialFill).toBeDefined()
-    expect(body.properties.initialFill["$ref"]).toBe(
-      "BackboneElement.schema.json#/$definitions/BackboneElement"
+    const dispenseRequestBody = getDefBody(result, "Deep", "Deep_DispenseRequest")
+    expect(dispenseRequestBody.properties.initialFill).toBeDefined()
+    expect(dispenseRequestBody.properties.initialFill["$ref"]).toBe(
+      "#/definitions/Deep_DispenseRequest_InitialFill"
     )
-    expect(body.properties.initialFill.duration).toEqual({
+
+    const initialFillBody = getDefBody(result, "Deep", "Deep_DispenseRequest_InitialFill")
+    expect(initialFillBody.properties.duration).toEqual({
       "$ref": "Duration.schema.json#/$definitions/Duration",
       description: "How long"
     })
