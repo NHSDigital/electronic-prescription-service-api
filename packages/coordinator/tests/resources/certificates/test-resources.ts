@@ -4,6 +4,7 @@
 
 import path from "path"
 import * as fs from "fs"
+import "core-js/full/reflect"
 import {X509Crl, X509Certificate} from "@peculiar/x509"
 
 const REGEX_CERTIFICATE = /(-----(BEGIN|END) CERTIFICATE-----|[\n\r])/g

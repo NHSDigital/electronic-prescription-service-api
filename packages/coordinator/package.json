@@ -11,7 +11,7 @@
     "start-with-env": ". ../../scripts/set_env_vars.sh && node coordinator/src/app.js --use_strict",
     "start-dev": "ts-node-dev --respawn --transpileOnly src/app.ts",
     "test": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
-    "test:debug": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator --reporter=default --reporter=junit --outputFile.junit=./junit.xml --poolOptions.forks.maxForks=1",
+    "test:debug": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
     "create-examples": "ts-node tests/generate-spine-examples.ts",
     "verify-signature": "NODE_OPTIONS='--max-old-space-size=4096' vitest run --project coordinator tests/debug/verify-signature.spec.ts"
   },
@@ -24,7 +24,8 @@
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.4.4",
-    "@peculiar/x509": "^1.14.3",
+    "core-js": "3.49.0",
+    "@peculiar/x509": "^2.0.0",
     "@xmldom/xmldom": "^0.9.9",
     "axios": "^1.15.0",
     "axios-retry": "^4.5.0",
