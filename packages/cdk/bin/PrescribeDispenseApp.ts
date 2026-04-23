@@ -9,6 +9,7 @@ import {addCfnGuardMetadata} from "./utils/appUtils"
 const app = new cdk.App()
 
 const serviceName = app.node.tryGetContext("serviceName")
+const statefulResourcesStackName = app.node.tryGetContext("statefulResourcesStackName")
 const version = app.node.tryGetContext("VERSION_NUMBER")
 const commit = app.node.tryGetContext("commitId")
 const accountId = app.node.tryGetContext("accountId")
@@ -40,7 +41,7 @@ const StatefulResources = new StatefulResourcesStack(app, "stateful-resources", 
     region: "eu-west-2",
     account: accountId
   },
-  stackName: `${serviceName}-stateful-resources`
+  stackName: statefulResourcesStackName
 })
 
 addCfnGuardMetadata(StatefulResources, "Custom::S3AutoDeleteObjectsCustomResourceProvider", "Handler")
