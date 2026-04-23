@@ -7,9 +7,12 @@ import {
 import {Observability} from "../resources/Observability"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {Bucket} from "aws-cdk-lib/aws-s3"
+import {ContainerDefinition} from "aws-cdk-lib/aws-ecs"
 
 export interface StatefulResourcesStackProps extends StackProps {
   readonly stackName: string
+  readonly ecsTaskExecutionRole: Role
+  readonly coordinatorContainer: ContainerDefinition
 }
 
 export class StatefulResourcesStack extends Stack {
@@ -28,7 +31,9 @@ export class StatefulResourcesStack extends Stack {
     new Observability(this, "Observability", {
       stackName: props.stackName,
       deploymentRole: deploymentRole,
-      auditLoggingBucket: auditLoggingBucket
+      auditLoggingBucket: auditLoggingBucket,
+      ecsTaskExecutionRole: props.ecsTaskExecutionRole,
+      coordinatorContainer: props.coordinatorContainer
     })
   }
 }

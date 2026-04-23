@@ -1,13 +1,21 @@
 import {Construct} from "constructs"
 import {S3Bucket} from "../constructs/S3Bucket"
-import {IPrincipal} from "aws-cdk-lib/aws-iam"
+import {
+  IPrincipal,
+  IRole,
+  ManagedPolicy,
+  PolicyStatement
+} from "aws-cdk-lib/aws-iam"
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Bucket, IBucket} from "aws-cdk-lib/aws-s3"
+import {ContainerDefinition} from "aws-cdk-lib/aws-ecs"
 
 export interface ObservabilityProps {
   readonly stackName: string,
   readonly deploymentRole: IPrincipal,
-  readonly auditLoggingBucket: IBucket
+  readonly auditLoggingBucket: IBucket,
+  readonly ecsTaskExecutionRole: IRole
+  readonly coordinatorContainer: ContainerDefinition
 }
 
 export class Observability extends Construct {
@@ -24,7 +32,31 @@ export class Observability extends Construct {
       auditLoggingBucket: props.auditLoggingBucket,
       itemExpiryDays: 42
     })
-    this.observabilityBucket = observabilityBucket.bucket
-    this.observabilityKmsKey = observabilityBucket.kmsKey
+
+    const observabilityBucketWritePolicy = new ManagedPolicy(this, "observabilityBucketWritePolicy", {
+      statements: [
+        new PolicyStatement({
+          actions: [
+            "s3:GetBucket",
+            "s3:PutObject"
+          ],
+          resources: [
+            observabilityBucket.bucket.bucketArn
+          ]
+        }),
+        new PolicyStatement({
+          actions: [
+            "kms:DescribeKey",
+            "kms:Encrypt"
+          ],
+          resources: [
+            observabilityBucket.kmsKey.keyArn
+          ]
+        })
+      ]
+    })
+    props.ecsTaskExecutionRole.addManagedPolicy(observabilityBucketWritePolicy)
+
+    props.coordinatorContainer.addEnvironment("OBSERVABILITY_BUCKET_ARN", observabilityBucket.bucket.bucketArn)
   }
 }

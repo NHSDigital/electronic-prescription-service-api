@@ -9,6 +9,7 @@ import {
 import {ILogGroup} from "aws-cdk-lib/aws-logs"
 import {IRepository} from "aws-cdk-lib/aws-ecr"
 import {
+  ContainerDefinition,
   ContainerImage,
   CpuArchitecture,
   FargateTaskDefinition,
@@ -61,6 +62,8 @@ export interface ECSTasksProps {
 
 export class ECSTasks extends Construct {
   public readonly fhirFacadeTaskDefinition: FargateTaskDefinition
+  public readonly ecsTaskExecutionRole: Role
+  public readonly coordinatorContainer: ContainerDefinition
 
   public constructor(scope: Construct, id: string, props: ECSTasksProps) {
     super(scope, id)
@@ -200,5 +203,7 @@ export class ECSTasks extends Construct {
 
     // Outputs
     this.fhirFacadeTaskDefinition = fhirFacadeTaskDefinition
+    this.ecsTaskExecutionRole = ecsTaskExecutionRole
+    this.coordinatorContainer = fhirFacadeTaskDefinition.findContainer(`${props.containerNamePrefix}-coordinator`)!
   }
 }

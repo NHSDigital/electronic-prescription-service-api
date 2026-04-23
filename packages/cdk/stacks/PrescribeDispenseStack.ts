@@ -14,7 +14,7 @@ import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
 import {Role} from "aws-cdk-lib/aws-iam"
 import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
-import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs"
+import {Cluster, ContainerDefinition, ContainerInsights} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
 import {
   ApplicationProtocol,
@@ -47,6 +47,8 @@ export interface PrescribeDispenseStackProps extends StackProps {
 }
 
 export class PrescribeDispenseStack extends Stack {
+  public readonly ecsTaskExecutionRole: Role
+  public readonly coordinatorContainer: ContainerDefinition
 
   public constructor(scope: App, id: string, props: PrescribeDispenseStackProps) {
     super(scope, id, props)
@@ -406,5 +408,9 @@ export class PrescribeDispenseStack extends Stack {
     })
 
     nagSuppressions(this)
+
+    // Outputs
+    this.ecsTaskExecutionRole = ecsTasks.ecsTaskExecutionRole
+    this.coordinatorContainer = ecsTasks.coordinatorContainer
   }
 }
