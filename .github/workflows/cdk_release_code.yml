@@ -271,7 +271,6 @@ jobs:
           cd .build
           npx cdk deploy prescribe-dispense \
           --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
-          --all \
           --require-approval=never \
           --ci true
         shell: bash
@@ -281,7 +280,6 @@ jobs:
           cd .build
           npx cdk deploy stateful-resources \
           --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
-          --all \
           --require-approval=never \
           --ci true
         shell: bash
