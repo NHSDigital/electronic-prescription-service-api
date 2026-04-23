@@ -3,10 +3,13 @@ import * as cdk from "aws-cdk-lib"
 import {PrescribeDispenseStack} from "../stacks/PrescribeDispenseStack"
 import {Aspects, Tags} from "aws-cdk-lib"
 import {AwsSolutionsChecks} from "cdk-nag"
+import {StatefulResourcesStack} from "../stacks/StatefulResourcesStack"
+import {addCfnGuardMetadata} from "./utils/appUtils"
 
 const app = new cdk.App()
 
 const serviceName = app.node.tryGetContext("serviceName")
+const statefulResourcesStackName = app.node.tryGetContext("statefulResourcesStackName")
 const version = app.node.tryGetContext("VERSION_NUMBER")
 const commit = app.node.tryGetContext("commitId")
 const accountId = app.node.tryGetContext("accountId")
@@ -32,3 +35,13 @@ new PrescribeDispenseStack(app, "prescribe-dispense", {
   stackName: serviceName,
   version: version
 })
+
+const StatefulResources = new StatefulResourcesStack(app, "stateful-resources", {
+  env: {
+    region: "eu-west-2",
+    account: accountId
+  },
+  stackName: statefulResourcesStackName
+})
+
+addCfnGuardMetadata(StatefulResources, "Custom::S3AutoDeleteObjectsCustomResourceProvider", "Handler")
