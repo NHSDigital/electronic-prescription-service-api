@@ -6,6 +6,9 @@ on:
       STACK_NAME:
         required: true
         type: string
+      STATEFUL_STACK_NAME:
+        required: true
+        type: string
       AWS_ENVIRONMENT:
         required: true
         type: string
@@ -235,6 +238,7 @@ jobs:
           ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           SERVICE_NAME: "${{ inputs.STACK_NAME }}"
+          STATEFUL_STACK_NAME: "${{ inputs.STATEFUL_STACK_NAME }}"
           VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
           LOG_RETENTION_IN_DAYS: "${{ inputs.LOG_RETENTION_DAYS }}"
           COMMIT_ID: "${{ inputs.COMMIT_ID }}"
@@ -262,12 +266,20 @@ jobs:
           FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
           AWS_MAX_ATTEMPTS: 5
 
-      - name: Deploy code
+      - name: Deploy API code
         run: |
           cd .build
-          npx cdk deploy \
+          npx cdk deploy prescribe-dispense \
           --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
-          --all \
+          --require-approval=never \
+          --ci true
+        shell: bash
+
+      - name: Deploy Prescriptions code
+        run: |
+          cd .build
+          npx cdk deploy stateful-resources \
+          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
           --require-approval=never \
           --ci true
         shell: bash
