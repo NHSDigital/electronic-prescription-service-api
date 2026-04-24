@@ -1,26 +1,18 @@
 import {Construct} from "constructs"
 import {S3Bucket} from "../constructs/S3Bucket"
-import {
-  IPrincipal,
-  IRole,
-  ManagedPolicy,
-  PolicyStatement
-} from "aws-cdk-lib/aws-iam"
-import {Key} from "aws-cdk-lib/aws-kms"
-import {Bucket, IBucket} from "aws-cdk-lib/aws-s3"
-import {ContainerDefinition} from "aws-cdk-lib/aws-ecs"
+import {IPrincipal, ManagedPolicy, PolicyStatement} from "aws-cdk-lib/aws-iam"
+import {IBucket} from "aws-cdk-lib/aws-s3"
 
 export interface ObservabilityProps {
   readonly stackName: string,
   readonly deploymentRole: IPrincipal,
   readonly auditLoggingBucket: IBucket,
-  readonly ecsTaskExecutionRole: IRole
-  readonly coordinatorContainer: ContainerDefinition
 }
 
 export class Observability extends Construct {
-  public readonly observabilityBucket: Bucket
-  public readonly observabilityKmsKey: Key
+  public readonly observabilityBucketArn: string
+  public readonly observabilityBucketWritePolicy: ManagedPolicy
+  public readonly observabilityRoutes: string
 
   constructor(scope: Construct, id: string, props: ObservabilityProps) {
     super(scope, id)
@@ -55,9 +47,10 @@ export class Observability extends Construct {
         })
       ]
     })
-    props.ecsTaskExecutionRole.addManagedPolicy(observabilityBucketWritePolicy)
 
-    props.coordinatorContainer.addEnvironment("OBSERVABILITY_BUCKET_ARN", observabilityBucket.bucket.bucketArn)
-    props.coordinatorContainer.addEnvironment("OBSERVABILITY_ROUTES", "claim,release,task,process-message")
+    // Outputs
+    this.observabilityBucketArn = observabilityBucket.bucket.bucketArn
+    this.observabilityBucketWritePolicy = observabilityBucketWritePolicy
+    this.observabilityRoutes = "claim,release,task,process-message"
   }
 }

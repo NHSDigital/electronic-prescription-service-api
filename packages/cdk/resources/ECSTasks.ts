@@ -51,9 +51,13 @@ export interface ECSTasksProps {
   readonly cpu: number
   readonly memory: number
   readonly taskExecutionRoleName: string
+  readonly taskRoleName: string
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
   readonly pollingDelay: number
+  readonly observabilityBucketArn?: string
+  readonly observabilityBucketWritePolicy?: ManagedPolicy
+  readonly observabilityRoutes?: string
 }
 
 /**
@@ -121,10 +125,19 @@ export class ECSTasks extends Construct {
       roleName: props.taskExecutionRoleName
     })
 
+    const ecsTaskRole = new Role(this, "EcsTaskRole", {
+      assumedBy: new ServicePrincipal("ecs-tasks.amazonaws.com"),
+      managedPolicies: props.observabilityBucketWritePolicy ? [
+        props.observabilityBucketWritePolicy
+      ] : [],
+      roleName: props.taskRoleName
+    })
+
     const fhirFacadeTaskDefinition = new FargateTaskDefinition(this, "TaskDef", {
       cpu: props.cpu,
       memoryLimitMiB: props.memory,
       executionRole: ecsTaskExecutionRole,
+      taskRole: ecsTaskRole,
       runtimePlatform: {
         cpuArchitecture: CpuArchitecture.X86_64,
         operatingSystemFamily: OperatingSystemFamily.LINUX
@@ -165,7 +178,9 @@ export class ECSTasks extends Construct {
         DEFAULT_PTL_PARTY_KEY: props.defaultPTLPartyKey,
         SANDBOX: props.sandboxModeEnabled,
         ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: String(props.enablePrescribingSignatureValidation),
-        POLLING_DELAY: props.pollingDelay.toString()
+        POLLING_DELAY: props.pollingDelay.toString(),
+        OBSERVABILITY_BUCKET_ARN: props.observabilityBucketArn ?? "",
+        OBSERVABILITY_ROUTES: props.observabilityRoutes ?? ""
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
@@ -203,7 +218,5 @@ export class ECSTasks extends Construct {
 
     // Outputs
     this.fhirFacadeTaskDefinition = fhirFacadeTaskDefinition
-    this.ecsTaskExecutionRole = ecsTaskExecutionRole
-    this.coordinatorContainer = fhirFacadeTaskDefinition.findContainer(`${props.containerNamePrefix}-coordinator`)!
   }
 }
