@@ -35,7 +35,8 @@ export default {
 
     if (prRedirectRequired(state.prNumber)) {
       if (prRedirectEnabled()) {
-        const queryString = new URLSearchParams(request.query).toString()
+        const queryParams = (request.query ?? {}) as Record<string, string>
+        const queryString = new URLSearchParams(queryParams).toString()
         const redirectUrl = getPrBranchUrl(state.prNumber, "callback", queryString)
 
         request.logger.info(`Redirecting to PR branch URL: ${redirectUrl}`)
@@ -108,6 +109,7 @@ export default {
 }
 
 function isSeparateAuthLogin(request: Hapi.Request) {
-  const queryString = new URLSearchParams(request.query)
+  const queryParams = (request.query ?? {}) as Record<string, string>
+  const queryString = new URLSearchParams(queryParams)
   return queryString.has("client_id")
 }
