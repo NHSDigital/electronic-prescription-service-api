@@ -22,13 +22,14 @@
     "npm": "11.6.x"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1035.0",
     "@hapi/boom": "^10.0.1",
     "@hapi/hapi": "^21.4.4",
-    "core-js": "3.49.0",
     "@peculiar/x509": "^2.0.0",
     "@xmldom/xmldom": "^0.9.10",
     "axios": "^1.15.0",
     "axios-retry": "^4.5.0",
+    "core-js": "3.49.0",
     "crypto-js": "^4.2.0",
     "fhirpath": "^4.9.2",
     "hapi-pino": "^13.0.0",
@@ -54,6 +55,7 @@
     "@types/mustache": "^4.2.6",
     "@types/split2": "^4.2.3",
     "@types/xml-c14n": "^0.0.3",
+    "aws-sdk-client-mock": "^4.1.0",
     "axios-mock-adapter": "^2.1.0",
     "split2": "^4.2.0",
     "ts-node-dev": "^2.0.0"

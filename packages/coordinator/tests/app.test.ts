@@ -10,12 +10,16 @@ import {
   invalidProdHeaders,
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
-  switchContentTypeForSmokeTest
+  switchContentTypeForSmokeTest,
+  writeRequestToObservabilityBucket
 } from "../src/utils/server-extensions"
 import {isEpsHostedContainer} from "../src/utils/feature-flags"
 import HapiPino from "hapi-pino"
 import pino, {DestinationStream} from "pino"
 import split from "split2"
+
+import {mockClient} from "aws-sdk-client-mock"
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
 
 vi.mock("../src/utils/environment", () => ({
   isProd: vi.fn(),
@@ -124,6 +128,14 @@ const xmlRoute: Hapi.ServerRoute = {
   path: "/xml",
   handler: (_, responseToolkit) => {
     return responseToolkit.response("success").type(ContentTypes.XML)
+  }
+}
+
+const processMessageRoute: Hapi.ServerRoute = {
+  method: "POST",
+  path: "/FHIR/R4/$process-message",
+  handler: (_, responseToolkit) => {
+    return responseToolkit.response("success").type(ContentTypes.FHIR)
   }
 }
 
@@ -252,6 +264,52 @@ describe("switchContentTypeForSmokeTest extension", () => {
     const xmlResponse = await server.inject({url: "/xml"})
     expect(fhirResponse.headers["content-type"]).toContain(ContentTypes.FHIR)
     expect(xmlResponse.headers["content-type"]).toContain(ContentTypes.XML)
+  })
+})
+
+describe("writeRequestToObservabilityBucket extension", () => {
+  const server = Hapi.server()
+  const s3Mock = mockClient(S3Client)
+  s3Mock.on(PutObjectCommand).resolves({})
+
+  server.route([processMessageRoute])
+
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
+
+    process.env.OBSERVABILITY_BUCKET_ARN = "bucket-arn"
+    process.env.OBSERVABILITY_ROUTES = "process-message,claim"
+
+    server.ext("onRequest", writeRequestToObservabilityBucket)
+  })
+
+  beforeEach(() => {
+    spyOnPinoOutput.mockReset()
+    newIsEpsHostedContainer.mockImplementation(() => true)
+  })
+
+  afterEach(() => {
+    s3Mock.reset()
+  })
+
+  // https://aws.amazon.com/blogs/developer/mocking-modular-aws-sdk-for-javascript-v3-in-unit-tests/
+  test("writes request to s3", async () => {
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const payload = {"body": {"data": ["goes", "here"]}}
+    const response = await server.inject(
+      {
+        url: "/FHIR/R4/$process-message",
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+    expect(response.payload).toBe("success")
+    expect(s3Mock.calls).toContain({})
   })
 })
 

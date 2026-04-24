@@ -1,9 +1,11 @@
+import {S3Client, PutObjectCommand} from "@aws-sdk/client-s3"
 import Hapi from "@hapi/hapi"
 import {fhir, processingErrors, validationErrors} from "@models"
 import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
+import {isEpsHostedContainer} from "./feature-flags"
 
 export const fatalResponse = {
   resourceType: "OperationOutcome",
@@ -133,6 +135,56 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
         .type(ContentTypes.FHIR)
         .takeover()
     }
+  }
+  return responseToolkit.continue
+}
+
+const toBeObserved = (request: Hapi.Request) => {
+  const routes: Array<string> = process.env["OBSERVABILITY_ROUTES"]?.split(",") ?? []
+  return [
+    isEpsHostedContainer(),
+    routes.some(r => request.route.path.toLowerCase().endsWith(r))
+  ].every(c => c)
+}
+
+export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = (
+  request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
+) => {
+  if (toBeObserved(request)) {
+    const client = new S3Client({"region": "eu-west-2"})
+    const command = new PutObjectCommand({
+      "Bucket": process.env["OBSERVABILITY_BUCKET_ARN"],
+      "Key": request.headers[RequestHeaders.REQUEST_ID],
+      "Body": request.payload.toString()
+    })
+
+    // May need to be awaited
+    client.send(command)
+  }
+  return responseToolkit.continue
+}
+
+export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = (
+  request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
+) => {
+  if (toBeObserved(request)) {
+    let responseData: string
+    const response = request.response
+    if (response instanceof Boom) {
+      responseData = response.output.payload.message
+    } else {
+      responseData = response.source?.toString() ?? ""
+    }
+
+    const client = new S3Client({"region": "eu-west-2"})
+    const command = new PutObjectCommand({
+      "Bucket": process.env["OBSERVABILITY_BUCKET_ARN"],
+      "Key": request.headers[RequestHeaders.REQUEST_ID],
+      "Body": responseData
+    })
+
+    // May need to be awaited
+    client.send(command)
   }
   return responseToolkit.continue
 }

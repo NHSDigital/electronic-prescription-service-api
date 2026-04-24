@@ -5,7 +5,9 @@ import {isLocal} from "./utils/environment"
 import {
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
-  switchContentTypeForSmokeTest
+  switchContentTypeForSmokeTest,
+  writeRequestToObservabilityBucket,
+  writeResponseToObservabilityBucket
 } from "./utils/server-extensions"
 
 export const createServer = (
@@ -37,8 +39,10 @@ export const createServer = (
 
   server.ext([
     {type: "onRequest", method: rejectInvalidProdHeaders},
+    {type: "onRequest", method: writeRequestToObservabilityBucket},
     {type: "onPreResponse", method: reformatUserErrorsToFhir},
-    {type: "onPreResponse", method: switchContentTypeForSmokeTest}
+    {type: "onPreResponse", method: switchContentTypeForSmokeTest},
+    {type: "onPostResponse", method: writeResponseToObservabilityBucket}
   ])
 
   return server

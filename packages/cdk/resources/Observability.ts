@@ -58,5 +58,6 @@ export class Observability extends Construct {
     props.ecsTaskExecutionRole.addManagedPolicy(observabilityBucketWritePolicy)
 
     props.coordinatorContainer.addEnvironment("OBSERVABILITY_BUCKET_ARN", observabilityBucket.bucket.bucketArn)
+    props.coordinatorContainer.addEnvironment("OBSERVABILITY_ROUTES", "claim,release,task,process-message")
   }
 }
