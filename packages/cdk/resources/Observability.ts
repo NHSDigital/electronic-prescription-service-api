@@ -10,9 +10,9 @@ export interface ObservabilityProps {
 }
 
 export class Observability extends Construct {
-  public readonly observabilityBucketArn: string
-  public readonly observabilityBucketWritePolicy: ManagedPolicy
-  public readonly observabilityRoutes: string
+  public readonly bucketName: string
+  public readonly bucketWritePolicy: ManagedPolicy
+  public readonly routes: string
 
   constructor(scope: Construct, id: string, props: ObservabilityProps) {
     super(scope, id)
@@ -49,8 +49,8 @@ export class Observability extends Construct {
     })
 
     // Outputs
-    this.observabilityBucketArn = observabilityBucket.bucket.bucketArn
-    this.observabilityBucketWritePolicy = observabilityBucketWritePolicy
-    this.observabilityRoutes = "claim,release,task,process-message"
+    this.bucketName = observabilityBucket.bucket.bucketName
+    this.bucketWritePolicy = observabilityBucketWritePolicy
+    this.routes = "claim,release,task,process-message"
   }
 }

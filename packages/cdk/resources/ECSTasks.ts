@@ -55,7 +55,7 @@ export interface ECSTasksProps {
   readonly ApigeeEnvironment: string
   readonly containerNamePrefix: string
   readonly pollingDelay: number
-  readonly observabilityBucketArn?: string
+  readonly observabilityBucketName?: string
   readonly observabilityBucketWritePolicy?: ManagedPolicy
   readonly observabilityRoutes?: string
 }
@@ -179,7 +179,7 @@ export class ECSTasks extends Construct {
         SANDBOX: props.sandboxModeEnabled,
         ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: String(props.enablePrescribingSignatureValidation),
         POLLING_DELAY: props.pollingDelay.toString(),
-        OBSERVABILITY_BUCKET_ARN: props.observabilityBucketArn ?? "",
+        OBSERVABILITY_BUCKET_NAME: props.observabilityBucketName ?? "",
         OBSERVABILITY_ROUTES: props.observabilityRoutes ?? ""
       },
       secrets: {

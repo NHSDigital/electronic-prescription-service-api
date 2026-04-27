@@ -44,7 +44,7 @@ export interface PrescribeDispenseStackProps extends StackProps {
   readonly serviceName: string
   readonly stackName: string
   readonly version: string
-  readonly observabilityBucketArn: string
+  readonly observabilityBucketName: string
   readonly observabilityBucketWritePolicy: ManagedPolicy
   readonly observabilityRoutes: string
 }
@@ -179,7 +179,7 @@ export class PrescribeDispenseStack extends Stack {
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "fhirFacade",
       pollingDelay: 5000,
-      observabilityBucketArn: props.observabilityBucketArn,
+      observabilityBucketName: props.observabilityBucketName,
       observabilityBucketWritePolicy: props.observabilityBucketWritePolicy,
       observabilityRoutes: props.observabilityRoutes
     })

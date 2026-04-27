@@ -278,7 +278,7 @@ describe("writeRequestToObservabilityBucket extension", () => {
       instance: logger
     })
 
-    process.env.OBSERVABILITY_BUCKET_ARN = "bucket-arn"
+    process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
     process.env.OBSERVABILITY_ROUTES = "process-message,claim"
 
     server.ext("onPreHandler", writeRequestToObservabilityBucket)
@@ -315,7 +315,7 @@ describe("writeRequestToObservabilityBucket extension", () => {
     const calls = s3Mock.commandCalls(PutObjectCommand)
     expect(calls).toHaveLength(1)
     expect(calls[0].args[0].input).toMatchObject({
-      Bucket: "bucket-arn",
+      Bucket: "bucket-name",
       Key: "request-id"
     })
   })

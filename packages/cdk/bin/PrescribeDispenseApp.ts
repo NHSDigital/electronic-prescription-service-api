@@ -42,7 +42,7 @@ new PrescribeDispenseStack(app, "prescribe-dispense", {
   serviceName: serviceName,
   stackName: serviceName,
   version: version,
-  observabilityBucketArn: StatefulResources.observabilityBucketArn,
+  observabilityBucketName: StatefulResources.observabilityBucketName,
   observabilityBucketWritePolicy: StatefulResources.observabilityBucketWritePolicy,
   observabilityRoutes: StatefulResources.observabilityRoutes
 })

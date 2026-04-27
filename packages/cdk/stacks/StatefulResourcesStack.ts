@@ -13,7 +13,7 @@ export interface StatefulResourcesStackProps extends StackProps {
 }
 
 export class StatefulResourcesStack extends Stack {
-  public readonly observabilityBucketArn: string
+  public readonly observabilityBucketName: string
   public readonly observabilityBucketWritePolicy: ManagedPolicy
   public readonly observabilityRoutes: string
 
@@ -28,10 +28,14 @@ export class StatefulResourcesStack extends Stack {
     const auditLoggingBucket = Bucket.fromBucketArn(this, "AuditLoggingBucket", auditLoggingBucketImport)
 
     // resources
-    new Observability(this, "Observability", {
+    const observability = new Observability(this, "Observability", {
       stackName: props.stackName,
       deploymentRole: deploymentRole,
       auditLoggingBucket: auditLoggingBucket
     })
+
+    this.observabilityBucketName = observability.bucketName
+    this.observabilityBucketWritePolicy = observability.bucketWritePolicy
+    this.observabilityRoutes = observability.routes
   }
 }

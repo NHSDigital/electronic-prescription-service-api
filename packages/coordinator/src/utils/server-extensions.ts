@@ -1,4 +1,4 @@
-import {S3Client, PutObjectCommand, S3ClientConfig} from "@aws-sdk/client-s3"
+import {S3Client, PutObjectCommand} from "@aws-sdk/client-s3"
 import Hapi from "@hapi/hapi"
 import {fhir, processingErrors, validationErrors} from "@models"
 import {ContentTypes} from "../routes/util"
@@ -151,10 +151,11 @@ export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   if (toBeObserved(request)) {
+    const logger = request.logger
     try {
       const client = new S3Client({"region": "eu-west-2"})
       const command = new PutObjectCommand({
-        "Bucket": process.env["OBSERVABILITY_BUCKET_ARN"],
+        "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
         "Key": request.headers[RequestHeaders.REQUEST_ID],
         "Body": request.payload.toString()
       })
@@ -162,8 +163,7 @@ export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
       // May need to be awaited
       await client.send(command)
     } catch(err) {
-      console.log(err)
-      throw err
+      logger.warn({err}, "Error writing request to observability bucket")
     }
   }
   return responseToolkit.continue
@@ -183,7 +183,7 @@ export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = async (
 
     const client = new S3Client({"region": "eu-west-2"})
     const command = new PutObjectCommand({
-      "Bucket": process.env["OBSERVABILITY_BUCKET_ARN"],
+      "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
       "Key": request.headers[RequestHeaders.REQUEST_ID],
       "Body": responseData
     })
