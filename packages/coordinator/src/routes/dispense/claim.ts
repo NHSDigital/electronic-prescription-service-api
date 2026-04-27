@@ -29,7 +29,7 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Claim`,
-    _handler: handlerWrapper(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+    handler: handlerWrapper(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
       const claimPayload = await getPayload(request) as fhir.Claim
       request.log("audit", {incomingMessageHash: createHash(JSON.stringify(claimPayload), HashingAlgorithm.SHA256)})
