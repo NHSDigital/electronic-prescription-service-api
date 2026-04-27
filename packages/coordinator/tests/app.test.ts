@@ -11,7 +11,8 @@ import {
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
   switchContentTypeForSmokeTest,
-  writeRequestToObservabilityBucket
+  writeRequestToObservabilityBucket,
+  writeResponseToObservabilityBucket
 } from "../src/utils/server-extensions"
 import {isEpsHostedContainer} from "../src/utils/feature-flags"
 import HapiPino from "hapi-pino"
@@ -30,6 +31,8 @@ vi.mock("../src/utils/feature-flags", () => ({
   isEpsHostedContainer: vi.fn(),
   isSandbox: vi.fn(() => false)
 }))
+
+const s3Mock = mockClient(S3Client)
 
 const newIsProd = vi.mocked(isProd)
 const newIsEpsHostedContainer = vi.mocked(isEpsHostedContainer)
@@ -131,11 +134,24 @@ const xmlRoute: Hapi.ServerRoute = {
   }
 }
 
+const processMessageResponseBody = JSON.stringify({
+  resourceType: "OperationOutcome",
+  issue: [
+    {
+      severity: "information",
+      code: "informational",
+      details: {
+        text: "success"
+      }
+    }
+  ]
+})
+
 const processMessageRoute: Hapi.ServerRoute = {
   method: "POST",
   path: "/FHIR/R4/$process-message",
   handler: (_, responseToolkit) => {
-    return responseToolkit.response("success").type(ContentTypes.FHIR)
+    return responseToolkit.response(processMessageResponseBody).type(ContentTypes.FHIR)
   }
 }
 
@@ -269,8 +285,6 @@ describe("switchContentTypeForSmokeTest extension", () => {
 
 describe("writeRequestToObservabilityBucket extension", () => {
   const server = Hapi.server()
-  const s3Mock = mockClient(S3Client)
-
   server.route([processMessageRoute])
 
   beforeAll(async () => {
@@ -297,8 +311,58 @@ describe("writeRequestToObservabilityBucket extension", () => {
     s3Mock.reset()
   })
 
-  // https://aws.amazon.com/blogs/developer/mocking-modular-aws-sdk-for-javascript-v3-in-unit-tests/
   test("writes request to s3", async () => {
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const payload = {"body": {"data": ["goes", "here"]}}
+    await server.inject(
+      {
+        url: "/FHIR/R4/$process-message",
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(1)
+    expect(calls[0].args[0].input).toMatchObject({
+      Bucket: "bucket-name",
+      Key: "request-id",
+      Body: "{\"body\":{\"data\":[\"goes\",\"here\"]}}"
+    })
+  })
+})
+
+describe("writeResponseToObservabilityBucket extension", () => {
+  const server = Hapi.server()
+  server.route([processMessageRoute])
+
+  beforeAll(async () => {
+    await HapiPino.register(server, {
+      instance: logger
+    })
+
+    process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
+    process.env.OBSERVABILITY_ROUTES = "process-message,claim"
+
+    server.ext("onPostResponse", writeResponseToObservabilityBucket)
+  })
+
+  beforeEach(() => {
+    spyOnPinoOutput.mockReset()
+    newIsEpsHostedContainer.mockImplementation(() => true)
+    s3Mock.on(PutObjectCommand).resolves({
+      ETag: "e-tag",
+      VersionId: "version-id"
+    })
+  })
+
+  afterEach(() => {
+    s3Mock.reset()
+  })
+
+  test("writes response to s3", async () => {
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
 
@@ -311,12 +375,13 @@ describe("writeRequestToObservabilityBucket extension", () => {
         method: "POST"
       }
     )
-    expect(response.payload).toBe("success")
+    expect(response.payload).toBe(processMessageResponseBody)
     const calls = s3Mock.commandCalls(PutObjectCommand)
     expect(calls).toHaveLength(1)
     expect(calls[0].args[0].input).toMatchObject({
       Bucket: "bucket-name",
-      Key: "request-id"
+      Key: "request-id",
+      Body: processMessageResponseBody
     })
   })
 })

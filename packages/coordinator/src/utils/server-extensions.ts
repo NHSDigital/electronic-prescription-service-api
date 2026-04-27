@@ -151,19 +151,17 @@ export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   if (toBeObserved(request)) {
-    const logger = request.logger
     try {
       const client = new S3Client({"region": "eu-west-2"})
       const command = new PutObjectCommand({
         "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
         "Key": request.headers[RequestHeaders.REQUEST_ID],
-        "Body": request.payload.toString()
+        "Body": JSON.stringify(request.payload)
       })
 
-      // May need to be awaited
       await client.send(command)
     } catch(err) {
-      logger.warn({err}, "Error writing request to observability bucket")
+      request.logger.warn({err}, "Error writing request to observability bucket")
     }
   }
   return responseToolkit.continue
@@ -173,23 +171,26 @@ export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = async (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   if (toBeObserved(request)) {
-    let responseData: string
-    const response = request.response
-    if (response instanceof Boom) {
-      responseData = response.output.payload.message
-    } else {
-      responseData = response.source?.toString() ?? ""
+    try {
+      let responseData: string
+      const response = request.response
+      if (response instanceof Boom) {
+        responseData = response.output.payload.message
+      } else {
+        responseData = response.source?.toString() ?? ""
+      }
+
+      const client = new S3Client({"region": "eu-west-2"})
+      const command = new PutObjectCommand({
+        "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
+        "Key": request.headers[RequestHeaders.REQUEST_ID],
+        "Body": responseData
+      })
+
+      await client.send(command)
+    } catch(err) {
+      request.logger.warn({err}, "Error writing response to observability bucket")
     }
-
-    const client = new S3Client({"region": "eu-west-2"})
-    const command = new PutObjectCommand({
-      "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
-      "Key": request.headers[RequestHeaders.REQUEST_ID],
-      "Body": responseData
-    })
-
-    // May need to be awaited
-    await client.send(command)
   }
   return responseToolkit.continue
 }
