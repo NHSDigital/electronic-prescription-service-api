@@ -39,7 +39,7 @@ export const createServer = (
 
   server.ext([
     {type: "onRequest", method: rejectInvalidProdHeaders},
-    {type: "onRequest", method: writeRequestToObservabilityBucket},
+    {type: "onPreHandler", method: writeRequestToObservabilityBucket},
     {type: "onPreResponse", method: reformatUserErrorsToFhir},
     {type: "onPreResponse", method: switchContentTypeForSmokeTest},
     {type: "onPostResponse", method: writeResponseToObservabilityBucket}

@@ -1,4 +1,4 @@
-import {S3Client, PutObjectCommand} from "@aws-sdk/client-s3"
+import {S3Client, PutObjectCommand, S3ClientConfig} from "@aws-sdk/client-s3"
 import Hapi from "@hapi/hapi"
 import {fhir, processingErrors, validationErrors} from "@models"
 import {ContentTypes} from "../routes/util"
@@ -143,28 +143,33 @@ const toBeObserved = (request: Hapi.Request) => {
   const routes: Array<string> = process.env["OBSERVABILITY_ROUTES"]?.split(",") ?? []
   return [
     isEpsHostedContainer(),
-    routes.some(r => request.route.path.toLowerCase().endsWith(r))
+    routes.some(r => request.path.toLowerCase().endsWith(r))
   ].every(c => c)
 }
 
-export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = (
+export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   if (toBeObserved(request)) {
-    const client = new S3Client({"region": "eu-west-2"})
-    const command = new PutObjectCommand({
-      "Bucket": process.env["OBSERVABILITY_BUCKET_ARN"],
-      "Key": request.headers[RequestHeaders.REQUEST_ID],
-      "Body": request.payload.toString()
-    })
+    try {
+      const client = new S3Client({"region": "eu-west-2"})
+      const command = new PutObjectCommand({
+        "Bucket": process.env["OBSERVABILITY_BUCKET_ARN"],
+        "Key": request.headers[RequestHeaders.REQUEST_ID],
+        "Body": request.payload.toString()
+      })
 
-    // May need to be awaited
-    client.send(command)
+      // May need to be awaited
+      await client.send(command)
+    } catch(err) {
+      console.log(err)
+      throw err
+    }
   }
   return responseToolkit.continue
 }
 
-export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = (
+export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = async (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
   if (toBeObserved(request)) {
@@ -184,7 +189,7 @@ export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = (
     })
 
     // May need to be awaited
-    client.send(command)
+    await client.send(command)
   }
   return responseToolkit.continue
 }

@@ -270,7 +270,6 @@ describe("switchContentTypeForSmokeTest extension", () => {
 describe("writeRequestToObservabilityBucket extension", () => {
   const server = Hapi.server()
   const s3Mock = mockClient(S3Client)
-  s3Mock.on(PutObjectCommand).resolves({})
 
   server.route([processMessageRoute])
 
@@ -282,12 +281,16 @@ describe("writeRequestToObservabilityBucket extension", () => {
     process.env.OBSERVABILITY_BUCKET_ARN = "bucket-arn"
     process.env.OBSERVABILITY_ROUTES = "process-message,claim"
 
-    server.ext("onRequest", writeRequestToObservabilityBucket)
+    server.ext("onPreHandler", writeRequestToObservabilityBucket)
   })
 
   beforeEach(() => {
     spyOnPinoOutput.mockReset()
     newIsEpsHostedContainer.mockImplementation(() => true)
+    s3Mock.on(PutObjectCommand).resolves({
+      ETag: "e-tag",
+      VersionId: "version-id"
+    })
   })
 
   afterEach(() => {
@@ -309,7 +312,12 @@ describe("writeRequestToObservabilityBucket extension", () => {
       }
     )
     expect(response.payload).toBe("success")
-    expect(s3Mock.calls).toContain({})
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(1)
+    expect(calls[0].args[0].input).toMatchObject({
+      Bucket: "bucket-arn",
+      Key: "request-id"
+    })
   })
 })
 
