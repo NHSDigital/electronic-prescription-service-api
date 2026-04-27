@@ -4,8 +4,7 @@ import {
   BASE_PATH,
   ContentTypes,
   externalValidator,
-  getPayload,
-  handlerWrapper
+  getPayload
 } from "../util"
 import {fhir} from "@models"
 import * as bundleValidator from "../../services/validation/bundle-validator"
@@ -28,7 +27,7 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$convert`,
-    handler: handlerWrapper(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
       const logger = request.logger
       const payload = await getPayload(request) as fhir.Resource
       const scope = getScope(request.headers)
@@ -87,7 +86,7 @@ export default [
       }
 
       return responseToolkit.response(unsupportedResponse).code(400).type(ContentTypes.FHIR)
-    }, [externalValidator])
+    })
   }
 ]
 

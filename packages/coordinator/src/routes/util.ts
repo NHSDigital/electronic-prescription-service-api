@@ -172,61 +172,42 @@ function filterOutDiagnosticOnString(issues: Array<fhir.OperationOutcomeIssue>, 
   return issues.filter((issue) => !issue.diagnostics?.includes(diagnosticString))
 }
 
-interface HandlerDecorator {
-  (
-    request: Hapi.Request,
-    responseToolkit: Hapi.ResponseToolkit
-  ): Promise<Hapi.ResponseObject | undefined>
-}
-
-export function handlerWrapper(
-  handler: Hapi.Lifecycle.Method,
-  decorators: Array<HandlerDecorator>
-) {
+export function externalValidator(handler: Hapi.Lifecycle.Method) {
   return async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit): Promise<Hapi.Lifecycle.ReturnValue> => {
-    decorators.forEach(async d => {
-      const decoratorResult: Hapi.ResponseObject | undefined = await d(request, responseToolkit)
-      if (decoratorResult) {
-        return decoratorResult
+    const traceIds = extractTraceIds(request.headers)
+
+    let parsedPayload: unknown
+    try {
+      parsedPayload = parsePayload(request.payload, request.logger, traceIds)
+    } catch (error) {
+      if (error instanceof SyntaxError) {
+        const msg = "Failed to parse JSON encoded FHIR content"
+        request.logger.warn({errorMessage: error.message, traceIds}, msg)
+        const invalidJsonResponse: fhir.OperationOutcome = {
+          resourceType: "OperationOutcome",
+          issue: [{
+            severity: "error",
+            code: fhir.IssueCodes.INVALID,
+            diagnostics: `${msg}: ${error.message}`
+          }]
+        }
+        return responseToolkit.response(invalidJsonResponse).code(400).type(ContentTypes.FHIR)
       }
-    })
 
-    return handler.call(this, request, responseToolkit)
-  }
-}
-
-export async function externalValidator(request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) {
-  const traceIds = extractTraceIds(request.headers)
-
-  let parsedPayload: unknown
-  try {
-    parsedPayload = parsePayload(request.payload, request.logger, traceIds)
-  } catch (error) {
-    if (error instanceof SyntaxError) {
-      const msg = "Failed to parse JSON encoded FHIR content"
-      request.logger.warn({errorMessage: error.message, traceIds}, msg)
-      const invalidJsonResponse: fhir.OperationOutcome = {
-        resourceType: "OperationOutcome",
-        issue: [{
-          severity: "error",
-          code: fhir.IssueCodes.INVALID,
-          diagnostics: `${msg}: ${error.message}`
-        }]
-      }
-      return responseToolkit.response(invalidJsonResponse).code(400).type(ContentTypes.FHIR)
+      throw error
     }
 
-    throw error
-  }
+    // keep payload for reuse in the handler
+    request.app.parsedPayload = parsedPayload
 
-  // keep payload for reuse in the handler
-  request.app.parsedPayload = parsedPayload
+    const showWarnings = getShowValidationWarnings(request.headers) === "true"
+    const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
+    if (fhirValidatorResponse) {
+      request.logger.error(`FHIR validator failed with errors: ${LosslessJson.stringify(fhirValidatorResponse)}`)
+      return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
+    }
 
-  const showWarnings = getShowValidationWarnings(request.headers) === "true"
-  const fhirValidatorResponse = await getFhirValidatorErrors(request, showWarnings)
-  if (fhirValidatorResponse) {
-    request.logger.error(`FHIR validator failed with errors: ${LosslessJson.stringify(fhirValidatorResponse)}`)
-    return responseToolkit.response(fhirValidatorResponse).code(400).type(ContentTypes.FHIR)
+    return handler.call(this, request, responseToolkit)
   }
 }
 

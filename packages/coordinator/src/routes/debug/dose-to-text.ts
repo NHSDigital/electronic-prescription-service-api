@@ -2,8 +2,7 @@ import {
   BASE_PATH,
   ContentTypes,
   externalValidator,
-  getPayload,
-  handlerWrapper
+  getPayload
 } from "../util"
 import {fhir, validationErrors as errors} from "@models"
 import {stringifyDosages} from "../../services/translation/request/dosage"
@@ -18,7 +17,7 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$dose-to-text`,
-    handler: handlerWrapper(async (request, responseToolkit) => {
+    handler: externalValidator(async (request, responseToolkit) => {
       const payload = await getPayload(request) as fhir.Resource
       const resources = getResourcesWithDosageInstructions(payload)
       if (!resources) {
@@ -35,7 +34,7 @@ export default [
       }
       const response = resources.map(doseToTextJson)
       return responseToolkit.response(response).code(200).type(ContentTypes.JSON)
-    }, [externalValidator])
+    })
   }
 ]
 

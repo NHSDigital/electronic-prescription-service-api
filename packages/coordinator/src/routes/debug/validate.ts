@@ -1,11 +1,6 @@
 import {fhir} from "@models"
-import {
-  BASE_PATH,
-  ContentTypes,
-  externalValidator,
-  handlerWrapper
-} from "../util"
-import {RouteDefMethods, Request, ResponseToolkit} from "@hapi/hapi"
+import {BASE_PATH, ContentTypes, externalValidator} from "../util"
+import {RouteDefMethods} from "@hapi/hapi"
 
 export default [
   /*
@@ -14,7 +9,7 @@ export default [
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/$validate`,
-    handler: handlerWrapper(async (request: Request, responseToolkit: ResponseToolkit) => {
+    handler: externalValidator(async (request, responseToolkit) => {
       const successfulResponse: fhir.OperationOutcome = {
         resourceType: "OperationOutcome",
         issue: [{
@@ -23,6 +18,6 @@ export default [
         }]
       }
       return responseToolkit.response(successfulResponse).code(200).type(ContentTypes.FHIR)
-    }, [externalValidator])
+    })
   }
 ]
