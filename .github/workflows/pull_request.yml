@@ -15,7 +15,7 @@ jobs:
       contents: read
       packages: read
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@8399c1f015c1304e40771cbd8ccc24c7ed48fdbc
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     needs: [get_config_values]
     permissions:
       contents: read
@@ -29,7 +29,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   pr_title_format_check:
     if: github.event_name != 'merge_group'
-    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
+    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     permissions:
       pull-requests: write
   get_issue_number:
