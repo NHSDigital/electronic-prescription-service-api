@@ -85,7 +85,7 @@ export class ECSTasks extends Construct {
     const epsSigningCertChainManagedPolicy = ManagedPolicy.fromManagedPolicyArn(
       this,
       "EpsSigningCertChainManagedPolicy",
-      Fn.importValue("secrets-cdk::Secrets:epsSigningCertChainManagedPolicy:Arn")
+      Fn.importValue("secrets-cdk:Secrets:epsSigningCertChainManagedPolicy:Arn")
     )
 
     const SHA1EnabledApplicationIds = new StringParameter(this, "SHA1EnabledApplicationIds", {
