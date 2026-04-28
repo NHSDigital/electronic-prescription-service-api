@@ -263,6 +263,8 @@ describe("switchContentTypeForSmokeTest extension", () => {
 })
 
 describe("observabilityBucket extensions", () => {
+  const payload = {"body": {"data": ["goes", "here"]}}
+
   const successResponseBody = JSON.stringify({
     resourceType: "OperationOutcome",
     issue: [
@@ -290,9 +292,11 @@ describe("observabilityBucket extensions", () => {
   process.env.OBSERVABILITY_ROUTES = "process-message,claim"
 
   let server: Hapi.Server
+  let loggerSpy: ReturnType<typeof vi.spyOn>
 
   beforeEach(async () => {
     server = Hapi.server()
+    loggerSpy = vi.spyOn(logger, "warn")
     await HapiPino.register(server, {
       instance: logger
     })
@@ -320,7 +324,6 @@ describe("observabilityBucket extensions", () => {
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
 
-    const payload = {"body": {"data": ["goes", "here"]}}
     const response = await server.inject(
       {
         url: "/FHIR/R4/$process-message",
@@ -368,6 +371,32 @@ describe("observabilityBucket extensions", () => {
 
     const calls = s3Mock.commandCalls(PutObjectCommand)
     expect(calls).toHaveLength(0)
+  })
+
+  test("error writing to s3 logs a warning and handler succeeds", async () => {
+    server.route(getRoute("/FHIR/R4/$process-message", successResponseBody))
+
+    const err = new Error("S3 error")
+    s3Mock.on(PutObjectCommand).rejects(err)
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: "/FHIR/R4/$process-message",
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    expect(loggerSpy).toHaveBeenCalledWith(
+      expect.objectContaining({err}),
+      "Error writing request to observability bucket"
+    )
   })
 })
 
