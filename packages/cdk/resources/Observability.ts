@@ -29,17 +29,19 @@ export class Observability extends Construct {
       statements: [
         new PolicyStatement({
           actions: [
-            "s3:GetBucket",
+            "s3:ListBucket",
             "s3:PutObject"
           ],
           resources: [
-            observabilityBucket.bucket.bucketArn
+            observabilityBucket.bucket.bucketArn,
+            `${observabilityBucket.bucket.bucketArn}/*`
           ]
         }),
         new PolicyStatement({
           actions: [
             "kms:DescribeKey",
-            "kms:Encrypt"
+            "kms:Encrypt",
+            "kms:GenerateDataKey"
           ],
           resources: [
             observabilityBucket.kmsKey.keyArn

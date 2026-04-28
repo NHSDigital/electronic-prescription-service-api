@@ -213,7 +213,7 @@ export class PrescribeDispenseStack extends Stack {
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`,
-      taskRoleName: `${props.stackName}-claimsTaskExecutionRole`,
+      taskRoleName: `${props.stackName}-claimsTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "claims",
       pollingDelay: 13000

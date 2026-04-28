@@ -140,7 +140,8 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
 }
 
 const toBeObserved = (request: Hapi.Request) => {
-  const routes: Array<string> = process.env["OBSERVABILITY_ROUTES"]?.split(",") ?? []
+  const routesString = process.env["OBSERVABILITY_ROUTES"]
+  const routes: Array<string> = routesString ? routesString.split(",") : []
   return [
     isEpsHostedContainer(),
     routes.some(r => request.path.toLowerCase().endsWith(r))

@@ -179,8 +179,12 @@ export class ECSTasks extends Construct {
         SANDBOX: props.sandboxModeEnabled,
         ENABLE_PRESCRIBING_SIGNATURE_VALIDATION: String(props.enablePrescribingSignatureValidation),
         POLLING_DELAY: props.pollingDelay.toString(),
-        OBSERVABILITY_BUCKET_NAME: props.observabilityBucketName ?? "",
-        OBSERVABILITY_ROUTES: props.observabilityRoutes ?? ""
+        ...(props.observabilityBucketName !== undefined && {
+          OBSERVABILITY_BUCKET_NAME: props.observabilityBucketName
+        }),
+        ...(props.observabilityRoutes !== undefined && {
+          OBSERVABILITY_ROUTES: props.observabilityRoutes
+        })
       },
       secrets: {
         SpinePrivateKey: ecsSecret.fromSecretsManager(props.spinePrivateKey),
