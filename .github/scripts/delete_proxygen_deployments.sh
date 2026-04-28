@@ -43,8 +43,6 @@ delete_apigee_deployments() {
       exit 1
   fi
 
-  echo "response from lambda:"
-
   jq -r '.[].name' "out.json" | while read -r i; do
     echo "Checking if apigee deployment $i has open pull request"
     PULL_REQUEST=${i//${PULL_REQUEST_PROXYGEN_REGEX}/}
