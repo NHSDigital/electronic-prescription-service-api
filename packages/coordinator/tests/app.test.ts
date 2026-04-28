@@ -299,7 +299,7 @@ describe("observabilityBucket extensions", () => {
       instance: logger
     })
     server.ext([
-      {type: "onPreHandler", method: writeRequestToObservabilityBucket},
+      {type: "onPostResponse", method: writeRequestToObservabilityBucket},
       {type: "onPostResponse", method: writeResponseToObservabilityBucket}
     ])
 
