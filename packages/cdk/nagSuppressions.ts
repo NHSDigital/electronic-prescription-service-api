@@ -2,7 +2,7 @@
 import {Stack} from "aws-cdk-lib"
 import {NagPackSuppression, NagSuppressions} from "cdk-nag"
 
-export const nagSuppressions = (stack: Stack) => {
+export const prescribeDispenseNagSuppressions = (stack: Stack) => {
   safeAddNagSuppression(
     stack,
     "/prescribe-dispense/EcsCluster/Resource",
@@ -66,6 +66,19 @@ export const nagSuppressions = (stack: Stack) => {
       {
         id: "AwsSolutions-ECS2",
         reason: "its ok to use environment variables here"
+      }
+    ]
+  )
+}
+
+export const statefulResourcesNagSuppressions = (stack: Stack) => {
+  safeAddNagSuppression(
+    stack,
+    "/stateful-resources/Observability/observabilityBucketWritePolicy/Resource",
+    [
+      {
+        id: "AwsSolutions-IAM5",
+        reason: "Suppress error for permission for writing to s3"
       }
     ]
   )

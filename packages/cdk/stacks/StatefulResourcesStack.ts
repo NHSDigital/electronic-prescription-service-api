@@ -7,6 +7,7 @@ import {
 import {Observability} from "../resources/Observability"
 import {ManagedPolicy, Role} from "aws-cdk-lib/aws-iam"
 import {Bucket} from "aws-cdk-lib/aws-s3"
+import {statefulResourcesNagSuppressions} from "../nagSuppressions"
 
 export interface StatefulResourcesStackProps extends StackProps {
   readonly stackName: string
@@ -37,5 +38,7 @@ export class StatefulResourcesStack extends Stack {
     this.observabilityBucketName = observability.bucketName
     this.observabilityBucketWritePolicy = observability.bucketWritePolicy
     this.observabilityRoutes = observability.routes
+
+    statefulResourcesNagSuppressions(this)
   }
 }

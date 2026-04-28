@@ -27,7 +27,7 @@ import {
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
-import {nagSuppressions} from "../nagSuppressions"
+import {prescribeDispenseNagSuppressions} from "../nagSuppressions"
 import {LogGroups} from "../resources/LogGroups"
 import {ECSTasks} from "../resources/ECSTasks"
 import {
@@ -413,6 +413,6 @@ export class PrescribeDispenseStack extends Stack {
       exportName: `${props.stackName}:enablePrescribingSignatureValidation`
     })
 
-    nagSuppressions(this)
+    prescribeDispenseNagSuppressions(this)
   }
 }
