@@ -44,7 +44,6 @@ delete_apigee_deployments() {
   fi
 
   echo "response from lambda:"
-  cat out.json
 
   jq -r '.[].name' "out.json" | while read -r i; do
     echo "Checking if apigee deployment $i has open pull request"
@@ -64,9 +63,15 @@ delete_apigee_deployments() {
 
       aws lambda invoke --function-name "lambda-resources-ProxygenPTLInstanceDelete" --cli-binary-format raw-in-base64-out --payload file://payload.json out.txt > response.json
         if eval "cat response.json | jq -e '.FunctionError' >/dev/null"; then
-            echo 'Error calling lambda'
+            echo
+            echo "*****"
+            echo "Error calling lambda."
+            echo "Here is response from lambda"
+            cat response.json
+            echo "Here is output from lambda invoke"
             cat out.txt
-            exit 1
+            echo "*****"
+            echo
         fi
 
 
