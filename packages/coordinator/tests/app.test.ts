@@ -134,27 +134,6 @@ const xmlRoute: Hapi.ServerRoute = {
   }
 }
 
-const processMessageResponseBody = JSON.stringify({
-  resourceType: "OperationOutcome",
-  issue: [
-    {
-      severity: "information",
-      code: "informational",
-      details: {
-        text: "success"
-      }
-    }
-  ]
-})
-
-const processMessageRoute: Hapi.ServerRoute = {
-  method: "POST",
-  path: "/FHIR/R4/$process-message",
-  handler: (_, responseToolkit) => {
-    return responseToolkit.response(processMessageResponseBody).type(ContentTypes.FHIR)
-  }
-}
-
 describe("rejectInvalidProdHeaders extension", () => {
   const server = Hapi.server()
   server.route([successRoute])
@@ -284,26 +263,47 @@ describe("switchContentTypeForSmokeTest extension", () => {
 })
 
 describe("observabilityBucket extensions", () => {
-  const server = Hapi.server()
-  server.route([processMessageRoute])
+  const successResponseBody = JSON.stringify({
+    resourceType: "OperationOutcome",
+    issue: [
+      {
+        severity: "information",
+        code: "informational",
+        details: {
+          text: "success"
+        }
+      }
+    ]
+  })
 
-  beforeAll(async () => {
+  const getRoute = (path: string, response: Hapi.ResponseValue): Hapi.ServerRoute => {
+    return {
+      method: "POST",
+      path: path,
+      handler: (_, responseToolkit) => {
+        return responseToolkit.response(response).type(ContentTypes.FHIR)
+      }
+    }
+  }
+
+  process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
+  process.env.OBSERVABILITY_ROUTES = "process-message,claim"
+
+  let server: Hapi.Server
+
+  beforeEach(async () => {
+    server = Hapi.server()
     await HapiPino.register(server, {
       instance: logger
     })
-
-    process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
-    process.env.OBSERVABILITY_ROUTES = "process-message,claim"
-
     server.ext([
       {type: "onPreHandler", method: writeRequestToObservabilityBucket},
       {type: "onPostResponse", method: writeResponseToObservabilityBucket}
     ])
-  })
 
-  beforeEach(() => {
-    spyOnPinoOutput.mockReset()
     newIsEpsHostedContainer.mockImplementation(() => true)
+
+    spyOnPinoOutput.mockReset()
     s3Mock.on(PutObjectCommand).resolves({
       ETag: "e-tag",
       VersionId: "version-id"
@@ -315,6 +315,8 @@ describe("observabilityBucket extensions", () => {
   })
 
   test("writes request and response to s3", async () => {
+    server.route(getRoute("/FHIR/R4/$process-message", successResponseBody))
+
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
 
@@ -328,7 +330,7 @@ describe("observabilityBucket extensions", () => {
       }
     )
 
-    expect(response.payload).toBe(processMessageResponseBody)
+    expect(response.payload).toBe(successResponseBody)
 
     const calls = s3Mock.commandCalls(PutObjectCommand)
     expect(calls).toHaveLength(2)
@@ -336,16 +338,36 @@ describe("observabilityBucket extensions", () => {
     // Request
     expect(calls[0].args[0].input).toMatchObject({
       Bucket: "bucket-name",
-      Key: "request-id",
+      Key: "request-id/request",
       Body: "{\"body\":{\"data\":[\"goes\",\"here\"]}}"
     })
 
     // Response
     expect(calls[1].args[0].input).toMatchObject({
       Bucket: "bucket-name",
-      Key: "request-id",
-      Body: processMessageResponseBody
+      Key: "request-id/response",
+      Body: successResponseBody
     })
+  })
+
+  test("handler still works if no request or response payload", async () => {
+    server.route(getRoute("/FHIR/R4/$process-message", ""))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: "/FHIR/R4/$process-message",
+        headers: requestHeaders,
+        method: "POST"
+      }
+    )
+
+    expect(response.statusCode).toBe(204)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
   })
 })
 

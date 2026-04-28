@@ -147,19 +147,28 @@ const toBeObserved = (request: Hapi.Request) => {
   ].every(c => c)
 }
 
+const writeToObservabilityBucket = async (
+  data: string, key: string
+) => {
+  const client = new S3Client({"region": "eu-west-2"})
+  const command = new PutObjectCommand({
+    "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
+    "Key": key,
+    "Body": data
+  })
+
+  await client.send(command)
+}
+
 export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
   request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
 ) => {
-  if (toBeObserved(request)) {
+  if (toBeObserved(request) && request.payload) {
     try {
-      const client = new S3Client({"region": "eu-west-2"})
-      const command = new PutObjectCommand({
-        "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
-        "Key": request.headers[RequestHeaders.REQUEST_ID],
-        "Body": JSON.stringify(request.payload)
-      })
-
-      await client.send(command)
+      await writeToObservabilityBucket(
+        JSON.stringify(request.payload),
+        `${request.headers[RequestHeaders.REQUEST_ID]}/request`
+      )
     } catch(err) {
       request.logger.warn({err}, "Error writing request to observability bucket")
     }
@@ -180,14 +189,13 @@ export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = async (
         responseData = response.source?.toString() ?? ""
       }
 
-      const client = new S3Client({"region": "eu-west-2"})
-      const command = new PutObjectCommand({
-        "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
-        "Key": request.headers[RequestHeaders.REQUEST_ID],
-        "Body": responseData
-      })
+      if (responseData) {
+        await writeToObservabilityBucket(
+          responseData,
+          `${request.headers[RequestHeaders.REQUEST_ID]}/response`
+        )
+      }
 
-      await client.send(command)
     } catch(err) {
       request.logger.warn({err}, "Error writing response to observability bucket")
     }
