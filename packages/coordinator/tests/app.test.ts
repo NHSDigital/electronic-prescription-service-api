@@ -264,6 +264,7 @@ describe("switchContentTypeForSmokeTest extension", () => {
 
 describe("observabilityBucket extensions", () => {
   const payload = {"body": {"data": ["goes", "here"]}}
+  const defaultPath = "/FHIR/R4/$process-message"
 
   const successResponseBody = JSON.stringify({
     resourceType: "OperationOutcome",
@@ -319,14 +320,14 @@ describe("observabilityBucket extensions", () => {
   })
 
   test("writes request and response to s3", async () => {
-    server.route(getRoute("/FHIR/R4/$process-message", successResponseBody))
+    server.route(getRoute(defaultPath, successResponseBody))
 
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
 
     const response = await server.inject(
       {
-        url: "/FHIR/R4/$process-message",
+        url: defaultPath,
         headers: requestHeaders,
         payload: payload,
         method: "POST"
@@ -354,14 +355,14 @@ describe("observabilityBucket extensions", () => {
   })
 
   test("handler still works if no request or response payload", async () => {
-    server.route(getRoute("/FHIR/R4/$process-message", ""))
+    server.route(getRoute(defaultPath, ""))
 
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
 
     const response = await server.inject(
       {
-        url: "/FHIR/R4/$process-message",
+        url: defaultPath,
         headers: requestHeaders,
         method: "POST"
       }
@@ -374,7 +375,8 @@ describe("observabilityBucket extensions", () => {
   })
 
   test("error writing to s3 logs a warning and handler succeeds", async () => {
-    server.route(getRoute("/FHIR/R4/$process-message", successResponseBody))
+    const route = defaultPath
+    server.route(getRoute(route, successResponseBody))
 
     const err = new Error("S3 error")
     s3Mock.on(PutObjectCommand).rejects(err)
@@ -384,7 +386,7 @@ describe("observabilityBucket extensions", () => {
 
     const response = await server.inject(
       {
-        url: "/FHIR/R4/$process-message",
+        url: route,
         headers: requestHeaders,
         payload: payload,
         method: "POST"
@@ -397,6 +399,28 @@ describe("observabilityBucket extensions", () => {
       expect.objectContaining({err}),
       "Error writing request to observability bucket"
     )
+  })
+
+  test("does not write to s3 if route is not in environment variable", async () => {
+    const path = "/FHIR/R4/$other"
+    server.route(getRoute(path, successResponseBody))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: path,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
   })
 })
 
