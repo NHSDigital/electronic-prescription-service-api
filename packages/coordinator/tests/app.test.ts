@@ -289,9 +289,6 @@ describe("observabilityBucket extensions", () => {
     }
   }
 
-  process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
-  process.env.OBSERVABILITY_ROUTES = "process-message,claim"
-
   let server: Hapi.Server
   let loggerSpy: ReturnType<typeof vi.spyOn>
 
@@ -307,6 +304,8 @@ describe("observabilityBucket extensions", () => {
     ])
 
     newIsEpsHostedContainer.mockImplementation(() => true)
+    process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
+    process.env.OBSERVABILITY_ROUTES = "process-message,claim"
 
     spyOnPinoOutput.mockReset()
     s3Mock.on(PutObjectCommand).resolves({
@@ -411,6 +410,29 @@ describe("observabilityBucket extensions", () => {
     const response = await server.inject(
       {
         url: path,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
+  })
+
+  test("does not write to s3 if routes environment variable is not set", async () => {
+    server.route(getRoute(defaultPath, successResponseBody))
+
+    delete process.env.OBSERVABILITY_ROUTES
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: defaultPath,
         headers: requestHeaders,
         payload: payload,
         method: "POST"
