@@ -11,7 +11,7 @@
     "author": "",
     "license": "ISC",
     "devDependencies": {
-        "@types/fhir": "^0.0.41",
+        "@types/fhir": "^3.0.2",
         "@types/lodash": "^4.17.23",
         "@types/selenium-webdriver": "^4.35.4",
         "chromedriver": "^147.0.4",
