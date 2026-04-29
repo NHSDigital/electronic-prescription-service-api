@@ -2,6 +2,9 @@
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
+    "types": [
+      "node"
+    ],
     "target": "es6",
     "lib": [
       "es2019"
@@ -29,7 +32,6 @@
     }
   ],
   "ts-node": {
-    // Do not forget to `npm i -D tsconfig-paths`
     "require": [
       "tsconfig-paths/register"
     ]

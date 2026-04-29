@@ -36,6 +36,33 @@ export const VALID_APIGEE_ENVIRONMENTS = [
   "ref"
 ]
 
+function getRequiredEnvVar(name: string): string {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
+  return value
+}
+
+function getRequiredAttribute(element: Element, attributeName: string): string {
+  const value = element.getAttribute(attributeName)
+  if (!value) {
+    throw new Error(`Missing required attribute '${attributeName}'`)
+  }
+
+  return value
+}
+
+function getRequiredSearchParam(searchParams: URLSearchParams, name: string): string {
+  const value = searchParams.get(name)
+  if (!value) {
+    throw new Error(`Missing required search parameter: ${name}`)
+  }
+
+  return value
+}
+
 type EnvironmentSecrets = {
   clientId: string
   clientSecret: string
@@ -68,7 +95,7 @@ export class AuthClient {
   }
 
   getEnvironment(): string {
-    const env = process.env.APIGEE_ENVIRONMENT
+    const env = getRequiredEnvVar("APIGEE_ENVIRONMENT")
 
     const isLocalEnv = process.env.NODE_ENV !== "production"
     const isValidEnv = VALID_APIGEE_ENVIRONMENTS.includes(env)
@@ -78,8 +105,8 @@ export class AuthClient {
   }
 
   private getApiCredentials = (): EnvironmentSecrets => {
-    const clientId = process.env["API_CLIENT_ID"]
-    const clientSecret = process.env["API_CLIENT_SECRET"]
+    const clientId = getRequiredEnvVar("API_CLIENT_ID")
+    const clientSecret = getRequiredEnvVar("API_CLIENT_SECRET")
 
     return {
       clientId,
@@ -121,6 +148,7 @@ export const getAuthForm = async (
 type FormInputs = {
   username?: string
   login?: string
+  [key: string]: string | undefined
 }
 
 type FormModel = {
@@ -132,15 +160,18 @@ type FormModel = {
 export const parseAuthForm = (htmlForm: string): FormModel => {
   const {document} = (new JSDOM(htmlForm)).window
   const form = document.getElementById("kc-form-login")
+  if (!form) {
+    throw new Error("Could not find login form")
+  }
 
-  const formAction = form.getAttribute("action")
-  const formMethod = form.getAttribute("method")
+  const formAction = getRequiredAttribute(form, "action")
+  const formMethod = getRequiredAttribute(form, "method")
   const formInputs = form.getElementsByTagName("input")
 
   const inputs: FormInputs = {}
   for (const item of formInputs) {
-    const name: string = item.getAttribute("name")
-    const value: string = item.getAttribute("value")
+    const name = getRequiredAttribute(item, "name")
+    const value = getRequiredAttribute(item, "value")
     inputs[name] = value
   }
 
@@ -199,8 +230,8 @@ const parseAuthCallbackResponse = (authResponse: AxiosResponse): AuthCallbackRes
 
   const searchParams = new URLSearchParams(responsePath.substring(2)) // skip the leading `/?`
   return {
-    code: searchParams.get("code"),
-    state: searchParams.get("state")
+    code: getRequiredSearchParam(searchParams, "code"),
+    state: getRequiredSearchParam(searchParams, "state")
   }
 }
 
