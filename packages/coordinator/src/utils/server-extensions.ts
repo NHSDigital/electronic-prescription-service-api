@@ -148,14 +148,16 @@ const toBeObserved = (request: Hapi.Request) => {
   ].every(c => c)
 }
 
-const writeToObservabilityBucket = async (
-  data: string, key: string
-) => {
+const writeToObservabilityBucket = async (request: Hapi.Request, prefix: string, body: string) => {
+  const path = request.path.toLowerCase().split("/").reverse()[0]
+  const requestId = request.headers[RequestHeaders.REQUEST_ID]
+  const key = `${path}/${requestId}/${prefix}`
+
   const client = new S3Client({"region": "eu-west-2"})
   const command = new PutObjectCommand({
     "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
     "Key": key,
-    "Body": data
+    "Body": body
   })
 
   await client.send(command)
@@ -166,10 +168,8 @@ export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
 ) => {
   if (toBeObserved(request) && request.payload) {
     try {
-      await writeToObservabilityBucket(
-        JSON.stringify(getPayload(request)),
-        `${request.headers[RequestHeaders.REQUEST_ID]}/request`
-      )
+      const body = JSON.stringify(getPayload(request))
+      await writeToObservabilityBucket(request, "request", body)
     } catch(err) {
       request.logger.warn({err}, "Error writing request to observability bucket")
     }
@@ -182,21 +182,20 @@ export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = async (
 ) => {
   if (toBeObserved(request)) {
     try {
-      let responseData: string
+      let body: string
       const response = request.response
       if (response instanceof Boom) {
-        responseData = response.output.payload.message
+        body = response.output.payload.message
       } else {
-        responseData = response.source?.toString() ?? ""
+        body = response.source?.toString() ?? ""
       }
 
-      if (responseData) {
-        await writeToObservabilityBucket(
-          responseData,
-          `${request.headers[RequestHeaders.REQUEST_ID]}/response`
-        )
+      const requestId = request.headers[RequestHeaders.REQUEST_ID]
+      if (body) {
+        await writeToObservabilityBucket(request, "response", body)
+      } else {
+        request.logger.info({"requestId": requestId}, "No response body to write to observability bucket")
       }
-
     } catch(err) {
       request.logger.warn({err}, "Error writing response to observability bucket")
     }

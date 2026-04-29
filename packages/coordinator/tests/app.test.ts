@@ -342,14 +342,14 @@ describe("observabilityBucket extensions", () => {
     // Request
     expect(calls[0].args[0].input).toMatchObject({
       Bucket: "bucket-name",
-      Key: "request-id/request",
+      Key: "$process-message/request-id/request",
       Body: "{\"body\":{\"data\":[\"goes\",\"here\"]}}"
     })
 
     // Response
     expect(calls[1].args[0].input).toMatchObject({
       Bucket: "bucket-name",
-      Key: "request-id/response",
+      Key: "$process-message/request-id/response",
       Body: successResponseBody
     })
   })
