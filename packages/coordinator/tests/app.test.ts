@@ -468,6 +468,29 @@ describe("observabilityBucket extensions", () => {
     const calls = s3Mock.commandCalls(PutObjectCommand)
     expect(calls).toHaveLength(0)
   })
+
+  test("does not write to s3 if not eps hosted container", async () => {
+    newIsEpsHostedContainer.mockImplementation(() => false)
+
+    server.route(getRoute(defaultPath, successResponseBody))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: defaultPath,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
+  })
 })
 
 describe("logs payload in correct situations", () => {
