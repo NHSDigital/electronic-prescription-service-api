@@ -8,7 +8,7 @@ permissions: {}
 
 jobs:
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     with:
       verify_published_from_main_image: true
     permissions:
@@ -17,7 +17,7 @@ jobs:
       packages: read
 
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@8399c1f015c1304e40771cbd8ccc24c7ed48fdbc
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     needs: [get_config_values]
     permissions:
       contents: read
@@ -45,7 +45,7 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_config_values]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     permissions:
       id-token: write
       contents: write
@@ -83,6 +83,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
@@ -138,6 +139,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandbox
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: true
@@ -195,6 +197,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: ref
       APIGEE_ENVIRONMENT: ref
       ENABLE_MUTUAL_TLS: true
@@ -248,6 +251,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: qa
       APIGEE_ENVIRONMENT: internal-qa
       ENABLE_MUTUAL_TLS: true
@@ -297,6 +301,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: int
       APIGEE_ENVIRONMENT: int
       ENABLE_MUTUAL_TLS: true
@@ -352,6 +357,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandox
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-sandbox
       AWS_ENVIRONMENT: int
       APIGEE_ENVIRONMENT: sandbox
       ENABLE_MUTUAL_TLS: true
@@ -398,6 +404,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: prod
       APIGEE_ENVIRONMENT: prod
       ENABLE_MUTUAL_TLS: true

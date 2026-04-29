@@ -7,7 +7,7 @@ on:
 permissions: {}
 jobs:
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     with:
       verify_published_from_main_image: false
     permissions:
@@ -15,7 +15,7 @@ jobs:
       contents: read
       packages: read
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@8399c1f015c1304e40771cbd8ccc24c7ed48fdbc
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     needs: [get_config_values]
     permissions:
       contents: read
@@ -29,7 +29,7 @@ jobs:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   pr_title_format_check:
     if: github.event_name != 'merge_group'
-    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@e798d5aee897de6f7dc387dd5623fcd9ba4c8929
+    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     permissions:
       pull-requests: write
   get_issue_number:
@@ -117,6 +117,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: false
@@ -165,6 +166,7 @@ jobs:
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: false

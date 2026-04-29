@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Sync shared instructions
-        uses: NHSDigital/eps-copilot-instructions@8b4d7f546fe9825a149cb8cc8cfdb31df58c3730
+        uses: NHSDigital/eps-copilot-instructions@e6e445a93671466398e3f79d20cf1f64885150d8
         with:
           copilot_instructions_ref: main
           calling_repo_base_branch: master
