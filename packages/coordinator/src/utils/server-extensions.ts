@@ -168,7 +168,8 @@ export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
 ) => {
   if (toBeObserved(request) && request.payload) {
     try {
-      const body = JSON.stringify(getPayload(request))
+      const payload = getPayload(request)
+      const body = (typeof payload === "string") ? payload : JSON.stringify(payload)
       await writeToObservabilityBucket(request, "request", body)
     } catch(err) {
       request.logger.warn({err}, "Error writing request to observability bucket")
