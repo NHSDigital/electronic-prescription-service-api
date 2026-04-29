@@ -175,8 +175,12 @@ export const parseAuthForm = (htmlForm: string): FormModel => {
 
   const inputs: FormInputs = {}
   for (const item of formInputs) {
-    const name = getRequiredAttribute(item, "name")
-    const value = getRequiredAttribute(item, "value")
+    const name = item.getAttribute("name")
+    if (!name) {
+      continue
+    }
+
+    const value = item.getAttribute("value") ?? ""
     inputs[name] = value
   }
 
