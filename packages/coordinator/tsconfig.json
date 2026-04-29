@@ -3,7 +3,6 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "ignoreDeprecations": "6.0",
     "strictNullChecks": false,
     "useUnknownInCatchVariables": false,
     "strictPropertyInitialization": false,
@@ -22,12 +21,12 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     // "strict": true,
+    "rootDir": "..",
     "outDir": "dist",
-    "baseUrl": ".",
     "paths": {
       "*": [
-        "node_modules/*",
-        "tests/*"
+        "./node_modules/*",
+        "./tests/*"
       ],
       "@models": [
         "../models"

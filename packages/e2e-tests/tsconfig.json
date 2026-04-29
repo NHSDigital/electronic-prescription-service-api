@@ -7,7 +7,6 @@
       "es2019"
     ],
     "moduleResolution": "bundler",
-    "baseUrl": ".",
     "paths": {
       "@models": [
         "../models"

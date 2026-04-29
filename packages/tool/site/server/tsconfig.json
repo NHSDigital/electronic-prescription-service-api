@@ -12,10 +12,9 @@
     "sourceMap": true,
     "strict": true,
     "outDir": "dist",
-    "baseUrl": ".",
     "paths": {
       "*": [
-        "tests/*"
+        "./tests/*"
       ]
     }
   },

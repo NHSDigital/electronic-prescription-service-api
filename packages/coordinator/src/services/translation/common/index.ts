@@ -42,19 +42,17 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
-    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
+    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${additionalContext ? " where " : ""
+    }${additionalContext ? additionalContext : ""
     }.`, fhirPath)
   }
   const value = first.value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(`Too many values submitted. Expected 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooManyValuesError(
+      `Too many values submitted. Expected 1 element${additionalContext ? " where " : ""
+      }${additionalContext ? additionalContext : ""
+      }.`, fhirPath
+    )
   }
   return value
 }
@@ -66,11 +64,11 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(`Too many values submitted. Expected at most 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooManyValuesError(
+      `Too many values submitted. Expected at most 1 element${additionalContext ? " where " : ""
+      }${additionalContext ? additionalContext : ""
+      }.`, fhirPath
+    )
   }
   return value
 }
