@@ -290,11 +290,13 @@ describe("observabilityBucket extensions", () => {
   }
 
   let server: Hapi.Server
-  let loggerSpy: ReturnType<typeof vi.spyOn>
+  let loggerInfo: ReturnType<typeof vi.spyOn>
+  let loggerWarn: ReturnType<typeof vi.spyOn>
 
   beforeEach(async () => {
     server = Hapi.server()
-    loggerSpy = vi.spyOn(logger, "warn")
+    loggerWarn = vi.spyOn(logger, "warn")
+    loggerInfo = vi.spyOn(logger, "info")
     await HapiPino.register(server, {
       instance: logger
     })
@@ -395,9 +397,33 @@ describe("observabilityBucket extensions", () => {
 
     expect(response.payload).toBe(successResponseBody)
 
-    expect(loggerSpy).toHaveBeenCalledWith(
+    expect(loggerWarn).toHaveBeenCalledWith(
       expect.objectContaining({err}),
       "Error writing request to observability bucket"
+    )
+  })
+
+  test("logs info when no response body", async () => {
+    const route = defaultPath
+    server.route(getRoute(route, ""))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: route,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe("")
+
+    expect(loggerInfo).toHaveBeenCalledWith(
+      expect.objectContaining({requestId: "request-id"}),
+      "No response body to write to observability bucket"
     )
   })
 
