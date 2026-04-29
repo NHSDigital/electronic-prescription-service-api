@@ -324,11 +324,12 @@ describe("observabilityBucket extensions", () => {
     const requestHeaders: Hapi.Utils.Dictionary<string> = {}
     requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
 
+    const bufferPayload = Buffer.from(JSON.stringify(payload))
     const response = await server.inject(
       {
         url: defaultPath,
         headers: requestHeaders,
-        payload: payload,
+        payload: bufferPayload,
         method: "POST"
       }
     )
