@@ -15,7 +15,7 @@ import {getAuthToken} from "./oauth"
 let oAuth2Token: string
 
 type RequestFilterRequest = {
-  headers: Record<string, string | string[] | undefined>
+  headers: Record<string, string | Array<string> | undefined>
 }
 
 type RequestFilterNext = () => void

@@ -45,7 +45,12 @@ function getRequiredEnvVar(name: string): string {
   return value
 }
 
-function getRequiredAttribute(element: Element, attributeName: string): string {
+// Keep this structural type local so ESLint does not require DOM globals in this Node-targeted package.
+type AttributeReader = {
+  getAttribute: (attributeName: string) => string | null
+}
+
+function getRequiredAttribute(element: AttributeReader, attributeName: string): string {
   const value = element.getAttribute(attributeName)
   if (!value) {
     throw new Error(`Missing required attribute '${attributeName}'`)
