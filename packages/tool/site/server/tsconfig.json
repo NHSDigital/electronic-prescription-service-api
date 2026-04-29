@@ -8,7 +8,7 @@
       "es2019"
     ],
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "strict": true,
     "outDir": "dist",

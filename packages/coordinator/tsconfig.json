@@ -3,6 +3,11 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "ignoreDeprecations": "6.0",
+    "strictNullChecks": false,
+    "useUnknownInCatchVariables": false,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
     "types": [
       "node",
       "vitest/globals"
@@ -13,7 +18,7 @@
       "DOM"
     ],
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": true,
     // "strict": true,

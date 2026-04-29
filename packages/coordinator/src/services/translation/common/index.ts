@@ -325,9 +325,12 @@ function getResourceParameterByName<R extends fhir.Resource>(
 }
 
 const isPractitionerRoleParameter = (
-  resourceParameter: fhir.ResourceParameter<fhir.Resource>
-): resourceParameter is fhir.ResourceParameter<fhir.PractitionerRole> => {
-  return isPractitionerRole(resourceParameter.resource)
+  body: unknown
+): body is fhir.ResourceParameter<fhir.PractitionerRole> => {
+  return typeof body === "object"
+    && body !== null
+    && isResourceParameter(body as fhir.Parameter)
+    && isPractitionerRole((body as fhir.ResourceParameter<fhir.Resource>).resource)
 }
 
 export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.PractitionerRole> {
@@ -339,9 +342,12 @@ export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourcePar
 }
 
 const isOrganizationParameter = (
-  resourceParameter: fhir.ResourceParameter<fhir.Resource>
-): resourceParameter is fhir.ResourceParameter<fhir.Organization> => {
-  return isOrganization(resourceParameter.resource)
+  body: unknown
+): body is fhir.ResourceParameter<fhir.Organization> => {
+  return typeof body === "object"
+    && body !== null
+    && isResourceParameter(body as fhir.Parameter)
+    && isOrganization((body as fhir.ResourceParameter<fhir.Resource>).resource)
 }
 
 export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.Organization> {
@@ -353,9 +359,12 @@ export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourcePar
 }
 
 const isBundleParameter = (
-  resourceParameter: fhir.ResourceParameter<fhir.Resource>
-): resourceParameter is fhir.ResourceParameter<fhir.Bundle> => {
-  return isBundle(resourceParameter.resource)
+  body: unknown
+): body is fhir.ResourceParameter<fhir.Bundle> => {
+  return typeof body === "object"
+    && body !== null
+    && isResourceParameter(body as fhir.Parameter)
+    && isBundle((body as fhir.ResourceParameter<fhir.Resource>).resource)
 }
 
 export function getBundleParameter(parameters: fhir.Parameters, name: string): fhir.ResourceParameter<fhir.Bundle> {
