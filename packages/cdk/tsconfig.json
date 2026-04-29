@@ -19,7 +19,8 @@
     "noEmit": true,
     "strict": false,
     "lib": [
-      "es2020"
+      "es2020",
+      "DOM"
     ],
     "noImplicitAny": true,
     "strictNullChecks": true,
