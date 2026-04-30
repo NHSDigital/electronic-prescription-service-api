@@ -13,7 +13,6 @@ __pycache__/
 .envrc
 envrc.ps1
 .idea
-.vscode
 ./sign/
 *.key
 packages/coordinator/tests/debug/__snapshots__
@@ -42,9 +41,13 @@ _site/
 vendor
 .cfn_guard_out/
 .trivy_out/
+.coverage
+.pytest_cache
+.dependencies
 
 # Fhir Schema Generation
 packages/fhir-schema-generation/.output
 packages/fhir-schema-generation/**/*.d.ts
 packages/fhir-schema-generation/**/*.js
 !packages/fhir-schema-generation/**/*.config.js
+.sbom/

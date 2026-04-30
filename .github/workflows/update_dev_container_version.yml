@@ -4,6 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '0 6 * * 1'
+
 permissions: {}
 
 jobs:
@@ -16,7 +17,7 @@ jobs:
 
     steps:
       - name: Update devcontainer version
-        uses: NHSDigital/eps-update-devcontainer@dc3a8c5f11e7226ee4f5f2bb35bd0d1265092306
+        uses: NHSDigital/eps-update-devcontainer@83f4b56f1942635f2c05b7fe569142459b8c3882
         with:
           calling_repo_base_branch: master
           CREATE_PULL_REQUEST_APP_ID: ${{ secrets.CREATE_PULL_REQUEST_APP_ID }}

@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v6.0.0
     hooks:
       - id: check-merge-conflict
         name: Check for merge conflict strings
@@ -18,6 +18,14 @@ repos:
 
   - repo: local
     hooks:
+      - id: grype-scan-local
+        name: Grype scan local changes
+        entry: make
+        args: ["grype-scan-local"]
+        language: system
+        pass_filenames: false
+        always_run: true
+
       - id: check-commit-signing
         name: Check commit signing
         description: Ensures that commits are GPG signed
@@ -82,6 +90,14 @@ repos:
         files: ^packages\/tool\/site\/server
         types_or: [ts, tsx, javascript, jsx, json]
         pass_filenames: false
+
+      - id: lint-python
+        name: Lint Python code
+        entry: make
+        language: system
+        args: ["lint-python"]
+        files: ^(scripts|packages)
+        types_or: [python]
 
       - id: oas-build-checks
         name: Build OAS
@@ -150,15 +166,14 @@ repos:
         types_or: [yaml]
         pass_filenames: false
 
-  - repo: local
-    hooks:
-      - id: git-secrets
-        name: Git Secrets
-        description: git-secrets scans commits, commit messages, and --no-ff merges to prevent adding secrets into your git repositories.
+      - id: gitleaks
+        name: Git Leaks
+        description: gitleaks scans commits, commit messages, and --no-ff merges to prevent adding secrets into your git repositories.
         entry: bash
         args:
           - -c
-          - 'git-secrets --pre_commit_hook'
+          - "gitleaks git --pre-commit --redact --staged --verbose"
         language: system
+
 fail_fast: true
 default_stages: [pre-commit]

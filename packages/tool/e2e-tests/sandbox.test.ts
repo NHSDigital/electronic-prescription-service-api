@@ -11,7 +11,7 @@ import {
   beforeEach,
   expect,
   afterEach
-} from "@jest/globals"
+} from "vitest"
 
 const testResultsDirectory = "test_results"
 
@@ -39,7 +39,7 @@ beforeAll(async () => {
   console.log(`Running test against ${EPSAT_HOME_URL}`)
 })
 
-beforeEach(async() => {
+beforeEach(async () => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
   Object.defineProperty(global, "hasTestFailures", {

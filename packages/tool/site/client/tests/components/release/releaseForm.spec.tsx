@@ -1,7 +1,6 @@
 import {render} from "@testing-library/react"
 import {screen, waitFor} from "@testing-library/dom"
 import * as React from "react"
-import {expect} from "@jest/globals"
 import ReleaseForm from "../../../src/components/release/releaseForm"
 import userEvent from "@testing-library/user-event"
 import {MemoryRouter} from "react-router-dom"
@@ -11,7 +10,7 @@ const prescriptionId = "7A9089-A83008-56A03J"
 test("Fields default to current values for nominated release", async () => {
   const {container} = render(
     <MemoryRouter>
-      <ReleaseForm onSubmit={jest.fn}/>
+      <ReleaseForm onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -41,7 +40,7 @@ test("Fields default to current values for nominated release", async () => {
 test("Fields default to current values for patient release", async () => {
   const {container} = render(
     <MemoryRouter>
-      <ReleaseForm prescriptionId={prescriptionId} onSubmit={jest.fn}/>
+      <ReleaseForm prescriptionId={prescriptionId} onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -71,7 +70,7 @@ test("Fields default to current values for patient release", async () => {
 test("Prescription Id Field is required when releasing by prescription Id", async () => {
   const {container} = render(
     <MemoryRouter>
-      <ReleaseForm onSubmit={jest.fn}/>
+      <ReleaseForm onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -89,7 +88,7 @@ test("Prescription Id Field is required when releasing by prescription Id", asyn
 test("Fhir Field is required when releasing a custom fhir release message", async () => {
   const {container} = render(
     <MemoryRouter>
-      <ReleaseForm onSubmit={jest.fn}/>
+      <ReleaseForm onSubmit={vi.fn} />
     </MemoryRouter>
   )
 
@@ -107,7 +106,7 @@ test("Fhir Field is required when releasing a custom fhir release message", asyn
 test("Pharmacy to release to is always required", async () => {
   const {container} = render(
     <MemoryRouter>
-      <ReleaseForm onSubmit={jest.fn}/>
+      <ReleaseForm onSubmit={vi.fn} />
     </MemoryRouter>
   )
 

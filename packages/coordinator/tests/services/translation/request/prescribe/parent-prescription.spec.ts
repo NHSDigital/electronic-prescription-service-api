@@ -7,8 +7,7 @@ import {
   getMedicationRequests,
   getProvenances
 } from "../../../../../src/services/translation/common/getResourcesOfType"
-import requireActual = jest.requireActual
-import {MomentFormatSpecification, MomentInput} from "moment"
+import moment from "moment"
 import {onlyElement, toArray} from "../../../../../src/services/translation/common"
 import {convertIsoDateTimeStringToHl7V3DateTime} from "../../../../../src/services/translation/common/dateTime"
 import {hl7V3, fhir} from "@models"
@@ -16,11 +15,15 @@ import pino from "pino"
 import {Interval, NumericValue, PrescriptionPertinentInformation2} from "../../../../../../models/hl7-v3"
 const logger = pino()
 
-const actualMoment = requireActual("moment")
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
-}))
+const realMomentNow = moment.now
+
+beforeAll(() => {
+  moment.now = () => new Date("2020-12-18T12:34:34Z").valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
 
 describe("convertParentPrescription", () => {
   const cases = TestResources.specification.map(example => [
@@ -64,13 +67,13 @@ describe("effectiveTime", () => {
 
 describe("HL7V3 Parent prescription ERD", () => {
   const parentPrescription = getExampleRepeatDispensingParentPrescription()
-  const getPrescriptionRepeatNumber = () : Interval<NumericValue> =>
+  const getPrescriptionRepeatNumber = (): Interval<NumericValue> =>
     parentPrescription.pertinentInformation1.pertinentPrescription.repeatNumber
-  const getPrescriptionPertinentInformation2 = () :PrescriptionPertinentInformation2 =>
+  const getPrescriptionPertinentInformation2 = (): PrescriptionPertinentInformation2 =>
     parentPrescription
       .pertinentInformation1
       .pertinentPrescription.pertinentInformation2 as PrescriptionPertinentInformation2
-  const getLineItemRepeatNumber = () : Interval<NumericValue> =>
+  const getLineItemRepeatNumber = (): Interval<NumericValue> =>
     getPrescriptionPertinentInformation2().pertinentLineItem.repeatNumber
 
   const prescriptionRepeatNumberHigh = getPrescriptionRepeatNumber().high._attributes.value

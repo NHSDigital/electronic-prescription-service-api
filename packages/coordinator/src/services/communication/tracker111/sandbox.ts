@@ -89,7 +89,6 @@ const mockDetailedPrescriptions: Record<string, spine.DetailPrescription> = {
 
 export class SandboxTrackerClient implements TrackerClient {
   getPrescriptionsByPatientId(
-    // Omitting these parameters seems to be causing Jest to run out of memory (??? I don't understand how or why ???)
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     _patientId: string,
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,0 +1,82 @@
+ignore:
+  # vite - server.fs.deny bypass. Transitive dev dep via vitest; Vite dev server is not used (we use webpack)
+  - vulnerability: GHSA-v2wj-q39q-566r
+  # vite - arbitrary file read via WebSocket. Transitive dev dep via vitest; Vite dev server is not used (we use webpack)
+  - vulnerability: GHSA-p9ff-h696-f583
+  # picomatch
+  - vulnerability: GHSA-c2c7-rcm5-vvqj
+  # path-to-regexp
+  - vulnerability: GHSA-j3q9-mxjg-w52f
+  # basic-ftp - only used in e2e tests in dev environment
+  - vulnerability: GHSA-5rq4-664w-9x2c
+  # epsat - uses old version of lodash. This is OK
+  - vulnerability: GHSA-r5fr-rjxr-66jc
+  # epsat - basic-ftp dependency. Only used in e2e tests in dev environment
+  - vulnerability: GHSA-6v7q-wjvx-w8wg
+  # @hapi/content
+  - vulnerability: GHSA-jg4p-7fhp-p32p
+  # docker vulnerabilities - these are accepted
+  # libcrypto3 and libssl3
+  - vulnerability: CVE-2026-2673
+  # node vuln - fixed in 24.14.1
+  - vulnerability: CVE-2026-21710
+  # validator
+  # critical
+  - vulnerability: GHSA-599f-7c49-w659
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-jqh6-9574-5x22
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-p7m9-v2cm-2h7m
+  - vulnerability: GHSA-vr79-8m62-wh98
+
+    # high
+  - vulnerability: GHSA-gr3c-q7xf-47vh
+  - vulnerability: GHSA-gr3c-q7xf-47vh
+  - vulnerability: GHSA-gr3c-q7xf-47vh
+  - vulnerability: GHSA-w9j7-phm3-f97j
+  - vulnerability: GHSA-mgp5-rv84-w37q
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6cr6-ph3p-f5rf
+  - vulnerability: GHSA-6v53-7c9g-w56r
+  - vulnerability: GHSA-fgv2-4q4g-wc35
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-4cf2-cxp3-rjr7
+  - vulnerability: GHSA-crv7-7245-f45f
+  - vulnerability: GHSA-xqfj-vm6h-2x34
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-9654-pr4f-gh6m
+  - vulnerability: GHSA-7hfm-57qf-j43q
+  - vulnerability: GHSA-mc84-pj99-q6hh
+  - vulnerability: CVE-2025-21587
+  - vulnerability: CVE-2025-30749
+  - vulnerability: CVE-2025-50106
+  - vulnerability: CVE-2025-50059
+  - vulnerability: CVE-2025-53066
+  - vulnerability: CVE-2026-21945
+  - vulnerability: CVE-2026-21932
+  - vulnerability: GHSA-2m67-wjpj-xhg9
+  - vulnerability: GHSA-rv64-5gf8-9qq8
+  - vulnerability: GHSA-x4m4-345f-5h5g
+  - vulnerability: GHSA-563x-q5rq-57qp
+  - vulnerability: GHSA-95jq-rwvf-vjx4
+  # openjdk vulnerabilities - these are accepted
+  - vulnerability: CVE-2026-34282
+  - vulnerability: CVE-2026-22016

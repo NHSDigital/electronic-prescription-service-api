@@ -5,6 +5,8 @@ on:
   schedule:
     - cron: '0 6 * * 1'
 
+permissions: {}
+
 jobs:
   sync-copilot-instructions:
     runs-on: ubuntu-22.04
@@ -14,7 +16,7 @@ jobs:
 
     steps:
       - name: Sync shared instructions
-        uses: NHSDigital/eps-copilot-instructions@a7849a16aabd5c1edef13e29467a480fa08555f8
+        uses: NHSDigital/eps-copilot-instructions@e6e445a93671466398e3f79d20cf1f64885150d8
         with:
           copilot_instructions_ref: main
           calling_repo_base_branch: master

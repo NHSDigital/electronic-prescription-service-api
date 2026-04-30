@@ -4,8 +4,8 @@
   "description": "EPS API Tool Client",
   "main": "client/index-react.tsx",
   "scripts": {
-    "test": "jest --ci --reporters=default --reporters=jest-junit --coverage",
-    "update-snapshots": "jest --updateSnapshot",
+    "test": "vitest run --project client --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
+    "update-snapshots": "vitest run --project client -u",
     "build": "webpack --mode=production",
     "watch": "webpack --mode=development --watch --progress",
     "lint": "eslint  --max-warnings 0 --fix --config ../../../../eslint.config.mjs ."
@@ -35,10 +35,9 @@
     "babel-loader": "^10.1.1",
     "css-loader": "^7.1.4",
     "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-hooks": "^7.1.1",
     "formik": "^2.4.9",
     "identity-obj-proxy": "^3.0.0",
-    "jest-environment-jsdom": "^30.3.0",
     "moment": "^2.30.1",
     "nhsuk-frontend": "^10.4.2",
     "nhsuk-react-components": "^5.0.0",
@@ -46,7 +45,7 @@
     "react-dom": "^18.3.1",
     "style-loader": "^4.0.0",
     "styled-components": "^6.3.11",
-    "webpack": "^5.105.4",
+    "webpack": "^5.106.2",
     "webpack-cli": "^7.0.2",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.2/xlsx-0.20.2.tgz"
   },
@@ -56,16 +55,16 @@
   },
   "dependencies": {
     "@types/file-saver": "^2.0.7",
-    "axios": "^1.14.0",
+    "axios": "^1.15.0",
     "buffer": "^6.0.3",
     "classnames": "^2.5.1",
     "crypto-js": "^4.2.0",
     "fhir": "^4.12.0",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.0",
-    "react-cookie": "^7.2.2",
+    "react-cookie": "^8.1.0",
     "react-diff-viewer-continued": "^3.4.0",
-    "react-router-dom": "^6.30.3",
+    "react-router-dom": "^7.14.2",
     "react18-json-view": "^0.2.10"
   }
 }

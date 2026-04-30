@@ -12,8 +12,4 @@ export class TaskCase extends Case {
     super(requestFile, responseFile)
     this.operation = operation
   }
-
-  toJestCase(): [string, fhir.Task, fhir.Bundle, number] {
-    return [this.description, this.request, this.response, this.statusCode]
-  }
 }

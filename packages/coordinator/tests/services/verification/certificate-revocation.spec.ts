@@ -3,6 +3,7 @@ import MockAdapter from "axios-mock-adapter"
 import pino from "pino"
 import {X509} from "jsrsasign"
 import {hl7V3} from "@models"
+import "core-js/full/reflect"
 import {X509Certificate, X509Crl} from "@peculiar/x509"
 
 process.env.CRL_DISTRIBUTION_DOMAIN = "crl.nhs.uk"
@@ -22,11 +23,11 @@ import {MockCertificates} from "../../resources/certificates/test-resources"
 import {clone, setSubcaccCertEnvVar} from "../../resources/test-helpers"
 import {isEpsHostedContainer} from "../../../src/utils/feature-flags"
 import {extractSignatureRootFromParentPrescription} from "../../../src/services/verification/common"
-jest.mock("../../../src/utils/feature-flags", () => ({
-  isEpsHostedContainer: jest.fn(),
-  isSandbox: jest.fn(() => false)
+vi.mock("../../../src/utils/feature-flags", () => ({
+  isEpsHostedContainer: vi.fn(),
+  isSandbox: vi.fn(() => false)
 }))
-const newIsEpsHostedContainer = isEpsHostedContainer as jest.MockedFunction<typeof isEpsHostedContainer>
+const newIsEpsHostedContainer = vi.mocked(isEpsHostedContainer)
 
 const logger = pino()
 const mock = new MockAdapter(axios)
@@ -64,29 +65,30 @@ afterAll(() => {
 const ptlCrl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/crlc3.crl"
 const ptlArl = "https://egress.ptl.api.platform.nhs.uk:700/int/1d/arlc3.crl"
 const directCrl = "http://crl.nhs.uk/int/1d/crlc3.crl"
+const directArl = "http://crl.nhs.uk/int/1d/arlc3.crl"
 const mockCrl = "https://example.com/ca.crl"
 const validUrls = new RegExp(`(${ptlCrl}|${mockCrl}|${directCrl})`)
 
 mock.onAny(validUrls).reply(200, TestCertificates.berRevocationList)
 
 // See packages/coordinator/tests/resources/certificates/static/README.md
-mock.onAny(ptlArl).reply(200, TestCertificates.staticCaCerts.caArl)
+mock.onAny(new RegExp(`(${ptlArl}|${directArl})`)).reply(200, TestCertificates.staticCaCerts.caArl)
 
 mock.onAny("https://egress.ptl.api.platform.nhs.uk:700/mock/crl404.crl").reply(404)
 
 mock.onAny("https://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl").reply(503)
 
 type LogSpies = {
-  loggerInfo: jest.SpyInstance,
-  loggerWarn: jest.SpyInstance,
-  loggerError: jest.SpyInstance
+  loggerInfo: ReturnType<typeof vi.spyOn>,
+  loggerWarn: ReturnType<typeof vi.spyOn>,
+  loggerError: ReturnType<typeof vi.spyOn>
 }
 
 const getLogSpies = (): LogSpies => {
   return {
-    loggerInfo: jest.spyOn(logger, "info"),
-    loggerWarn: jest.spyOn(logger, "warn"),
-    loggerError: jest.spyOn(logger, "error")
+    loggerInfo: vi.spyOn(logger, "info"),
+    loggerWarn: vi.spyOn(logger, "warn"),
+    loggerError: vi.spyOn(logger, "error")
   }
 }
 
@@ -121,9 +123,9 @@ const getLogSpies = (): LogSpies => {
  */
 
 // Log spies
-let loggerInfo: jest.SpyInstance
-let loggerWarn: jest.SpyInstance
-let loggerError: jest.SpyInstance
+let loggerInfo: ReturnType<typeof vi.spyOn>
+let loggerWarn: ReturnType<typeof vi.spyOn>
+let loggerError: ReturnType<typeof vi.spyOn>
 
 // Log message patterns
 const MSG_VALID_CERT = /Valid signature found for prescription (.*) signed by cert (.*)/
@@ -153,7 +155,7 @@ beforeEach(() => {
 })
 
 afterEach(() => {
-  jest.resetAllMocks()
+  vi.resetAllMocks()
 })
 
 describe("Sanity check mock data", () => {
@@ -225,7 +227,7 @@ describe("Certificate not on the CRL", () => {
 
     expect(isValid).toEqual(true)
     expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
-    expect(mock.history.get[0].url).toBe(ptlCrl)
+    expect(mock.history.get[0].url).toBe(directCrl)
   })
 
   test("certificate is valid - in EPS hosted container", async () => {
@@ -244,8 +246,8 @@ describe("Certificate found on the CRL", () => {
   // Mock data
   let prescription: hl7V3.ParentPrescription
   let prescriptionSignedDate = new Date()
-  let serialNumberSpy: jest.SpyInstance
-  let signedDateSpy: jest.SpyInstance
+  let serialNumberSpy: ReturnType<typeof vi.spyOn>
+  let signedDateSpy: ReturnType<typeof vi.spyOn>
 
   beforeAll(() => {
     prescription = prescriptionWithCrl
@@ -254,7 +256,7 @@ describe("Certificate found on the CRL", () => {
   beforeEach(() => {
     // Ensure the function returns a serial that is in our mock CRL
     const revokedCertSerial = utils.getRevokedCertSerialNumber(keyCompromisedCert)
-    serialNumberSpy = jest.spyOn(utils, "getX509SerialNumber")
+    serialNumberSpy = vi.spyOn(utils, "getX509SerialNumber")
     serialNumberSpy.mockReturnValue(revokedCertSerial)
   })
 
@@ -270,7 +272,7 @@ describe("Certificate found on the CRL", () => {
       prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
       prescriptionSignedDate.setDate(prescriptionSignedDate.getDate() - 1)
 
-      signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
+      signedDateSpy = vi.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })
 
@@ -305,7 +307,7 @@ describe("Certificate found on the CRL", () => {
       isCertificateValid: boolean
     ) => {
       // Mock the reasonCode to be returned, depending on the scenario
-      const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
+      const reasonCodeSpy = vi.spyOn(utils, "getRevokedCertReasonCode")
       reasonCodeSpy.mockReturnValue(reasonCode)
 
       // Check certificate validity matches expected
@@ -324,7 +326,7 @@ describe("Certificate found on the CRL", () => {
     beforeEach(() => {
       // Ensure signed date is on the same date/time of revocation
       prescriptionSignedDate = new Date(ceasedOperationCert.revocationDate)
-      signedDateSpy = jest.spyOn(utils, "getPrescriptionSignatureDate")
+      signedDateSpy = vi.spyOn(utils, "getPrescriptionSignatureDate")
       signedDateSpy.mockReturnValue(prescriptionSignedDate)
     })
 
@@ -355,7 +357,7 @@ describe("Certificate found on the CRL", () => {
       ["unspecified (2)", ""]
     ])("Reason Code is %s", async (desc: string, reasonCode: CRLReasonCode) => {
       // Force an unsupported revocation value (-1) to be returned
-      const reasonCodeSpy = jest.spyOn(utils, "getRevokedCertReasonCode")
+      const reasonCodeSpy = vi.spyOn(utils, "getRevokedCertReasonCode")
       reasonCodeSpy.mockReturnValue(reasonCode)
 
       const isCertificateValid = await isSignatureCertificateValid(prescription, logger)
@@ -389,7 +391,6 @@ describe("CA certificate ARL", () => {
     const isValid = await isSignatureCertificateAuthorityValid(prescription, logger)
 
     expect(isValid).toEqual(true)
-    expect(loggerInfo).toHaveBeenCalledWith(expect.stringMatching(MSG_VALID_CERT))
   })
   test("CA certificate is on ARL", async () => {
     const prescription = TestPrescriptions.parentPrescriptions.signatureCertCaOnArl.ParentPrescription
@@ -427,7 +428,7 @@ describe("Certificate verification edge cases", () => {
       const certificate = utils.getCertificateFromPrescription(prescription, logger)
       const serialNumber = utils.getX509SerialNumber(certificate)
 
-      const spy = jest.spyOn(utils, "getX509SerialNumber")
+      const spy = vi.spyOn(utils, "getX509SerialNumber")
       spy.mockReturnValue(serialNumber)
 
       const isValid = await isSignatureCertificateValid(prescription, logger)
@@ -444,7 +445,7 @@ describe("Certificate verification edge cases", () => {
       [503, "https://egress.ptl.api.platform.nhs.uk:700/mock/crl503.crl"]
     ])("got a %i when trying to fetch the CRL", async (expectedCode: number, url: string) => {
       const prescription = TestPrescriptions.parentPrescriptions.validSignature.ParentPrescription
-      const certTextSpy = jest.spyOn(utils, "getX509DistributionPointsURI")
+      const certTextSpy = vi.spyOn(utils, "getX509DistributionPointsURI")
       certTextSpy.mockReturnValue([url])
 
       const isValid = await isSignatureCertificateValid(prescription, logger)

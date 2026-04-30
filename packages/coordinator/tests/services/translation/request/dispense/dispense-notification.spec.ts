@@ -4,8 +4,7 @@ import {
   getPrescriptionStatus
 } from "../../../../../src/services/translation/request/dispense/dispense-notification"
 import * as TestResources from "../../../../resources/test-resources"
-import requireActual = jest.requireActual
-import {MomentFormatSpecification, MomentInput} from "moment"
+import moment from "moment"
 import {hl7V3, fhir} from "@models"
 import {getExtensionForUrl, resolveReference, toArray} from "../../../../../src/services/translation/common"
 import {clone} from "../../../../resources/test-helpers"
@@ -20,16 +19,20 @@ import pino from "pino"
 import {OrganisationTypeCode} from "../../../../../src/services/translation/common/organizationTypeCode"
 
 const logger = pino()
-const mockCreateAuthorForDispenseNotification = jest.fn()
-const mockConvertOrganization = jest.fn()
-const mockCreateAgentPersonUsingPractitionerRoleAndOrganization = jest.fn()
+const mockCreateAuthorForDispenseNotification = vi.fn()
+const mockConvertOrganization = vi.fn()
+const mockCreateAgentPersonUsingPractitionerRoleAndOrganization = vi.fn()
 
-const actualMoment = requireActual("moment")
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
-}))
-jest.mock("../../../../../src/services/translation/request/agent-person", () => ({
+const realMomentNow = moment.now
+
+beforeAll(() => {
+  moment.now = () => new Date("2020-12-18T12:34:34Z").valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
+vi.mock("../../../../../src/services/translation/request/agent-person", () => ({
   createAuthorForDispenseNotification: (pr: fhir.PractitionerRole, org: fhir.Organization, at: string) =>
     mockCreateAuthorForDispenseNotification(pr, org, at),
   convertOrganization: (org: fhir.Organization, tel: fhir.ContactPoint) => mockConvertOrganization(org, tel),

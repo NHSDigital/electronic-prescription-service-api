@@ -3,7 +3,7 @@ description: Extension that contains information pertinent to repeat and eRD pre
 properties:
   url:
     type: string
-    description: URL of the extension definition. 
+    description: URL of the extension definition.
     enum: [https://fhir.nhs.uk/StructureDefinition/Extension-EPS-RepeatInformation]
   extension:
     type: array
@@ -11,20 +11,20 @@ properties:
     items:
       oneOf:
       - type: object
-        description: The total number of issues a given prescription is authorised for.
+        description: The total number of issues a given prescription is authorised for. This value will be decremented by 1. For example, if a prescription is valid for 6 issues, then the `numberOfRepeatsAllowed` value will be 5.
         properties:
-          url: 
+          url:
             type: string
             enum: [numberOfRepeatsAllowed]
           valueInteger:
             type: integer
-            example: 6
+            example: 5
       - type: object
-        description: The current, active issue of the prescription. 
+        description: The current, active issue of the prescription. This value will be decremented by 1. For example, if the current issue is the first issue, then the `numberOfRepeatsIssued` value will be 0.
         properties:
-          url: 
+          url:
             type: string
             enum: [numberOfRepeatsIssued]
           valueInteger:
             type: integer
-            example: 2
+            example: 0

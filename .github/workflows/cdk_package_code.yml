@@ -32,7 +32,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
 
       - name: make install
         run: |
@@ -41,27 +41,39 @@ jobs:
       - name: Build FHIR Facade Docker image
         id: build-fhir-facade-image
         run: |
-          docker build -t "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -f packages/coordinator/Dockerfile .
-          docker save "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" -o FHIR_facade_docker.img
+          docker build -t "fhir-facade-repo:${VERSION_NUMBER}" -f packages/coordinator/Dockerfile .
+          docker save "fhir-facade-repo:${VERSION_NUMBER}" -o FHIR_facade_docker.img
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
 
       - name: get latest validator release
         id: get_latest_validator_release
         run: |
           LATEST_VALIDATOR_VERSION=v1.0.348-alpha
-          echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_ENV"
+          echo "LATEST_VALIDATOR_VERSION=${LATEST_VALIDATOR_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Download Dockerfile, manifest.json and JAR file for Validator
         run: |
-          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VALIDATOR_VERSION }}/Dockerfile"
-          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VALIDATOR_VERSION }}/manifest.json"
-          curl -L -o fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${{ env.LATEST_VALIDATOR_VERSION }}/fhir-validator.jar"
+          curl -L -o Dockerfile "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/Dockerfile"
+          curl -L -o manifest.json "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/manifest.json"
+          curl -L -o fhir-validator.jar "https://github.com/NHSDigital/validation-service-fhir-r4/releases/download/${LATEST_VALIDATOR_VERSION}/fhir-validator.jar"
+        env:
+          LATEST_VALIDATOR_VERSION: ${{ steps.get_latest_validator_release.outputs.LATEST_VALIDATOR_VERSION }}
 
       - name: Build Validator Docker image
         id: build-validator-image
         run: |
-          docker build -t "validator-repo:${{ inputs.VERSION_NUMBER }}" -f Dockerfile .
+          docker build -t "validator-repo:${VERSION_NUMBER}" -f Dockerfile .
           docker images
-          docker save "validator-repo:${{ inputs.VERSION_NUMBER }}" -o validator_docker.img
+          docker save "validator-repo:${VERSION_NUMBER}" -o validator_docker.img
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+
+      - name: Build python lambda dependencies
+        run: |
+          poetry export --only create_prescription -o requirements_create_prescription
+          mkdir -p .dependencies/create_prescription/python
+          pip3 install -r requirements_create_prescription -t .dependencies/create_prescription/python
 
       - name: "package cdk"
         run: |
@@ -72,15 +84,16 @@ jobs:
             package.json \
             package-lock.json \
             Makefile \
-            cdk.json
+            cdk.json \
+            .dependencies
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: upload build artifact
         with:
           name: cdk_artifact
           path: artifact.tar
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: Upload docker images
         with:
           name: docker_artifact

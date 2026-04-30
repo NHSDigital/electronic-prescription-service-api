@@ -6,6 +6,9 @@ on:
       STACK_NAME:
         required: true
         type: string
+      STATEFUL_STACK_NAME:
+        required: true
+        type: string
       AWS_ENVIRONMENT:
         required: true
         type: string
@@ -136,6 +139,8 @@ on:
 env:
   AWS_MAX_ATTEMPTS: 20
 
+permissions: {}
+
 jobs:
   release_code_and_api:
     runs-on: ubuntu-22.04
@@ -158,7 +163,7 @@ jobs:
       - name: Checkout local github actions
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
           fetch-depth: 0
           sparse-checkout: |
             .github
@@ -199,29 +204,41 @@ jobs:
 
       - name: Retrieve AWS Account ID
         id: retrieve-deploy-account-id
-        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_ENV"
+        run: echo "ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)" >> "$GITHUB_OUTPUT"
 
       - name: Login to Amazon ECR
         id: login-ecr-push-image
         run: |
-          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin ${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com
+          aws ecr get-login-password --region eu-west-2 | docker login --username AWS --password-stdin "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com"
+        env:
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: Push FHIR Facade image to Amazon ECR
         run: |
-          docker tag "fhir-facade-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker tag "fhir-facade-repo:${VERSION_NUMBER}" "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${DOCKER_IMAGE_TAG}"
+          docker push "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/fhir-facade-repo:${DOCKER_IMAGE_TAG}"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: Push Validator image to Amazon ECR
         run: |
-          docker tag "validator-repo:${{ inputs.VERSION_NUMBER }}" "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
-          docker push "${{ env.ACCOUNT_ID }}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${{ inputs.DOCKER_IMAGE_TAG }}"
+          docker tag "validator-repo:${VERSION_NUMBER}" "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${DOCKER_IMAGE_TAG}"
+          docker push "${ACCOUNT_ID}.dkr.ecr.eu-west-2.amazonaws.com/validator-repo:${DOCKER_IMAGE_TAG}"
+        env:
+          VERSION_NUMBER: ${{ inputs.VERSION_NUMBER }}
+          DOCKER_IMAGE_TAG: ${{ inputs.DOCKER_IMAGE_TAG }}
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
 
       - name: fix cdk.json for deployment
         run: |
           ./.github/scripts/fix_cdk_json.sh
         env:
+          ACCOUNT_ID: ${{ steps.retrieve-deploy-account-id.outputs.ACCOUNT_ID }}
           TRUSTSTORE_FILE: ${{ inputs.TRUSTSTORE_FILE }}
           SERVICE_NAME: "${{ inputs.STACK_NAME }}"
+          STATEFUL_STACK_NAME: "${{ inputs.STATEFUL_STACK_NAME }}"
           VERSION_NUMBER: "${{ inputs.VERSION_NUMBER }}"
           LOG_RETENTION_IN_DAYS: "${{ inputs.LOG_RETENTION_DAYS }}"
           COMMIT_ID: "${{ inputs.COMMIT_ID }}"
@@ -249,12 +266,20 @@ jobs:
           FORWARD_CSOC_LOGS: ${{ inputs.FORWARD_CSOC_LOGS }}
           AWS_MAX_ATTEMPTS: 5
 
-      - name: Deploy code
+      - name: Deploy API code
         run: |
           cd .build
-          npx cdk deploy \
+          npx cdk deploy prescribe-dispense \
           --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
-          --all \
+          --require-approval=never \
+          --ci true
+        shell: bash
+
+      - name: Deploy Prescriptions code
+        run: |
+          cd .build
+          npx cdk deploy stateful-resources \
+          --app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts" \
           --require-approval=never \
           --ci true
         shell: bash
@@ -309,7 +334,7 @@ jobs:
           MTLS_KEY: ${{ inputs.MTLS_KEY }}
         run: ./.github/scripts/deploy_api.sh
 
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: Upload specs
         with:
           name: ${{ inputs.APIGEE_ENVIRONMENT }}-specs
@@ -323,6 +348,7 @@ jobs:
         with:
           ref: gh-pages
           path: gh-pages
+          persist-credentials: true
   
       - name: Update release tag in github pages
         if: ${{ !startsWith(inputs.STACK_NAME, 'prescribe-dispense-pr-') }}
@@ -344,6 +370,9 @@ jobs:
   
   prescribing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: write
     name: Prescribing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
@@ -357,6 +386,9 @@ jobs:
 
   dispensing_regression_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
+    permissions:
+      id-token: write
+      contents: write
     name: Dispensing Regression Tests
     uses: ./.github/workflows/run_regression_tests.yml
     needs: release_code_and_api
@@ -371,6 +403,10 @@ jobs:
   pact_tests:
     if: ${{ inputs.RUN_REGRESSION_TEST == true && always() && !failure() && !cancelled() }}
     name: Pact Tests
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
     uses: ./.github/workflows/run_pact_tests.yml
     needs: release_code_and_api
     with:

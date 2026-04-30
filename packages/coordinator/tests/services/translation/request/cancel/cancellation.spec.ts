@@ -4,14 +4,17 @@ import * as TestResources from "../../../../resources/test-resources"
 import * as common from "../../../../../src/services/translation/common/getResourcesOfType"
 import {getMessageHeader} from "../../../../../src/services/translation/common/getResourcesOfType"
 import {fhir, hl7V3} from "@models"
-import {MomentFormatSpecification, MomentInput} from "moment"
-import requireActual = jest.requireActual
+import moment from "moment"
 
-const actualMoment = requireActual("moment")
-jest.mock("moment", () => ({
-  utc: (input?: MomentInput, format?: MomentFormatSpecification) =>
-    actualMoment.utc(input || "2020-12-18T12:34:34Z", format)
-}))
+const realMomentNow = moment.now
+
+beforeAll(() => {
+  moment.now = () => new Date("2020-12-18T12:34:34Z").valueOf()
+})
+
+afterAll(() => {
+  moment.now = realMomentNow
+})
 
 describe("getAgentPersonTelecom", () => {
   const roleTelecom: Array<fhir.ContactPoint> = [

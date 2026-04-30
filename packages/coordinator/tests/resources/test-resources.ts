@@ -15,11 +15,10 @@ import {convertRawResponseToDetailTrackerResponse} from "../../src/services/tran
 
 export const convertSuccessExamples = fetcher.convertExamples
   .filter((e) => e.isSuccess)
-  .map((spec) => spec.toSuccessJestCase())
+  .map((spec) => spec.toSuccessTestCase())
 
 export const convertFailureExamples = fetcher.convertExamples
   .filter((e) => !e.isSuccess)
-  .map((spec) => spec.toErrorJestCase())
 
 export const dispensingValidationSchema = {
   Claim: fetcher.schemaFilePaths.filter(f => f.includes("Claim.xsd"))[0],
@@ -32,7 +31,7 @@ export const dispensingValidationSchema = {
 function getConvertValidationExamples(descriptionIncludes: string) {
   return fetcher.convertExamples
     .filter((e) => e.isSuccess && e.description.includes(` ${descriptionIncludes}`))
-    .map((spec) => spec.toValidationJestCase())
+    .map((spec) => spec.toValidationTestCase())
 }
 
 export const convertSuccessClaimExamples = getConvertValidationExamples("claim")

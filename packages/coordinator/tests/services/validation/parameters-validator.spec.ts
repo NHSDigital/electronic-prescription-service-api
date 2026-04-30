@@ -12,7 +12,7 @@ import {
   PRESCRIBING_USER_SCOPE
 } from "../../../src/services/validation/scope-validator"
 
-jest.spyOn(global.console, "warn").mockImplementation(() => null)
+vi.spyOn(global.console, "warn").mockImplementation(() => null)
 
 describe("verifyParameters returns errors", () => {
   const attendedAgentParameter: fhir.ResourceParameter<fhir.PractitionerRole> = {
@@ -329,19 +329,14 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("console warn when inconsistent accessToken and body SDS role profile ID for user-restricted access", () => {
-    jest.clearAllMocks()
-    verifyAttendedParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id")
+    vi.clearAllMocks()
+    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "3415870201", "test_sds_role_id")
     expect(console.warn).toHaveBeenCalled()
   })
 
   test("does not warn about SDS role profile ID for application-restricted access", () => {
-    jest.clearAllMocks()
-    verifyUnattendedParameters(
-      validApplicationRestrictedUnattendedParameters,
-      DISPENSING_APP_SCOPE,
-      "3415870201",
-      ""
-    )
+    vi.clearAllMocks()
+    verifyParameters(validUnattendedNominatedParameters, DISPENSING_APP_SCOPE, "3415870201", "")
     expect(console.warn).not.toHaveBeenCalled()
   })
 })

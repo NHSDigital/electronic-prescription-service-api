@@ -15,11 +15,18 @@ on:
         description: "Unique run identifier (Do not change this)"
         required: false
         default: "Manually Triggered Run"
+
+permissions: {}
+
 jobs:
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     with:
       verify_published_from_main_image: false
+    permissions:
+      attestations: read
+      contents: read
+      packages: read
 
   run_epsat_tests:
     runs-on: ubuntu-22.04
@@ -43,7 +50,7 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
+          persist-credentials: false
 
       - name: make install
         run: |
@@ -60,7 +67,7 @@ jobs:
         env:
           SERVICE_BASE_PATH: ${{ inputs.SERVICE_BASE_PATH }}
           APIGEE_ENVIRONMENT: ${{ inputs.APIGEE_ENVIRONMENT }}
-      - uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a
         name: upload test_results
         with:
           name: test_results

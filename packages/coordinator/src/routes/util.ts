@@ -89,7 +89,7 @@ export async function callFhirValidator(
 ): Promise<fhir.OperationOutcome> {
   // Payload is already normalised if it went through externalValidator or getPayload
   if (logger) {
-    logger.info({payloadType: typeof payload, isBuffer: Buffer.isBuffer(payload), ...extractTraceIds(requestHeaders)},
+    logger.debug({payloadType: typeof payload, isBuffer: Buffer.isBuffer(payload), ...extractTraceIds(requestHeaders)},
       "Preparing to send payload to FHIR validator")
   }
   const payloadString = typeof payload === "string" || Buffer.isBuffer(payload)
@@ -130,9 +130,9 @@ export async function getFhirValidatorErrors(
     request.logger.info("Making call to FHIR validator")
     // Use the already-parsed and normalised payload if available, otherwise use raw payload
     const payload = request.app.parsedPayload ?? request.payload
-    request.logger.info({payloadType: typeof payload}, "XXXXMaking call to FHIR validator")
+    request.logger.debug({payloadType: typeof payload}, "Making call to FHIR validator")
     const validatorResponseData = await callFhirValidator(payload as HapiPayload, request.headers, request.logger)
-    request.logger.info("Received response from FHIR validator")
+    request.logger.debug("Received response from FHIR validator")
     const filteredResponse = filterValidatorResponse(validatorResponseData, showWarnings)
     if (filteredResponse.issue.length) {
       return validatorResponseData
@@ -220,17 +220,17 @@ function createUriNormaliser(logger: pino.Logger, traceIds: Record<string, strin
       const originalUrl = value
       const normalisedUrl = value.replace("https://terminology.hl7.org/", "http://terminology.hl7.org/") // NOSONAR
         .replace("https://hl7.org/fhir/CodeSystem", "http://hl7.org/fhir/CodeSystem") // NOSONAR
-      logger.info({traceIds, originalUrl, normalisedUrl}, "Normalizing HL7 URIs from https to http")
+      logger.debug({traceIds, originalUrl, normalisedUrl}, "Normalizing HL7 URIs from https to http")
       return normalisedUrl
     } else {
-      logger.info({traceIds, originalUrl: value}, "No need to normalise HL7 URIs from https to http")
+      logger.debug({traceIds, originalUrl: value}, "No need to normalise HL7 URIs from https to http")
     }
     return value
   }
 }
 
 const parsePayload = (payload: HapiPayload, logger: pino.Logger, traceIds: Record<string, string>): unknown => {
-  logger.info("Parsing request payload")
+  logger.debug("Parsing request payload")
   const normaliseUriReviver = createUriNormaliser(logger, traceIds)
   if (Buffer.isBuffer(payload)) {
     return LosslessJson.parse(payload.toString(), normaliseUriReviver)

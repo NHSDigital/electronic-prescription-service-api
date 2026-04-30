@@ -4,35 +4,32 @@ on:
   push:
     branches: [master]
 
-env:
-  BRANCH_NAME: ${{ github.event.ref.BRANCH_NAME }}
+
+permissions: {}
 
 jobs:
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     with:
       verify_published_from_main_image: true
-  
+    permissions:
+      attestations: read
+      contents: read
+      packages: read
+
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     needs: [get_config_values]
+    permissions:
+      contents: read
+      id-token: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       run_docker_scan: true
       docker_images: fhir-facade,validator
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
-  get_version:
-    runs-on: ubuntu-22.04
-    outputs:
-      version: ${{ steps.set_version.outputs.version }}
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
-      - name: Set version
-        id: set_version
-        run: echo "version=$(cat VERSION)" >> "$GITHUB_OUTPUT"
 
   get_commit_id:
     runs-on: ubuntu-22.04
@@ -49,21 +46,25 @@ jobs:
 
   tag_release:
     needs: [quality_checks, get_commit_id, get_config_values]
-    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/tag-release-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     permissions:
       id-token: write
       contents: write
+      packages: write
     with:
       dry_run: true
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       branch_name: master
       tag_format: ${{ needs.get_config_values.outputs.tag_format }}
       main_branch: master
-    secrets: inherit
 
   package_code:
-    needs: [get_version, get_commit_id, tag_release, get_config_values]
+    needs: [get_commit_id, tag_release, get_config_values]
     uses: ./.github/workflows/cdk_package_code.yml
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
     with:
       VERSION_NUMBER: ${{ needs.tag_release.outputs.version_tag }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
@@ -72,9 +73,14 @@ jobs:
   release_dev:
     needs: [tag_release, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: true
@@ -123,9 +129,14 @@ jobs:
   release_dev_sandbox:
     needs: [tag_release, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-sandbox
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: true
@@ -176,9 +187,14 @@ jobs:
         get_config_values,
       ]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: ref
       APIGEE_ENVIRONMENT: ref
       ENABLE_MUTUAL_TLS: true
@@ -225,9 +241,14 @@ jobs:
         get_config_values,
       ]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources
       AWS_ENVIRONMENT: qa
       APIGEE_ENVIRONMENT: internal-qa
       ENABLE_MUTUAL_TLS: true

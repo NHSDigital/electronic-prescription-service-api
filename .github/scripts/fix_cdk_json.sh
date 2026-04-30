@@ -56,6 +56,7 @@ fi
 
 # go through all the key values we need to set
 fix_string_key serviceName "${SERVICE_NAME}"
+fix_string_key statefulResourcesStackName "${STATEFUL_STACK_NAME}"
 fix_string_key VERSION_NUMBER "${VERSION_NUMBER}"
 fix_string_key accountId "${ACCOUNT_ID}"
 fix_string_key logRetentionInDays "${LOG_RETENTION_IN_DAYS}"

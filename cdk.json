@@ -15,8 +15,8 @@
       "**/tests*",
       "**/lib",
       "**/coverage",
-      "**/jest.config.ts",
-      "**/jest.debug.config.ts"
+      "**/vitest.config.ts",
+      "**/vitest.workspace.ts"
     ]
   },
   "context": {
@@ -72,6 +72,7 @@
     "@aws-cdk/custom-resources:logApiResponseDataPropertyTrueDefault": false,
     "@aws-cdk/aws-s3:keepNotificationInImportedBucket": false,
     "serviceName": "pd-dummy",
+    "statefulResourcesStackName": "sr-dummy",
     "VERSION_NUMBER": "foo",
     "COMMIT_ID": "foo",
     "accountId": "766544332211",

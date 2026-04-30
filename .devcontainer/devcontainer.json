@@ -6,7 +6,7 @@
     "args": {
       "DOCKER_GID": "${env:DOCKER_GID:}",
       "IMAGE_NAME": "fhir_facade_api",
-      "IMAGE_VERSION": "v1.3.0",
+      "IMAGE_VERSION": "v1.4.8",
       "USER_UID": "${localEnv:USER_ID:}",
       "USER_GID": "${localEnv:GROUP_ID:}"
     },
@@ -30,7 +30,7 @@
         "ms-python.python",
         "github.vscode-pull-request-github",
         "eamodio.gitlens",
-        "orta.vscode-jest",
+        "vitest.explorer",
         "42crunch.vscode-openapi",
         "mermade.openapi-lint",
         "baeumer.vscode-eslint",

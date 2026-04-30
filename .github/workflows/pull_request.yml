@@ -1,49 +1,45 @@
 name: deploy_pr
-
 on:
   pull_request:
     branches: [master]
   merge_group:
     branches: [master]
-
-env:
-  BRANCH_NAME: ${{ github.event.pull_request.head.ref }}
-
+permissions: {}
 jobs:
-  dependabot-auto-approve-and-merge:
-    needs: quality_checks
-    uses: NHSDigital/eps-common-workflows/.github/workflows/dependabot-auto-approve-and-merge.yml@5ac2707dd9cd60ad127275179495b9c890d74711
-    secrets:
-      AUTOMERGE_APP_ID: ${{ secrets.AUTOMERGE_APP_ID }}
-      AUTOMERGE_PEM: ${{ secrets.AUTOMERGE_PEM }}
   get_config_values:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/get-repo-config.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     with:
       verify_published_from_main_image: false
-
+    permissions:
+      attestations: read
+      contents: read
+      packages: read
   quality_checks:
-    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@5ac2707dd9cd60ad127275179495b9c890d74711
+    uses: NHSDigital/eps-common-workflows/.github/workflows/quality-checks-devcontainer.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
     needs: [get_config_values]
+    permissions:
+      contents: read
+      id-token: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       run_docker_scan: true
       docker_images: fhir-facade,validator
     secrets:
       SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
   pr_title_format_check:
     if: github.event_name != 'merge_group'
-    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@5ac2707dd9cd60ad127275179495b9c890d74711
-
+    uses: NHSDigital/eps-common-workflows/.github/workflows/pr_title_check.yml@76baf9dd964311c337af3ec78e8cb1e915c006ce
+    permissions:
+      pull-requests: write
   get_issue_number:
     runs-on: ubuntu-22.04
     needs: quality_checks
     outputs:
       issue_number: ${{ steps.get_issue_number.outputs.result }}
       version: ${{ steps.get_issue_number.outputs.version_number }}
-
     steps:
-      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd
+      - uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3
         name: get issue number
         id: get_issue_number
         with:
@@ -82,40 +78,46 @@ jobs:
 
               return String(pr.number);
             }
-
   get_commit_id:
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
     outputs:
       commit_id: ${{ steps.commit_id.outputs.commit_id }}
       sha_short: ${{ steps.commit_id.outputs.sha_short }}
-
     steps:
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
         with:
-          ref: ${{ env.BRANCH_NAME }}
-
+          persist-credentials: false
       - name: Get Commit ID
         id: commit_id
         run: |
           #  echo "commit_id=${{ github.sha }}" >> "$GITHUB_ENV"
           echo "commit_id=${{ github.sha }}" >> "$GITHUB_OUTPUT"
           echo "sha_short=$(git rev-parse --short HEAD)" >> "$GITHUB_OUTPUT"
-
   package_code:
     needs: [get_issue_number, get_commit_id, get_config_values]
+    permissions:
+      id-token: write
+      contents: read
+      packages: read
     uses: ./.github/workflows/cdk_package_code.yml
     with:
       VERSION_NUMBER: PR-${{ needs.get_issue_number.outputs.issue_number }}
       COMMIT_ID: ${{ needs.get_commit_id.outputs.commit_id }}
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
-
   release_code:
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-pr-${{needs.get_issue_number.outputs.issue_number}}
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev
       ENABLE_MUTUAL_TLS: false
@@ -154,13 +156,17 @@ jobs:
       SIGNING_CERT: ${{ secrets.DEV_SIGNING_CERT }}
       DEFAULT_PTL_ASID: ${{ secrets.DEFAULT_PTL_ASID }}
       DEFAULT_PTL_PARTY_KEY: ${{ secrets.DEFAULT_PTL_PARTY_KEY }}
-
   release_sandbox_code:
     needs: [get_issue_number, package_code, get_commit_id, get_config_values]
     uses: ./.github/workflows/cdk_release_code.yml
+    permissions:
+      id-token: write
+      contents: write
+      packages: read
     with:
       pinned_image: ${{ needs.get_config_values.outputs.pinned_image }}
       STACK_NAME: prescribe-dispense-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
+      STATEFUL_STACK_NAME: prescriptions-stateful-resources-pr-${{needs.get_issue_number.outputs.issue_number}}-sandbox
       AWS_ENVIRONMENT: dev
       APIGEE_ENVIRONMENT: internal-dev-sandbox
       ENABLE_MUTUAL_TLS: false

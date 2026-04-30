@@ -8,8 +8,8 @@
     "dev:new": "rm -rf .output && npm run dev",
     "start": "node dist/index.js",
     "start:new": "rm -rf .output && npm run start",
-    "test": "jest",
-    "test:watch": "jest --watch",
+    "test": "vitest run --project fhir-schema-generation --coverage --reporter=default --reporter=junit --outputFile.junit=./junit.xml",
+    "test:watch": "vitest --project fhir-schema-generation",
     "lint": "eslint --max-warnings 0 --fix"
   },
   "keywords": [],
@@ -22,15 +22,12 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/jest": "^30.0.0",
-    "@types/node": "^25.5.0",
+    "@types/node": "^25.5.2",
     "@types/tar": "^7.0.87",
-    "eslint": "^10.0.3",
-    "jest": "^30.3.0",
-    "ts-jest": "^29.4.6",
+    "eslint": "^10.2.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
-    "typescript-eslint": "^8.57.2"
+    "typescript-eslint": "^8.58.0"
   },
   "dependencies": {
     "tar": "^7.5.13"

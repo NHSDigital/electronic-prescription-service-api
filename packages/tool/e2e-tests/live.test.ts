@@ -1,7 +1,6 @@
 import "path"
 import {PathLike} from "fs"
 import {writeFile, access, mkdir} from "node:fs/promises"
-import _ from "lodash"
 
 import "chromedriver"
 import "geckodriver"
@@ -12,7 +11,7 @@ import {
   beforeEach,
   expect,
   afterEach
-} from "@jest/globals"
+} from "vitest"
 
 import {EPSAT_HOME_URL, FIREFOX_BINARY_PATH, LOCAL_MODE} from "./helpers"
 
@@ -65,17 +64,14 @@ beforeAll(async () => {
 beforeEach(async () => {
   console.log(`\n==================| ${expect.getState().currentTestName} |==================`)
   const options = buildFirefoxOptions()
-  Object.defineProperty(global, "hasTestFailures", {
-    value: false
-  })
   driver = new Builder()
     .setFirefoxOptions(options)
     .forBrowser("firefox")
     .build()
 })
 
-afterEach(async () => {
-  const hasTestFailures = _.get(global, "hasTestFailures", false)
+afterEach(async (context) => {
+  const hasTestFailures = context.task.result?.state === "fail"
   if (hasTestFailures) {
     const image = await driver.takeScreenshot()
     const filename = `${expect.getState().currentTestName}/${new Date().toISOString()}`.replace(/[^a-z0-9]/gi, "_")

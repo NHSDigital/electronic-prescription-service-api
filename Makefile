@@ -11,7 +11,7 @@
 	check-licenses-api check-licenses-epsat check-licenses-all check-language-versions \
 	generate-mock-certs clear-pacts create-sandbox-pacts create-apim-pacts create-proxygen-pacts verify-pacts run-smoke-tests generate-postman-collection npm-audit-fix \
 	publish-fhir-release-notes-int publish-fhir-rc-release-notes-int publish-fhir-release-notes-prod mark-jira-released \
-	update-snapshots cdk-synth verify-signature \
+	update-snapshots cdk-synth-api cdk-synth-prescriptions cdk-synth verify-signature \
 	docker-build docker-build-fhir-facade docker-build-validator %
 
 SHELL=/bin/bash -euo pipefail
@@ -78,17 +78,19 @@ all:
 install-api: install-node install-python install-hooks generate-mock-certs
 
 install-all: install-python install-hooks generate-mock-certs
-	npm ci
+	npm ci --ignore-scripts
+	# need to get post install script run for this package
+	npm rebuild xsd-schema-validator --workspace packages/coordinator
 
 install-epsat: install-python install-hooks
-	npm ci --workspace=packages/tool/site/client \
+	npm ci --ignore-scripts --workspace=packages/tool/site/client \
 		--workspace=packages/tool/site/server \
 		--workspace=packages/tool/e2e-tests \
 		--include-workspace-root
 
 
 install-node:
-	npm ci --workspace packages/specification \
+	npm ci --ignore-scripts --workspace packages/specification \
 		--workspace packages/models \
 		--workspace packages/coordinator \
 		--workspace packages/e2e-tests \
@@ -96,6 +98,8 @@ install-node:
 		--workspace packages/cdk \
 		--workspace packages/fhir-schema-generation \
 		--include-workspace-root
+	# need to get post install script run for this package
+	npm rebuild xsd-schema-validator --workspace packages/coordinator
 
 install-python:
 	poetry install
@@ -129,7 +133,7 @@ build-specification:
 	mkdir -p packages/specification/dist
 	npm run lint --workspace packages/specification
 	npm run resolve --workspace packages/specification
-	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
+	cat packages/specification/dist/electronic-prescription-service-api.resolved.json  > packages/specification/dist/electronic-prescription-service-api.json
 
 # this is a separate target as azure pipelines fail on this
 build-proxygen-specification:
@@ -164,10 +168,13 @@ test-api: check-licenses-api generate-mock-certs test-coordinator
 test-epsat: check-licenses-epsat
 	npm run test --workspace packages/tool/site/client
 
+test-lambdas:
+	cd packages/create_prescription && poetry run pytest
+
 test-fhir-schema-generation:
 	npm run test --workspace packages/fhir-schema-generation
 
-test-all: test-api test-epsat test-fhir-schema-generation
+test-all: test-api test-epsat test-fhir-schema-generation test-lambdas
 	npm run test --workspace packages/cdk
 
 test-coordinator:
@@ -262,6 +269,9 @@ clean:
 	rm -rf packages/specification/build
 	rm -rf packages/coordinator/dist
 	rm -rf packages/coordinator/coverage
+	rm -rf packages/create_prescription/coverage
+	rm -rf packages/create_prescription/.coverage
+	rm -rf packages/create_prescription/**/*cache*
 	rm -rf packages/tool/site/server/dist
 	rm -rf packages/tool/site/client/dist
 	rm -rf packages/tool/site/client/coverage
@@ -340,7 +350,10 @@ lint-epsat:
 lint-githubactions:
 	actionlint
 
-lint-all: lint-api lint-epsat lint-githubactions
+lint-python:
+	poetry run black .
+
+lint-all: lint-api lint-epsat lint-githubactions lint-python
 
 ## check licenses
 
@@ -429,10 +442,17 @@ mark-jira-released: guard-release_version
 update-snapshots: install-all
 	npm run update-snapshots --workspace packages/tool/site/client
 
-cdk-synth:
-	npx cdk synth \
+cdk-synth-api:
+	npx cdk synth prescribe-dispense \
 		--quiet \
 		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
+
+cdk-synth-prescriptions:
+	npx cdk synth stateful-resources \
+		--quiet \
+		--app "npx ts-node --prefer-ts-exts packages/cdk/bin/PrescribeDispenseApp.ts"
+
+cdk-synth: cdk-synth-api cdk-synth-prescriptions
 
 verify-signature:
 	cd packages/coordinator && npm run verify-signature

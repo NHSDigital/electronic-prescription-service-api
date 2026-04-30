@@ -5,7 +5,7 @@ import {toArray} from "../../common"
 import {convertHL7V3DateTimeToIsoDateTimeString, convertMomentToISODateTime} from "../../common/dateTime"
 import {createBundle} from "../../common/response-bundles"
 import {convertResourceToBundleEntry, generateResourceId} from "../common"
-import {verifyAndFormatPrescriptionSignature} from "../../../verification/signature-verification"
+import {verifyPrescriptionSignature} from "../../../verification/signature-verification"
 import {ReturnFactory} from "../../request/return/return-factory"
 
 // Rob Gooch - We can go with just PORX_MT122003UK32 as UK30 prescriptions are not signed
@@ -17,10 +17,7 @@ const isSupportedMessageType = (component: hl7V3.PrescriptionReleaseResponseComp
 
 const REASON_CODE_INVALID_DIGITAL_SIGNATURE = new hl7V3.ReturnReasonCode("0005", "Invalid digital signature")
 
-function createInvalidSignatureOutcome(
-  prescription: fhir.Bundle,
-  issues: Array<fhir.OperationOutcomeIssue>
-): fhir.OperationOutcome {
+function createInvalidSignatureOutcome(prescription: fhir.Bundle): fhir.OperationOutcome {
   const extension: fhir.IdentifierReferenceExtension<fhir.Bundle> = {
     url: "https://fhir.nhs.uk/StructureDefinition/Extension-Spine-supportingInfo-prescription",
     valueReference: {identifier: prescription.identifier}
@@ -32,7 +29,18 @@ function createInvalidSignatureOutcome(
     },
     id: generateResourceId(),
     extension: [extension],
-    issue: issues
+    issue: [{
+      severity: "error",
+      code: fhir.IssueCodes.INVALID,
+      details: {
+        coding: [{
+          system: "https://fhir.nhs.uk/CodeSystem/Spine-ErrorOrWarningCode",
+          code: "INVALID_VALUE",
+          display: "Signature is invalid."
+        }]
+      },
+      expression: ["Provenance.signature.data"]
+    }]
   }
 }
 
@@ -82,13 +90,26 @@ export async function translateReleaseResponse(
   for (const component of supportedMessages) {
     const {ParentPrescription} = component
     const bundle = await createBundle(ParentPrescription, releaseRequestId, logger)
-    const signatureIssues = await verifyAndFormatPrescriptionSignature(ParentPrescription, logger, "release")
 
-    if (signatureIssues.length === 0) {
+    let errors: Array<string>
+    try {
+      errors = await verifyPrescriptionSignature(ParentPrescription, logger)
+      if (errors.length > 0) {
+        const prescriptionId = ParentPrescription.id._attributes.root.toLowerCase()
+        logger.error(
+          `[Verifying signature for prescription ${prescriptionId} on release]: ${errors.join(", ")}`
+        )
+      }
+    } catch (e) {
+      logger.error(e, "Uncaught error during signature verification for release")
+      errors = ["Uncaught error during signature verification"]
+    }
+
+    if (errors.length === 0) {
       passedPrescriptions.push(bundle)
       passedPrescriptionIds.push(ParentPrescription.id._attributes.root)
     } else {
-      const operationOutcome = createInvalidSignatureOutcome(bundle, signatureIssues)
+      const operationOutcome = createInvalidSignatureOutcome(bundle)
       const dispenseProposalReturn = returnFactory.create(
         ParentPrescription,
         releaseResponse,

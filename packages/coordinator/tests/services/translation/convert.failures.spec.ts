@@ -14,8 +14,8 @@ process.env.ODS_URL = "directory.spineservices.nhs.uk"
 
 describe("conversion tests", () => {
   test.each(TestResources.convertFailureExamples)(
-    "should be able to convert %s message to HL7V3",
-    async (_: string, request: unknown, response: string) => {
+    "should be able to convert $description message to HL7V3",
+    async ({request, response}: {request: unknown, response: string}) => {
       const headers = {
         "nhsd-request-id": "test",
         "nhsd-asid": "200000001285"

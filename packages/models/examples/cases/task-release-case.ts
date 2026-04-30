@@ -10,8 +10,4 @@ export class TaskReleaseCase extends Case {
   constructor(requestFile: ExampleFile, responseFile: ExampleFile) {
     super(requestFile, responseFile)
   }
-
-  toJestCase(): [string, fhir.Parameters, fhir.Bundle, number] {
-    return [this.description, this.request, this.response, this.statusCode]
-  }
 }
