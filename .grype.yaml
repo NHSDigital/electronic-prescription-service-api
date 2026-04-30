@@ -79,4 +79,10 @@ ignore:
   - vulnerability: GHSA-95jq-rwvf-vjx4
   # openjdk vulnerabilities - these are accepted
   - vulnerability: CVE-2026-34282
+    package:
+      name: openjdk
+      version: 24
   - vulnerability: CVE-2026-22016
+    package:
+      name: openjdk
+      version: 24
