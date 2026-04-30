@@ -23,6 +23,7 @@ This document provides instructions for generating, reviewing, and maintaining T
 - Use destructuring for objects and arrays to improve readability.
 - Avoid magic numbers and hardcoded values; use named constants.
 - Keep functions pure and side-effect free when possible.
+- Do not use the `void` operator to silence unused-value warnings; prefer code that makes usage explicit.
 
 ## Code Standards
 
@@ -92,6 +93,7 @@ This document provides instructions for generating, reviewing, and maintaining T
 ### Type Safety
 
 - Prefer interfaces and types. You MUST NOT use `any`.
+- Prefer `Array<T>` over `T[]` for array type annotations.
 - Use type guards and assertions when necessary.
 - Example:
 
