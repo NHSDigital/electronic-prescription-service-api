@@ -3,6 +3,10 @@
     "module": "commonjs",
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
+    "strictNullChecks": false,
+    "useUnknownInCatchVariables": false,
+    "strictPropertyInitialization": false,
+    "noImplicitThis": false,
     "types": [
       "node",
       "vitest/globals"
@@ -13,16 +17,16 @@
       "DOM"
     ],
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "sourceMap": true,
     // "strict": true,
+    "rootDir": "..",
     "outDir": "dist",
-    "baseUrl": ".",
     "paths": {
       "*": [
-        "node_modules/*",
-        "tests/*"
+        "./node_modules/*",
+        "./tests/*"
       ],
       "@models": [
         "../models"
