@@ -32,7 +32,7 @@ export function pactOptions(options: CreatePactOptions): PactV2Options {
     pacticipantSuffix,
     options.apiEndpoint,
     pactVersion,
-    options.apiOperation
+    options.apiOperation ?? ""
   )
   const consumerName = createConsumerName(
     pacticipantSuffix,
@@ -160,7 +160,7 @@ export function createProviderName(
   pacticipantSuffix: string,
   apiEndpoint: string,
   pactVersion: string,
-  apiOperation?: string
+  apiOperation: string
 ) {
   return `${pacticipantSuffix}+${apiEndpoint}+${apiOperation ? apiOperation : ""}+${pactVersion}`
 }
@@ -208,8 +208,18 @@ export function createInteraction(
   uponReceiving?: string,
   statusCodeExpectation?: number
 ): InteractionObject {
-  const path = getApiPath(options.apiEndpoint, options.apiOperation)
-  const method = getHttpMethod(options.apiEndpoint, options.apiOperation)
+  let path: string
+  let method: HTTPMethod
+
+  if (options.apiEndpoint === "task") {
+    const taskOperation = getRequiredTaskOperation(options.apiOperation)
+    path = getTaskApiPath(taskOperation)
+    method = getTaskHttpMethod(taskOperation)
+  } else {
+    path = getApiPath(options.apiEndpoint)
+    method = getHttpMethod(options.apiEndpoint)
+  }
+
   if (method === "POST" && !requestBody) {
     throw new Error(`Endpoint: '${options.apiEndpoint}' expects a POST, missing: 'requestBody'`)
   }
@@ -235,21 +245,27 @@ export function createInteraction(
   return interaction
 }
 
-function getHttpMethod(endpoint: ApiEndpoint, apiOperation?: ApiOperation): HTTPMethod {
+type TaskApiOperation = Extract<ApiOperation, "release" | "return" | "withdraw" | "tracker">
+
+function getRequiredTaskOperation(apiOperation?: ApiOperation): TaskApiOperation {
+  switch (apiOperation) {
+    case "release":
+    case "return":
+    case "withdraw":
+    case "tracker":
+      return apiOperation
+    default:
+      throw new Error("Task endpoint expects a valid apiOperation")
+  }
+}
+
+function getHttpMethod(endpoint: Exclude<ApiEndpoint, "task">): HTTPMethod {
   switch (endpoint) {
     case "prepare":
     case "process":
     case "validate":
     case "claim":
       return "POST"
-
-    case "task":
-      switch (apiOperation) {
-        case "tracker":
-          return "GET"
-        default:
-          return "POST"
-      }
     case "metadata":
       return "GET"
 
@@ -258,7 +274,18 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation?: ApiOperation): HTTP
   }
 }
 
-function getApiPath(endpoint: ApiEndpoint, apiOperation?: ApiOperation): string {
+function getTaskHttpMethod(apiOperation: TaskApiOperation): HTTPMethod {
+  switch (apiOperation) {
+    case "tracker":
+      return "GET"
+    case "release":
+    case "return":
+    case "withdraw":
+      return "POST"
+  }
+}
+
+function getApiPath(endpoint: Exclude<ApiEndpoint, "task">): string {
   switch (endpoint) {
     case "metadata":
       return "/metadata"
@@ -270,16 +297,18 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation?: ApiOperation): string 
       return `${basePath}/$validate`
     case "claim":
       return `${basePath}/Claim`
-    case "task":
-      switch (apiOperation) {
-        case "return":
-        case "withdraw":
-        case "tracker":
-          return `${basePath}/Task`
-        case "release":
-          return `${basePath}/Task/$release`
-      }
   }
 
   throw new Error(`Could not get the correct api path for endpoint: '${endpoint}'`)
+}
+
+function getTaskApiPath(apiOperation: TaskApiOperation): string {
+  switch (apiOperation) {
+    case "return":
+    case "withdraw":
+    case "tracker":
+      return `${basePath}/Task`
+    case "release":
+      return `${basePath}/Task/$release`
+  }
 }
