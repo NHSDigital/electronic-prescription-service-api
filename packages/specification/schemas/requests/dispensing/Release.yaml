@@ -10,7 +10,29 @@ components:
           type: string
           description: FHIR resource type.
           enum: [Parameters]
-        
+
+        parameter:
+          type: array
+          minItems: 4
+          uniqueItems: true
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/Status'
+              - $ref: '#/components/schemas/Agent'
+              - $ref: '#/components/schemas/Owner'
+              - $ref: '#/components/schemas/GroupIdentifier'
+
+    ReleaseUnattended:
+      type: object
+      required:
+        - resourceType
+        - parameter
+      properties:
+        resourceType:
+          type: string
+          description: FHIR resource type.
+          enum: [Parameters]
+
         parameter:
           type: array
           minItems: 3
@@ -18,7 +40,6 @@ components:
           items:
             oneOf:
               - $ref: '#/components/schemas/Status'
-              - $ref: '#/components/schemas/Agent'
               - $ref: '#/components/schemas/Owner'
               - $ref: '#/components/schemas/GroupIdentifier'
 
@@ -28,7 +49,7 @@ components:
         - name
         - valueCode
       properties:
-        name: 
+        name:
           type: string
           enum: [status]
         valueCode:
@@ -38,7 +59,7 @@ components:
     Agent:
       type: object
       description: The professional submitting the release request.
-      required: 
+      required:
         - name
         - resource
       properties:
@@ -55,7 +76,7 @@ components:
         - name
         - resource
       properties:
-        name: 
+        name:
           type: string
           enum: [owner]
         resource:
@@ -68,7 +89,7 @@ components:
         - name
         - valueIdentifier
       properties:
-        name: 
+        name:
           type: string
           enum: ["group-identifier"]
         valueIdentifier:

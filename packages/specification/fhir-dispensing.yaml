@@ -97,7 +97,7 @@ info:
     ## Security and authorisation
     This API has 2 access modes:
     * user-restricted access for all requests
-    * [application-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), meaning we authenticate the calling application but not the end user for the Download prescriptions - Dispensing request only
+    * [application-restricted access](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#application-restricted-apis), meaning we authenticate the calling application but not the end user for the Download prescriptions unattended - Dispensing request only
 
     ### User-restricted access
     The EPS APIs are mostly [user-restricted](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation#user-restricted-apis),
@@ -107,7 +107,7 @@ info:
     do not use combined authentication and authorisation.
 
     ### Application-restricted access
-    This access mode means there is no end user session. The Download prescriptions - Dispensing request is submitted as part of a back-end process to download prescriptions to the pharmacy. Use the [application-restricted access security pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication).
+    This access mode means there is no end user session. The Download prescriptions unattended - Dispensing request is submitted as part of a back-end process to download prescriptions to the pharmacy. Use the [application-restricted access security pattern](https://digital.nhs.uk/developer/guides-and-documentation/security-and-authorisation/application-restricted-restful-apis-signed-jwt-authentication).
 
     ## Environment and testing
     | Environment      | Base URL                                                   |
@@ -150,7 +150,7 @@ info:
     ### Verification errors
     | HTTP Status | Error Code    | Example Diagnostic                                                                                                                                                               | Description                                                                                                    | Endpoints                                                             |
     |-------------|---------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------|
-    | 400         | value         | Incorrect FHIR resource type. Expected Bundle.                                                                                                                                   | Body's `resourceType` not the expected value.                                                                  | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`                                   |
+    | 400         | value         | Incorrect FHIR resource type. Expected Bundle.                                                                                                                                   | Body's `resourceType` not the expected value.                                                                  | `/$process-message`, `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task`      |
     | 400         | value         | MedicationRequest.intent must be order, original-order or instance-order.                                                                                                        | Bundle contains a plan or reflex. Only order, original-order and instance-order are supported.                 | `/$process-message`                                                   |
     | 400         | value         | Expected all MedicationRequests to have the same value for dispenseRequest.performer. Received ["1f8cb914-feb0-4ef8-b676-bf2dfa5ac47d", "8b676178-768c-445a-98a9-bea45931fcd8"]. | A MedicationRequest field that should be consistent has multiple unique values across requests.                | `/$process-message`                                                   |
     | 400         | value         | Task.status must be one of: 'in-progress', 'rejected'                                                                                                                            | Specified field must be one of the listed values.                                                              | `/Task`                                                               |
@@ -158,37 +158,37 @@ info:
     | 400         | value         | Task.reasonCode must have a system of 'https://fhir.nhs.uk/CodeSystem/EPS-task-dispense-return-status-reason' and a value from that system.                                      | Specified field is missing a required system.                                                                  | `/Task`                                                               |
     | 400         | value         | The Bundle must contain exactly one MedicationRequest if MessageHeader.eventCoding.code is 'prescription-order-update'.                                                          | The requested operation can only be performed on a single medication request.                                  | `/$process-message`                                                   |
     | 400         | value         | Expected MedicationRequest to have a value for statusReason.                                                                                                                     | Specified field is missing.                                                                                    | `/$process-message`                                                   |
-    | 400         | not-supported | Prescribing functionality is disabled.                                                                                                                                           | Requested operation is not enabled/supported.                                                                  | `/Claim`, `/Task/$release`, `/Task`                                   |
+    | 400         | not-supported | Prescribing functionality is disabled.                                                                                                                                           | Requested operation is not enabled/supported.                                                                  | `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task`       |
     | 400         | structure     | MedicationRequest cannot contain both medicationReference and medicationCodeableConcept fields.                                                                                  | MedicationRequest contains both `medicationReference` and `medicationCodeableConcept` fields.                  | `/$process-message`                                                   |
     | 400         | invalid       | practitionerRole.practitioner populated incorrectly. Please populate with Reference to resource within Bundle.                                                                   | The specified field should be a reference but is not.                                                          | `/$process-message`                                                   |
-    | 400         | invalid       | Parameters.parameter("agent").resource.practitioner populated incorrectly. Please populate with Identifier and Display.                                                          | The specified field should not be a reference but is.                                                          | `/Claim`, `/Task/$release`, `/Task`                                   |
+    | 400         | invalid       | Parameters.parameter("agent").resource.practitioner populated incorrectly. Please populate with Identifier and Display.                                                          | The specified field should not be a reference but is.                                                          | `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task`       |
     | 400         | invalid       | Unexpected field of practitionerRole.healthcareService.                                                                                                                          | Specified field is provided when it should not have been.                                                      | `/$process-message`                                                   |
     | 400         | invalid       | Required field organization.partOf is missing.                                                                                                                                   | Specified field is not provided when it should have been.                                                      | `/$process-message`                                                   |
-    | 400         | invalid       | Required parameter owner is missing.                                                                                                                                             | Specified parameter is not provided when it should have been.                                                  | `/Task/$release`                                                      |
+    | 400         | invalid       | Required parameter owner is missing.                                                                                                                                             | Specified parameter is not provided when it should have been.                                                  | `/Task/$release`, `/Task/$release-unattended`                         |
     | 400         | invalid       | The claim is missing the required endorsement code.                                                                                                                              | The necessary endorsement code is not included in the claim request.                                           | `/Claim`                                                              |
     | 400         | invalid       | The dispense notification is missing the reimbursement authority and it should be provided.                                                                                      | The necessary extension containing the reimbursement authority is missing and it should be provided.           | `/$process-message`, `#dispense-notification`                         |
     | 400         | invalid       | The dispense notification is missing the ODS code for the reimbursement authority and it should be provided.                                                                     | The necessary ODS code is not included in the dispense notification and it should be provided.                 | `/$process-message`, `#dispense-notification`                         |
-    | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.                          | `/Claim`, `/Task/$release`, `/Task`                                   |
-    | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                                    | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
+    | 500         | invalid       | *N/A*                                                                                                                                                                            | An internal error occurred. Details should be specified in attached OperationOutcome.                          | `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task`      |
+    | 403         | forbidden     | Your app does not have permission to access prescribing functionality.                                                                                                           | App does not have permission to use the requested function.                                                    | `/$process-message`, `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task` |
     | 403         | forbidden     | Dispensing functionality requires user-restricted access unless otherwise stated.                                                                                                | The requested function requires user-restricted access mode unless otherwise stated.                           | `/$process-message`, `/Claim`, `/Task/$release`, `/Task`              |
 
     ### System Errors
     #### Nominated Release Errors
     | Error Code    | EPS Issue Code        | Description                                             | Endpoints        |
     |---------------|-----------------------|---------------------------------------------------------|------------------|
-    | invalid       | *N/A*                 | A generic error occurred.                               | `/Task/$release` |
-    | informational | NO_MORE_PRESCRIPTIONS | No more prescriptions available for nominated download. | `/Task/$release` |
+    | invalid       | *N/A*                 | A generic error occurred.                               | `/Task/$release`, `/Task/$release-unattended` |
+    | informational | NO_MORE_PRESCRIPTIONS | No more prescriptions available for nominated download. | `/Task/$release`, `/Task/$release-unattended` |
 
     #### Dispensing Errors
     | Error Code    | EPS Issue Code                             | Description                                                                                    | Endpoints                                        |
     |---------------|--------------------------------------------|------------------------------------------------------------------------------------------------|--------------------------------------------------|
-    | invalid       | *N/A*                                      | A generic error occurred.                                                                      | `/Claim`, `/Task/$release`, `/Task`              |
-    | not-found     | PRESCRIPTION_NOT_FOUND                     | The requested prescription could not be found.                                                 | `/Claim`, `/Task/$release`, `/Task`              |
+    | invalid       | *N/A*                                      | A generic error occurred.                                                                      | `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task` |
+    | not-found     | PRESCRIPTION_NOT_FOUND                     | The requested prescription could not be found.                                                 | `/Claim`, `/Task/$release`, `/Task/$release-unattended`, `/Task` |
     | business-rule | PRESCRIPTION_WITH_ANOTHER_DISPENSER        | The requested prescription is with another dispenser.                                          | `/Task`                                          |
-    | business-rule | PRESCRIPTION_INVALID_STATE_TRANSITION      | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/Task`                        |
-    | business-rule | PRESCRIPTION_INVALID_LINE_STATE_TRANSITION | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/Claim`                       |
-    | not-found     | ITEM_NOT_FOUND                             | The requested item could not be found.                                                         | `/Task/$release`, `/Claim`                       |
-    | business-rule | MISMATCH_AUTHORISED_REPEAT_COUNTS          | The repeat count in this message does not match the repeat count in the original prescription. | `/Task/$release`, `/Claim`                       |
+    | business-rule | PRESCRIPTION_INVALID_STATE_TRANSITION      | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/Task/$release-unattended`, `/Task` |
+    | business-rule | PRESCRIPTION_INVALID_LINE_STATE_TRANSITION | The requested operation is not valid for the current state of the prescription.                | `/Task/$release`, `/Task/$release-unattended`, `/Claim` |
+    | not-found     | ITEM_NOT_FOUND                             | The requested item could not be found.                                                         | `/Task/$release`, `/Task/$release-unattended`, `/Claim` |
+    | business-rule | MISMATCH_AUTHORISED_REPEAT_COUNTS          | The repeat count in this message does not match the repeat count in the original prescription. | `/Task/$release`, `/Task/$release-unattended`, `/Claim` |
     | business-rule | DISPENSE_AMEND_IDENTIFIER_MISMATCH         | Replacement target does not match existing claim reference on record.                          | `/Claim`                                         |
     | business-rule | CLAIM_AMEND_PERIOD_ISSUE                   | Claim amendment is not permitted outside of the claim period.                                  | `/Claim`                                         |
     | structure     | INVALID_MESSAGE                            | The message is not valid.                                                                      | `/Claim`                                         |
@@ -210,6 +210,8 @@ x-spec-publication:
     - operations:
         - method: POST
           path: /FHIR/R4/Task/$release
+        - method: POST
+          path: /FHIR/R4/Task/$release-unattended
         - method: POST
           path: /FHIR/R4/$process-message#dispense-notification
         - method: POST
@@ -314,6 +316,92 @@ paths:
                     $ref: examples/spec/errors/release/with-another-dispenser-error.json
       security:
         - nhs-cis2-aal3: []
+  /FHIR/R4/Task/$release-unattended:
+    post:
+      operationId: release-unattended
+      summary: Download prescriptions unattended - Dispensing
+      description: |
+        ## Overview
+        Use this endpoint to download up to 25 prescriptions (per request) nominated to a dispenser using the dispenser's ODS code.
+
+        This endpoint is intended for unattended download workflows and supports application-restricted access.
+        To perform an unattended nominated download, send a [Task-release message](https://simplifier.net/guide/NHSDigital-Medicines/Home/FHIRAssets/AllAssets/OperationDefinition-duplicate-2/release-duplicate-2) without a `agent` resource.
+      tags:
+        - dispensing
+      parameters:
+        - $ref: "#/components/parameters/BearerAuthorization"
+        - $ref: "#/components/parameters/RoleId"
+        - $ref: "#/components/parameters/RequestID"
+        - $ref: "#/components/parameters/CorrelationID"
+      requestBody:
+        required: true
+        content:
+          application/fhir+json:
+            schema:
+              $ref: "schemas/requests/dispensing/Release.yaml#/components/schemas/ReleaseUnattended"
+            examples:
+              acute-primary:
+                summary: Acute
+                description: A valid acute, primary care unattended release request.
+                value:
+                  $ref: examples/spec/dispensing/release/acute-primary-unattended-example-req.json
+              repeat-primary:
+                summary: Repeat
+                description: A valid repeat, primary care unattended release request.
+                value:
+                  $ref: examples/spec/dispensing/release/repeat-primary-unattended-example-req.json
+              eRD-primary:
+                summary: eRD
+                description: A valid eRD, primary care unattended release request.
+                value:
+                  $ref: examples/spec/dispensing/release/eRD-primary-unattended-example-req.json
+      responses:
+        "200":
+          description: Successfully downloaded a prescription for dispensing.
+          content:
+            application/fhir+json:
+              schema:
+                $ref: "schemas/responses/dispensing/Release.yaml"
+              examples:
+                acute-primary:
+                  summary: Acute
+                  description: A successful response to an acute, primary care release request.
+                  value:
+                    $ref: examples/spec/dispensing/release/acute-primary-example-res.json
+                repeat-primary:
+                  summary: Repeat
+                  description: A successful response to a repeat, primary care release request.
+                  value:
+                    $ref: examples/spec/dispensing/release/repeat-primary-example-res.json
+                eRD-primary:
+                  summary: eRD
+                  description: A successful response to a eRD, primary care prepare release request.
+                  value:
+                    $ref: examples/spec/dispensing/release/eRD-primary-example-res.json
+        "4XX":
+          description: |
+            An error occurred as follows:
+
+            | HTTP status | Error code                          | Description                                                                                                                                   |
+            | ----------- | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------|
+            | 400         | PRESCRIPTION_WITH_ANOTHER_DISPENSER | Another dispenser has previously released this prescription. Details of the prescription will be in OperationOutcome.contained.Organization . |
+            | 400         | RESOURCE_NOT_FOUND                  | The prescription ID specified in the parameters requested (group-identifier) did not exist.                                                   |
+          content:
+            application/fhir+json:
+              schema:
+                type: object
+              examples:
+                not-found:
+                  description: |
+                    An error response due to requested prescription not being found.
+                  value:
+                    $ref: examples/spec/errors/release/not-found-error.json
+                with-another-dispenser:
+                  description: |
+                    An error response due to the prescription being released by another dispenser.
+                  value:
+                    $ref: examples/spec/errors/release/with-another-dispenser-error.json
+      security:
         - app-level3: []
   /FHIR/R4/Task:
     post:

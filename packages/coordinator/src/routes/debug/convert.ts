@@ -47,7 +47,12 @@ export default [
       }
 
       if (isParameters(payload)) {
-        const issues = parametersValidator.verifyParameters(payload, scope, accessTokenSDSUserID, accessTokenSDSRoleID)
+        const issues = parametersValidator.verifyAttendedParameters(
+          payload,
+          scope,
+          accessTokenSDSUserID,
+          accessTokenSDSRoleID
+        )
         if (issues.length) {
           const response = fhir.createOperationOutcome(issues, payload.meta?.lastUpdated)
           const statusCode = getStatusCode(issues)

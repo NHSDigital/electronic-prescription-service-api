@@ -11,7 +11,6 @@ import {fhir} from "@models"
 import * as translator from "../../services/translation/request"
 import {spineClient} from "../../services/communication/spine-client"
 import * as parametersValidator from "../../services/validation/parameters-validator"
-import {isApplicationRestrictedScope} from "../../services/validation/scope-validator"
 import {
   getAsid,
   getScope,
@@ -22,47 +21,48 @@ import {getStatusCode} from "../../utils/status-code"
 import {HashingAlgorithm} from "../../services/translation/common/hashingAlgorithm"
 import {RouteDefMethods} from "@hapi/hapi"
 
+const createReleaseHandler = (
+  verifyReleaseParameters: typeof parametersValidator.verifyAttendedParameters
+) => externalValidator(
+  async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
+    const logger = request.logger
+    const parameters = await getPayload(request) as fhir.Parameters
+    request.log("audit", {incomingMessageHash: createHash(JSON.stringify(parameters), HashingAlgorithm.SHA256)})
+
+    const scope = getScope(request.headers)
+    const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
+    const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
+
+    const issues = verifyReleaseParameters(
+      parameters,
+      scope,
+      accessTokenSDSUserID,
+      accessTokenSDSRoleID
+    )
+
+    if (issues.length) {
+      const response = fhir.createOperationOutcome(issues, parameters.meta?.lastUpdated)
+      const statusCode = getStatusCode(issues)
+      return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
+    }
+
+    logger.info("Building Spine release request")
+    const spineRequest = translator.convertParametersToSpineRequest(parameters, request.headers, logger)
+    const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
+    return await handleResponse(request, spineResponse, responseToolkit)
+  }
+)
+
+// Export the two routes
 export default [
-  /*
-    Send a dispense release request to SPINE
-  */
   {
     method: "POST" as RouteDefMethods,
     path: `${BASE_PATH}/Task/$release`,
-    handler: externalValidator(async (request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit) => {
-      const logger = request.logger
-      const parameters = await getPayload(request) as fhir.Parameters
-      request.log("audit", {incomingMessageHash: createHash(JSON.stringify(parameters), HashingAlgorithm.SHA256)})
-
-      const scope = getScope(request.headers)
-      const accessTokenSDSUserID = getSdsUserUniqueId(request.headers)
-      const accessTokenSDSRoleID = getSdsRoleProfileId(request.headers)
-
-      // If we're application-restricted, we don't have an SDS role ID, and can skip that check
-      const appRestricted = isApplicationRestrictedScope(scope)
-      logger.info(
-        {appRestricted, scope}, // pino places the object first, which looks backwards to me
-        "Application restricted state for incoming request"
-      )
-      const checkAccessTokenSDSRoleID = !appRestricted
-      const issues = parametersValidator.verifyParameters(
-        parameters,
-        scope,
-        accessTokenSDSUserID,
-        accessTokenSDSRoleID,
-        checkAccessTokenSDSRoleID
-      )
-
-      if (issues.length) {
-        const response = fhir.createOperationOutcome(issues, parameters.meta?.lastUpdated)
-        const statusCode = getStatusCode(issues)
-        return responseToolkit.response(response).code(statusCode).type(ContentTypes.FHIR)
-      }
-
-      logger.info("Building Spine release request")
-      const spineRequest = translator.convertParametersToSpineRequest(parameters, request.headers, logger)
-      const spineResponse = await spineClient.send(spineRequest, getAsid(request.headers), request.logger)
-      return await handleResponse(request, spineResponse, responseToolkit)
-    })
+    handler: createReleaseHandler(parametersValidator.verifyAttendedParameters)
+  },
+  {
+    method: "POST" as RouteDefMethods,
+    path: `${BASE_PATH}/Task/$release-unattended`,
+    handler: createReleaseHandler(parametersValidator.verifyUnattendedParameters)
   }
 ]

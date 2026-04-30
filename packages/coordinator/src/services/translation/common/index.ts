@@ -42,19 +42,15 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
-    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooFewValuesError(
+      // eslint-disable-next-line max-len
+      `Too few values submitted. Expected 1 element${additionalContext ? ` where ${additionalContext}` : ""}.`, fhirPath)
   }
   const value = first.value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(`Too many values submitted. Expected 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooManyValuesError(
+      // eslint-disable-next-line max-len
+      `Too many values submitted. Expected 1 element${additionalContext ? ` where ${additionalContext}` : ""}.`, fhirPath)
   }
   return value
 }
@@ -66,11 +62,9 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(`Too many values submitted. Expected at most 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooManyValuesError(
+      // eslint-disable-next-line max-len
+      `Too many values submitted. Expected 1 element${additionalContext ? ` where ${additionalContext}` : ""}.`, fhirPath)
   }
   return value
 }
@@ -336,6 +330,20 @@ export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourcePar
     "agent",
     isPractitionerRoleParameter
   )
+}
+
+export function getAgentParameterOrNull(
+  parameters: fhir.Parameters
+): fhir.ResourceParameter<fhir.PractitionerRole> | null {
+  try {
+    return getAgentParameter(parameters)
+  } catch (e) {
+    if (e instanceof errors.InvalidValueError) {
+      return null
+    } else {
+      throw e
+    }
+  }
 }
 
 const isOrganizationParameter = (

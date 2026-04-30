@@ -1,7 +1,11 @@
 import {fhir, validationErrors as errors} from "@models"
 import {ownerParameter, groupIdentifierParameter, agentParameter} from "../../resources/test-data/parameters"
-import {verifyParameters} from "../../../src/services/validation/parameters-validator"
 import {
+  verifyAttendedParameters,
+  verifyUnattendedParameters
+} from "../../../src/services/validation/parameters-validator"
+import {
+  AWS_DISPENSING_APP_SCOPE,
   DISPENSING_APP_SCOPE,
   DISPENSING_USER_SCOPE,
   PRESCRIBING_APP_SCOPE,
@@ -39,10 +43,16 @@ describe("verifyParameters returns errors", () => {
     }
   }
 
+  const statusParameter: fhir.Parameter = {
+    name: "status"
+  }
+
   const validAttendedNominatedParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
+      groupIdentifierParameter,
       attendedAgentParameter
     ]
   }
@@ -50,13 +60,25 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
+      groupIdentifierParameter,
       unattendedAgentParameter
+    ]
+  }
+  const validApplicationRestrictedUnattendedParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      statusParameter,
+      groupIdentifierParameter
     ]
   }
   const validParametersWithUserAndRoleIDs: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
+      groupIdentifierParameter,
       agentParameter
     ]
   }
@@ -64,6 +86,7 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
       groupIdentifierParameter,
       attendedAgentParameter
     ]
@@ -71,7 +94,24 @@ describe("verifyParameters returns errors", () => {
   const missingOwnerParameters: fhir.Parameters = {
     resourceType: "Parameters",
     parameter: [
+      statusParameter,
       groupIdentifierParameter,
+      attendedAgentParameter
+    ]
+  }
+  const missingStatusParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      groupIdentifierParameter,
+      attendedAgentParameter
+    ]
+  }
+  const missingGroupIdentifierParameters: fhir.Parameters = {
+    resourceType: "Parameters",
+    parameter: [
+      ownerParameter,
+      statusParameter,
       attendedAgentParameter
     ]
   }
@@ -79,6 +119,7 @@ describe("verifyParameters returns errors", () => {
     resourceType: "Parameters",
     parameter: [
       ownerParameter,
+      statusParameter,
       groupIdentifierParameter
     ]
   }
@@ -89,7 +130,7 @@ describe("verifyParameters returns errors", () => {
 
   test('rejects when resourceType not "Parameters"', () => {
     const invalidParameters = {...validSinglePrescriptionParameters, resourceType: "bluh"}
-    const returnedErrors = verifyParameters(
+    const returnedErrors = verifyAttendedParameters(
       invalidParameters as fhir.Parameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -100,7 +141,7 @@ describe("verifyParameters returns errors", () => {
 
   test("verifyParameters rejects a message when dispensing is disabled", () => {
     process.env.DISPENSE_ENABLED = "false"
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -110,7 +151,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects single prescription release when only prescribing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
@@ -120,7 +161,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects single prescription release when only prescribing app scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       PRESCRIBING_APP_SCOPE,
       "test_sds_user_id",
@@ -130,7 +171,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("accepts single prescription release when only dispensing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
@@ -140,7 +181,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects single prescription release when only dispensing app scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validSinglePrescriptionParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
@@ -150,7 +191,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects nominated release when only prescribing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       PRESCRIBING_USER_SCOPE,
       "test_sds_user_id",
@@ -160,7 +201,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("rejects nominated release when only prescribing app scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       PRESCRIBING_APP_SCOPE,
       "test_sds_user_id",
@@ -170,7 +211,7 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("accepts nominated release when only dispensing user scope present", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
@@ -179,19 +220,49 @@ describe("verifyParameters returns errors", () => {
     expect(result).toEqual([])
   })
 
-  test("accepts nominated release when only dispensing app scope present", () => {
-    const result = verifyParameters(
+  test("rejects nominated release when only dispensing app scope present by default", () => {
+    const result = verifyAttendedParameters(
       validAttendedNominatedParameters,
       DISPENSING_APP_SCOPE,
       "test_sds_user_id",
       "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.createUserRestrictedOnlyScopeIssue("Dispensing")])
+  })
+
+  test("rejects unattended application-restricted release when performer role is included", () => {
+    const result = verifyUnattendedParameters(
+      validAttendedNominatedParameters,
+      DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.unexpectedField('Parameters.parameter("agent")')])
+  })
+
+  test("accepts unattended application-restricted release when performer role is omitted", () => {
+    const result = verifyUnattendedParameters(
+      validApplicationRestrictedUnattendedParameters,
+      DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      ""
+    )
+    expect(result).toEqual([])
+  })
+
+  test("accepts unattended application-restricted release with AWS dispensing app scope", () => {
+    const result = verifyUnattendedParameters(
+      validApplicationRestrictedUnattendedParameters,
+      AWS_DISPENSING_APP_SCOPE,
+      "test_sds_user_id",
+      ""
     )
     expect(result).toEqual([])
   })
 
   test("rejects when the owner parameter is missing", () => {
     expect(() => {
-      const result = verifyParameters(
+      const result = verifyAttendedParameters(
         missingOwnerParameters,
         DISPENSING_USER_SCOPE,
         "test_sds_user_id",
@@ -201,14 +272,48 @@ describe("verifyParameters returns errors", () => {
     })
   })
 
+  test("rejects when the status parameter is missing", () => {
+    const result = verifyAttendedParameters(
+      missingStatusParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("status")])
+  })
+
+  test("rejects when the group-identifier parameter is missing", () => {
+    const result = verifyAttendedParameters(
+      missingGroupIdentifierParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("group-identifier")])
+  })
+
   test("rejects when the agent parameter is missing", () => {
-    expect(() => {
-      verifyParameters(missingAgentParameters, DISPENSING_USER_SCOPE, "test_sds_user_id", "test_sds_role_id")
-    }).toThrow("Parameter with name agent not found")
+    const result = verifyAttendedParameters(
+      missingAgentParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.missingRequiredParameter("agent")])
+  })
+
+  test("rejects unattended user-restricted release as forbidden", () => {
+    const result = verifyUnattendedParameters(
+      validApplicationRestrictedUnattendedParameters,
+      DISPENSING_USER_SCOPE,
+      "test_sds_user_id",
+      "test_sds_role_id"
+    )
+    expect(result).toEqual([errors.createMissingScopeIssue("Dispensing")])
   })
 
   test("accepts valid unattended agent param", () => {
-    const result = verifyParameters(
+    const result = verifyAttendedParameters(
       validUnattendedNominatedParameters,
       DISPENSING_USER_SCOPE,
       "test_sds_user_id",
@@ -218,7 +323,8 @@ describe("verifyParameters returns errors", () => {
   })
 
   test("console warn when inconsistent accessToken and body SDS user unique ID", () => {
-    verifyParameters(validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105")
+    verifyAttendedParameters(
+      validParametersWithUserAndRoleIDs, DISPENSING_USER_SCOPE, "test_sds_user_id", "555086415105")
     expect(console.warn).toHaveBeenCalled()
   })
 

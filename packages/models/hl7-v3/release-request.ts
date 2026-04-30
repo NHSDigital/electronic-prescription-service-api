@@ -10,7 +10,7 @@ export class NominatedPrescriptionReleaseRequest {
   }
   id: codes.GlobalIdentifier
   effectiveTime: core.Timestamp
-  author: agentPerson.Author
+  author?: agentPerson.Author
 
   constructor(id: codes.GlobalIdentifier, effectiveTime: core.Timestamp) {
     this.id = id
@@ -18,7 +18,7 @@ export class NominatedPrescriptionReleaseRequest {
   }
 }
 
-export class NominatedPrescriptionReleaseRequestWrapper{
+export class NominatedPrescriptionReleaseRequestWrapper {
   NominatedPrescriptionReleaseRequest: NominatedPrescriptionReleaseRequest
 
   constructor(releaseRequest: NominatedPrescriptionReleaseRequest) {
@@ -55,7 +55,7 @@ export class PatientPrescriptionReleaseRequestPertinentInformation {
   }
 }
 
-export class PatientPrescriptionReleaseRequestWrapper{
+export class PatientPrescriptionReleaseRequestWrapper {
   PatientPrescriptionReleaseRequest: PatientPrescriptionReleaseRequest
 
   constructor(releaseRequest: PatientPrescriptionReleaseRequest) {

@@ -83,7 +83,7 @@
 						"$release"
 					]
 				},
-				"description": "Release all prescriptions nominated to a given ODS Code using the `/Task/$release` endpoint.\n\n## Variables\n\n- `prescriptionID` - The shortform prescription ID of the prescription to be released.\n\n- `releaseODSCode` - The ODS Code to release the given prescription to.\n    \n"
+				"description": "Release a prescription by its prescription ID using the `/Task/$release` endpoint.\n\n## Variables\n\n- `prescriptionID` - The shortform prescription ID of the prescription to be released.\n\n- `releaseODSCode` - The ODS Code to release the given prescription to.\n    \n"
 			},
 			"response": []
 		},
