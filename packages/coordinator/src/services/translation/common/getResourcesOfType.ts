@@ -164,8 +164,9 @@ export function getContainedOrganizationViaReference<R extends fhir.Resource>(
 export function getPathedTelecoms(
   bundle: fhir.Bundle
 ): Array<PathedResource<fhir.ContactPoint>> {
-  type ResourceToValidate = fhir.Organization | fhir.Practitioner | fhir.PractitionerRole;
-  const get_telecoms = (resource: PathedResource<ResourceToValidate>) => {
+  const getTelecoms = (
+    resource: PathedResource<fhir.Organization | fhir.Practitioner | fhir.PractitionerRole>
+  ) => {
     return (resource.resource.telecom ?? []).map((telecom, index) => {
       return {
         path: `${resource.path}.telecom[${index}]`,
@@ -174,12 +175,12 @@ export function getPathedTelecoms(
     })
   }
 
-  const organizations = getPathedResourcesOfType(bundle, "Organization")
-  const practitioners = getPathedResourcesOfType(bundle, "Practitioner")
-  const practitionerRoles = getPathedResourcesOfType(bundle, "PractitionerRole")
+  const organizations = getPathedResourcesOfType<fhir.Organization>(bundle, "Organization")
+  const practitioners = getPathedResourcesOfType<fhir.Practitioner>(bundle, "Practitioner")
+  const practitionerRoles = getPathedResourcesOfType<fhir.PractitionerRole>(bundle, "PractitionerRole")
 
   return organizations
-    .concat(practitioners)
-    .concat(practitionerRoles)
-    .flatMap(get_telecoms)
+    .flatMap(getTelecoms)
+    .concat(practitioners.flatMap(getTelecoms))
+    .concat(practitionerRoles.flatMap(getTelecoms))
 }

@@ -133,7 +133,7 @@ build-specification:
 	mkdir -p packages/specification/dist
 	npm run lint --workspace packages/specification
 	npm run resolve --workspace packages/specification
-	cat packages/specification/dist/electronic-prescription-service-api.resolved.json | poetry run python ./scripts/set_version.py > packages/specification/dist/electronic-prescription-service-api.json
+	cat packages/specification/dist/electronic-prescription-service-api.resolved.json  > packages/specification/dist/electronic-prescription-service-api.json
 
 # this is a separate target as azure pipelines fail on this
 build-proxygen-specification:

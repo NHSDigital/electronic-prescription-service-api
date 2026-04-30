@@ -8,14 +8,14 @@
       "es2019"
     ],
     "noImplicitAny": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "sourceMap": true,
     "strict": true,
+    "rootDir": "src",
     "outDir": "dist",
-    "baseUrl": ".",
     "paths": {
       "*": [
-        "tests/*"
+        "./tests/*"
       ]
     }
   },

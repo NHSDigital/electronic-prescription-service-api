@@ -8,7 +8,7 @@
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": false,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "module": "es6",
     "target": "es6",
     "lib": [
@@ -19,6 +19,12 @@
     "esModuleInterop": true
   },
   "skipLibCheck": true,
-  "include": ["**/*.ts", "**/*.tsx", "**/*.scss"],
-  "exclude": ["node_modules"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/*.scss"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

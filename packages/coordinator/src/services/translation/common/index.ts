@@ -42,19 +42,17 @@ export function onlyElement<T>(iterable: Iterable<T>, fhirPath: string, addition
   const iterator = iterable[Symbol.iterator]()
   const first = iterator.next()
   if (first.done) {
-    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
+    throw new errors.TooFewValuesError(`Too few values submitted. Expected 1 element${additionalContext ? " where " : ""
+    }${additionalContext ? additionalContext : ""
     }.`, fhirPath)
   }
   const value = first.value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(`Too many values submitted. Expected 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooManyValuesError(
+      `Too many values submitted. Expected 1 element${additionalContext ? " where " : ""
+      }${additionalContext ? additionalContext : ""
+      }.`, fhirPath
+    )
   }
   return value
 }
@@ -66,11 +64,11 @@ export function onlyElementOrNull<T>(iterable: Iterable<T>, fhirPath: string, ad
   const iterator = iterable[Symbol.iterator]()
   const value = iterator.next().value
   if (!iterator.next().done) {
-    throw new errors.TooManyValuesError(`Too many values submitted. Expected at most 1 element${
-      additionalContext ? " where " : ""
-    }${
-      additionalContext ? additionalContext : ""
-    }.`, fhirPath)
+    throw new errors.TooManyValuesError(
+      `Too many values submitted. Expected at most 1 element${additionalContext ? " where " : ""
+      }${additionalContext ? additionalContext : ""
+      }.`, fhirPath
+    )
   }
   return value
 }
@@ -325,9 +323,12 @@ function getResourceParameterByName<R extends fhir.Resource>(
 }
 
 const isPractitionerRoleParameter = (
-  resourceParameter: fhir.ResourceParameter<fhir.Resource>
-): resourceParameter is fhir.ResourceParameter<fhir.PractitionerRole> => {
-  return isPractitionerRole(resourceParameter.resource)
+  body: unknown
+): body is fhir.ResourceParameter<fhir.PractitionerRole> => {
+  return typeof body === "object"
+    && body !== null
+    && isResourceParameter(body as fhir.Parameter)
+    && isPractitionerRole((body as fhir.ResourceParameter<fhir.Resource>).resource)
 }
 
 export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.PractitionerRole> {
@@ -339,9 +340,12 @@ export function getAgentParameter(parameters: fhir.Parameters): fhir.ResourcePar
 }
 
 const isOrganizationParameter = (
-  resourceParameter: fhir.ResourceParameter<fhir.Resource>
-): resourceParameter is fhir.ResourceParameter<fhir.Organization> => {
-  return isOrganization(resourceParameter.resource)
+  body: unknown
+): body is fhir.ResourceParameter<fhir.Organization> => {
+  return typeof body === "object"
+    && body !== null
+    && isResourceParameter(body as fhir.Parameter)
+    && isOrganization((body as fhir.ResourceParameter<fhir.Resource>).resource)
 }
 
 export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourceParameter<fhir.Organization> {
@@ -353,9 +357,12 @@ export function getOwnerParameter(parameters: fhir.Parameters): fhir.ResourcePar
 }
 
 const isBundleParameter = (
-  resourceParameter: fhir.ResourceParameter<fhir.Resource>
-): resourceParameter is fhir.ResourceParameter<fhir.Bundle> => {
-  return isBundle(resourceParameter.resource)
+  body: unknown
+): body is fhir.ResourceParameter<fhir.Bundle> => {
+  return typeof body === "object"
+    && body !== null
+    && isResourceParameter(body as fhir.Parameter)
+    && isBundle((body as fhir.ResourceParameter<fhir.Resource>).resource)
 }
 
 export function getBundleParameter(parameters: fhir.Parameters, name: string): fhir.ResourceParameter<fhir.Bundle> {
