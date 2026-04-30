@@ -1,6 +1,5 @@
-/* eslint-disable-next-line  @typescript-eslint/no-unused-vars */
-import register from "tsconfig-paths/register"
 import {
+  ApiMode,
   ApiEndpoint,
   ApiOperation,
   createConsumerName,
@@ -10,31 +9,60 @@ import {
 } from "../resources/common"
 import path from "path"
 import {Verifier, VerifierOptions} from "@pact-foundation/pact"
-import {getAuthToken} from "broker/oauth"
+import {getAuthToken} from "./oauth"
 
 // define variable that is retrieved at runtime for an oauth2 token
 let oAuth2Token: string
 
-async function verify(endpoint: string, operation?: string): Promise<string> {
-  const providerVersion = process.env.PACT_TAG
-    ? `${process.env.PACT_VERSION} (${process.env.PACT_TAG})`
-    : process.env.PACT_VERSION
-  const pacticipantSuffix = getPacticipantSuffix(process.env["API_MODE"])
+type RequestFilterRequest = {
+  headers: Record<string, string | Array<string> | undefined>
+}
+
+type RequestFilterNext = () => void
+
+function getRequiredEnvVar(name: string): string {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
+  return value
+}
+
+function getApiMode(): ApiMode {
+  const apiMode = getRequiredEnvVar("API_MODE")
+  if (apiMode === "live" || apiMode === "sandbox") {
+    return apiMode
+  }
+
+  throw new Error(`Unsupported API_MODE: ${apiMode}`)
+}
+
+async function verify(endpoint: ApiEndpoint, operation?: ApiOperation): Promise<string> {
+  const pactVersion = getRequiredEnvVar("PACT_VERSION")
+  const apiMode = getApiMode()
+  const apiDeploymentMethod = getRequiredEnvVar("API_DEPLOYMENT_METHOD")
+  const providerBaseUrl = getProviderBaseUrl(apiDeploymentMethod, endpoint, operation)
+  const providerVersionTag = process.env.PACT_TAG
+  const providerVersion = providerVersionTag
+    ? `${pactVersion} (${providerVersionTag})`
+    : pactVersion
+  const pacticipantSuffix = getPacticipantSuffix(apiMode)
   const providerName = createProviderName(
     pacticipantSuffix,
     endpoint,
-    operation,
-    process.env.PACT_VERSION
+    pactVersion,
+    operation ?? ""
   )
   const consumerName = createConsumerName(
     pacticipantSuffix,
-    process.env.PACT_VERSION
+    pactVersion
   )
-  const providerBaseUrl = getProviderBaseUrl(process.env["API_DEPLOYMENT_METHOD"], endpoint, operation)
   const fileName = path.join(__dirname, "../pact/pacts", `${consumerName}-${providerName}.json`)
+  const apigeeEnvironment = getRequiredEnvVar("APIGEE_ENVIRONMENT")
 
   const verifierOptions: VerifierOptions = {
-    consumerVersionTags: [process.env.PACT_VERSION],
+    consumerVersionTags: [pactVersion],
     provider: providerName,
     providerVersion: providerVersion,
     providerBaseUrl: providerBaseUrl,
@@ -44,12 +72,12 @@ async function verify(endpoint: string, operation?: string): Promise<string> {
       "NHSD-Session-URID": "555254242106" // for user UID 656005750108
     },
     // use a request filter to inject a valid auth token at runtime
-    requestFilter: (req, res, next) => {
+    requestFilter: (req: RequestFilterRequest, _res: unknown, next: RequestFilterNext) => {
       if (!req.headers["authorization"]) {
         next()
         return
       }
-      if (!process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+      if (!apigeeEnvironment.includes("sandbox")) {
         req.headers["authorization"] = `Bearer ${oAuth2Token}`
       }
       next()
@@ -62,7 +90,7 @@ async function verify(endpoint: string, operation?: string): Promise<string> {
 
 async function verifyOnce(endpoint: ApiEndpoint, operation?: ApiOperation) {
   // debug endpoints not available in prod
-  if (process.env.APIGEE_ENVIRONMENT !== "prod" || (endpoint !== "validate")) {
+  if (getRequiredEnvVar("APIGEE_ENVIRONMENT") !== "prod" || (endpoint !== "validate")) {
     await verify(endpoint, operation)
       .catch((error) => {
         console.error(error)
@@ -124,11 +152,10 @@ async function verifyTaskTracker(): Promise<void> {
   await verifyOnce("task", "tracker")
 }
 
-async function getAccessToken(): Promise<string> {
-  if (!process.env.APIGEE_ENVIRONMENT.includes("sandbox")) {
+async function getAccessToken(): Promise<void> {
+  if (!getRequiredEnvVar("APIGEE_ENVIRONMENT").includes("sandbox")) {
     oAuth2Token = await getAuthToken()
   }
-  return
 }
 
 (async () => {

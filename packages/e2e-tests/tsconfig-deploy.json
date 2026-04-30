@@ -6,11 +6,14 @@
     "lib": [
       "es2019"
     ],
-    "moduleResolution": "node",
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
     "paths": {
-      "@models": ["../models"],
-      "@coordinator": ["../coordinator"]
+      "@models": [
+        "../models"
+      ],
+      "@coordinator": [
+        "../coordinator"
+      ]
     }
   },
   "include": [
