@@ -75,17 +75,17 @@ export class ECSTasks extends Construct {
     const lambdaAccessSecretsPolicy = ManagedPolicy.fromManagedPolicyArn(
       this,
       "LambdaAccessSecretsPolicy",
-      Fn.importValue("account-resources:LambdaAccessSecretsPolicy")
+      Fn.importValue("secrets-cdk:IAM:LambdaAccessSecretsPolicy:Arn")
     )
     const lambdaDecryptSecretsKMSPolicy = ManagedPolicy.fromManagedPolicyArn(
       this,
       "LambdaDecryptSecretsKMSPolicy",
-      Fn.importValue("account-resources:LambdaDecryptSecretsKMSPolicy")
+      Fn.importValue("secrets-cdk:IAM:LambdaDecryptSecretsKMSPolicy:Arn")
     )
     const epsSigningCertChainManagedPolicy = ManagedPolicy.fromManagedPolicyArn(
       this,
       "EpsSigningCertChainManagedPolicy",
-      Fn.importValue("secrets:epsSigningCertChainManagedPolicy")
+      Fn.importValue("secrets-cdk:Secrets:epsSigningCertChainManagedPolicy:Arn")
     )
 
     const SHA1EnabledApplicationIds = new StringParameter(this, "SHA1EnabledApplicationIds", {

@@ -18,10 +18,10 @@ export class StatefulResourcesStack extends Stack {
     super(scope, id, props)
 
     // Context
-    const deploymentRoleImport = Fn.importValue("ci-resources:CloudFormationDeployRole")
+    const deploymentRoleImport = Fn.importValue("iam-cdk:IAM:CloudFormationDeployRole:Arn")
     const deploymentRole = Role.fromRoleArn(this, "deploymentRole", deploymentRoleImport)
 
-    const auditLoggingBucketImport = Fn.importValue("account-resources:AuditLoggingBucket")
+    const auditLoggingBucketImport = Fn.importValue("account-resources-cdk-uk:Bucket:AuditLoggingBucket:Arn")
     const auditLoggingBucket = Bucket.fromBucketArn(this, "AuditLoggingBucket", auditLoggingBucketImport)
 
     // resources

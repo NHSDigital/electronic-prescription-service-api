@@ -84,16 +84,17 @@ export class PrescribeDispenseStack extends Stack {
     const forwardCsocLogs: boolean = this.node.tryGetContext("forwardCsocLogs")
 
     // imports
-    const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources:CloudwatchLogsKmsKeyArn")
-    const splunkDeliveryStreamImport = Fn.importValue("lambda-resources:SplunkDeliveryStream")
-    const splunkSubscriptionFilterRoleImport = Fn.importValue("lambda-resources:SplunkSubscriptionFilterRole")
+    const cloudWatchLogKmsKeyArnImport = Fn.importValue("account-resources-cdk-uk:KMS:CloudwatchLogsKmsKey:Arn")
+    const splunkDeliveryStreamImport = Fn.importValue("account-resources-cdk-uk:Firehose:SplunkDeliveryStream:Arn")
+    const splunkSubscriptionFilterRoleImport =
+      Fn.importValue("account-resources-cdk-uk:IAM:SplunkSubscriptionFilterRole:Arn")
     const epsHostedZoneIdImport: string = Fn.importValue("eps-route53-resources:EPS-ZoneID")
     const epsDomainNameImport: string = Fn.importValue("eps-route53-resources:EPS-domain")
-    const albLoggingBucketNameImport = Fn.importValue("account-resources:ALBLoggingBucketName")
-    const spinePrivateKeyImport = Fn.importValue("account-resources:SpinePrivateKey")
-    const spinePublicCertificateImport = Fn.importValue("account-resources:SpinePublicCertificate")
-    const spineCAChainImport = Fn.importValue("account-resources:SpineCAChain")
-    const epsSigningCertChainImport = Fn.importValue("secrets:epsSigningCertChain")
+    const albLoggingBucketNameImport = Fn.importValue("account-resources-cdk-uk:Bucket:ALBLoggingBucket:Name")
+    const spinePrivateKeyImport = Fn.importValue("secrets-cdk:Secrets:SpinePrivateKey:Arn")
+    const spinePublicCertificateImport = Fn.importValue("secrets-cdk:Secrets:SpinePublicCertificate:Arn")
+    const spineCAChainImport = Fn.importValue("secrets-cdk:Secrets:SpineCAChain:Arn")
+    const epsSigningCertChainImport = Fn.importValue("secrets-cdk:Secrets:epsSigningCertChain:Arn")
 
     // cooerce context and imports to relevant types
     const hostedZone = HostedZone.fromHostedZoneAttributes(this, "hostedZone", {
