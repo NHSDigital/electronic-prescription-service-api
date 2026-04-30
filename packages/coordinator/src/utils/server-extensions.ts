@@ -1,9 +1,11 @@
+import {S3Client, PutObjectCommand} from "@aws-sdk/client-s3"
 import Hapi from "@hapi/hapi"
 import {fhir, processingErrors, validationErrors} from "@models"
 import {ContentTypes} from "../routes/util"
 import {Boom} from "@hapi/boom"
 import {RequestHeaders} from "./headers"
 import {isProd} from "./environment"
+import {isEpsHostedContainer} from "./feature-flags"
 
 export const fatalResponse = {
   resourceType: "OperationOutcome",
@@ -132,6 +134,71 @@ export const rejectInvalidProdHeaders: Hapi.Lifecycle.Method = (
         .code(403)
         .type(ContentTypes.FHIR)
         .takeover()
+    }
+  }
+  return responseToolkit.continue
+}
+
+const toBeObserved = (request: Hapi.Request) => {
+  const routesString = process.env["OBSERVABILITY_ROUTES"]
+  const routes: Array<string> = routesString ? routesString.split(",") : []
+  return [
+    isEpsHostedContainer(),
+    routes.some(r => request.path.toLowerCase().endsWith(r))
+  ].every(c => c)
+}
+
+const writeToObservabilityBucket = async (request: Hapi.Request, prefix: string, body: string) => {
+  const path = request.path.toLowerCase().split("/").reverse()[0]
+  const requestId = request.headers[RequestHeaders.REQUEST_ID]
+  const key = `${path}/${requestId}/${prefix}`
+
+  const client = new S3Client({"region": "eu-west-2"})
+  const command = new PutObjectCommand({
+    "Bucket": process.env["OBSERVABILITY_BUCKET_NAME"],
+    "Key": key,
+    "Body": body
+  })
+
+  await client.send(command)
+}
+
+export const writeRequestToObservabilityBucket: Hapi.Lifecycle.Method = async (
+  request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
+) => {
+  if (toBeObserved(request) && request.payload) {
+    try {
+      const payload = getPayload(request)
+      const body = (typeof payload === "string") ? payload : JSON.stringify(payload)
+      await writeToObservabilityBucket(request, "request", body)
+    } catch(err) {
+      request.logger.warn({err}, "Error writing request to observability bucket")
+    }
+  }
+  return responseToolkit.continue
+}
+
+export const writeResponseToObservabilityBucket: Hapi.Lifecycle.Method = async (
+  request: Hapi.Request, responseToolkit: Hapi.ResponseToolkit
+) => {
+  if (toBeObserved(request)) {
+    try {
+      let body: string
+      const response = request.response
+      if (response instanceof Boom) {
+        body = response.output.payload.message
+      } else {
+        body = response.source?.toString() ?? ""
+      }
+
+      const requestId = request.headers[RequestHeaders.REQUEST_ID]
+      if (body) {
+        await writeToObservabilityBucket(request, "response", body)
+      } else {
+        request.logger.info({"requestId": requestId}, "No response body to write to observability bucket")
+      }
+    } catch(err) {
+      request.logger.warn({err}, "Error writing response to observability bucket")
     }
   }
   return responseToolkit.continue

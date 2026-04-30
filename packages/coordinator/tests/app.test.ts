@@ -10,12 +10,17 @@ import {
   invalidProdHeaders,
   reformatUserErrorsToFhir,
   rejectInvalidProdHeaders,
-  switchContentTypeForSmokeTest
+  switchContentTypeForSmokeTest,
+  writeRequestToObservabilityBucket,
+  writeResponseToObservabilityBucket
 } from "../src/utils/server-extensions"
 import {isEpsHostedContainer} from "../src/utils/feature-flags"
 import HapiPino from "hapi-pino"
 import pino, {DestinationStream} from "pino"
 import split from "split2"
+
+import {mockClient} from "aws-sdk-client-mock"
+import {PutObjectCommand, S3Client} from "@aws-sdk/client-s3"
 
 vi.mock("../src/utils/environment", () => ({
   isProd: vi.fn(),
@@ -26,6 +31,8 @@ vi.mock("../src/utils/feature-flags", () => ({
   isEpsHostedContainer: vi.fn(),
   isSandbox: vi.fn(() => false)
 }))
+
+const s3Mock = mockClient(S3Client)
 
 const newIsProd = vi.mocked(isProd)
 const newIsEpsHostedContainer = vi.mocked(isEpsHostedContainer)
@@ -252,6 +259,263 @@ describe("switchContentTypeForSmokeTest extension", () => {
     const xmlResponse = await server.inject({url: "/xml"})
     expect(fhirResponse.headers["content-type"]).toContain(ContentTypes.FHIR)
     expect(xmlResponse.headers["content-type"]).toContain(ContentTypes.XML)
+  })
+})
+
+describe("observabilityBucket extensions", () => {
+  const payload = {"body": {"data": ["goes", "here"]}}
+  const defaultPath = "/FHIR/R4/$process-message"
+
+  const successResponseBody = JSON.stringify({
+    resourceType: "OperationOutcome",
+    issue: [
+      {
+        severity: "information",
+        code: "informational",
+        details: {
+          text: "success"
+        }
+      }
+    ]
+  })
+
+  const getRoute = (path: string, response: Hapi.ResponseValue): Hapi.ServerRoute => {
+    return {
+      method: "POST",
+      path: path,
+      handler: (_, responseToolkit) => {
+        return responseToolkit.response(response).type(ContentTypes.FHIR)
+      }
+    }
+  }
+
+  let server: Hapi.Server
+  let loggerInfo: ReturnType<typeof vi.spyOn>
+  let loggerWarn: ReturnType<typeof vi.spyOn>
+
+  beforeEach(async () => {
+    server = Hapi.server()
+    loggerWarn = vi.spyOn(logger, "warn")
+    loggerInfo = vi.spyOn(logger, "info")
+    await HapiPino.register(server, {
+      instance: logger
+    })
+    server.ext([
+      {type: "onPostResponse", method: writeRequestToObservabilityBucket},
+      {type: "onPostResponse", method: writeResponseToObservabilityBucket}
+    ])
+
+    newIsEpsHostedContainer.mockImplementation(() => true)
+    process.env.OBSERVABILITY_BUCKET_NAME = "bucket-name"
+    process.env.OBSERVABILITY_ROUTES = "process-message,claim"
+
+    spyOnPinoOutput.mockReset()
+    s3Mock.on(PutObjectCommand).resolves({
+      ETag: "e-tag",
+      VersionId: "version-id"
+    })
+  })
+
+  afterEach(() => {
+    s3Mock.reset()
+  })
+
+  test("writes request and response to s3", async () => {
+    server.route(getRoute(defaultPath, successResponseBody))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const bufferPayload = Buffer.from(JSON.stringify(payload))
+    const response = await server.inject(
+      {
+        url: defaultPath,
+        headers: requestHeaders,
+        payload: bufferPayload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(2)
+
+    // Request
+    expect(calls[0].args[0].input).toMatchObject({
+      Bucket: "bucket-name",
+      Key: "$process-message/request-id/request",
+      Body: "{\"body\":{\"data\":[\"goes\",\"here\"]}}"
+    })
+
+    // Response
+    expect(calls[1].args[0].input).toMatchObject({
+      Bucket: "bucket-name",
+      Key: "$process-message/request-id/response",
+      Body: successResponseBody
+    })
+  })
+
+  test("handler still works if no request or response payload", async () => {
+    server.route(getRoute(defaultPath, ""))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: defaultPath,
+        headers: requestHeaders,
+        method: "POST"
+      }
+    )
+
+    expect(response.statusCode).toBe(204)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
+  })
+
+  test("error writing to s3 logs a warning and handler succeeds", async () => {
+    const route = defaultPath
+    server.route(getRoute(route, successResponseBody))
+
+    const err = new Error("S3 error")
+    s3Mock.on(PutObjectCommand).rejects(err)
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: route,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    expect(loggerWarn).toHaveBeenCalledWith(
+      expect.objectContaining({err}),
+      "Error writing request to observability bucket"
+    )
+  })
+
+  test("logs info when no response body", async () => {
+    const route = defaultPath
+    server.route(getRoute(route, ""))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: route,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe("")
+
+    expect(loggerInfo).toHaveBeenCalledWith(
+      expect.objectContaining({requestId: "request-id"}),
+      "No response body to write to observability bucket"
+    )
+  })
+
+  test("does not write to s3 if route is not in environment variable", async () => {
+    const path = "/FHIR/R4/$other"
+    server.route(getRoute(path, successResponseBody))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: path,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
+  })
+
+  test("does not write to s3 if routes environment variable is not set", async () => {
+    server.route(getRoute(defaultPath, successResponseBody))
+
+    delete process.env.OBSERVABILITY_ROUTES
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: defaultPath,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
+  })
+
+  test("does not write to s3 if routes environment variable is empty string", async () => {
+    server.route(getRoute(defaultPath, successResponseBody))
+
+    process.env.OBSERVABILITY_ROUTES = ""
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: defaultPath,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
+  })
+
+  test("does not write to s3 if not eps hosted container", async () => {
+    newIsEpsHostedContainer.mockImplementation(() => false)
+
+    server.route(getRoute(defaultPath, successResponseBody))
+
+    const requestHeaders: Hapi.Utils.Dictionary<string> = {}
+    requestHeaders[RequestHeaders.REQUEST_ID] = "request-id"
+
+    const response = await server.inject(
+      {
+        url: defaultPath,
+        headers: requestHeaders,
+        payload: payload,
+        method: "POST"
+      }
+    )
+
+    expect(response.payload).toBe(successResponseBody)
+
+    const calls = s3Mock.commandCalls(PutObjectCommand)
+    expect(calls).toHaveLength(0)
   })
 })
 

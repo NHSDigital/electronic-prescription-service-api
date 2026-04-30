@@ -5,14 +5,18 @@ import {
   StackProps
 } from "aws-cdk-lib"
 import {Observability} from "../resources/Observability"
-import {Role} from "aws-cdk-lib/aws-iam"
+import {ManagedPolicy, Role} from "aws-cdk-lib/aws-iam"
 import {Bucket} from "aws-cdk-lib/aws-s3"
+import {statefulResourcesNagSuppressions} from "../nagSuppressions"
 
 export interface StatefulResourcesStackProps extends StackProps {
   readonly stackName: string
 }
 
 export class StatefulResourcesStack extends Stack {
+  public readonly observabilityBucketName: string
+  public readonly observabilityBucketWritePolicy: ManagedPolicy
+  public readonly observabilityRoutes: string
 
   public constructor(scope: App, id: string, props: StatefulResourcesStackProps) {
     super(scope, id, props)
@@ -25,10 +29,16 @@ export class StatefulResourcesStack extends Stack {
     const auditLoggingBucket = Bucket.fromBucketArn(this, "AuditLoggingBucket", auditLoggingBucketImport)
 
     // resources
-    new Observability(this, "Observability", {
+    const observability = new Observability(this, "Observability", {
       stackName: props.stackName,
       deploymentRole: deploymentRole,
       auditLoggingBucket: auditLoggingBucket
     })
+
+    this.observabilityBucketName = observability.bucketName
+    this.observabilityBucketWritePolicy = observability.bucketWritePolicy
+    this.observabilityRoutes = observability.routes
+
+    statefulResourcesNagSuppressions(this)
   }
 }

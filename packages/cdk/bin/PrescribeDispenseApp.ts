@@ -26,6 +26,14 @@ Tags.of(app).add("cdkApp", "prescribe-dispense")
 Tags.of(app).add("repo", "electronic-prescription-service-clinical-prescription-tracker")
 Tags.of(app).add("cfnDriftDetectionGroup", cfnDriftDetectionGroup)
 
+const StatefulResources = new StatefulResourcesStack(app, "stateful-resources", {
+  env: {
+    region: "eu-west-2",
+    account: accountId
+  },
+  stackName: statefulResourcesStackName
+})
+
 new PrescribeDispenseStack(app, "prescribe-dispense", {
   env: {
     region: "eu-west-2",
@@ -33,15 +41,10 @@ new PrescribeDispenseStack(app, "prescribe-dispense", {
   },
   serviceName: serviceName,
   stackName: serviceName,
-  version: version
-})
-
-const StatefulResources = new StatefulResourcesStack(app, "stateful-resources", {
-  env: {
-    region: "eu-west-2",
-    account: accountId
-  },
-  stackName: statefulResourcesStackName
+  version: version,
+  observabilityBucketName: StatefulResources.observabilityBucketName,
+  observabilityBucketWritePolicy: StatefulResources.observabilityBucketWritePolicy,
+  observabilityRoutes: StatefulResources.observabilityRoutes
 })
 
 addCfnGuardMetadata(StatefulResources, "Custom::S3AutoDeleteObjectsCustomResourceProvider", "Handler")

@@ -12,7 +12,7 @@ import {HostedZone} from "aws-cdk-lib/aws-route53"
 import {Certificate, CertificateValidation} from "aws-cdk-lib/aws-certificatemanager"
 import {Key} from "aws-cdk-lib/aws-kms"
 import {Stream} from "aws-cdk-lib/aws-kinesis"
-import {Role} from "aws-cdk-lib/aws-iam"
+import {ManagedPolicy, Role} from "aws-cdk-lib/aws-iam"
 import {Port, SubnetType, Vpc} from "aws-cdk-lib/aws-ec2"
 import {Cluster, ContainerInsights} from "aws-cdk-lib/aws-ecs"
 import {Bucket} from "aws-cdk-lib/aws-s3"
@@ -27,7 +27,7 @@ import {
 import {Repository} from "aws-cdk-lib/aws-ecr"
 import {Secret} from "aws-cdk-lib/aws-secretsmanager"
 import {ApplicationLoadBalancedFargateService} from "aws-cdk-lib/aws-ecs-patterns"
-import {nagSuppressions} from "../nagSuppressions"
+import {prescribeDispenseNagSuppressions} from "../nagSuppressions"
 import {LogGroups} from "../resources/LogGroups"
 import {ECSTasks} from "../resources/ECSTasks"
 import {
@@ -44,6 +44,9 @@ export interface PrescribeDispenseStackProps extends StackProps {
   readonly serviceName: string
   readonly stackName: string
   readonly version: string
+  readonly observabilityBucketName: string
+  readonly observabilityBucketWritePolicy: ManagedPolicy
+  readonly observabilityRoutes: string
 }
 
 export class PrescribeDispenseStack extends Stack {
@@ -172,9 +175,13 @@ export class PrescribeDispenseStack extends Stack {
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-fhirFacadeTaskExecutionRole`,
+      taskRoleName: `${props.stackName}-fhirFacadeTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "fhirFacade",
-      pollingDelay: 5000
+      pollingDelay: 5000,
+      observabilityBucketName: props.observabilityBucketName,
+      observabilityBucketWritePolicy: props.observabilityBucketWritePolicy,
+      observabilityRoutes: props.observabilityRoutes
     })
 
     const claimsEcsTasks = new ECSTasks(this, "claimsEcsTasks", {
@@ -206,6 +213,7 @@ export class PrescribeDispenseStack extends Stack {
       cpu: serviceCpu,
       memory: serviceMemory,
       taskExecutionRoleName: `${props.stackName}-claimsTaskExecutionRole`,
+      taskRoleName: `${props.stackName}-claimsTaskRole`,
       ApigeeEnvironment: ApigeeEnvironment,
       containerNamePrefix: "claims",
       pollingDelay: 13000
@@ -405,6 +413,6 @@ export class PrescribeDispenseStack extends Stack {
       exportName: `${props.stackName}:enablePrescribingSignatureValidation`
     })
 
-    nagSuppressions(this)
+    prescribeDispenseNagSuppressions(this)
   }
 }

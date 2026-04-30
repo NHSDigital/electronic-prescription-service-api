@@ -1,18 +1,18 @@
 import {Construct} from "constructs"
 import {S3Bucket} from "../constructs/S3Bucket"
-import {IPrincipal} from "aws-cdk-lib/aws-iam"
-import {Key} from "aws-cdk-lib/aws-kms"
-import {Bucket, IBucket} from "aws-cdk-lib/aws-s3"
+import {IPrincipal, ManagedPolicy, PolicyStatement} from "aws-cdk-lib/aws-iam"
+import {IBucket} from "aws-cdk-lib/aws-s3"
 
 export interface ObservabilityProps {
   readonly stackName: string,
   readonly deploymentRole: IPrincipal,
-  readonly auditLoggingBucket: IBucket
+  readonly auditLoggingBucket: IBucket,
 }
 
 export class Observability extends Construct {
-  public readonly observabilityBucket: Bucket
-  public readonly observabilityKmsKey: Key
+  public readonly bucketName: string
+  public readonly bucketWritePolicy: ManagedPolicy
+  public readonly routes: string
 
   constructor(scope: Construct, id: string, props: ObservabilityProps) {
     super(scope, id)
@@ -24,7 +24,35 @@ export class Observability extends Construct {
       auditLoggingBucket: props.auditLoggingBucket,
       itemExpiryDays: 42
     })
-    this.observabilityBucket = observabilityBucket.bucket
-    this.observabilityKmsKey = observabilityBucket.kmsKey
+
+    const observabilityBucketWritePolicy = new ManagedPolicy(this, "observabilityBucketWritePolicy", {
+      statements: [
+        new PolicyStatement({
+          actions: [
+            "s3:ListBucket",
+            "s3:PutObject"
+          ],
+          resources: [
+            observabilityBucket.bucket.bucketArn,
+            `${observabilityBucket.bucket.bucketArn}/*`
+          ]
+        }),
+        new PolicyStatement({
+          actions: [
+            "kms:DescribeKey",
+            "kms:Encrypt",
+            "kms:GenerateDataKey"
+          ],
+          resources: [
+            observabilityBucket.kmsKey.keyArn
+          ]
+        })
+      ]
+    })
+
+    // Outputs
+    this.bucketName = observabilityBucket.bucket.bucketName
+    this.bucketWritePolicy = observabilityBucketWritePolicy
+    this.routes = "claim,release,task,process-message"
   }
 }
