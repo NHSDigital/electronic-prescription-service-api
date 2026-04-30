@@ -2,15 +2,21 @@
   "compilerOptions": {
     "module": "commonjs",
     "esModuleInterop": true,
+    "types": [
+      "node"
+    ],
     "target": "es6",
     "lib": [
       "es2019"
     ],
-    "moduleResolution": "node",
-    "baseUrl": ".",
+    "moduleResolution": "bundler",
     "paths": {
-      "@models": ["../models"],
-      "@coordinator": ["../coordinator"]
+      "@models": [
+        "../models"
+      ],
+      "@coordinator": [
+        "../coordinator"
+      ]
     }
   },
   "include": [
@@ -27,6 +33,8 @@
   ],
   "ts-node": {
     // Do not forget to `npm i -D tsconfig-paths`
-    "require": ["tsconfig-paths/register"]
+    "require": [
+      "tsconfig-paths/register"
+    ]
   }
 }

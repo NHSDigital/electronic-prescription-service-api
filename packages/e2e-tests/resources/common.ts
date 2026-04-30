@@ -22,20 +22,21 @@ export type ApiMode = "live" | "sandbox"
 export type ApiEndpoint = "prepare" | "process" | "task" | "claim" |
   "validate" | "metadata"
 export type ApiOperation = "send" | "cancel" | "dispense" | "dispenseamend" |
-                        "release" | "return" | "withdraw" | "amend" | "tracker"
+  "release" | "return" | "withdraw" | "amend" | "tracker"
 
 // used to add type-safety for adding a new pact
 export function pactOptions(options: CreatePactOptions): PactV2Options {
+  const pactVersion = getRequiredEnvVar("PACT_VERSION")
   const pacticipantSuffix = getPacticipantSuffix(options.apiMode)
   const providerName = createProviderName(
     pacticipantSuffix,
     options.apiEndpoint,
-    options.apiOperation,
-    process.env.PACT_VERSION
+    pactVersion,
+    options.apiOperation ?? ""
   )
   const consumerName = createConsumerName(
     pacticipantSuffix,
-    process.env.PACT_VERSION
+    pactVersion
   )
   return {
     spec: 4,
@@ -49,10 +50,23 @@ export function pactOptions(options: CreatePactOptions): PactV2Options {
 
 // helper functions
 
-export function getProviderBaseUrl(apiDeploymentMethod, endpoint, operation) {
-  switch(apiDeploymentMethod) {
+function getRequiredEnvVar(name: string): string {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+
+  return value
+}
+
+export function getProviderBaseUrl(
+  apiDeploymentMethod: string,
+  endpoint: ApiEndpoint,
+  operation?: ApiOperation
+): string {
+  switch (apiDeploymentMethod) {
     case "apim": {
-      return process.env.PACT_PROVIDER_URL
+      return getRequiredEnvVar("PACT_PROVIDER_URL")
     }
     case "proxygen": {
       return getProxygenProviderBaseUrl(endpoint, operation)
@@ -63,27 +77,27 @@ export function getProviderBaseUrl(apiDeploymentMethod, endpoint, operation) {
   }
 }
 
-function getProxygenProviderBaseUrl(endpoint, operation) {
-  switch(endpoint) {
+function getProxygenProviderBaseUrl(endpoint: ApiEndpoint, operation?: ApiOperation): string {
+  switch (endpoint) {
     case "validate": {
-      return process.env.PACT_PROVIDER_PRESCRIBING_URL
+      return getRequiredEnvVar("PACT_PROVIDER_PRESCRIBING_URL")
     }
     case "prepare": {
-      return process.env.PACT_PROVIDER_PRESCRIBING_URL
+      return getRequiredEnvVar("PACT_PROVIDER_PRESCRIBING_URL")
     }
     case "process": {
-      switch(operation) {
+      switch (operation) {
         case "send": {
-          return process.env.PACT_PROVIDER_PRESCRIBING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_PRESCRIBING_URL")
         }
         case "cancel": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         case "dispense": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         case "dispenseamend": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         default: {
           throw new Error("Unknown endpoint")
@@ -91,18 +105,18 @@ function getProxygenProviderBaseUrl(endpoint, operation) {
       }
     }
     case "task": {
-      switch(operation) {
+      switch (operation) {
         case "release": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         case "return": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         case "withdraw": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         case "tracker": {
-          return process.env.PACT_PROVIDER_DISPENSING_URL
+          return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
         }
         default: {
           throw new Error("Unknown endpoint")
@@ -110,10 +124,10 @@ function getProxygenProviderBaseUrl(endpoint, operation) {
       }
     }
     case "claim": {
-      return process.env.PACT_PROVIDER_DISPENSING_URL
+      return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
     }
     case "metadata": {
-      return process.env.PACT_PROVIDER_DISPENSING_URL
+      return getRequiredEnvVar("PACT_PROVIDER_DISPENSING_URL")
     }
     default: {
       throw new Error("Unknown endpoint")
@@ -121,8 +135,8 @@ function getProxygenProviderBaseUrl(endpoint, operation) {
   }
 }
 
-export function getPacticipantSuffix(apiMode) {
-  switch(apiMode) {
+export function getPacticipantSuffix(apiMode: ApiMode): string {
+  switch (apiMode) {
     case "sandbox": {
       return "sandbox"
     }
@@ -145,10 +159,10 @@ export function createConsumerName(
 export function createProviderName(
   pacticipantSuffix: string,
   apiEndpoint: string,
-  apiOperation: string,
-  pactVersion: string
+  pactVersion: string,
+  apiOperation: string
 ) {
-  return `${pacticipantSuffix}+${apiEndpoint}+${apiOperation ? apiOperation: ""}+${pactVersion}`
+  return `${pacticipantSuffix}+${apiEndpoint}+${apiOperation ? apiOperation : ""}+${pactVersion}`
 }
 
 function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringParameter {
@@ -158,7 +172,11 @@ function isStringParameter(parameter: fhir.Parameter): parameter is fhir.StringP
 export function getStringParameterByName(parameters: fhir.Parameters, name: string): fhir.StringParameter {
   const stringParams = parameters.parameter.filter(param => isStringParameter(param)) as Array<fhir.StringParameter>
   const namedStringParams = stringParams.filter(param => param.name === name)
-  if (namedStringParams.length === 1) return namedStringParams[0]
+  if (namedStringParams.length === 1) {
+    return namedStringParams[0]
+  }
+
+  throw new Error(`Expected exactly one string parameter named '${name}'`)
 }
 
 export const successfulOperationOutcome = {
@@ -190,14 +208,24 @@ export function createInteraction(
   uponReceiving?: string,
   statusCodeExpectation?: number
 ): InteractionObject {
-  const path = getApiPath(options.apiEndpoint, options.apiOperation)
-  const method = getHttpMethod(options.apiEndpoint, options.apiOperation)
+  let path: string
+  let method: HTTPMethod
+
+  if (options.apiEndpoint === "task") {
+    const taskOperation = getRequiredTaskOperation(options.apiOperation)
+    path = getTaskApiPath(taskOperation)
+    method = getTaskHttpMethod(taskOperation)
+  } else {
+    path = getApiPath(options.apiEndpoint)
+    method = getHttpMethod(options.apiEndpoint)
+  }
+
   if (method === "POST" && !requestBody) {
     throw new Error(`Endpoint: '${options.apiEndpoint}' expects a POST, missing: 'requestBody'`)
   }
 
   const interaction: InteractionObject = {
-    state: null,
+    state: undefined,
     uponReceiving: uponReceiving ?? "a valid FHIR message",
     withRequest: {
       headers: getHeaders(),
@@ -217,21 +245,27 @@ export function createInteraction(
   return interaction
 }
 
-function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPMethod {
+type TaskApiOperation = Extract<ApiOperation, "release" | "return" | "withdraw" | "tracker">
+
+function getRequiredTaskOperation(apiOperation?: ApiOperation): TaskApiOperation {
+  switch (apiOperation) {
+    case "release":
+    case "return":
+    case "withdraw":
+    case "tracker":
+      return apiOperation
+    default:
+      throw new Error("Task endpoint expects a valid apiOperation")
+  }
+}
+
+function getHttpMethod(endpoint: Exclude<ApiEndpoint, "task">): HTTPMethod {
   switch (endpoint) {
     case "prepare":
     case "process":
     case "validate":
     case "claim":
       return "POST"
-
-    case "task":
-      switch(apiOperation) {
-        case "tracker":
-          return "GET"
-        default:
-          return "POST"
-      }
     case "metadata":
       return "GET"
 
@@ -240,7 +274,18 @@ function getHttpMethod(endpoint: ApiEndpoint, apiOperation: ApiOperation): HTTPM
   }
 }
 
-function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
+function getTaskHttpMethod(apiOperation: TaskApiOperation): HTTPMethod {
+  switch (apiOperation) {
+    case "tracker":
+      return "GET"
+    case "release":
+    case "return":
+    case "withdraw":
+      return "POST"
+  }
+}
+
+function getApiPath(endpoint: Exclude<ApiEndpoint, "task">): string {
   switch (endpoint) {
     case "metadata":
       return "/metadata"
@@ -252,18 +297,18 @@ function getApiPath(endpoint: ApiEndpoint, apiOperation: ApiOperation): string {
       return `${basePath}/$validate`
     case "claim":
       return `${basePath}/Claim`
-    case "task":
-      switch(apiOperation) {
-        case "return":
-        case "withdraw":
-        case "tracker":
-          return `${basePath}/Task`
-        case "release":
-          return `${basePath}/Task/$release`
-      }
-      break
+  }
 
-    default:
-      throw new Error(`Could not get the correct api path for endpoint: '${endpoint}'`)
+  throw new Error(`Could not get the correct api path for endpoint: '${endpoint}'`)
+}
+
+function getTaskApiPath(apiOperation: TaskApiOperation): string {
+  switch (apiOperation) {
+    case "return":
+    case "withdraw":
+    case "tracker":
+      return `${basePath}/Task`
+    case "release":
+      return `${basePath}/Task/$release`
   }
 }

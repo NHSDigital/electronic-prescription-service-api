@@ -6,7 +6,7 @@
     "lib": [
       "es2019"
     ],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "outDir": "./dist",
     "composite": true,
     "declaration": true,
@@ -15,6 +15,8 @@
   "include": [
     "../../*"
   ],
-  "exclude": ["node_modules"],
+  "exclude": [
+    "node_modules"
+  ],
   "references": []
 }
