@@ -22,7 +22,9 @@ const spineResponseHandlers : Array<SpineResponseHandler<unknown>> = [
   RELEASE_REJECTION_HANDLER
 ]
 
-export function createReleaseHandlers(requestHeaders: Hapi.Utils.Dictionary<string>) : Array<ReleaseResponseHandler> {
+export function createReleaseHandlers(
+  requestHeaders: Hapi.InternalRequestDefaults["Headers"]
+) : Array<ReleaseResponseHandler> {
   const NOMINATED_RELEASE_RESPONSE_HANDLER = new ReleaseResponseHandler(
     "PORX_IN070101UK31",
     new DispensePropsalReturnHandler(requestHeaders,
@@ -42,7 +44,7 @@ export function createReleaseHandlers(requestHeaders: Hapi.Utils.Dictionary<stri
 export async function translateToFhir<T>(
   hl7Message: spine.SpineDirectResponse<T>,
   logger: pino.Logger,
-  requestHeaders: Hapi.Utils.Dictionary<string>): Promise<TranslatedSpineResponse> {
+  requestHeaders: Hapi.InternalRequestDefaults["Headers"]): Promise<TranslatedSpineResponse> {
   const responseHandlers = [...createReleaseHandlers(requestHeaders), ...spineResponseHandlers]
   const bodyString = hl7Message.body.toString()
 

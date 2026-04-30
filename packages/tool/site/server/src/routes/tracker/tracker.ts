@@ -11,7 +11,8 @@ export default [
       const accessToken = getApigeeAccessTokenFromSession(request)
       const epsClient = getEpsClient(accessToken, request)
       const correlationId = getCorrelationId(request)
-      const response = await epsClient.makeGetTaskTrackerRequest(request.query, correlationId)
+      const queryParams = (request.query ?? {}) as Record<string, string>
+      const response = await epsClient.makeGetTaskTrackerRequest(queryParams, correlationId)
       return h.response(response).code(200)
     }
   }

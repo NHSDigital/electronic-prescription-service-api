@@ -8,7 +8,7 @@ type ReturnProposal = DispenseProposalReturnRoot
 export interface ReturnPayloadFactory {
   createPayload(
     returnProposal: ReturnProposal,
-    requestHeaders: Hapi.Utils.Dictionary<string>
+    requestHeaders: Hapi.InternalRequestDefaults["Headers"]
     ): hl7V3.SendMessagePayload<ReturnProposal>
 }
 

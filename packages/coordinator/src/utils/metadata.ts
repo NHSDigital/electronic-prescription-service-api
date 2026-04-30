@@ -291,7 +291,7 @@ function createDispensingCapabilityStatement(manifest: Manifest) {
 
 export function getCapabilityStatement(
   logger: pino.Logger,
-  headers: Hapi.Utils.Dictionary<string>
+  headers: Hapi.InternalRequestDefaults["Headers"]
 ) {
   const manifest = JSON.parse(readManifestFile(logger))
   if (isEpsHostedContainer()) {

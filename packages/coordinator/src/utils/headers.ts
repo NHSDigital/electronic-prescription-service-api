@@ -36,71 +36,73 @@ export const AWS_SCOPE = `${AWS_PRESCRIBING_USER_SCOPE} ${AWS_DISPENSING_USER_SC
 export const DEFAULT_SHOW_VALIDATION_WARNINGS = "false"
 const DEFAULT_APPLICATION_ID = "00000000-0000-0000-0000-000000000000"
 
-function getHeaderIdentifier(headers: Hapi.Utils.Dictionary<string>, identifier: RequestHeaders): string {
-  return isSandbox() ? crypto.randomUUID() : headers[identifier].toUpperCase()
+function getHeaderIdentifier(headers: Hapi.InternalRequestDefaults["Headers"], identifier: RequestHeaders): string {
+  return isSandbox() ? crypto.randomUUID() : collapseHeaderArrays(headers)[identifier]!.toUpperCase()
 }
 
-export function getRequestId(headers: Hapi.Utils.Dictionary<string>): string {
+export function getRequestId(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   return getHeaderIdentifier(headers, RequestHeaders.REQUEST_ID)
 }
 
-export function getCorrelationId(headers: Hapi.Utils.Dictionary<string>): string {
+export function getCorrelationId(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   return getHeaderIdentifier(headers, RequestHeaders.CORRELATION_ID)
 }
 
-export function getAsid(headers: Hapi.Utils.Dictionary<string>): string {
+export function getAsid(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   if (isSandbox()) {
     return DEFAULT_SANDBOX_ASID
   }
   if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
-    return DEFAULT_PTL_ASID
+    return DEFAULT_PTL_ASID!
   }
   if (headers[RequestHeaders.ASID] !== undefined) {
-    return headers[RequestHeaders.ASID]
+    return collapseHeaderArrays(headers)[RequestHeaders.ASID]!
   }
 
   throw new Error("Could not get ASID")
 }
 
-export function getPartyKey(headers: Hapi.Utils.Dictionary<string>): string {
+export function getPartyKey(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   if (isSandbox()) {
     return DEFAULT_SANDBOX_PARTY_KEY
   }
   if (isEpsHostedContainer() && enableDefaultAsidPartyKey()) {
-    return DEFAULT_PTL_PARTY_KEY
+    return DEFAULT_PTL_PARTY_KEY!
   }
   if (headers[RequestHeaders.PARTY_KEY] !== undefined) {
-    return headers[RequestHeaders.PARTY_KEY]
+    return collapseHeaderArrays(headers)[RequestHeaders.PARTY_KEY]!
   }
 
   throw new Error("Could not get party key")
 }
 
-export function getSdsUserUniqueId(headers: Hapi.Utils.Dictionary<string>): string {
-  return isSandbox() ? DEFAULT_UUID : headers[RequestHeaders.SDS_USER_UNIQUE_ID]
+export function getSdsUserUniqueId(headers: Hapi.InternalRequestDefaults["Headers"]): string {
+  return isSandbox() ? DEFAULT_UUID : collapseHeaderArrays(headers)[RequestHeaders.SDS_USER_UNIQUE_ID]!
 }
 
-export function getSdsRoleProfileId(headers: Hapi.Utils.Dictionary<string>): string {
-  return isSandbox() ? DEFAULT_RPID : headers[RequestHeaders.SDS_ROLE_PROFILE_ID]
+export function getSdsRoleProfileId(headers: Hapi.InternalRequestDefaults["Headers"]): string {
+  return isSandbox() ? DEFAULT_RPID : collapseHeaderArrays(headers)[RequestHeaders.SDS_ROLE_PROFILE_ID]!
 }
 
-export function getScope(headers: Hapi.Utils.Dictionary<string>): string {
+export function getScope(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   // scope is not passed through with proxygen but it is verified by it
   // so we can just return what scopes are checked in proxygen
   if (isEpsHostedContainer()) {
     return AWS_SCOPE
   }
-  return isSandbox() ? DEFAULT_SCOPE : headers[RequestHeaders.SCOPE]
+  return isSandbox() ? DEFAULT_SCOPE : collapseHeaderArrays(headers)[RequestHeaders.SCOPE]!
 }
 
-export function getShowValidationWarnings(headers: Hapi.Utils.Dictionary<string>): string {
+export function getShowValidationWarnings(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   return isSandbox()
     ? DEFAULT_SHOW_VALIDATION_WARNINGS
-    : headers[RequestHeaders.SHOW_VALIDATION_WARNINGS]
+    : collapseHeaderArrays(headers)[RequestHeaders.SHOW_VALIDATION_WARNINGS]!
 }
 
-export function getApplicationId(headers: Hapi.Utils.Dictionary<string>): string {
-  return process.env.SANDBOX === "1" ? DEFAULT_APPLICATION_ID : headers[RequestHeaders.APPLICATION_ID]
+export function getApplicationId(headers: Hapi.InternalRequestDefaults["Headers"]): string {
+  return process.env.SANDBOX === "1"
+    ? DEFAULT_APPLICATION_ID
+    : collapseHeaderArrays(headers)[RequestHeaders.APPLICATION_ID]!
 }
 
 export enum ProxyName {
@@ -109,9 +111,9 @@ export enum ProxyName {
   EPS_FHIR = "EPS-FHIR",
 }
 
-export function getProxyName(headers: Hapi.Utils.Dictionary<string>): string {
+export function getProxyName(headers: Hapi.InternalRequestDefaults["Headers"]): string {
   if (isEpsHostedContainer()) {
-    const proxyName = headers[RequestHeaders.PROXY_NAME]
+    const proxyName = collapseHeaderArrays(headers)[RequestHeaders.PROXY_NAME]
     if (proxyName) {
       if (proxyName.includes("fhir-dispensing")) {
         return ProxyName.EPS_FHIR_DISPENSING
@@ -124,4 +126,15 @@ export function getProxyName(headers: Hapi.Utils.Dictionary<string>): string {
     return ProxyName.EPS_FHIR_DISPENSING
   }
   return ProxyName.EPS_FHIR
+}
+
+export function collapseHeaderArrays(
+  headers: Hapi.InternalRequestDefaults["Headers"]
+): Record<string, string | undefined> {
+  for (const key in headers) {
+    if (Array.isArray(headers[key])) {
+      headers[key] = headers[key][0]
+    }
+  }
+  return headers as Record<string, string | undefined>
 }

@@ -15,6 +15,9 @@ export function getSessionPrescriptionIdsArray(request: Hapi.Request): Array<str
 }
 
 export function getCorrelationId(request: Hapi.Request): string {
-  const correlationId = request.headers["x-correlation-id"]
+  let correlationId = request.headers["x-correlation-id"]
+  if (Array.isArray(correlationId)) {
+    correlationId = correlationId[0]
+  }
   return correlationId || crypto.randomUUID()
 }

@@ -51,7 +51,7 @@ interface CIS2TokenResponse extends OAuthTokenResponse {
 export async function getCIS2TokenFromAuthCode(request: Hapi.Request): Promise<CIS2TokenResponse> {
   const axiosInstance = new LoggingAxios(request.logger).getInstance()
 
-  const authorisationCode = request.query.code
+  const authorisationCode = request.query.code as string
 
   const bodyParams = new URLSearchParams({
     grant_type: "authorization_code",
@@ -112,7 +112,7 @@ export async function getApigeeAccessTokenFromAuthCode(request: Hapi.Request, mo
   const axiosInstance = new LoggingAxios(request.logger).getInstance()
 
   // TODO: handle code not present
-  const authorisationCode = request.query.code
+  const authorisationCode = request.query.code as string
 
   // TODO: match state on request
 
