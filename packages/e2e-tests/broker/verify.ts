@@ -52,7 +52,7 @@ async function verify(endpoint: ApiEndpoint, operation?: ApiOperation): Promise<
     pacticipantSuffix,
     endpoint,
     pactVersion,
-    operation
+    operation ?? ""
   )
   const consumerName = createConsumerName(
     pacticipantSuffix,
